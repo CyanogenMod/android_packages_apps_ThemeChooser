@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sliding_up_panel_parallax_distance">75dp</dimen>
+</resources>
