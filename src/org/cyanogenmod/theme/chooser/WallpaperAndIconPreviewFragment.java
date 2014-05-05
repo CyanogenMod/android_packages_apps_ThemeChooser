@@ -22,6 +22,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -54,19 +55,26 @@ public class WallpaperAndIconPreviewFragment extends Fragment
     private static final int LOADER_ID_IMAGE = 0;
     private static final int LOADER_ID_ICONS = 1;
 
-    private static final ComponentName COMPONENT_DIALER = new ComponentName("com.android.dialer",
-            "com.android.dialer.DialtactsActivity");
-    private static final ComponentName COMPONENT_MESSAGING = new ComponentName("com.android.mms",
-            "com.android.mms.ui.ConversationList");
+    private static final ComponentName COMPONENT_DIALER =
+            new ComponentName("com.android.dialer", "com.android.dialer.DialtactsActivity");
+    private static final ComponentName COMPONENT_MESSAGING =
+            new ComponentName("com.android.mms", "com.android.mms.ui.ConversationList");
+    private static final ComponentName COMPONENT_CAMERANEXT =
+            new ComponentName("com.cyngn.cameranext", "com.android.camera.CameraLauncher");
+    private static final ComponentName COMPONENT_CAMERA =
+            new ComponentName("com.android.camera2", "com.android.camera.CameraActivity");
+    private static final ComponentName COMPONENT_BROWSER =
+            new ComponentName("com.android.browser", "com.android.browser.BrowserActivity");
+    private static final ComponentName COMPONENT_SETTINGS =
+            new ComponentName("com.android.settings", "com.android.settings.Settings");
+    private static final ComponentName COMPONENT_CALENDAR =
+            new ComponentName("com.android.calendar", "com.android.calendar.AllInOneActivity");
+    private static final ComponentName COMPONENT_GALERY =
+            new ComponentName("com.android.gallery3d", "com.android.gallery3d.app.GalleryActivity");
 
-    private static final ComponentName COMPONENT_CAMERANEXT = new ComponentName("com.cyngn.cameranext",
-            "com.android.camera.CameraLauncher");
+    private static final String CAMERA_NEXT_PACKAGE = "com.cyngn.cameranext";
 
-    private static final ComponentName COMPONENT_BROWSER = new ComponentName("com.android.browser",
-            "com.android.browser.BrowserActivity");
-
-    public static final ComponentName[] ICON_COMPONENTS = { COMPONENT_DIALER, COMPONENT_MESSAGING, COMPONENT_CAMERANEXT,
-            COMPONENT_BROWSER };
+    private static ComponentName[] sIconComponents;
 
     private static final String PKGNAME_EXTRA = "pkgname";
     private static final String IMAGE_DATA_EXTRA = "url";
@@ -101,6 +109,8 @@ public class WallpaperAndIconPreviewFragment extends Fragment
         mIsLegacyTheme = getArguments().getBoolean(LEGACY_THEME_EXTRA);
         mHasIcons = getArguments().getBoolean(HAS_ICONS_EXTRA);
         mPkgName = getArguments().getString(PKGNAME_EXTRA);
+
+        getIconComponents(getActivity());
     }
 
     @Override
@@ -124,6 +134,38 @@ public class WallpaperAndIconPreviewFragment extends Fragment
     public void onStart() {
         super.onStart();
 
+    }
+
+    public static ComponentName[] getIconComponents(Context context) {
+
+        if (sIconComponents == null || sIconComponents.length == 0) {
+            sIconComponents = new ComponentName[]{COMPONENT_DIALER, COMPONENT_MESSAGING,
+                    COMPONENT_CAMERA, COMPONENT_BROWSER};
+
+            PackageManager pm = context.getPackageManager();
+
+            // if device does not have telephony replace dialer and mms
+            if (!pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+                sIconComponents[0] = COMPONENT_CALENDAR;
+                sIconComponents[1] = COMPONENT_GALERY;
+            }
+
+            if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+                sIconComponents[2] = COMPONENT_SETTINGS;
+            } else {
+                // decide on which camera icon to use
+                try {
+                    if (pm.getPackageInfo(CAMERA_NEXT_PACKAGE, 0) != null) {
+                        sIconComponents[2] = COMPONENT_CAMERANEXT;
+                    }
+                } catch (NameNotFoundException e) {
+                    // default to COMPONENT_CAMERA
+                }
+            }
+
+        }
+
+        return sIconComponents;
     }
 
     private final LoaderCallbacks<Bitmap> mImageCallbacks = new LoaderCallbacks<Bitmap>() {
@@ -265,7 +307,7 @@ public class WallpaperAndIconPreviewFragment extends Fragment
             List<IconInfo> icons = new ArrayList<IconInfo>();
             IconPreviewHelper helper = new IconPreviewHelper(getContext(), mPkgName);
 
-            for (ComponentName component : ICON_COMPONENTS) {
+            for (ComponentName component : sIconComponents) {
                 Drawable icon = helper.getIcon(component);
                 String label = helper.getLabel(component);
                 IconInfo info = new IconInfo(label, icon);
