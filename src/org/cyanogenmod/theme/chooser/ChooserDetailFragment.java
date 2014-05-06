@@ -280,11 +280,14 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         int hsIdx = cursor.getColumnIndex(ThemesColumns.HOMESCREEN_URI);
         int legacyIdx = cursor.getColumnIndex(ThemesColumns.IS_LEGACY_THEME);
         int styleIdx = cursor.getColumnIndex(ThemesColumns.STYLE_URI);
+        int lockIdx = cursor.getColumnIndex(ThemesColumns.LOCKSCREEN_URI);
+
         boolean isLegacyTheme = cursor.getInt(legacyIdx) == 1;
         String title = cursor.getString(titleIdx);
         String author = cursor.getString(authorIdx);
         String hsImagePath = isLegacyTheme ? mPkgName : cursor.getString(hsIdx);
         String styleImagePath = cursor.getString(styleIdx);
+        String lockWallpaperImagePath = cursor.getString(lockIdx);
 
         mTitle.setText(title);
         mAuthor.setText(author);
@@ -315,6 +318,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
         mPagerAdapter.setPreviewImage(hsImagePath, isLegacyTheme);
         mPagerAdapter.setStyleImage(styleImagePath);
+        mPagerAdapter.setLockScreenImage(lockWallpaperImagePath);
         mPagerAdapter.update(supportedComponents);
     }
 
@@ -430,6 +434,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         private List<String> mSupportedComponents = Collections.emptyList();
         private String mPreviewImagePath;
         private boolean mIsLegacyTheme;
+        private String mLockScreenImagePath;
         private String mStyleImagePath;
 
         public ThemeDetailPagerAdapter(FragmentManager fm) {
@@ -443,6 +448,10 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
         public void setStyleImage(String imagePath) {
             mStyleImagePath = imagePath;
+        }
+
+        public void setLockScreenImage(String lockPath) {
+            mLockScreenImagePath = lockPath;
         }
 
         private void update(List<String> supportedComponents) {
@@ -462,9 +471,6 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
                     mSupportedComponents.contains(ThemesColumns.MODIFIES_ICONS)) {
                 mPreviewList.remove(ThemesColumns.MODIFIES_ICONS);
             }
-
-            //TODO: We don't have previewing for all the components yet. Remove these lines when we do.
-            mPreviewList.remove(ThemesColumns.MODIFIES_LOCKSCREEN);
 
             // The AudiblePreviewFragment will take care of loading all available
             // audibles so remove all but one so only one fragment instance is created
@@ -498,7 +504,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             } else if (component.equals(ThemesColumns.MODIFIES_FONTS)) {
                 fragment = FontPreviewFragment.newInstance(mPkgName);
             } else if (component.equals(ThemesColumns.MODIFIES_LOCKSCREEN)) {
-                throw new UnsupportedOperationException("Not implemented yet!");
+                fragment = WallpaperAndIconPreviewFragment.newInstance(mLockScreenImagePath, mPkgName, mIsLegacyTheme, false);
             } else if (component.equals(ThemesColumns.MODIFIES_LAUNCHER)) {
                 throw new UnsupportedOperationException("Not implemented yet!");
             } else if (component.equals(ThemesColumns.MODIFIES_ICONS)) {
