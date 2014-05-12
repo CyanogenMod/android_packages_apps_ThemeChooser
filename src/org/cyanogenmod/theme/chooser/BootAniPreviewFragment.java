@@ -16,52 +16,38 @@
 package org.cyanogenmod.theme.chooser;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.cyanogenmod.theme.util.BootAnimationHelper;
-import org.cyanogenmod.theme.widget.PartAnimationDrawable;
+import org.cyanogenmod.theme.widget.BootAniImageView;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 public class BootAniPreviewFragment extends Fragment {
     private static final String TAG = "ThemeChooser";
     private static final String PKG_EXTRA = "pkg_extra";
+    private static final String CACHED_SUFFIX = "_bootanimation.zip";
 
     private String mPkgName;
-    private ImageView mPreview;
+    private BootAniImageView mPreview;
     private ProgressBar mLoadingProgress;
     private TextView mNoPreviewTextView;
     private boolean mPreviewLoaded = false;
     private boolean mIsVisibileToUser = false;
     private boolean mAnimationStarted = false;
-    private List<PartAnimationDrawable> mAnimationParts;
-    private int mCurrentAnimationPartIndex;
-    private PartAnimationDrawable mCurrentAnimationPart;
-    private Timer mTimer;
-    private Object mAnimationLock;
 
     public static BootAniPreviewFragment newInstance(String pkgName) {
         BootAniPreviewFragment fragment = new BootAniPreviewFragment();
@@ -75,13 +61,12 @@ public class BootAniPreviewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPkgName = getArguments().getString(PKG_EXTRA);
-        mAnimationLock = new Object();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_boot_animation_preview, container, false);
-        mPreview = (ImageView) view.findViewById(R.id.animated_preview);
+        mPreview = (BootAniImageView) view.findViewById(R.id.animated_preview);
         mLoadingProgress = (ProgressBar) view.findViewById(R.id.loading_progress);
         mNoPreviewTextView = (TextView) view.findViewById(R.id.no_preview);
         return view;
@@ -90,15 +75,13 @@ public class BootAniPreviewFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        destroyAnimation();
         mPreviewLoaded = false;
-        if (mTimer != null) mTimer.cancel();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        (new AnimationLoader(getActivity(), mPkgName)).execute();
+        new AnimationLoader(getActivity(), mPkgName).execute();
     }
 
     @Override
@@ -112,44 +95,10 @@ public class BootAniPreviewFragment extends Fragment {
         }
     }
 
-    public void destroyAnimation() {
-        mPreview.setImageDrawable(null);
-        synchronized (mAnimationLock) {
-            if (mAnimationParts == null) return;
-            for (PartAnimationDrawable anim : mAnimationParts) {
-                final int numFrames = anim.getNumberOfFrames();
-                for (int i = 0; i < numFrames; i++) {
-                    Drawable d = anim.getFrame(i);
-                    if (d instanceof BitmapDrawable) {
-                        ((BitmapDrawable) d).getBitmap().recycle();
-                    }
-                }
-            }
-            mAnimationParts.clear();
-        }
-        mCurrentAnimationPart = null;
-        mCurrentAnimationPartIndex = 0;
-        mAnimationStarted = false;
-    }
-
     private void startAnimation() {
         if (mIsVisibileToUser) {
-            mTimer = new Timer();
-            long startTime = 100;
-            for (PartAnimationDrawable anim : mAnimationParts) {
-                if (anim.isOneShot()) {
-                    for (int i = 0; i < anim.getPlayCount(); i++) {
-                        mTimer.schedule(new AnimationUpdateTask(anim), startTime);
-                        startTime += anim.getAnimationDuration();
-                    }
-                } else {
-                    mTimer.schedule(new AnimationUpdateTask(anim), startTime);
-                }
-            }
+            mPreview.start();
             mAnimationStarted = true;
-        } else {
-            if (mAnimationParts != null && mAnimationParts.size() > 0)
-                mPreview.setImageDrawable(mAnimationParts.get(0).getFrame(0));
         }
     }
 
@@ -175,37 +124,42 @@ public class BootAniPreviewFragment extends Fragment {
             if (mContext == null) {
                 return Boolean.FALSE;
             }
-            InputStream is;
+            ZipFile zip = null;
             if ("default".equals(mPkgName)) {
                 try {
-                    is = new ZipInputStream(
-                            new FileInputStream(BootAnimationHelper.SYSTEM_BOOT_ANI_PATH));
-                } catch (FileNotFoundException e) {
+                    zip = new ZipFile(new File(BootAnimationHelper.SYSTEM_BOOT_ANI_PATH));
+                } catch (Exception e) {
+                    Log.w(TAG, "Unable to load boot animation", e);
                     return Boolean.FALSE;
                 }
             } else {
-                PackageManager pm = mContext.getPackageManager();
+                // check if the bootanimation is cached
+                File f = new File(mContext.getCacheDir(), mPkgName + CACHED_SUFFIX);
+                if (!f.exists()) {
+                    // go easy on cache storage and clear out any previous boot animations
+                    clearBootAnimationCache();
+                    try {
+                        Context themeContext = mContext.createPackageContext(mPkgName, 0);
+                        AssetManager am = themeContext.getAssets();
+                        InputStream is = am.open("bootanimation/bootanimation.zip");
+                        FileUtils.copyToFile(is, f);
+                        is.close();
+                    } catch (Exception e) {
+                        Log.w(TAG, "Unable to load boot animation", e);
+                        return Boolean.FALSE;
+                    }
+                }
                 try {
-                    ApplicationInfo ai = pm.getApplicationInfo(mPkgName, 0);
-                    ZipFile zip = new ZipFile(new File(ai.sourceDir));
-                    is = zip.getInputStream(zip.getEntry(
-                            BootAnimationHelper.THEME_INTERNAL_BOOT_ANI_PATH));
-                } catch (PackageManager.NameNotFoundException e) {
-                    return Boolean.FALSE;
-                } catch (ZipException e) {
-                    return Boolean.FALSE;
+                    zip = new ZipFile(f);
                 } catch (IOException e) {
+                    Log.w(TAG, "Unable to load boot animation", e);
                     return Boolean.FALSE;
                 }
             }
-            if (is != null) {
-                try {
-                    synchronized (mAnimationLock) {
-                        mAnimationParts = BootAnimationHelper.loadAnimation(mContext, is);
-                    }
-                } catch (IOException e) {
-                    return Boolean.FALSE;
-                }
+            if (zip != null) {
+                mPreview.setBootAnimation(zip);
+            } else {
+                return Boolean.FALSE;
             }
             return Boolean.TRUE;
         }
@@ -214,7 +168,7 @@ public class BootAniPreviewFragment extends Fragment {
         protected void onPostExecute(Boolean isSuccess) {
             super.onPostExecute(isSuccess);
             mLoadingProgress.setVisibility(View.INVISIBLE);
-            if (Boolean.TRUE.equals(isSuccess) && mAnimationParts != null) {
+            if (Boolean.TRUE.equals(isSuccess)) {
                 mPreviewLoaded = true;
                 startAnimation();
             } else {
@@ -224,22 +178,13 @@ public class BootAniPreviewFragment extends Fragment {
         }
     }
 
-    class AnimationUpdateTask extends TimerTask {
-        private PartAnimationDrawable mAnimation;
-        public AnimationUpdateTask(PartAnimationDrawable anim) {
-            mAnimation = anim;
-        }
-
-        @Override
-        public void run() {
-            mPreview.post(new Runnable() {
-                @Override
-                public void run() {
-                    mPreview.setImageDrawable(mAnimation);
-                    mAnimation.stop();
-                    mAnimation.start();
-                }
-            });
+    private void clearBootAnimationCache() {
+        File cache = getActivity().getCacheDir();
+        if (cache.exists()) {
+            for(File f : cache.listFiles()) {
+                // volley stores stuff in cache so don't delete the volley directory
+                if(!f.isDirectory() && f.getName().endsWith(CACHED_SUFFIX)) f.delete();
+            }
         }
     }
 }

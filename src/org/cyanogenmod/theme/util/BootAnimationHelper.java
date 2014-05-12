@@ -19,26 +19,22 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
-import org.cyanogenmod.theme.widget.PartAnimationDrawable;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class BootAnimationHelper {
@@ -46,71 +42,81 @@ public class BootAnimationHelper {
             "assets/bootanimation/bootanimation.zip";
     public static final String SYSTEM_BOOT_ANI_PATH = "/system/media/bootanimation.zip";
 
+    public static class AnimationPart {
+        /**
+         * Number of times to play this part
+         */
+        public int playCount;
+        /**
+         * If non-zero, pause for the given # of seconds before moving on to next part.
+         */
+        public int pause;
+        /**
+         * The name of this part
+         */
+        public String partName;
+        /**
+         * Time each frame is displayed
+         */
+        public int frameRateMillis;
+        /**
+         * List of file names for the given frames in this part
+         */
+        public List<String> frames;
+        /**
+         * width of the animation
+         */
+        public int width;
+        /**
+         * height of the animation
+         */
+        public int height;
+
+        public AnimationPart(int playCount, int pause, String partName, int frameRateMillis,
+                             int width, int height) {
+            this.playCount = playCount;
+            this.pause = pause;
+            this.partName = partName;
+            this.frameRateMillis = frameRateMillis;
+            this.width = width;
+            this.height = height;
+            frames = new ArrayList<String>();
+        }
+
+        public void addFrame(String frame) {
+            frames.add(frame);
+        }
+    }
+
     /**
-     * Takes an InputStream to a bootanimation.zip and turns it into a set of
-     * PartAnimationDrawables which can be played inside an ImageView
-     * @param is InputStream to the bootanimation.zip to process
-     * @return The list of ParteAnimationDrawables loaded
+     * Gather up all the details for the given boot animation
+     * @param context
+     * @param zip The bootanimation.zip
+     * @return A list of AnimationPart if successful, null if not.
      * @throws IOException
      */
-    public static List<PartAnimationDrawable> loadAnimation(Context context, InputStream is) throws IOException {
-        ZipInputStream zis = (is instanceof ZipInputStream) ? (ZipInputStream) is
-                : new ZipInputStream(new BufferedInputStream(is));
-        ZipEntry ze;
-        Map<String, TreeMap<String, Drawable>> framesMap =
-                new HashMap<String, TreeMap<String, Drawable>>();
+    public static List<AnimationPart> parseAnimation(Context context, ZipFile zip)
+            throws IOException {
         List<AnimationPart> animationParts = null;
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inSampleSize = am.isLowRamDevice() ? 4 : 2;
-        opts.inPreferredConfig = Bitmap.Config.RGB_565;
-        // First thing to do is iterate over all the entries and the zip and store them
-        // for building the animations afterwards
-        while ((ze = zis.getNextEntry()) != null) {
-            final String entryName = ze.getName();
-            if ("desc.txt".equals(entryName)) {
-                animationParts = parseDescription(zis);
-            } else if (entryName.contains("/") && !entryName.endsWith("/")) {
-                int splitAt = entryName.lastIndexOf('/');
-                final String part = entryName.substring(0, splitAt);
-                final String name = entryName.substring(splitAt + 1);
-                final Drawable d;
-                try {
-                    d = loadFrame(zis, opts);
-                } catch (OutOfMemoryError oome) {
-                    // better to have something rather than nothing?
-                    break;
-                }
-                TreeMap<String, Drawable> parts = framesMap.get(part);
-                if (parts == null) {
-                    parts = new TreeMap<String, Drawable>();
-                    framesMap.put(part, parts);
-                }
-                parts.put(name, d);
-            }
+
+        ZipEntry ze = zip.getEntry("desc.txt");
+        if (ze != null) {
+            animationParts = parseDescription(zip.getInputStream(ze));
         }
-        zis.close();
+
         if (animationParts == null) return null;
 
-        // Now that the desc.txt and images are loaded we can assemble the variouse
-        // parts into one PartAnimationDrawable per part
-        List<PartAnimationDrawable> animations = new ArrayList<PartAnimationDrawable>(animationParts.size());
         for (AnimationPart a : animationParts) {
-            PartAnimationDrawable anim = new PartAnimationDrawable();
-            anim.setPlayCount(a.playCount);
-            final TreeMap<String, Drawable> parts = framesMap.get(a.partName);
-            for (Drawable d : parts.values()) {
-                anim.addFrame(d, a.frameRateMillis);
+            for (Enumeration<? extends ZipEntry> e = zip.entries();e.hasMoreElements();) {
+                ze = e.nextElement();
+                if (!ze.isDirectory() && ze.getName().contains(a.partName)) {
+                    a.addFrame(ze.getName());
+                }
             }
-            if (a.playCount <= 0) {
-                anim.setOneShot(false);
-            } else {
-                anim.setOneShot(true);
-            }
-            animations.add(anim);
+            Collections.sort(a.frames);
         }
 
-        return animations;
+        return animationParts;
     }
 
     /**
@@ -121,9 +127,12 @@ public class BootAnimationHelper {
      */
     private static List<AnimationPart> parseDescription(InputStream in) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        // first line, 3rd column has # of frames per second
-        final int frameRateMillis = 1000 / Integer.parseInt(reader.readLine().split(" ")[2]);
-        String line;
+        String line = reader.readLine();
+        String[] details = line.split(" ");
+        final int width = Integer.parseInt(details[0]);
+        final int height = Integer.parseInt(details[1]);
+        final int frameRateMillis = 1000 / Integer.parseInt(details[2]);
+
         List<AnimationPart> animationParts = new ArrayList<AnimationPart>();
         while ((line = reader.readLine()) != null) {
             String[] info = line.split(" ");
@@ -131,41 +140,13 @@ public class BootAnimationHelper {
                 int playCount = Integer.parseInt(info[1]);
                 int pause = Integer.parseInt(info[2]);
                 String name = info[3];
-                AnimationPart ap = new AnimationPart(playCount, pause, name, frameRateMillis);
+                AnimationPart ap = new AnimationPart(playCount, pause, name, frameRateMillis,
+                        width, height);
                 animationParts.add(ap);
             }
         }
 
         return animationParts;
-    }
-
-    /**
-     * Load a frame of the boot animation into a BitmapDrawable
-     * @param is The frame to load
-     * @param opts Options to use when decoding the bitmap
-     * @return The loaded BitmapDrawable
-     * @throws FileNotFoundException
-     */
-    private static BitmapDrawable loadFrame(InputStream is, BitmapFactory.Options opts)
-            throws FileNotFoundException {
-        BitmapDrawable drawable = new BitmapDrawable(BitmapFactory.decodeStream(is, null, opts));
-        drawable.setAntiAlias(true);
-        drawable.setFilterBitmap(true);
-        return drawable;
-    }
-
-    private static class AnimationPart {
-        public int playCount;
-        public int pause;
-        String partName;
-        int frameRateMillis;
-
-        public AnimationPart(int playCount, int pause, String partName, int frameRateMillis) {
-            this.playCount = playCount;
-            this.pause = pause;
-            this.partName = partName;
-            this.frameRateMillis = frameRateMillis;
-        }
     }
 
     public static String getPreviewFrameEntryName(InputStream is) throws IOException {
