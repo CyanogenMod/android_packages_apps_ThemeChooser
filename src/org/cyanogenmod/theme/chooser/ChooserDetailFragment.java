@@ -46,7 +46,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
-import com.sothree.slidinguppanel.SlidingupPanelLayout;
+import org.cyanogenmod.theme.util.ChooserDetailScrollView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,13 +62,34 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private static final int LOADER_ID_THEME_INFO = 0;
     private static final int LOADER_ID_APPLIED_THEME = 1;
 
+    // Drawer States
+    private static final int DRAWER_CLOSED = 0;
+    private static final int DRAWER_PARTIALLY_OPEN = 1;
+    private static final int DRAWER_MOSTLY_OPEN = 2;
+    private static final int DRAWER_OPEN = 3;
+
+    // Threshold values in "percentage scrolled" to determine what state the drawer is in
+    // ex: User opens up the drawer a little bit, taking up 10% of the visible space. The
+    // drawer is now considered partially open
+    // because CLOSED_THRESHOLD < 10% < PARTIAL_OPEN_THRESHOLD
+    private static final int DRAWER_CLOSED_THRESHOLD = 5;
+    private static final int DRAWER_PARTIALLY_OPEN_THRESHOLD = 25;
+    private static final int DRAWER_MOSTLY_OPEN_THRESHOLD = 90;
+    private static final int DRAWER_OPEN_THRESHOLD = 100;
+
+    // Where to scroll when moving to a new state
+    private static final int DRAWER_CLOSED_SCROLL_AMOUNT = 0;
+    private static final int DRAWER_PARTIALLY_OPEN_AMOUNT = 25;
+    private static final int DRAWER_MOSTLY_OPEN_AMOUNT = 75;
+    private static final int DRAWER_FULLY_OPEN_AMOUNT = 100;
+
     private TextView mTitle;
     private TextView mAuthor;
     private Button mApply;
     private ViewPager mPager;
     private ThemeDetailPagerAdapter mPagerAdapter;
     private String mPkgName;
-    private SlidingupPanelLayout mSlidingPanel;
+    private ChooserDetailScrollView mSlidingPanel;
 
     private Handler mHandler;
     private Cursor mAppliedThemeCursor;
@@ -120,8 +141,28 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         mTitle = (TextView) v.findViewById(R.id.title);
         mAuthor = (TextView) v.findViewById(R.id.author);
         mPager = (ViewPager) v.findViewById(R.id.pager);
+        mPager.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int state = getDrawerState();
+                switch(state) {
+                    case DRAWER_CLOSED:
+                        smoothScrollDrawerTo(DRAWER_PARTIALLY_OPEN);
+                        break;
+                    case DRAWER_PARTIALLY_OPEN:
+                    case DRAWER_MOSTLY_OPEN:
+                        smoothScrollDrawerTo(DRAWER_OPEN);
+                        break;
+                    case DRAWER_OPEN:
+                        smoothScrollDrawerTo(DRAWER_CLOSED);
+                        break;
+                }
+            }
+        });
+
         mPagerAdapter = new ThemeDetailPagerAdapter(getChildFragmentManager());
         mPager.setAdapter(mPagerAdapter);
+
         mApply = (Button) v.findViewById(R.id.apply);
 
         mApply.setOnClickListener(new OnClickListener() {
@@ -132,7 +173,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             }
         });
 
-        mSlidingPanel = (SlidingupPanelLayout) v.findViewById(R.id.sliding_layout);
+        mSlidingPanel = (ChooserDetailScrollView) v.findViewById(R.id.sliding_layout);
 
         // Find all the checkboxes for theme components (ex wallpaper)
         for (Map.Entry<String, Integer> entry : sComponentToId.entrySet()) {
@@ -194,7 +235,9 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private Runnable mShowSlidingPanelRunnable = new Runnable() {
         @Override
         public void run() {
-            mSlidingPanel.expandPane(mSlidingPanel.getAnchorPoint());
+            // Arbitrarily scroll a bit at the start
+            int height = mSlidingPanel.getHeight() / 4;
+            mSlidingPanel.smoothScrollTo(0, height);
         }
     };
 
@@ -518,5 +561,55 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             }
             return fragment;
         }
+    }
+
+    private void smoothScrollDrawerTo(int drawerState) {
+        int scrollPercentage = 0;
+        switch(drawerState) {
+            case DRAWER_CLOSED:
+                scrollPercentage = DRAWER_CLOSED_SCROLL_AMOUNT;
+                break;
+            case DRAWER_PARTIALLY_OPEN:
+                scrollPercentage = DRAWER_PARTIALLY_OPEN_AMOUNT;
+                break;
+            case DRAWER_MOSTLY_OPEN:
+                scrollPercentage = DRAWER_MOSTLY_OPEN_AMOUNT;
+                break;
+            case DRAWER_OPEN:
+                scrollPercentage = DRAWER_FULLY_OPEN_AMOUNT;
+                break;
+            default:
+                throw new IllegalArgumentException("Bad drawer state: " + drawerState);
+        }
+
+        int visibleHeight = mSlidingPanel.getHeight();
+        View handle = mSlidingPanel.getHandle();
+        visibleHeight -= handle.getHeight();
+
+        int scrollY = scrollPercentage * visibleHeight / 100;
+        mSlidingPanel.smoothScrollTo(0, scrollY);
+    }
+
+    private int getDrawerState() {
+        // Scroll between 3 different heights when pager is clicked
+        int visibleHeight = mSlidingPanel.getHeight();
+        View handle = mSlidingPanel.getHandle();
+        visibleHeight -= handle.getHeight();
+        int scrollY = mSlidingPanel.getScrollY();
+        int percentageScrolled = (scrollY * 100) / (visibleHeight);
+
+        //Check if we are bottom of scroll
+        View view = (View) mSlidingPanel.getChildAt(0);
+        boolean isAtBottom = (view.getBottom() - (mSlidingPanel.getHeight() + scrollY)) == 0;
+
+        if (percentageScrolled < DRAWER_CLOSED_THRESHOLD && !isAtBottom) {
+            return DRAWER_CLOSED;
+        } else if (percentageScrolled < DRAWER_PARTIALLY_OPEN_THRESHOLD && !isAtBottom) {
+            return DRAWER_PARTIALLY_OPEN;
+        } else if (percentageScrolled < DRAWER_MOSTLY_OPEN_THRESHOLD && !isAtBottom) {
+            return DRAWER_MOSTLY_OPEN;
+        }
+
+        return DRAWER_OPEN;
     }
 }
