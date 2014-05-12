@@ -178,7 +178,7 @@ public class BootAniPreviewFragment extends Fragment {
     }
 
     private void clearCache() {
-        File cache = new File(getActivity().getCacheDir(), mPkgName + "_bootanimation.zip");
+        File cache = getActivity().getCacheDir();
         if (cache.exists()) {
             for(File f : cache.listFiles()) {
                 // volley stores stuff in cache so don't delete the volley directory
