@@ -222,11 +222,6 @@ public class ChooserBrowseFragment extends Fragment implements LoaderManager.Loa
             }
             item.thumbnail.setImageDrawable(null);
 
-            //Crop the bottom
-            if (!isLegacyTheme) {
-                item.thumbnail.setScaleType(ScaleType.MATRIX);
-            }
-
             if (item.thumbnail.getTag() != null) {
                 LoadImage loadImageTask = new LoadImage(item.thumbnail, isLegacyTheme, false, pkgName);
                 loadImageTask.execute();
