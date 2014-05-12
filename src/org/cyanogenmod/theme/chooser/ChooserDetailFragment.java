@@ -46,7 +46,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
-import com.sothree.slidinguppanel.SlidingupPanelLayout;
+import org.cyanogenmod.theme.util.ChooserDetailScrollView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,7 +68,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private ViewPager mPager;
     private ThemeDetailPagerAdapter mPagerAdapter;
     private String mPkgName;
-    private SlidingupPanelLayout mSlidingPanel;
+    private ChooserDetailScrollView mSlidingPanel;
 
     private Handler mHandler;
     private Cursor mAppliedThemeCursor;
@@ -120,8 +120,30 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         mTitle = (TextView) v.findViewById(R.id.title);
         mAuthor = (TextView) v.findViewById(R.id.author);
         mPager = (ViewPager) v.findViewById(R.id.pager);
+        mPager.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Scroll between 3 different heights when pager is clicked
+                int visibleHeight = mSlidingPanel.getHeight();
+                View handle = ((ViewGroup)mSlidingPanel.getChildAt(0)).getChildAt(1); //**WARNING** Clark don't let me ship this!
+                visibleHeight -= handle.getHeight();
+                int scrollY = mSlidingPanel.getScrollY();
+                int percentageScrolled = (scrollY * 100) / (visibleHeight);
+
+                int percentScroll = 0;
+                if (percentageScrolled < 25) {
+                    percentScroll = 26;
+                } else if (percentageScrolled < 50) {
+                    percentScroll = 100;
+                }
+                int newScrollY = percentScroll * (visibleHeight) / 100;
+                mSlidingPanel.smoothScrollTo(0, newScrollY);
+            }
+        });
+
         mPagerAdapter = new ThemeDetailPagerAdapter(getChildFragmentManager());
         mPager.setAdapter(mPagerAdapter);
+
         mApply = (Button) v.findViewById(R.id.apply);
 
         mApply.setOnClickListener(new OnClickListener() {
@@ -132,7 +154,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             }
         });
 
-        mSlidingPanel = (SlidingupPanelLayout) v.findViewById(R.id.sliding_layout);
+        mSlidingPanel = (ChooserDetailScrollView) v.findViewById(R.id.sliding_layout);
 
         // Find all the checkboxes for theme components (ex wallpaper)
         for (Map.Entry<String, Integer> entry : sComponentToId.entrySet()) {
@@ -194,7 +216,9 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private Runnable mShowSlidingPanelRunnable = new Runnable() {
         @Override
         public void run() {
-            mSlidingPanel.expandPane(mSlidingPanel.getAnchorPoint());
+            // Arbitrarily scroll a bit at the start
+            int height = mSlidingPanel.getHeight() / 4;
+            mSlidingPanel.smoothScrollTo(0, height);
         }
     };
 
