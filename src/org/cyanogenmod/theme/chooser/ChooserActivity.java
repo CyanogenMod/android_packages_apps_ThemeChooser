@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -58,8 +59,15 @@ public class ChooserActivity extends FragmentActivity {
                     getIntent().hasExtra(EXTRA_PKGNAME)) {
                 // Handle case where Theme Store or some other app wishes to open
                 // a detailed theme view for a given package
-                // TODO: Handle if a bad pkg is provided
                 String pkgName = getIntent().getStringExtra(EXTRA_PKGNAME);
+                try {
+                    final PackageManager pm = getPackageManager();
+                    if (pm.getPackageInfo(pkgName, 0) == null) {
+                        finish();
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    finish();
+                }
                 fragment = ChooserDetailFragment.newInstance(pkgName, null);
             } else {
                 fragment = ChooserBrowseFragment.newInstance(filtersList);
