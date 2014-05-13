@@ -153,7 +153,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         for (Map.Entry<String, CheckBox> entry : mComponentToCheckbox.entrySet()) {
             String component = entry.getKey();
             CheckBox checkbox = entry.getValue();
-            if (checkbox.isChecked()) {
+            if (checkbox.isEnabled() && checkbox.isChecked()) {
                 components.add(component);
             }
         }
