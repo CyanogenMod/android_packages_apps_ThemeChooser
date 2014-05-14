@@ -143,6 +143,15 @@
                     android:layout_height="wrap_content"
                     android:text="@string/alarms"/>
             </LinearLayout>
+
+            <com.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/titles"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                />
+
         </org.cyanogenmod.theme.util.ChooserDetailLinearLayout>
     </org.cyanogenmod.theme.util.ChooserDetailScrollView>
     <Button

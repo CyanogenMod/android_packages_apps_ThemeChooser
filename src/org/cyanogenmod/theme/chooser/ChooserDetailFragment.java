@@ -46,6 +46,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
+
+import com.viewpagerindicator.CirclePageIndicator;
 import org.cyanogenmod.theme.util.ChooserDetailScrollView;
 
 import java.util.ArrayList;
@@ -90,6 +92,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private ThemeDetailPagerAdapter mPagerAdapter;
     private String mPkgName;
     private ChooserDetailScrollView mSlidingPanel;
+    private CirclePageIndicator mIndicator;
 
     private Handler mHandler;
     private Cursor mAppliedThemeCursor;
@@ -140,6 +143,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         View v = inflater.inflate(R.layout.fragment_chooser_theme_pager_item, container, false);
         mTitle = (TextView) v.findViewById(R.id.title);
         mAuthor = (TextView) v.findViewById(R.id.author);
+
         mPager = (ViewPager) v.findViewById(R.id.pager);
         mPager.setOnClickListener(new OnClickListener() {
             @Override
@@ -163,8 +167,11 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         mPagerAdapter = new ThemeDetailPagerAdapter(getChildFragmentManager());
         mPager.setAdapter(mPagerAdapter);
 
-        mApply = (Button) v.findViewById(R.id.apply);
 
+        mIndicator = (CirclePageIndicator) v.findViewById(R.id.titles);
+        mIndicator.setViewPager(mPager);
+
+        mApply = (Button) v.findViewById(R.id.apply);
         mApply.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
                 List<String> components = getCheckedComponents();
