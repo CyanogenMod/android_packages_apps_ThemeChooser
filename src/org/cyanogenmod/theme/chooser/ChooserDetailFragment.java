@@ -46,6 +46,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.viewpagerindicator.CirclePageIndicator;
@@ -433,6 +434,11 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     }
 
     private void refreshChecksForCheckboxes() {
+        LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.details_applied);
+        ll.setVisibility(View.GONE);
+
+        boolean allApplied = true;
+
         //Apply checks
         for (Map.Entry<String, CheckBox> entry : mComponentToCheckbox.entrySet()) {
             String componentName = entry.getKey();
@@ -441,6 +447,14 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             if (mAppliedComponents.contains(componentName)) {
                 componentCheckbox.setChecked(true);
                 componentCheckbox.setEnabled(false);
+                ((LinearLayout) componentCheckbox.getParent()).removeView(componentCheckbox);
+                ll.addView(componentCheckbox);
+                ll.setVisibility(View.VISIBLE);
+            } else {
+                //Ignore unavailable components
+                if (componentCheckbox.getVisibility() != View.GONE) {
+                    allApplied = false;
+                }
             }
             if (mLoadInitialCheckboxStates) {
                 mInitialCheckboxStates.put(componentCheckbox.getId(),
@@ -448,6 +462,10 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             }
             mCurrentCheckboxStates.put(componentCheckbox.getId(), componentCheckbox.isChecked());
         }
+
+        //Hide available column if it is empty
+        ll = (LinearLayout) getActivity().findViewById(R.id.details);
+        ll.setVisibility(allApplied ? View.GONE : View.VISIBLE);
     }
 
     private void refreshApplyButton() {
