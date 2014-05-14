@@ -46,6 +46,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.viewpagerindicator.CirclePageIndicator;
@@ -433,6 +434,9 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     }
 
     private void refreshChecksForCheckboxes() {
+        LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.details_applied);
+        ll.setVisibility(View.GONE);
+
         //Apply checks
         for (Map.Entry<String, CheckBox> entry : mComponentToCheckbox.entrySet()) {
             String componentName = entry.getKey();
@@ -441,6 +445,9 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             if (mAppliedComponents.contains(componentName)) {
                 componentCheckbox.setChecked(true);
                 componentCheckbox.setEnabled(false);
+                ((LinearLayout) componentCheckbox.getParent()).removeView(componentCheckbox);
+                ll.addView(componentCheckbox);
+                ll.setVisibility(View.VISIBLE);
             }
             if (mLoadInitialCheckboxStates) {
                 mInitialCheckboxStates.put(componentCheckbox.getId(),
