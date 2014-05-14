@@ -39,6 +39,7 @@ public class ChooserDetailLinearLayout extends LinearLayout {
     public final int THEME_PREVIEW_INDEX = 0;
     public final int DRAWER_HANDLE_INDEX = 1;
     public final int DRAWER_CONTENT_INDEX = 2;
+    public final int PAGE_INDICATOR_INDEX = 3;
 
     private ViewPager mPager;
 
@@ -78,11 +79,26 @@ public class ChooserDetailLinearLayout extends LinearLayout {
         int childHeightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         drawerContent.measure(childWidthSpec, childHeightSpec);
 
+        //Give the page indicator as much space as it needs
+        View pageIndicator = getChildAt(PAGE_INDICATOR_INDEX);
+        pageIndicator.measure(childWidthSpec, childHeightSpec);
+
         // Measure ourself
         int width = drawerHandle.getMeasuredWidth();
         int height = themePreview.getMeasuredHeight() +
                         drawerHandle.getMeasuredHeight() + drawerContent.getMeasuredHeight();
         setMeasuredDimension(width, height);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+
+        // Place the page indicator above the drawer handle
+        View pageIndicator = getChildAt(PAGE_INDICATOR_INDEX);
+        int top = getChildAt(DRAWER_HANDLE_INDEX).getTop();
+        int height = pageIndicator.getMeasuredHeight();
+        pageIndicator.layout(l, top-height, r, top);
     }
 
     public void onScrollChanged(int l, int t, int oldl, int oldt) {
