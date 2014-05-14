@@ -103,6 +103,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
     private Handler mHandler;
     private Cursor mAppliedThemeCursor;
+    private List<String> mAppliedComponents = new ArrayList<String>();
     private HashMap<String, CheckBox> mComponentToCheckbox = new HashMap<String, CheckBox>();
 
     private boolean mLoadInitialCheckboxStates = true;
@@ -209,7 +210,8 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         for (Map.Entry<String, CheckBox> entry : mComponentToCheckbox.entrySet()) {
             String component = entry.getKey();
             CheckBox checkbox = entry.getValue();
-            if (checkbox.isEnabled() && checkbox.isChecked()) {
+            if (checkbox.isEnabled() && checkbox.isChecked()
+                    && !mAppliedComponents.contains(component)) {
                 components.add(component);
             }
         }
@@ -370,7 +372,8 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
                 componentCheckbox.setVisibility(View.GONE);
             }
 
-            if (shouldComponentBeEnabled(componentName, componentIncludedInTheme)) {
+            if (shouldComponentBeEnabled(componentName, componentIncludedInTheme)
+                    && !mAppliedComponents.contains(componentName)) {
                 componentCheckbox.setEnabled(true);
             } else {
                 componentCheckbox.setEnabled(false);
@@ -406,14 +409,15 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
     private void loadAppliedInfo(Cursor cursor) {
         mAppliedThemeCursor = cursor;
+        refreshAppliedComponents();
         refreshChecksForCheckboxes();
         refreshApplyButton();
     }
 
-    private void refreshChecksForCheckboxes() {
+    private void refreshAppliedComponents() {
+        mAppliedComponents.clear();
 
         //Determine which components are applied
-        List<String> appliedComponents = new ArrayList<String>();
         if (mAppliedThemeCursor != null) {
             mAppliedThemeCursor.moveToPosition(-1);
             while (mAppliedThemeCursor.moveToNext()) {
@@ -422,18 +426,21 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
                 String pkg = mAppliedThemeCursor.getString(mAppliedThemeCursor.getColumnIndex(MixnMatchColumns.COL_VALUE));
 
                 if (pkg.equals(mPkgName)) {
-                    appliedComponents.add(component);
+                    mAppliedComponents.add(component);
                 }
             }
         }
+    }
 
+    private void refreshChecksForCheckboxes() {
         //Apply checks
         for (Map.Entry<String, CheckBox> entry : mComponentToCheckbox.entrySet()) {
             String componentName = entry.getKey();
             CheckBox componentCheckbox = entry.getValue();
 
-            if (appliedComponents.contains(componentName)) {
+            if (mAppliedComponents.contains(componentName)) {
                 componentCheckbox.setChecked(true);
+                componentCheckbox.setEnabled(false);
             }
             if (mLoadInitialCheckboxStates) {
                 mInitialCheckboxStates.put(componentCheckbox.getId(),
