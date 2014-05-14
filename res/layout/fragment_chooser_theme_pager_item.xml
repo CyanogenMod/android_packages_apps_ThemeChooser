@@ -67,67 +67,94 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/author" >
-                <LinearLayout
-                    android:id="@+id/details"
+
+              <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingTop="6dp" >
+                    android:orientation="vertical">
 
-                    <CheckBox
-                        android:id="@+id/chk_overlays"
+                    <LinearLayout
+                        android:id="@+id/details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/style" />
+                        android:orientation="vertical"
+                        android:paddingTop="6dp" >
 
-                    <CheckBox
-                        android:id="@+id/chk_wallpaper"
+                        <CheckBox
+                            android:id="@+id/chk_overlays"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/style" />
+
+                        <CheckBox
+                            android:id="@+id/chk_wallpaper"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/wallpapers" />
+
+                        <CheckBox
+                            android:id="@+id/chk_lockscreen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/lock_screen" />
+
+                        <CheckBox
+                            android:id="@+id/chk_fonts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/fonts" />
+
+                        <CheckBox
+                            android:id="@+id/chk_icons"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/icons" />
+
+                        <CheckBox
+                            android:id="@+id/chk_boot_anims"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/boot_anims" />
+
+                        <CheckBox
+                            android:id="@+id/chk_ringtones"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ringtones" />
+
+                        <CheckBox
+                            android:id="@+id/chk_notifications"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/notifications" />
+
+                        <CheckBox
+                            android:id="@+id/chk_alarms"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/alarms" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/details_applied"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/wallpapers" />
+                        android:orientation="vertical"
+                        android:paddingTop="6dp">
 
-                    <CheckBox
-                        android:id="@+id/chk_lockscreen"
+                    <TextView
+                        android:id="@+id/title_applied"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/lock_screen" />
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@id/details"
+                        android:layout_marginBottom="6dp"
+                        android:text="@string/applied"
+                        android:textSize="18sp" />
 
-                    <CheckBox
-                        android:id="@+id/chk_fonts"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/fonts" />
-
-                    <CheckBox
-                        android:id="@+id/chk_icons"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/icons" />
-
-                    <CheckBox
-                        android:id="@+id/chk_boot_anims"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/boot_anims" />
-
-                    <CheckBox
-                        android:id="@+id/chk_ringtones"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/ringtones" />
-
-                    <CheckBox
-                        android:id="@+id/chk_notifications"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/notifications" />
-
-                    <CheckBox
-                        android:id="@+id/chk_alarms"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/alarms" />
+                    </LinearLayout>
                 </LinearLayout>
+
             </ScrollView>
         </RelativeLayout>
     </com.sothree.slidinguppanel.SlidingupPanelLayout>
