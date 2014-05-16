@@ -19,7 +19,7 @@
     <string name="app_name">Themes</string>
 
     <!-- Themable items -->
-    <string name="lock_screen">Lock screen</string>
+    <string name="lock_screen">Lock wallpapers</string>
     <string name="icons">Icons</string>
     <string name="fonts">Fonts</string>
     <string name="wallpapers">Wallpapers</string>
