@@ -333,7 +333,8 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         int lockIdx = cursor.getColumnIndex(ThemesColumns.LOCKSCREEN_URI);
 
         boolean isLegacyTheme = cursor.getInt(legacyIdx) == 1;
-        String title = cursor.getString(titleIdx);
+        String title = ChooserBrowseFragment.DEFAULT.equals(mPkgName)
+                ? getActivity().getString(R.string.holo_default) : cursor.getString(titleIdx);
         String author = cursor.getString(authorIdx);
         String hsImagePath = isLegacyTheme ? mPkgName : cursor.getString(hsIdx);
         String styleImagePath = cursor.getString(styleIdx);
