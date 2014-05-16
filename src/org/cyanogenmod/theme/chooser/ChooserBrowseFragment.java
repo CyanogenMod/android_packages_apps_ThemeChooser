@@ -60,6 +60,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class ChooserBrowseFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    public static final String DEFAULT = "default";
+
     public ListView mListView;
     public LocalPagerAdapter mAdapter;
     public ArrayList<String> mComponentFilters;
@@ -142,10 +144,12 @@ public class ChooserBrowseFragment extends Fragment implements LoaderManager.Loa
 
     public class LocalPagerAdapter extends CursorAdapter {
         List<String> mFilters;
+        Context mContext;
 
         public LocalPagerAdapter(Context context, Cursor c, List<String> filters) {
             super(context, c, 0);
             mFilters = filters;
+            mContext = context;
         }
 
         @Override
@@ -166,10 +170,11 @@ public class ChooserBrowseFragment extends Fragment implements LoaderManager.Loa
             int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
             int legacyIndex = mCursor.getColumnIndex(ThemesColumns.IS_LEGACY_THEME);
 
-            String title = mCursor.getString(titleIdx);
-            String author = mCursor.getString(authorIdx);
             String pkgName = mCursor.getString(pkgIdx);
-            String hsImagePath = "default".equals(pkgName) ? mCursor.getString(hsIdx) :
+            String title = DEFAULT.equals(pkgName) ? mContext.getString(R.string.holo_default)
+                    : mCursor.getString(titleIdx);
+            String author = mCursor.getString(authorIdx);
+            String hsImagePath = DEFAULT.equals(pkgName) ? mCursor.getString(hsIdx) :
                     mCursor.getString(wpIdx);
             String styleImagePath = mCursor.getString(styleIdx);
             boolean isLegacyTheme = mCursor.getInt(legacyIndex) == 1;
@@ -331,7 +336,7 @@ public class ChooserBrowseFragment extends Fragment implements LoaderManager.Loa
         protected Bitmap doInBackground(Object... params) {
             Bitmap bitmap = null;
             if (!isLegacyTheme) {
-                if ("default".equals(pkgName)) {
+                if (DEFAULT.equals(pkgName)) {
                     Resources res = getActivity().getResources();
                     AssetManager assets = new AssetManager();
                     assets.addAssetPath(WallpaperAndIconPreviewFragment.FRAMEWORK_RES);
