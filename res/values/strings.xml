@@ -29,7 +29,8 @@
     <string name="alarms">Alarms</string>
     <string name="style">Style</string>
 
-    <string name="holo_default">Holo (Default)</string>
+    <string name="holo">Holo</string>
+    <string name="default_tag">(Default)</string>
 
     <string name="apply">Apply</string>
     <string name="applying">Applying</string>

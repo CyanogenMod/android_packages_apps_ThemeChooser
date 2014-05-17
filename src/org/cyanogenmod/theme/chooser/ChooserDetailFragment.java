@@ -331,16 +331,18 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         int legacyIdx = cursor.getColumnIndex(ThemesColumns.IS_LEGACY_THEME);
         int styleIdx = cursor.getColumnIndex(ThemesColumns.STYLE_URI);
         int lockIdx = cursor.getColumnIndex(ThemesColumns.LOCKSCREEN_URI);
+        int defaultIdx = cursor.getColumnIndex(ThemesColumns.IS_DEFAULT_THEME);
 
         boolean isLegacyTheme = cursor.getInt(legacyIdx) == 1;
+        boolean isDefaultTheme = cursor.getInt(defaultIdx) == 1;
         String title = ChooserBrowseFragment.DEFAULT.equals(mPkgName)
-                ? getActivity().getString(R.string.holo_default) : cursor.getString(titleIdx);
+                ? getActivity().getString(R.string.holo) : cursor.getString(titleIdx);
         String author = cursor.getString(authorIdx);
         String hsImagePath = isLegacyTheme ? mPkgName : cursor.getString(hsIdx);
         String styleImagePath = cursor.getString(styleIdx);
         String lockWallpaperImagePath = cursor.getString(lockIdx);
 
-        mTitle.setText(title);
+        mTitle.setText(title + (isDefaultTheme ? " " + getString(R.string.default_tag) : ""));
         mAuthor.setText(author);
 
         // Configure checkboxes for all the theme components
