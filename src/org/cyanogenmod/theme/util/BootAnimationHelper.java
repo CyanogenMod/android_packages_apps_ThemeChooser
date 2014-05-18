@@ -136,7 +136,7 @@ public class BootAnimationHelper {
         List<AnimationPart> animationParts = new ArrayList<AnimationPart>();
         while ((line = reader.readLine()) != null) {
             String[] info = line.split(" ");
-            if (info.length == 4 && info[0].equals("p")) {
+            if (info.length == 4 && (info[0].equals("p") || info[0].equals("c"))) {
                 int playCount = Integer.parseInt(info[1]);
                 int pause = Integer.parseInt(info[2]);
                 String name = info[3];

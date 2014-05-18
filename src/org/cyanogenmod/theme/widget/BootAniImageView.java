@@ -80,11 +80,7 @@ public class BootAniImageView extends ImageView {
             return false;
         }
 
-        // pre-allocate bitmap buffers
         final BootAnimationHelper.AnimationPart part = mAnimationParts.get(0);
-        for (int i = 0; i < mBuffers.length; i++) {
-            mBuffers[i] = Bitmap.createBitmap(part.width, part.height, Bitmap.Config.RGB_565);
-        }
         mCurrentPart = 0;
         mCurrentPartPlayCount = part.playCount;
         mFrameDuration = part.frameRateMillis;
@@ -95,28 +91,27 @@ public class BootAniImageView extends ImageView {
     }
 
     private void getNextFrame() {
-        synchronized (mBuffers[mWriteBufferIndex]) {
-            BitmapFactory.Options opts = new BitmapFactory.Options();
-            opts.inBitmap = mBuffers[mWriteBufferIndex];
-            opts.inPreferredConfig = Bitmap.Config.RGB_565;
-            final BootAnimationHelper.AnimationPart part = mAnimationParts.get(mCurrentPart);
-            try {
-                BitmapFactory.decodeStream(mBootAniZip.getInputStream(mBootAniZip.getEntry(
-                        part.frames.get(mCurrentFrame++))), null, opts);
-            } catch (Exception e) {
-                Log.w(TAG, "Unable to get next frame", e);
-            }
-            mWriteBufferIndex = (mWriteBufferIndex + 1) % MAX_BUFFERS;
-            if (mCurrentFrame >= part.frames.size()) {
-                if (mCurrentPartPlayCount > 0) {
-                    if (--mCurrentPartPlayCount == 0) {
-                        mCurrentPart++;
-                        mCurrentFrame = 0;
-                        mCurrentPartPlayCount = mAnimationParts.get(mCurrentPart).playCount;
-                    }
-                } else {
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inBitmap = mBuffers[mWriteBufferIndex];
+        opts.inPreferredConfig = Bitmap.Config.RGB_565;
+        final BootAnimationHelper.AnimationPart part = mAnimationParts.get(mCurrentPart);
+        try {
+            mBuffers[mWriteBufferIndex] =
+                    BitmapFactory.decodeStream(mBootAniZip.getInputStream(mBootAniZip.getEntry(
+                            part.frames.get(mCurrentFrame++))), null, opts);
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to get next frame", e);
+        }
+        mWriteBufferIndex = (mWriteBufferIndex + 1) % MAX_BUFFERS;
+        if (mCurrentFrame >= part.frames.size()) {
+            if (mCurrentPartPlayCount > 0) {
+                if (--mCurrentPartPlayCount == 0) {
+                    mCurrentPart++;
                     mCurrentFrame = 0;
+                    mCurrentPartPlayCount = mAnimationParts.get(mCurrentPart).playCount;
                 }
+            } else {
+                mCurrentFrame = 0;
             }
         }
     }
@@ -130,12 +125,10 @@ public class BootAniImageView extends ImageView {
         @Override
         public void run() {
             if (!mActive) return;
-            synchronized (mBuffers[mReadBufferIndex]) {
-                BootAniImageView.this.postDelayed(mUpdateAnimationRunnable, mFrameDuration);
-                BootAniImageView.this.post(mUpdateImageRunnable);
-                mReadBufferIndex = (mReadBufferIndex + 1) % MAX_BUFFERS;
-                getNextFrame();
-            }
+            BootAniImageView.this.postDelayed(mUpdateAnimationRunnable, mFrameDuration);
+            BootAniImageView.this.post(mUpdateImageRunnable);
+            mReadBufferIndex = (mReadBufferIndex + 1) % MAX_BUFFERS;
+            getNextFrame();
         }
     };
 
