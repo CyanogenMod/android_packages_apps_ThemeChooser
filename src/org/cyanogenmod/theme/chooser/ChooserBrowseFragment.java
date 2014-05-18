@@ -18,6 +18,7 @@ package org.cyanogenmod.theme.chooser;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.res.CustomTheme;
 import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment.IconInfo;
 import org.cyanogenmod.theme.util.BootAnimationHelper;
 import org.cyanogenmod.theme.util.IconPreviewHelper;
@@ -60,7 +61,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class ChooserBrowseFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    public static final String DEFAULT = "default";
+    public static final String DEFAULT = CustomTheme.HOLO_DEFAULT;
 
     public ListView mListView;
     public LocalPagerAdapter mAdapter;
@@ -137,9 +138,12 @@ public class ChooserBrowseFragment extends Fragment implements LoaderManager.Loa
             selection = sb.toString();
         }
 
+        // sort in ascending order but make sure the "default" theme is always first
+        String sortOrder = "(" + ThemesColumns.IS_DEFAULT_THEME + "=1) DESC, "
+                + ThemesColumns.TITLE + " ASC";
+
         return new CursorLoader(getActivity(), ThemesColumns.CONTENT_URI, null, selection,
-                selectionArgs, "(" + ThemesColumns.PKG_NAME + "='default') DESC, "
-                + ThemesColumns.TITLE + " ASC");
+                selectionArgs, sortOrder);
     }
 
     public class LocalPagerAdapter extends CursorAdapter {
@@ -169,18 +173,21 @@ public class ChooserBrowseFragment extends Fragment implements LoaderManager.Loa
             int styleIdx = mCursor.getColumnIndex(ThemesColumns.STYLE_URI);
             int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
             int legacyIndex = mCursor.getColumnIndex(ThemesColumns.IS_LEGACY_THEME);
+            int defaultIndex = mCursor.getColumnIndex(ThemesColumns.IS_DEFAULT_THEME);
 
             String pkgName = mCursor.getString(pkgIdx);
-            String title = DEFAULT.equals(pkgName) ? mContext.getString(R.string.holo_default)
+            String title = DEFAULT.equals(pkgName) ? mContext.getString(R.string.holo)
                     : mCursor.getString(titleIdx);
             String author = mCursor.getString(authorIdx);
             String hsImagePath = DEFAULT.equals(pkgName) ? mCursor.getString(hsIdx) :
                     mCursor.getString(wpIdx);
             String styleImagePath = mCursor.getString(styleIdx);
             boolean isLegacyTheme = mCursor.getInt(legacyIndex) == 1;
+            boolean isDefaultTheme = mCursor.getInt(defaultIndex) == 1;
 
             ThemeItemHolder item = (ThemeItemHolder) view.getTag();
-            item.title.setText(title);
+            item.title.setText(title + (isDefaultTheme ? " "
+                    + getString(R.string.default_tag) : ""));
             item.author.setText(author);
             if (mFilters.isEmpty()) {
                 bindDefaultView(item, pkgName, hsImagePath, isLegacyTheme);
