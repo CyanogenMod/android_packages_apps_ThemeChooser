@@ -101,6 +101,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private boolean mLoadInitialCheckboxStates = true;
     private SparseArray<Boolean> mInitialCheckboxStates = new SparseArray<Boolean>();
     private SparseArray<Boolean> mCurrentCheckboxStates = new SparseArray<Boolean>();
+    private SparseArray<Boolean> mSavedCheckboxStates = new SparseArray<Boolean>();
 
     // allows emphasis on a particular aspect of a theme. ex "mods_icons" would
     // uncheck all components but icons and sets the first preview image to be the icon pack
@@ -187,12 +188,26 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             CheckBox componentCheckbox = (CheckBox) v.findViewById(entry.getValue());
             mComponentToCheckbox.put(entry.getKey(), componentCheckbox);
             componentCheckbox.setOnCheckedChangeListener(mComponentCheckChangedListener);
+            if (savedInstanceState != null) {
+                mSavedCheckboxStates.put(entry.getValue(),
+                        savedInstanceState.getBoolean(entry.getKey()));
+            }
         }
 
         getLoaderManager().initLoader(LOADER_ID_THEME_INFO, null, this);
         getLoaderManager().initLoader(LOADER_ID_APPLIED_THEME, null, this);
         mService = (ThemeManager) getActivity().getSystemService(Context.THEME_SERVICE);
         return v;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        for (Map.Entry<String, CheckBox> entry : mComponentToCheckbox.entrySet()) {
+            String component = entry.getKey();
+            CheckBox checkBox = entry.getValue();
+            outState.putBoolean(component, checkBox.isChecked());
+        }
     }
 
     private List<String> getCheckedComponents() {
@@ -421,7 +436,13 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             CheckBox componentCheckbox = entry.getValue();
 
             if (appliedComponents.contains(componentName)) {
-                componentCheckbox.setChecked(true);
+                if (mSavedCheckboxStates.size() > 0 &&
+                        mSavedCheckboxStates.get(componentCheckbox.getId()) != null) {
+                    componentCheckbox.setChecked(mSavedCheckboxStates.get(
+                            componentCheckbox.getId()));
+                } else {
+                    componentCheckbox.setChecked(true);
+                }
             }
             if (mLoadInitialCheckboxStates) {
                 mInitialCheckboxStates.put(componentCheckbox.getId(),
