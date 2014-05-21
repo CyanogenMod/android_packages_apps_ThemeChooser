@@ -18,11 +18,13 @@ package org.cyanogenmod.theme.chooser;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import android.app.ActionBar;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import org.cyanogenmod.theme.util.NotificationHelper;
+import android.view.MenuItem;
 
 public class ChooserActivity extends FragmentActivity {
     public static final String TAG = ChooserActivity.class.getName();
@@ -35,13 +37,19 @@ public class ChooserActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
         NotificationHijackingService.ensureEnabled(this);
 
+        ActionBar mActionBar = getActionBar();
+        if (mActionBar != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         if (savedInstanceState == null) {
             //Determine if there we need to filter by component (ex icon sets only)
-            Bundle extras = (Bundle) getIntent().getExtras();
+            final Intent intent = getIntent();
+            Bundle extras = (Bundle) intent.getExtras();
             String filter = (extras == null) ? null : extras.getString(EXTRA_COMPONENT_FILTER);
 
             // If activity started by wallpaper chooser then filter on wallpapers
-            if (Intent.ACTION_SET_WALLPAPER.equals(getIntent().getAction())) {
+            if (Intent.ACTION_SET_WALLPAPER.equals(intent.getAction())) {
                 filter = "mods_homescreen";
             }
 
@@ -54,17 +62,33 @@ public class ChooserActivity extends FragmentActivity {
             }
 
             Fragment fragment = null;
-            if (Intent.ACTION_MAIN.equals(getIntent().getAction()) &&
-                    getIntent().hasExtra(EXTRA_PKGNAME)) {
+            if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
+                    intent.hasExtra(EXTRA_PKGNAME)) {
+                String pkgName = intent.getStringExtra(EXTRA_PKGNAME);
+                fragment = ChooserDetailFragment.newInstance(pkgName, null);
                 // Handle case where Theme Store or some other app wishes to open
                 // a detailed theme view for a given package
-                // TODO: Handle if a bad pkg is provided
-                String pkgName = getIntent().getStringExtra(EXTRA_PKGNAME);
-                fragment = ChooserDetailFragment.newInstance(pkgName, null);
+                try {
+                    final PackageManager pm = getPackageManager();
+                    if (pm.getPackageInfo(pkgName, 0) == null) {
+                        fragment = ChooserBrowseFragment.newInstance(filtersList);
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    fragment = ChooserBrowseFragment.newInstance(filtersList);
+                }
             } else {
                 fragment = ChooserBrowseFragment.newInstance(filtersList);
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, "ChooserBrowseFragment").commit();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return false;
     }
 }

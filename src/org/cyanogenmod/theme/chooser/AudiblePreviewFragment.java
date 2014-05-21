@@ -21,6 +21,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ThemeUtils;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.content.res.CustomTheme;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.os.Bundle;
@@ -151,7 +152,7 @@ public class AudiblePreviewFragment extends Fragment {
 
     private void loadAudibles() {
         mContent.removeAllViews();
-        if ("default".equals(mPkgName)) {
+        if (CustomTheme.HOLO_DEFAULT.equals(mPkgName)) {
             loadSystemAudible(RingtoneManager.TYPE_ALARM);
             loadSystemAudible(RingtoneManager.TYPE_NOTIFICATION);
             loadSystemAudible(RingtoneManager.TYPE_RINGTONE);

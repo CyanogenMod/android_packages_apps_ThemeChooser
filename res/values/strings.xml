@@ -19,7 +19,7 @@
     <string name="app_name">Themes</string>
 
     <!-- Themable items -->
-    <string name="lock_screen">Lock screen</string>
+    <string name="lock_screen">Lock wallpapers</string>
     <string name="icons">Icons</string>
     <string name="fonts">Fonts</string>
     <string name="wallpapers">Wallpapers</string>
@@ -29,8 +29,11 @@
     <string name="alarms">Alarms</string>
     <string name="style">Style</string>
 
+    <string name="holo" translatable="false">Holo</string>
+    <string name="default_tag">(Default)</string>
+
     <string name="apply">Apply</string>
-    <string name="applying">Applying</string>
+    <string name="applying">Applying\u2026</string>
     <string name="remove">Remove</string>
     <string name="update">Update</string>
 

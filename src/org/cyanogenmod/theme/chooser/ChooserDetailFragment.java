@@ -46,7 +46,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
-import com.sothree.slidinguppanel.SlidingupPanelLayout;
+
+import com.viewpagerindicator.CirclePageIndicator;
+import org.cyanogenmod.theme.util.ChooserDetailScrollView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,13 +64,35 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private static final int LOADER_ID_THEME_INFO = 0;
     private static final int LOADER_ID_APPLIED_THEME = 1;
 
+    // Drawer States
+    private static final int DRAWER_CLOSED = 0;
+    private static final int DRAWER_PARTIALLY_OPEN = 1;
+    private static final int DRAWER_MOSTLY_OPEN = 2;
+    private static final int DRAWER_OPEN = 3;
+
+    // Threshold values in "percentage scrolled" to determine what state the drawer is in
+    // ex: User opens up the drawer a little bit, taking up 10% of the visible space. The
+    // drawer is now considered partially open
+    // because CLOSED_THRESHOLD < 10% < PARTIAL_OPEN_THRESHOLD
+    private static final int DRAWER_CLOSED_THRESHOLD = 5;
+    private static final int DRAWER_PARTIALLY_OPEN_THRESHOLD = 25;
+    private static final int DRAWER_MOSTLY_OPEN_THRESHOLD = 90;
+    private static final int DRAWER_OPEN_THRESHOLD = 100;
+
+    // Where to scroll when moving to a new state
+    private static final int DRAWER_CLOSED_SCROLL_AMOUNT = 0;
+    private static final int DRAWER_PARTIALLY_OPEN_AMOUNT = 25;
+    private static final int DRAWER_MOSTLY_OPEN_AMOUNT = 75;
+    private static final int DRAWER_FULLY_OPEN_AMOUNT = 100;
+
     private TextView mTitle;
     private TextView mAuthor;
     private Button mApply;
     private ViewPager mPager;
     private ThemeDetailPagerAdapter mPagerAdapter;
     private String mPkgName;
-    private SlidingupPanelLayout mSlidingPanel;
+    private ChooserDetailScrollView mSlidingPanel;
+    private CirclePageIndicator mIndicator;
 
     private Handler mHandler;
     private Cursor mAppliedThemeCursor;
@@ -77,6 +101,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private boolean mLoadInitialCheckboxStates = true;
     private SparseArray<Boolean> mInitialCheckboxStates = new SparseArray<Boolean>();
     private SparseArray<Boolean> mCurrentCheckboxStates = new SparseArray<Boolean>();
+    private SparseArray<Boolean> mSavedCheckboxStates = new SparseArray<Boolean>();
 
     // allows emphasis on a particular aspect of a theme. ex "mods_icons" would
     // uncheck all components but icons and sets the first preview image to be the icon pack
@@ -119,11 +144,35 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         View v = inflater.inflate(R.layout.fragment_chooser_theme_pager_item, container, false);
         mTitle = (TextView) v.findViewById(R.id.title);
         mAuthor = (TextView) v.findViewById(R.id.author);
+
         mPager = (ViewPager) v.findViewById(R.id.pager);
+        mPager.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int state = getDrawerState();
+                switch(state) {
+                    case DRAWER_CLOSED:
+                        smoothScrollDrawerTo(DRAWER_PARTIALLY_OPEN);
+                        break;
+                    case DRAWER_PARTIALLY_OPEN:
+                    case DRAWER_MOSTLY_OPEN:
+                        smoothScrollDrawerTo(DRAWER_OPEN);
+                        break;
+                    case DRAWER_OPEN:
+                        smoothScrollDrawerTo(DRAWER_CLOSED);
+                        break;
+                }
+            }
+        });
+
         mPagerAdapter = new ThemeDetailPagerAdapter(getChildFragmentManager());
         mPager.setAdapter(mPagerAdapter);
-        mApply = (Button) v.findViewById(R.id.apply);
 
+
+        mIndicator = (CirclePageIndicator) v.findViewById(R.id.titles);
+        mIndicator.setViewPager(mPager);
+
+        mApply = (Button) v.findViewById(R.id.apply);
         mApply.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
                 List<String> components = getCheckedComponents();
@@ -132,13 +181,17 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             }
         });
 
-        mSlidingPanel = (SlidingupPanelLayout) v.findViewById(R.id.sliding_layout);
+        mSlidingPanel = (ChooserDetailScrollView) v.findViewById(R.id.sliding_layout);
 
         // Find all the checkboxes for theme components (ex wallpaper)
         for (Map.Entry<String, Integer> entry : sComponentToId.entrySet()) {
             CheckBox componentCheckbox = (CheckBox) v.findViewById(entry.getValue());
             mComponentToCheckbox.put(entry.getKey(), componentCheckbox);
             componentCheckbox.setOnCheckedChangeListener(mComponentCheckChangedListener);
+            if (savedInstanceState != null) {
+                mSavedCheckboxStates.put(entry.getValue(),
+                        savedInstanceState.getBoolean(entry.getKey()));
+            }
         }
 
         getLoaderManager().initLoader(LOADER_ID_THEME_INFO, null, this);
@@ -147,13 +200,23 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         return v;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        for (Map.Entry<String, CheckBox> entry : mComponentToCheckbox.entrySet()) {
+            String component = entry.getKey();
+            CheckBox checkBox = entry.getValue();
+            outState.putBoolean(component, checkBox.isChecked());
+        }
+    }
+
     private List<String> getCheckedComponents() {
         // Get all checked components
         List<String> components = new ArrayList<String>();
         for (Map.Entry<String, CheckBox> entry : mComponentToCheckbox.entrySet()) {
             String component = entry.getKey();
             CheckBox checkbox = entry.getValue();
-            if (checkbox.isChecked()) {
+            if (checkbox.isEnabled() && checkbox.isChecked()) {
                 components.add(component);
             }
         }
@@ -194,7 +257,9 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private Runnable mShowSlidingPanelRunnable = new Runnable() {
         @Override
         public void run() {
-            mSlidingPanel.expandPane(mSlidingPanel.getAnchorPoint());
+            // Arbitrarily scroll a bit at the start
+            int height = mSlidingPanel.getHeight() / 4;
+            mSlidingPanel.smoothScrollTo(0, height);
         }
     };
 
@@ -280,13 +345,19 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         int hsIdx = cursor.getColumnIndex(ThemesColumns.HOMESCREEN_URI);
         int legacyIdx = cursor.getColumnIndex(ThemesColumns.IS_LEGACY_THEME);
         int styleIdx = cursor.getColumnIndex(ThemesColumns.STYLE_URI);
+        int lockIdx = cursor.getColumnIndex(ThemesColumns.LOCKSCREEN_URI);
+        int defaultIdx = cursor.getColumnIndex(ThemesColumns.IS_DEFAULT_THEME);
+
         boolean isLegacyTheme = cursor.getInt(legacyIdx) == 1;
-        String title = cursor.getString(titleIdx);
+        boolean isDefaultTheme = cursor.getInt(defaultIdx) == 1;
+        String title = ChooserBrowseFragment.DEFAULT.equals(mPkgName)
+                ? getActivity().getString(R.string.holo) : cursor.getString(titleIdx);
         String author = cursor.getString(authorIdx);
         String hsImagePath = isLegacyTheme ? mPkgName : cursor.getString(hsIdx);
         String styleImagePath = cursor.getString(styleIdx);
+        String lockWallpaperImagePath = cursor.getString(lockIdx);
 
-        mTitle.setText(title);
+        mTitle.setText(title + (isDefaultTheme ? " " + getString(R.string.default_tag) : ""));
         mAuthor.setText(author);
 
         // Configure checkboxes for all the theme components
@@ -315,6 +386,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
         mPagerAdapter.setPreviewImage(hsImagePath, isLegacyTheme);
         mPagerAdapter.setStyleImage(styleImagePath);
+        mPagerAdapter.setLockScreenImage(lockWallpaperImagePath);
         mPagerAdapter.update(supportedComponents);
     }
 
@@ -364,7 +436,13 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             CheckBox componentCheckbox = entry.getValue();
 
             if (appliedComponents.contains(componentName)) {
-                componentCheckbox.setChecked(true);
+                if (mSavedCheckboxStates.size() > 0 &&
+                        mSavedCheckboxStates.get(componentCheckbox.getId()) != null) {
+                    componentCheckbox.setChecked(mSavedCheckboxStates.get(
+                            componentCheckbox.getId()));
+                } else {
+                    componentCheckbox.setChecked(true);
+                }
             }
             if (mLoadInitialCheckboxStates) {
                 mInitialCheckboxStates.put(componentCheckbox.getId(),
@@ -430,6 +508,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         private List<String> mSupportedComponents = Collections.emptyList();
         private String mPreviewImagePath;
         private boolean mIsLegacyTheme;
+        private String mLockScreenImagePath;
         private String mStyleImagePath;
 
         public ThemeDetailPagerAdapter(FragmentManager fm) {
@@ -443,6 +522,10 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
         public void setStyleImage(String imagePath) {
             mStyleImagePath = imagePath;
+        }
+
+        public void setLockScreenImage(String lockPath) {
+            mLockScreenImagePath = lockPath;
         }
 
         private void update(List<String> supportedComponents) {
@@ -462,9 +545,6 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
                     mSupportedComponents.contains(ThemesColumns.MODIFIES_ICONS)) {
                 mPreviewList.remove(ThemesColumns.MODIFIES_ICONS);
             }
-
-            //TODO: We don't have previewing for all the components yet. Remove these lines when we do.
-            mPreviewList.remove(ThemesColumns.MODIFIES_LOCKSCREEN);
 
             // The AudiblePreviewFragment will take care of loading all available
             // audibles so remove all but one so only one fragment instance is created
@@ -490,19 +570,23 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
             if (component.equals(ThemesColumns.MODIFIES_LAUNCHER)) {
                 boolean showIcons = mSupportedComponents.contains(ThemesColumns.MODIFIES_ICONS);
-                fragment = WallpaperAndIconPreviewFragment.newInstance(mPreviewImagePath, mPkgName, mIsLegacyTheme, showIcons);
-            } else if(component.equals(ThemesColumns.MODIFIES_OVERLAYS)) {
-                fragment = WallpaperAndIconPreviewFragment.newInstance(mStyleImagePath, mPkgName, mIsLegacyTheme, false);
+                fragment = WallpaperAndIconPreviewFragment.newInstance(mPreviewImagePath, mPkgName,
+                        mIsLegacyTheme, showIcons);
+            } else if (component.equals(ThemesColumns.MODIFIES_OVERLAYS)) {
+                fragment = WallpaperAndIconPreviewFragment.newInstance(mStyleImagePath, mPkgName,
+                        mIsLegacyTheme, false);
             } else if (component.equals(ThemesColumns.MODIFIES_BOOT_ANIM)) {
                 fragment = BootAniPreviewFragment.newInstance(mPkgName);
             } else if (component.equals(ThemesColumns.MODIFIES_FONTS)) {
                 fragment = FontPreviewFragment.newInstance(mPkgName);
             } else if (component.equals(ThemesColumns.MODIFIES_LOCKSCREEN)) {
-                throw new UnsupportedOperationException("Not implemented yet!");
+                fragment = WallpaperAndIconPreviewFragment.newInstance(mLockScreenImagePath,
+                        mPkgName, mIsLegacyTheme, false);
             } else if (component.equals(ThemesColumns.MODIFIES_LAUNCHER)) {
                 throw new UnsupportedOperationException("Not implemented yet!");
             } else if (component.equals(ThemesColumns.MODIFIES_ICONS)) {
-                fragment = WallpaperAndIconPreviewFragment.newInstance(mPreviewImagePath, mPkgName, mIsLegacyTheme, mSupportedComponents.contains(ThemesColumns.MODIFIES_ICONS));
+                fragment = WallpaperAndIconPreviewFragment.newInstance(mPreviewImagePath, mPkgName,
+                        mIsLegacyTheme, mSupportedComponents.contains(ThemesColumns.MODIFIES_ICONS));
             } else if (component.equals(ThemesColumns.MODIFIES_ALARMS)
                     || component.equals(ThemesColumns.MODIFIES_NOTIFICATIONS)
                     || component.equals(ThemesColumns.MODIFIES_RINGTONES)) {
@@ -512,5 +596,55 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             }
             return fragment;
         }
+    }
+
+    private void smoothScrollDrawerTo(int drawerState) {
+        int scrollPercentage = 0;
+        switch(drawerState) {
+            case DRAWER_CLOSED:
+                scrollPercentage = DRAWER_CLOSED_SCROLL_AMOUNT;
+                break;
+            case DRAWER_PARTIALLY_OPEN:
+                scrollPercentage = DRAWER_PARTIALLY_OPEN_AMOUNT;
+                break;
+            case DRAWER_MOSTLY_OPEN:
+                scrollPercentage = DRAWER_MOSTLY_OPEN_AMOUNT;
+                break;
+            case DRAWER_OPEN:
+                scrollPercentage = DRAWER_FULLY_OPEN_AMOUNT;
+                break;
+            default:
+                throw new IllegalArgumentException("Bad drawer state: " + drawerState);
+        }
+
+        int visibleHeight = mSlidingPanel.getHeight();
+        View handle = mSlidingPanel.getHandle();
+        visibleHeight -= handle.getHeight();
+
+        int scrollY = scrollPercentage * visibleHeight / 100;
+        mSlidingPanel.smoothScrollTo(0, scrollY);
+    }
+
+    private int getDrawerState() {
+        // Scroll between 3 different heights when pager is clicked
+        int visibleHeight = mSlidingPanel.getHeight();
+        View handle = mSlidingPanel.getHandle();
+        visibleHeight -= handle.getHeight();
+        int scrollY = mSlidingPanel.getScrollY();
+        int percentageScrolled = (scrollY * 100) / (visibleHeight);
+
+        //Check if we are bottom of scroll
+        View view = (View) mSlidingPanel.getChildAt(0);
+        boolean isAtBottom = (view.getBottom() - (mSlidingPanel.getHeight() + scrollY)) == 0;
+
+        if (percentageScrolled < DRAWER_CLOSED_THRESHOLD && !isAtBottom) {
+            return DRAWER_CLOSED;
+        } else if (percentageScrolled < DRAWER_PARTIALLY_OPEN_THRESHOLD && !isAtBottom) {
+            return DRAWER_PARTIALLY_OPEN;
+        } else if (percentageScrolled < DRAWER_MOSTLY_OPEN_THRESHOLD && !isAtBottom) {
+            return DRAWER_MOSTLY_OPEN;
+        }
+
+        return DRAWER_OPEN;
     }
 }
