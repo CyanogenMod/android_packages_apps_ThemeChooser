@@ -43,44 +43,53 @@ public class ChooserActivity extends FragmentActivity {
         }
 
         if (savedInstanceState == null) {
-            //Determine if there we need to filter by component (ex icon sets only)
-            final Intent intent = getIntent();
-            Bundle extras = (Bundle) intent.getExtras();
-            String filter = (extras == null) ? null : extras.getString(EXTRA_COMPONENT_FILTER);
+            handleIntent(getIntent());
+        }
+    }
 
-            // If activity started by wallpaper chooser then filter on wallpapers
-            if (Intent.ACTION_SET_WALLPAPER.equals(intent.getAction())) {
-                filter = "mods_homescreen";
-            }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
 
-            // Support filters passed in as csv. Since XML prefs do not support
-            // passing extras in as arrays.
-            ArrayList<String> filtersList = new ArrayList<String>();
-            if (filter != null) {
-                String[] filters = filter.split(",");
-                filtersList.addAll(Arrays.asList(filters));
-            }
+    private void handleIntent(final Intent intent) {
+        //Determine if there we need to filter by component (ex icon sets only)
+        Bundle extras = intent.getExtras();
+        String filter = (extras == null) ? null : extras.getString(EXTRA_COMPONENT_FILTER);
 
-            Fragment fragment = null;
-            if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
-                    intent.hasExtra(EXTRA_PKGNAME)) {
-                String pkgName = intent.getStringExtra(EXTRA_PKGNAME);
-                fragment = ChooserDetailFragment.newInstance(pkgName, null);
-                // Handle case where Theme Store or some other app wishes to open
-                // a detailed theme view for a given package
-                try {
-                    final PackageManager pm = getPackageManager();
-                    if (pm.getPackageInfo(pkgName, 0) == null) {
-                        fragment = ChooserBrowseFragment.newInstance(filtersList);
-                    }
-                } catch (PackageManager.NameNotFoundException e) {
+        // If activity started by wallpaper chooser then filter on wallpapers
+        if (Intent.ACTION_SET_WALLPAPER.equals(intent.getAction())) {
+            filter = "mods_homescreen";
+        }
+
+        // Support filters passed in as csv. Since XML prefs do not support
+        // passing extras in as arrays.
+        ArrayList<String> filtersList = new ArrayList<String>();
+        if (filter != null) {
+            String[] filters = filter.split(",");
+            filtersList.addAll(Arrays.asList(filters));
+        }
+
+        Fragment fragment = null;
+        if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasExtra(EXTRA_PKGNAME)) {
+            String pkgName = intent.getStringExtra(EXTRA_PKGNAME);
+            fragment = ChooserDetailFragment.newInstance(pkgName, null);
+            // Handle case where Theme Store or some other app wishes to open
+            // a detailed theme view for a given package
+            try {
+                final PackageManager pm = getPackageManager();
+                if (pm.getPackageInfo(pkgName, 0) == null) {
                     fragment = ChooserBrowseFragment.newInstance(filtersList);
                 }
-            } else {
+            } catch (PackageManager.NameNotFoundException e) {
                 fragment = ChooserBrowseFragment.newInstance(filtersList);
             }
-            getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, "ChooserBrowseFragment").commit();
+        } else {
+            fragment = ChooserBrowseFragment.newInstance(filtersList);
         }
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment,
+                "ChooserBrowseFragment").commit();
     }
 
     @Override
