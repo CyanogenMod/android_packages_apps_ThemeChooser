@@ -48,7 +48,8 @@ public class NotificationHelper {
         Intent intent = new Intent(context, ChooserActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
         intent.putExtra("pkgName", pkgName);
-        PendingIntent pi = PendingIntent.getActivity(context, 0, intent, 0);
+        PendingIntent pi = PendingIntent.getActivity(context, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_CANCEL_CURRENT);
 
         NotificationManager nm =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
