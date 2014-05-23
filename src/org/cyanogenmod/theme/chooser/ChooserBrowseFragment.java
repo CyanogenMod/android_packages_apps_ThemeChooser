@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.res.CustomTheme;
+
 import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment.IconInfo;
 import org.cyanogenmod.theme.util.BootAnimationHelper;
 import org.cyanogenmod.theme.util.IconPreviewHelper;
@@ -45,6 +46,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -60,7 +62,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class ChooserBrowseFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ChooserBrowseFragment extends Fragment
+        implements LoaderManager.LoaderCallbacks<Cursor> {
+    public static final String TAG = ChooserBrowseFragment.class.getCanonicalName();
     public static final String DEFAULT = CustomTheme.HOLO_DEFAULT;
 
     public ListView mListView;
@@ -342,9 +346,15 @@ public class ChooserBrowseFragment extends Fragment implements LoaderManager.Loa
         @Override
         protected Bitmap doInBackground(Object... params) {
             Bitmap bitmap = null;
+            Context context = getActivity();
+            if (context == null) {
+                Log.d(TAG, "Activity was detached, skipping loadImage");
+                return null;
+            }
+
             if (!isLegacyTheme) {
                 if (DEFAULT.equals(pkgName)) {
-                    Resources res = getActivity().getResources();
+                    Resources res = context.getResources();
                     AssetManager assets = new AssetManager();
                     assets.addAssetPath(WallpaperAndIconPreviewFragment.FRAMEWORK_RES);
                     Resources frameworkRes = new Resources(assets, res.getDisplayMetrics(),
@@ -354,9 +364,9 @@ public class ChooserBrowseFragment extends Fragment implements LoaderManager.Loa
                             mMaxImageSize.x, mMaxImageSize.y);
                 } else {
                     if (URLUtil.isAssetUrl(path)) {
-                        Context ctx = getActivity();
+                        Context ctx = context;
                         try {
-                            ctx = getActivity().createPackageContext(pkgName, 0);
+                            ctx = context.createPackageContext(pkgName, 0);
                         } catch (PackageManager.NameNotFoundException e) {
 
                         }
@@ -367,9 +377,9 @@ public class ChooserBrowseFragment extends Fragment implements LoaderManager.Loa
                 }
             } else {
                 try {
-                    PackageManager pm = getActivity().getPackageManager();
+                    PackageManager pm = context.getPackageManager();
                     PackageInfo pi = pm.getPackageInfo(path, 0);
-                    final Context themeContext = getActivity().createPackageContext(path,
+                    final Context themeContext = context.createPackageContext(path,
                             Context.CONTEXT_IGNORE_SECURITY);
                     final Resources res = themeContext.getResources();
                     final int resId = showWallpaper ? pi.legacyThemeInfos[0].wallpaperResourceId :
