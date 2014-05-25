@@ -17,7 +17,7 @@
 -->
 <resources>
   <string name="app_name">Temas</string>
-  <string name="lock_screen">Imagem do ecrã do bloqueio</string>
+  <string name="lock_screen">Imagem do ecrã de bloqueio</string>
   <string name="icons">Ícones</string>
   <string name="fonts">Tipos de letra</string>
   <string name="wallpapers">Papéis de parede</string>

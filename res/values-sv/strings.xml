@@ -27,6 +27,7 @@
   <string name="style">Stil</string>
   <string name="default_tag">(Standard)</string>
   <string name="apply">Verkställ</string>
+  <string name="applying">Tillämpar\u2026</string>
   <string name="remove">Ta bort</string>
   <string name="update">Uppdatera</string>
   <string name="alarm_label">Alarm</string>
