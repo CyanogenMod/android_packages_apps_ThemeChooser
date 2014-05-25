@@ -26,7 +26,9 @@
   <string name="notifications">התראות</string>
   <string name="alarms">שעונים מעוררים</string>
   <string name="style">סגנון</string>
+  <string name="default_tag">(ברירת מחדל)</string>
   <string name="apply">החל</string>
+  <string name="applying">מחיל\u2026</string>
   <string name="remove">הסר</string>
   <string name="update">עדכן</string>
   <string name="alarm_label">שעון מעורר</string>
