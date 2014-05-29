@@ -46,6 +46,7 @@ public class IconPreviewHelper {
     private Configuration mConfiguration;
     private int mIconDpi = 0;
     private String mThemePkgName;
+    private IconPackHelper mIconPackHelper;
 
     /**
      * @param themePkgName - The package name of the theme we wish to preview
@@ -57,6 +58,10 @@ public class IconPreviewHelper {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         mIconDpi = (int) (am.getLauncherLargeIconDensity() * ICON_SCALE_FACTOR);
         mThemePkgName = themePkgName;
+        mIconPackHelper = new IconPackHelper(mContext);
+        try {
+            mIconPackHelper.loadIconPack(mThemePkgName);
+        } catch (NameNotFoundException e) {}
     }
 
     /**
@@ -103,16 +108,11 @@ public class IconPreviewHelper {
 
     private Drawable getThemedIcon(String pkgName, String activityName) {
         Drawable drawable = null;
-        IconPackHelper iconHelper = new IconPackHelper(mContext);
-        try {
-            iconHelper.loadIconPack(mThemePkgName);
-            ActivityInfo info = new ActivityInfo();
-            info.packageName = pkgName;
-            info.name = activityName;
-            drawable = iconHelper.getDrawableForActivityWithDensity(info, mIconDpi);
-        } catch (NameNotFoundException e) {
-            Log.v(TAG, "Unable to load icon for " + pkgName + "/" + activityName);
-        }
+        ActivityInfo info = new ActivityInfo();
+        info.packageName = pkgName;
+        info.name = activityName;
+        drawable = mIconPackHelper.getDrawableForActivityWithDensity(info, mIconDpi);
+
         return drawable;
     }
 
