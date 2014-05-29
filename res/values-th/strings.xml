@@ -36,7 +36,7 @@
   <string name="ringtone_label">เสียง​เรียก​เข้า</string>
   <string name="unknown_author">ผู้สร้างที่ไม่รู้จัก</string>
   <string name="font_preview_letters">AaBbCcกขค123</string>
-  <string name="no_boot_animation_preview">ไม่มีภาพตัวอย่าง</string>
+  <string name="no_preview_available">ไม่มีภาพตัวอย่าง</string>
   <string name="theme_installed_notification_title">%s ติดตั้งแล้ว</string>
   <string name="theme_installed_notification_text">ติดตั้งชุดรูปแบบสำเร็จ</string>
 </resources>

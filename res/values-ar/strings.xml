@@ -36,7 +36,7 @@
   <string name="ringtone_label">نغمة رنين</string>
   <string name="unknown_author">مؤلف غير معروف</string>
   <string name="font_preview_letters">Aaابت123١٢٣</string>
-  <string name="no_boot_animation_preview">لا تتوفر أية معاينة</string>
+  <string name="no_preview_available">لا تتوفر أية معاينة</string>
   <string name="theme_installed_notification_title">%s مثبت</string>
   <string name="theme_installed_notification_text">موضوع مثبت بنجاح.</string>
 </resources>

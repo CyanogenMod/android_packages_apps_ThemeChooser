@@ -36,7 +36,7 @@
   <string name="ringtone_label">Melodija</string>
   <string name="unknown_author">Autorius nežinomas</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_boot_animation_preview">Peržiūra negalima</string>
+  <string name="no_preview_available">Peržiūra negalima</string>
   <string name="theme_installed_notification_title">%s įdiegta</string>
   <string name="theme_installed_notification_text">Tema sėkmingai įdiegta.</string>
 </resources>

@@ -36,7 +36,7 @@
   <string name="ringtone_label">Vyzváněcí tón</string>
   <string name="unknown_author">Neznámý autor</string>
   <string name="font_preview_letters">AaBbCcDd123 ěščřžýáíé</string>
-  <string name="no_boot_animation_preview">Náhled není dostupný</string>
+  <string name="no_preview_available">Náhled není dostupný</string>
   <string name="theme_installed_notification_title">%s instalováno</string>
   <string name="theme_installed_notification_text">Téma byla úspěšně nainstalováno.</string>
 </resources>

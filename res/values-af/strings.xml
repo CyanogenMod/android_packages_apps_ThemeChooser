@@ -36,7 +36,7 @@
   <string name="ringtone_label">Luitoon</string>
   <string name="unknown_author">Onbekende verskaffer</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_boot_animation_preview">Geen voorskou beskikbaar nie</string>
+  <string name="no_preview_available">Geen voorskou beskikbaar nie</string>
   <string name="theme_installed_notification_title">%s geïnstalleer</string>
   <string name="theme_installed_notification_text">Tema suksesvol geïnstalleer.</string>
 </resources>
