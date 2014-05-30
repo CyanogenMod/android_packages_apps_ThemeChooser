@@ -441,14 +441,15 @@ public class ChooserBrowseFragment extends Fragment
 
             mIconViewGroup.removeAllViews();
             for (IconInfo info : icons) {
-                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(0,
                         LayoutParams.WRAP_CONTENT);
+                lparams.weight = 1f / icons.size();
                 ImageView imageView = new ImageView(mContext);
                 int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                        8, mContext.getResources().getDisplayMetrics());
                 imageView.setPadding(padding, 0, padding, 0);
                 imageView.setLayoutParams(lparams);
-                imageView.setScaleType(ImageView.ScaleType.CENTER);
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 imageView.setImageDrawable(info.icon);
                 mIconViewGroup.addView(imageView);
             }
