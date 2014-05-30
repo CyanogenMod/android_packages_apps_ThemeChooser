@@ -20,7 +20,7 @@
   <string name="lock_screen">Imagem do ecrã de bloqueio</string>
   <string name="icons">Ícones</string>
   <string name="fonts">Tipos de letra</string>
-  <string name="wallpapers">Papéis de parede</string>
+  <string name="wallpapers">Imagens de fundo</string>
   <string name="boot_anims">Animações de inicialização</string>
   <string name="ringtones">Toques</string>
   <string name="notifications">Notificações</string>
