@@ -36,7 +36,7 @@
   <string name="ringtone_label">Tono de llamada</string>
   <string name="unknown_author">Autor desconocido</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_boot_animation_preview">Vista previa no disponible</string>
+  <string name="no_preview_available">Vista previa no disponible</string>
   <string name="theme_installed_notification_title">%s instalado</string>
   <string name="theme_installed_notification_text">Tema instalado correctamente.</string>
 </resources>

@@ -36,7 +36,7 @@
   <string name="ringtone_label">Sonnerie</string>
   <string name="unknown_author">Auteur inconnu</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_boot_animation_preview">Aucun aperçu disponible</string>
+  <string name="no_preview_available">Aucun aperçu disponible</string>
   <string name="theme_installed_notification_title">%s installé</string>
   <string name="theme_installed_notification_text">Thème installé avec succès.</string>
 </resources>

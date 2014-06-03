@@ -35,7 +35,7 @@
   <string name="ringtone_label">Ringsignal</string>
   <string name="unknown_author">Okänd upphovsman</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_boot_animation_preview">Ingen förhandsgranskning tillgänglig</string>
+  <string name="no_preview_available">Ingen förhandsgranskning tillgänglig</string>
   <string name="theme_installed_notification_title">%s installerad</string>
   <string name="theme_installed_notification_text">Temat installerades.</string>
 </resources>

@@ -36,7 +36,7 @@
   <string name="ringtone_label">Helin</string>
   <string name="unknown_author">Autor teadmata</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_boot_animation_preview">Eelvaade pole saadaval</string>
+  <string name="no_preview_available">Eelvaade pole saadaval</string>
   <string name="theme_installed_notification_title">%s installitud</string>
   <string name="theme_installed_notification_text">Teema edukalt installitud.</string>
 </resources>

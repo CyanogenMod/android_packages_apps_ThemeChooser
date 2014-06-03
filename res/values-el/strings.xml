@@ -36,7 +36,7 @@
   <string name="ringtone_label">Ήχος κλήσης</string>
   <string name="unknown_author">Άγνωστος συντάκτης</string>
   <string name="font_preview_letters">ΑαΒβΓγΔδ123</string>
-  <string name="no_boot_animation_preview">Δεν υπάρχει διαθέσιμη προεπισκόπηση</string>
+  <string name="no_preview_available">Δεν υπάρχει διαθέσιμη προεπισκόπηση</string>
   <string name="theme_installed_notification_title">%s εγκαταστάθηκε</string>
   <string name="theme_installed_notification_text">Το θέμα εγκαταστάθηκε με επιτυχία.</string>
 </resources>

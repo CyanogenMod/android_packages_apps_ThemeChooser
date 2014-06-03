@@ -91,6 +91,7 @@ public class WallpaperAndIconPreviewFragment extends Fragment
 
     private ImageView mImageView;
     private LinearLayout mIconContainer;
+    private TextView mNoPreview;
 
     static WallpaperAndIconPreviewFragment newInstance(String imageUrl, String pkgName, boolean isLegacyTheme, boolean hasIcons) {
         final WallpaperAndIconPreviewFragment f = new WallpaperAndIconPreviewFragment();
@@ -119,6 +120,7 @@ public class WallpaperAndIconPreviewFragment extends Fragment
         View view = inflater.inflate(R.layout.image_preview_item, container, false);
         mImageView = (ImageView) view.findViewById(R.id.image);
         mIconContainer = (LinearLayout) view.findViewById(R.id.icon_container);
+        mNoPreview = (TextView) view.findViewById(R.id.no_preview);
         return view;
     }
 
@@ -179,6 +181,9 @@ public class WallpaperAndIconPreviewFragment extends Fragment
         @Override
         public void onLoadFinished(Loader<Bitmap> loader, Bitmap result) {
             mImageView.setImageBitmap(result);
+            if (result == null && !mHasIcons) {
+                mNoPreview.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
