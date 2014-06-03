@@ -205,14 +205,15 @@ public class WallpaperAndIconPreviewFragment extends Fragment
 
             mIconContainer.removeAllViews();
             for (IconInfo info : infos) {
-                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(0,
                         LayoutParams.WRAP_CONTENT, 1f);
+                lparams.weight = 1f / infos.size();
                 TextView tv = new TextView(loader.getContext());
                 tv.setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
                 tv.setTextColor(Color.WHITE);
                 tv.setGravity(Gravity.CENTER_HORIZONTAL);
                 tv.setLayoutParams(lparams);
-                tv.setCompoundDrawablesWithIntrinsicBounds(null, info.icon, null, null);
+                tv.setCompoundDrawables(null, info.icon, null, null);
                 tv.setText(info.name);
 
                 mIconContainer.addView(tv);

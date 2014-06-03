@@ -47,6 +47,7 @@ public class IconPreviewHelper {
     private int mIconDpi = 0;
     private String mThemePkgName;
     private IconPackHelper mIconPackHelper;
+    private int mIconSize;
 
     /**
      * @param themePkgName - The package name of the theme we wish to preview
@@ -62,6 +63,7 @@ public class IconPreviewHelper {
         try {
             mIconPackHelper.loadIconPack(mThemePkgName);
         } catch (NameNotFoundException e) {}
+        mIconSize = (int) (am.getLauncherLargeIconSize() * ICON_SCALE_FACTOR);
     }
 
     /**
@@ -102,6 +104,9 @@ public class IconPreviewHelper {
         Drawable icon = getThemedIcon(packageName, activityName);
         if (icon == null) {
             icon = getIconNoTheme(packageName, activityName);
+        }
+        if (icon != null) {
+            icon.setBounds(0, 0, mIconSize, mIconSize);
         }
         return icon;
     }
