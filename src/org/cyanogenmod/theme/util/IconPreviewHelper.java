@@ -21,6 +21,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageItemInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
@@ -29,6 +30,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SparseArray;
 
 /**
  * This class handles all the logic to build a preview icon
@@ -103,7 +105,7 @@ public class IconPreviewHelper {
         String activityName = component.getClassName();
         Drawable icon = getThemedIcon(packageName, activityName);
         if (icon == null) {
-            icon = getIconNoTheme(packageName, activityName);
+            icon = getDefaultIcon(packageName, activityName);
         }
         if (icon != null) {
             icon.setBounds(0, 0, mIconSize, mIconSize);
@@ -121,7 +123,14 @@ public class IconPreviewHelper {
         return drawable;
     }
 
-    private Drawable getIconNoTheme(String pkgName, String activityName) {
+    /**
+     * Returns the default icon.  This can be the normal icon associated with the app or a composed
+     * icon if the icon pack supports background, mask, and/or foreground.
+     * @param pkgName
+     * @param activityName
+     * @return
+     */
+    private Drawable getDefaultIcon(String pkgName, String activityName) {
         Drawable drawable = null;
         ComponentName component = new ComponentName(pkgName, activityName);
         PackageManager pm = mContext.getPackageManager();
@@ -134,12 +143,30 @@ public class IconPreviewHelper {
             Resources res = new Resources(assets, mDisplayMetrics, mConfiguration);
 
             final int iconId = info.icon != 0 ? info.icon : appInfo.icon;
+            info.themedIcon = 0;
+            setupComposedIcon(res, info, iconId);
             drawable = getFullResIcon(res, iconId);
         } catch (NameNotFoundException e2) {
            Log.w(TAG, "Unable to get the icon for " + pkgName + " using default");
         }
         drawable = (drawable != null) ? drawable : getFullResDefaultActivityIcon();
         return drawable;
+    }
+
+    private void setupComposedIcon(Resources res, ActivityInfo info, int iconId) {
+        final Drawable[] iconBack = mIconPackHelper.getIconBackDrawable();
+        final Drawable iconMask = mIconPackHelper.getIconMaskDrawable();
+        final Drawable iconUpon = mIconPackHelper.getIconUponDrawable();
+        if (iconBack == null && iconMask == null && iconUpon == null) return;
+
+
+        res.setCustomIcons(iconBack, iconMask, iconUpon,
+                mIconPackHelper.getIconScale(), mIconSize);
+
+        SparseArray<PackageItemInfo> icons = new SparseArray<PackageItemInfo>(1);
+        info.themedIcon = 0;
+        icons.put(iconId, info);
+        res.setIconResources(icons);
     }
 
     private Drawable getFullResIcon(Resources resources, int iconId) {
