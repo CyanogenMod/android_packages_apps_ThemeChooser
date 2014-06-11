@@ -15,24 +15,19 @@
  */
 package org.cyanogenmod.theme.chooser;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.content.res.CustomTheme;
-
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.graphics.Color;
 import android.view.Gravity;
-import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment.IconInfo;
-import org.cyanogenmod.theme.util.BootAnimationHelper;
-import org.cyanogenmod.theme.util.IconPreviewHelper;
-import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
-import org.cyanogenmod.theme.util.Utils;
-
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
+import android.content.res.CustomTheme;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -41,6 +36,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Browser;
 import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -52,22 +48,43 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.URLUtil;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment.IconInfo;
+import org.cyanogenmod.theme.util.BootAnimationHelper;
+import org.cyanogenmod.theme.util.IconPreviewHelper;
+import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
+import org.cyanogenmod.theme.util.Utils;
+
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChooserBrowseFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String TAG = ChooserBrowseFragment.class.getCanonicalName();
     public static final String DEFAULT = CustomTheme.HOLO_DEFAULT;
+
+    private static final String THEME_STORE_PACKAGE_NAME = "com.cyngn.theme.store";
+    private static final String GET_THEMES_URL =
+            "http://wiki.cyanogenmod.org/w/Get_Themes?action=render";
+    private static final String THEME_STORE_ACTIVITY = "com.cyngn.theme.store.StoreActivity";
 
     public ListView mListView;
     public LocalPagerAdapter mAdapter;
@@ -109,6 +126,107 @@ public class ChooserBrowseFragment extends Fragment
         mMaxImageSize.y  = (int) getActivity().getResources().getDimension(R.dimen.item_browse_height);
 
         return v;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.chooser_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.get_more_themes:
+                if (isThemeStoreInstalled()) {
+                    launchThemeStore();
+                } else {
+                    launchGetThemesWebView();
+                }
+                return true;
+        }
+
+        return false;
+    }
+
+    private boolean isThemeStoreInstalled() {
+        PackageManager pm = getActivity().getPackageManager();
+        try {
+            pm.getPackageInfo(THEME_STORE_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    private void launchThemeStore() {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(THEME_STORE_PACKAGE_NAME,
+                THEME_STORE_ACTIVITY));
+        getActivity().startActivity(intent);
+    }
+
+    private void launchGetThemesWebView() {
+        Context context = getActivity();
+        if (context == null) return;
+
+        // Setup the webview with progress bar
+        final ProgressBar progressBar = new ProgressBar(context);
+        progressBar.setIndeterminate(true);
+        final WebView webView = new WebView(context);
+        webView.setVisibility(View.VISIBLE);
+        FrameLayout webViewFrame = new FrameLayout(context);
+        webViewFrame.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT));
+        webViewFrame.addView(webView);
+        webViewFrame.addView(progressBar);
+
+        // Setup the dialog
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setView(webViewFrame);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // From WebViewContentsClientAdapter NullWebViewClient
+                Intent intent;
+                // Perform generic parsing of the URI to turn it into an Intent.
+                try {
+                    intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                } catch (URISyntaxException ex) {
+                    Log.w(TAG, "Bad URI " + url + ": " + ex.getMessage());
+                    return false;
+                }
+                // Sanitize the Intent, ensuring web pages can not bypass browser
+                // security (only access to BROWSABLE activities).
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setComponent(null);
+                // Pass the package name as application ID so that the intent from the
+                // same application can be opened in the same tab.
+                intent.putExtra(Browser.EXTRA_APPLICATION_ID,
+                        view.getContext().getPackageName());
+                try {
+                    view.getContext().startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    Log.w(TAG, "No application can handle " + url);
+                    return false;
+                }
+                return true;
+            }
+
+            public void onPageFinished(WebView view, String url) {
+                webView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+
+        webView.loadUrl(GET_THEMES_URL);
+        Dialog dialog = alert.create();
+        dialog.show();
     }
 
     @Override

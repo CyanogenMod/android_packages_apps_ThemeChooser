@@ -51,4 +51,6 @@
     <string name="theme_installed_notification_title">%s installed</string>
     <string name="theme_installed_notification_text">Theme successfully installed.</string>
 
+    <string name="menu_item_get_more_themes">Get More</string>
+
 </resources>
