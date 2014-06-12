@@ -28,15 +28,15 @@
   <string name="style">Styl</string>
   <string name="default_tag">(Výchozí)</string>
   <string name="apply">Použít</string>
-  <string name="applying">Aplukuje se\u2026</string>
+  <string name="applying">Aplikuje se\u2026</string>
   <string name="remove">Odstranit</string>
   <string name="update">Aktualizovat</string>
+  <string name="no_preview_available">Náhled není dostupný</string>
   <string name="alarm_label">Budík</string>
   <string name="notification_label">Upozornění</string>
   <string name="ringtone_label">Vyzváněcí tón</string>
   <string name="unknown_author">Neznámý autor</string>
   <string name="font_preview_letters">AaBbCcDd123 ěščřžýáíé</string>
-  <string name="no_preview_available">Náhled není dostupný</string>
   <string name="theme_installed_notification_title">%s instalováno</string>
   <string name="theme_installed_notification_text">Téma byla úspěšně nainstalováno.</string>
 </resources>

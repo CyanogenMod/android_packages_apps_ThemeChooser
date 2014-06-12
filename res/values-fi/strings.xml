@@ -31,12 +31,12 @@
   <string name="applying">Otetaan käyttöön\u2026</string>
   <string name="remove">Poista</string>
   <string name="update">Päivitä</string>
+  <string name="no_preview_available">Esikatselu ei käytettävissä</string>
   <string name="alarm_label">Hälytys</string>
   <string name="notification_label">Ilmoitus</string>
   <string name="ringtone_label">Soittoääni</string>
   <string name="unknown_author">Tuntematon tekijä</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_preview_available">Esikatselu ei käytettävissä</string>
   <string name="theme_installed_notification_title">%s asennettu</string>
   <string name="theme_installed_notification_text">Teema asennettu onnistuneesti.</string>
 </resources>

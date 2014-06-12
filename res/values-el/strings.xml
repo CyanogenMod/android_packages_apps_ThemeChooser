@@ -31,12 +31,12 @@
   <string name="applying">Εφαρμογή\u2026</string>
   <string name="remove">Αφαίρεση</string>
   <string name="update">Ενημέρωση</string>
+  <string name="no_preview_available">Δεν υπάρχει διαθέσιμη προεπισκόπηση</string>
   <string name="alarm_label">Ξυπνητήρι</string>
   <string name="notification_label">Ειδοποίηση</string>
   <string name="ringtone_label">Ήχος κλήσης</string>
   <string name="unknown_author">Άγνωστος συντάκτης</string>
   <string name="font_preview_letters">ΑαΒβΓγΔδ123</string>
-  <string name="no_preview_available">Δεν υπάρχει διαθέσιμη προεπισκόπηση</string>
   <string name="theme_installed_notification_title">%s εγκαταστάθηκε</string>
   <string name="theme_installed_notification_text">Το θέμα εγκαταστάθηκε με επιτυχία.</string>
 </resources>

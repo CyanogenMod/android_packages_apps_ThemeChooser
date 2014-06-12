@@ -31,12 +31,12 @@
   <string name="applying">Pas toe\u2026</string>
   <string name="remove">Verwyder</string>
   <string name="update">Opgradeer</string>
+  <string name="no_preview_available">Geen voorskou beskikbaar nie</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Kennisgewing</string>
   <string name="ringtone_label">Luitoon</string>
   <string name="unknown_author">Onbekende verskaffer</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_preview_available">Geen voorskou beskikbaar nie</string>
   <string name="theme_installed_notification_title">%s geïnstalleer</string>
   <string name="theme_installed_notification_text">Tema suksesvol geïnstalleer.</string>
 </resources>

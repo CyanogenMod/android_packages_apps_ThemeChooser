@@ -36,7 +36,6 @@
   <string name="ringtone_label">Tonu de llamada</string>
   <string name="unknown_author">Autor desconocíu</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_preview_available">Vista previa non disponible</string>
   <string name="theme_installed_notification_title">%s instaláu</string>
   <string name="theme_installed_notification_text">Tema instaláu correutamente.</string>
 </resources>

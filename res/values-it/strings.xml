@@ -31,12 +31,12 @@
   <string name="applying">Applicando\u2026</string>
   <string name="remove">Rimuovi</string>
   <string name="update">Aggiorna</string>
+  <string name="no_preview_available">Anteprima non disponibile</string>
   <string name="alarm_label">Allarme</string>
   <string name="notification_label">Notifica</string>
   <string name="ringtone_label">Suoneria</string>
   <string name="unknown_author">Autore sconosciuto</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_preview_available">Anteprima non disponibile</string>
   <string name="theme_installed_notification_title">%s installato</string>
   <string name="theme_installed_notification_text">Tema installato con successo.</string>
 </resources>

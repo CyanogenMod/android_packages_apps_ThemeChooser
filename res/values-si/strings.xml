@@ -31,12 +31,12 @@
   <string name="applying">යොදමින්\u2026</string>
   <string name="remove">ඉවත් කරන්න</string>
   <string name="update">අලුත් කරන්න</string>
+  <string name="no_preview_available">පූර්වදර්ශනයක් නොමැත</string>
   <string name="alarm_label">ඇඟවීම</string>
   <string name="notification_label">දැනුම්දීම</string>
   <string name="ringtone_label">රින්ග්ටෝනය</string>
   <string name="unknown_author">කතෘ නොදනී</string>
   <string name="font_preview_letters">AaBbCcDd123අබක</string>
-  <string name="no_preview_available">පූර්වදර්ශනයක් නොමැත</string>
   <string name="theme_installed_notification_title">%s ස්ථාපිතයි</string>
   <string name="theme_installed_notification_text">තේමාව සාර්ථක ලෙස ස්ථාපිතයි.</string>
 </resources>

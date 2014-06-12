@@ -31,12 +31,12 @@
   <string name="applying">تطبيق\u2026</string>
   <string name="remove">إزالة</string>
   <string name="update">تحديث</string>
+  <string name="no_preview_available">لا تتوفر أية معاينة</string>
   <string name="alarm_label">المنبه</string>
   <string name="notification_label">الإعلام</string>
   <string name="ringtone_label">نغمة رنين</string>
   <string name="unknown_author">مؤلف غير معروف</string>
   <string name="font_preview_letters">Aaابت123١٢٣</string>
-  <string name="no_preview_available">لا تتوفر أية معاينة</string>
   <string name="theme_installed_notification_title">%s مثبت</string>
   <string name="theme_installed_notification_text">موضوع مثبت بنجاح.</string>
 </resources>

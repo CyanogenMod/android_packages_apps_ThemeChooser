@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Teman</string>
+  <string name="lock_screen">Lås bakgrundsbilder</string>
   <string name="icons">Ikoner</string>
   <string name="fonts">Typsnitt</string>
   <string name="wallpapers">Bakgrundsbilder</string>
@@ -30,12 +31,12 @@
   <string name="applying">Tillämpar\u2026</string>
   <string name="remove">Ta bort</string>
   <string name="update">Uppdatera</string>
+  <string name="no_preview_available">Ingen förhandsgranskning tillgänglig</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Avisering</string>
   <string name="ringtone_label">Ringsignal</string>
   <string name="unknown_author">Okänd upphovsman</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_preview_available">Ingen förhandsgranskning tillgänglig</string>
   <string name="theme_installed_notification_title">%s installerad</string>
   <string name="theme_installed_notification_text">Temat installerades.</string>
 </resources>

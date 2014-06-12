@@ -31,12 +31,12 @@
   <string name="applying">מחיל\u2026</string>
   <string name="remove">הסר</string>
   <string name="update">עדכן</string>
+  <string name="no_preview_available">אין תצוגה מקדימה</string>
   <string name="alarm_label">שעון מעורר</string>
   <string name="notification_label">התראות</string>
   <string name="ringtone_label">רינגטון</string>
   <string name="unknown_author">מחבר לא ידוע</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_preview_available">אין תצוגה מקדימה</string>
   <string name="theme_installed_notification_title">%s מותקנים</string>
   <string name="theme_installed_notification_text">הערכה הותקנה בהצלחה.</string>
 </resources>
