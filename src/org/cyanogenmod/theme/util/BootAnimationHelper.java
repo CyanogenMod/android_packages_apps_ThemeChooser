@@ -17,7 +17,7 @@ package org.cyanogenmod.theme.util;
 
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.res.CustomTheme;
+import android.content.res.ThemeConfig;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -208,7 +208,7 @@ public class BootAnimationHelper {
             String previewName = null;
             // this is ugly, ugly, ugly.  Did I mention this is ugly?
             try {
-                if (CustomTheme.HOLO_DEFAULT.equals(path)) {
+                if (ThemeConfig.HOLO_DEFAULT.equals(path)) {
                     previewName = getPreviewFrameEntryName(
                             new FileInputStream(SYSTEM_BOOT_ANI_PATH));
                     bitmap = loadPreviewFrame(
