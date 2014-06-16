@@ -17,7 +17,7 @@ package org.cyanogenmod.theme.chooser;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.content.res.CustomTheme;
+import android.content.res.ThemeConfig;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.FileUtils;
@@ -126,7 +126,7 @@ public class BootAniPreviewFragment extends Fragment {
                 return Boolean.FALSE;
             }
             ZipFile zip = null;
-            if (CustomTheme.HOLO_DEFAULT.equals(mPkgName)) {
+            if (ThemeConfig.HOLO_DEFAULT.equals(mPkgName)) {
                 try {
                     zip = new ZipFile(new File(BootAnimationHelper.SYSTEM_BOOT_ANI_PATH));
                 } catch (Exception e) {
