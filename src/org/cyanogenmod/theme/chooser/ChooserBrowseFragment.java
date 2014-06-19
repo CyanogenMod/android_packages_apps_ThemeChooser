@@ -144,7 +144,11 @@ public class ChooserBrowseFragment extends Fragment
         switch(item.getItemId()) {
             case R.id.get_more_themes:
                 if (isThemeStoreInstalled()) {
-                    launchThemeStore();
+                    try {
+                        launchThemeStore();
+                    } catch (ActivityNotFoundException e) {
+                        launchGetThemesWebView();
+                    }
                 } else {
                     launchGetThemesWebView();
                 }
@@ -157,7 +161,8 @@ public class ChooserBrowseFragment extends Fragment
     private boolean isThemeStoreInstalled() {
         PackageManager pm = getActivity().getPackageManager();
         try {
-            pm.getPackageInfo(THEME_STORE_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
+            PackageInfo info = pm.getPackageInfo(THEME_STORE_PACKAGE_NAME,
+                    PackageManager.GET_ACTIVITIES);
             return true;
         } catch (NameNotFoundException e) {
             return false;
