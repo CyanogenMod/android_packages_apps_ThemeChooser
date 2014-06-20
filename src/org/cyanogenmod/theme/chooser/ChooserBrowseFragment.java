@@ -179,58 +179,46 @@ public class ChooserBrowseFragment extends Fragment
         Context context = getActivity();
         if (context == null) return;
 
-        // Setup the webview with progress bar
-        final ProgressBar progressBar = new ProgressBar(context);
-        progressBar.setIndeterminate(true);
         final WebView webView = new WebView(context);
-        webView.setVisibility(View.VISIBLE);
-        FrameLayout webViewFrame = new FrameLayout(context);
-        webViewFrame.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT));
-        webViewFrame.addView(webView);
-        webViewFrame.addView(progressBar);
+        String html = createGetThemesHtml(context);
+        webView.loadData(html.toString(), "text/html", null);
 
         // Setup the dialog
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setView(webViewFrame);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                // From WebViewContentsClientAdapter NullWebViewClient
-                Intent intent;
-                // Perform generic parsing of the URI to turn it into an Intent.
-                try {
-                    intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
-                } catch (URISyntaxException ex) {
-                    Log.w(TAG, "Bad URI " + url + ": " + ex.getMessage());
-                    return false;
-                }
-                // Sanitize the Intent, ensuring web pages can not bypass browser
-                // security (only access to BROWSABLE activities).
-                intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setComponent(null);
-                // Pass the package name as application ID so that the intent from the
-                // same application can be opened in the same tab.
-                intent.putExtra(Browser.EXTRA_APPLICATION_ID,
-                        view.getContext().getPackageName());
-                try {
-                    view.getContext().startActivity(intent);
-                } catch (ActivityNotFoundException ex) {
-                    Log.w(TAG, "No application can handle " + url);
-                    return false;
-                }
-                return true;
-            }
-
-            public void onPageFinished(WebView view, String url) {
-                webView.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-
-        webView.loadUrl(GET_THEMES_URL);
+        alert.setView(webView);
         Dialog dialog = alert.create();
         dialog.show();
+    }
+
+    private String createGetThemesHtml(Context context) {
+        // Setup the webview with progress bar
+        StringBuffer sb = new StringBuffer();
+        sb.append("<html><body>");
+        sb.append(getActivity().getString(R.string.get_more_description));
+        sb.append("<ul>");
+
+        String[] entryNames = context.getResources().getStringArray(R.array.get_more_entry_names);
+        String[] entryUrls = context.getResources().getStringArray(R.array.get_more_entry_urls);
+        for(int i=0; i < entryNames.length; i++) {
+            String name = entryNames[i];
+            String url = entryUrls[i];
+            appendLink(sb, name, url);
+        }
+
+        sb.append("</ul>");
+        sb.append("</body></html>");
+        return sb.toString();
+    }
+
+    private void appendLink(StringBuffer sb, String name, String url) {
+        Context context = getActivity();
+        sb.append("<li>");
+        sb.append("<a href=\"");
+        sb.append(url);
+        sb.append("\">");
+        sb.append(name);
+        sb.append("</a>");
+        sb.append("</li>");
     }
 
     @Override
