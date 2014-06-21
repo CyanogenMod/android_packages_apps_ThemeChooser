@@ -41,6 +41,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="org.cyanogenmod.theme.chooserv2.ChooserActivity"
+                  android:label="@string/app_name"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                  android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
         <receiver android:name="org.cyanogenmod.theme.chooser.AppReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
