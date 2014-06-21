@@ -39,4 +39,11 @@
   <string name="font_preview_letters">AaBbCcDd123අබක</string>
   <string name="theme_installed_notification_title">%s ස්ථාපිතයි</string>
   <string name="theme_installed_notification_text">තේමාව සාර්ථක ලෙස ස්ථාපිතයි.</string>
+  <string name="menu_item_get_more_themes">තව ලබාගන්න</string>
+  <string name="get_more_description">මතු සඳහන් සබැඳි වෙතින් ඔබට තවත් තේමා ලබාගතහැකිය:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod තේමා ප්‍රදර්ශන වැස්ම</item>
+    <item>කෙළි ගබඩාව</item>
+    <item>තවත් තොරතුරු CM විකියෙන්</item>
+  </string-array>
 </resources>

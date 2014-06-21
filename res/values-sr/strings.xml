@@ -39,4 +39,11 @@
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s инсталирано</string>
   <string name="theme_installed_notification_text">Тема је успешно инсталирана.</string>
+  <string name="menu_item_get_more_themes">Набави још</string>
+  <string name="get_more_description">Можеш да набавиш још тема са следећих линкова:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod витрина тема</item>
+    <item>Play Продавница</item>
+    <item>Још информација на CM Wiki</item>
+  </string-array>
 </resources>

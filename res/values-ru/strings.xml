@@ -39,4 +39,5 @@
   <string name="font_preview_letters">АаБбCcDd123</string>
   <string name="theme_installed_notification_title">Тема «%s» установлена</string>
   <string name="theme_installed_notification_text">Тема успешно установлена.</string>
+  <string name="menu_item_get_more_themes">Скачать ещё</string>
 </resources>

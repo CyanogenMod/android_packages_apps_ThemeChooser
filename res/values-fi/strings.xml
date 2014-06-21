@@ -17,7 +17,7 @@
 -->
 <resources>
   <string name="app_name">Teemat</string>
-  <string name="lock_screen">Lukitustaustakuvat</string>
+  <string name="lock_screen">Lukitusnäytön taustakuvat</string>
   <string name="icons">Kuvakkeet</string>
   <string name="fonts">Fontit</string>
   <string name="wallpapers">Taustakuvat</string>

@@ -21,7 +21,7 @@
   <string name="icons">アイコン</string>
   <string name="fonts">フォント</string>
   <string name="wallpapers">壁紙</string>
-  <string name="boot_anims">起動アニメーション</string>
+  <string name="boot_anims">ブートアニメーション</string>
   <string name="ringtones">着信音</string>
   <string name="notifications">通知</string>
   <string name="alarms">アラーム</string>
@@ -39,4 +39,11 @@
   <string name="font_preview_letters">あいうえおAaBbCc123</string>
   <string name="theme_installed_notification_title">%sがインストールされました</string>
   <string name="theme_installed_notification_text">テーマのインストールが完了しました。</string>
+  <string name="menu_item_get_more_themes">他のテーマ</string>
+  <string name="get_more_description">以下のリンクから他のテーマを手に入れることができます:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenModテーマショーケース</item>
+    <item>Playストア</item>
+    <item>CMのWikiで詳細情報を見る</item>
+  </string-array>
 </resources>

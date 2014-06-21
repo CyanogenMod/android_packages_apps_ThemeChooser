@@ -39,4 +39,5 @@
   <string name="font_preview_letters">Aaابت123١٢٣</string>
   <string name="theme_installed_notification_title">%s مثبت</string>
   <string name="theme_installed_notification_text">موضوع مثبت بنجاح.</string>
+  <string name="menu_item_get_more_themes">احصل على المزيد</string>
 </resources>

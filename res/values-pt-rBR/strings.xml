@@ -39,4 +39,5 @@
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s instalado</string>
   <string name="theme_installed_notification_text">Tema instalado com sucesso.</string>
+  <string name="menu_item_get_more_themes">Obter mais</string>
 </resources>

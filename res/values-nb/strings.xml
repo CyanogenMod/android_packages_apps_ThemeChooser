@@ -31,6 +31,7 @@
   <string name="applying">Aktiverer\u2026</string>
   <string name="remove">Fjern</string>
   <string name="update">Oppdater</string>
+  <string name="no_preview_available">Ingen forhåndsvisning tilgjengelig</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Varsling</string>
   <string name="ringtone_label">Ringetone</string>
@@ -38,4 +39,5 @@
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s er installert</string>
   <string name="theme_installed_notification_text">Tema installert.</string>
+  <string name="menu_item_get_more_themes">Få mer</string>
 </resources>

@@ -39,4 +39,11 @@
   <string name="font_preview_letters">ΑαΒβΓγΔδ123</string>
   <string name="theme_installed_notification_title">%s εγκαταστάθηκε</string>
   <string name="theme_installed_notification_text">Το θέμα εγκαταστάθηκε με επιτυχία.</string>
+  <string name="menu_item_get_more_themes">Βρείτε περισσότερα</string>
+  <string name="get_more_description">Μπορείτε να βρείτε περισσότερα θέματα από τους παρακάτω συνδέσμους:</string>
+  <string-array name="get_more_entry_names">
+    <item>Κατάστημα Θεμάτων CyanogenMod</item>
+    <item>Play Store</item>
+    <item>Περισσότερες πληροφορίες στο CM Wiki</item>
+  </string-array>
 </resources>
