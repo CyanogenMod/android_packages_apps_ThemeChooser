@@ -74,4 +74,7 @@
     <string name="status_bar_clock_text" translatable="false">5:30</string>
     <string name="status_bar">Status bar</string>
     <string name="navigation_bar">Navigation bar</string>
+
+    <string name="font_component_item_text">Aa</string>
+
 </resources>

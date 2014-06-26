@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<org.cyanogenmod.theme.util.FittedTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/component_selection_item_width"
+    android:layout_height="@dimen/component_selection_item_height"
+    android:background="#000000"
+    android:textColor="@android:color/white"
+    android:text="@string/font_component_item_text">
+
+</org.cyanogenmod.theme.util.FittedTextView>

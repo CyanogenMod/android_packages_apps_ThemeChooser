@@ -114,4 +114,11 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="StatusBarComponentIcon">
+        <item name="android:layout_width">@dimen/status_bar_component_icon_width</item>
+        <item name="android:layout_height">@dimen/status_bar_component_icon_height</item>
+        <item name="android:layout_margin">@dimen/status_bar_component_icon_margin</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
 </resources>
