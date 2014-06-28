@@ -40,4 +40,10 @@
   <string name="theme_installed_notification_title">%s įdiegta</string>
   <string name="theme_installed_notification_text">Tema sėkmingai įdiegta.</string>
   <string name="menu_item_get_more_themes">Gauti daugiau</string>
+  <string name="get_more_description">Galite gauti daugiau temų iš šių nuorodų:</string>
+  <string-array name="get_more_entry_names">
+    <item>„CyanogenMod“ temų vitrina</item>
+    <item>„Play“ parduotuvė</item>
+    <item>Daugiau informacijos CM vikipedijoje</item>
+  </string-array>
 </resources>

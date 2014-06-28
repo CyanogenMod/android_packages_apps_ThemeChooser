@@ -40,4 +40,10 @@
   <string name="theme_installed_notification_title">%s مثبت</string>
   <string name="theme_installed_notification_text">موضوع مثبت بنجاح.</string>
   <string name="menu_item_get_more_themes">احصل على المزيد</string>
+  <string name="get_more_description">يمكنك الحصول على المزيد من المواضيع من الروابط التالية:</string>
+  <string-array name="get_more_entry_names">
+    <item>عرض مواضيع CyanogenMod</item>
+    <item>متجر Play</item>
+    <item>مزيد من المعلومات حول Wiki CM</item>
+  </string-array>
 </resources>

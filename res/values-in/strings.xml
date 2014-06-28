@@ -40,4 +40,10 @@
   <string name="theme_installed_notification_title">%s terinstal</string>
   <string name="theme_installed_notification_text">Tema berhasil dipasang.</string>
   <string name="menu_item_get_more_themes">Dapatkan lebih</string>
+  <string name="get_more_description">Anda bisa mendapatkan lebih banyak tema dari link berikut:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod Tema Showcase</item>
+    <item>Play Store</item>
+    <item>Info lebih lanjut di CM Wiki</item>
+  </string-array>
 </resources>

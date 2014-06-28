@@ -39,4 +39,11 @@
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s installiert</string>
   <string name="theme_installed_notification_text">Design erfolgreich installiert</string>
+  <string name="menu_item_get_more_themes">Mehr beziehen</string>
+  <string name="get_more_description">Weitere Designs erhalten Sie unter den folgenden Links:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod-Design-Galerie</item>
+    <item>Play Store</item>
+    <item>Weitere Informationen im CM-Wiki</item>
+  </string-array>
 </resources>

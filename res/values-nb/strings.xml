@@ -40,4 +40,10 @@
   <string name="theme_installed_notification_title">%s er installert</string>
   <string name="theme_installed_notification_text">Tema installert.</string>
   <string name="menu_item_get_more_themes">Få mer</string>
+  <string name="get_more_description">Du kan få flere temaer fra følgende linker:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod tema Showcase</item>
+    <item>Play Store</item>
+    <item>Mer informasjon er på CM Wiki</item>
+  </string-array>
 </resources>
