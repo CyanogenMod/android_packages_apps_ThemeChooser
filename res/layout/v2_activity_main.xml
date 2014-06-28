@@ -1,47 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:gravity="center_vertical"
-              android:background="@drawable/bg_bluegrid">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_grid">
 
-    <TextView
-        android:id="@+id/theme_name"
-        android:layout_width="264dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="48dp"
-        android:paddingBottom="24dp"
-        android:textSize="24sp"
-        />
-    <org.cyanogenmod.theme.chooserv2.PagerContainer
-        android:id="@+id/pager_container"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_gravity="center_vertical">
-        <android.support.v4.view.ThemeViewPager
-            android:id="@+id/viewpager"
+        <TextView
+            android:id="@+id/theme_name"
             android:layout_width="264dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"/>
-    </org.cyanogenmod.theme.chooserv2.PagerContainer>
-    <LinearLayout
-        android:id="@+id/apply_edit_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="48dp"
-        android:paddingRight="48dp">
-        <Button android:id="@+id/apply"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48dp"
+            android:paddingBottom="24dp"
+            android:textSize="24sp"
+            />
+        <org.cyanogenmod.theme.chooserv2.PagerContainer
+            android:id="@+id/pager_container"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_gravity="center_vertical">
+            <android.support.v4.view.ThemeViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="264dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"/>
+        </org.cyanogenmod.theme.chooserv2.PagerContainer>
+        <LinearLayout
+            android:id="@+id/apply_edit_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="48dp"
+            android:paddingRight="48dp">
+            <Button android:id="@+id/apply"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:text="@string/apply"/>
 
-        <Button android:id="@+id/edit"
+            <Button android:id="@+id/edit"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:text="@string/edit"/>
+        </LinearLayout>
+
+        <!-- selector_testing and it's children are for testing the component
+             selector and should be removed once this is no longer needed -->
+        <LinearLayout
+            android:id="@+id/selector_testing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/show_status_bar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/status_bar"/>
+
+            <Button
+                android:id="@+id/show_nav_bar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/navigation_bar"/>
+
+            <Button
+                android:id="@+id/show_icons"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/icons"/>
+
+            <Button
+                android:id="@+id/show_fonts"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/fonts"/>
+
+            <Button
+                android:id="@+id/show_styles"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/style"/>
+
+            <Button
+                android:id="@+id/show_wallpaper"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/wallpapers"/>
+
+            <Button
+                android:id="@+id/show_bootani"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/boot_anims"/>
+
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+    <include layout="@layout/component_selector"/>
+</FrameLayout>

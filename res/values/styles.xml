@@ -32,6 +32,10 @@
         <item name="android:logo">@drawable/ic_app_themes_bw</item>
     </style>
 
+    <style name="ThemeChooserV2Theme" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
     <!-- ActionBar title text -->
     <style name="ThemeChooserActionBarTitleText">
         <item name="android:textColor">#FFFFFF</item>
@@ -114,11 +118,29 @@
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="StatusBarComponentIcon">
+    <style name="status_bar_component_icon">
         <item name="android:layout_width">@dimen/status_bar_component_icon_width</item>
         <item name="android:layout_height">@dimen/status_bar_component_icon_height</item>
         <item name="android:layout_margin">@dimen/status_bar_component_icon_margin</item>
         <item name="android:scaleType">fitCenter</item>
+    </style>
+
+    <style name="bottom_bar_item_text_style">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="component_title">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingStart">2dp</item>
+        <item name="android:paddingEnd">2dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>

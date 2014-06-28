@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<org.cyanogenmod.theme.chooserv2.ComponentSelector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:themes="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/component_selector"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|left"
+    android:visibility="gone"
+    android:background="@color/component_selection_background">
+
+    <FrameLayout
+        android:id="@+id/selection_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/component_selection_cell_height"
+            themes:itemsPerPage="4"
+            />
+
+        <com.viewpagerindicator.CirclePageIndicator
+            android:id="@+id/page_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            themes:fillColor="@android:color/white"/>
+
+    </FrameLayout>
+
+    <!-- This view will be set to gone if the device does not have a navigation bar -->
+    <Space
+        android:id="@+id/navbar_padding"
+        android:layout_width="match_parent"
+        android:layout_height="@*android:dimen/system_bar_height"/>
+</org.cyanogenmod.theme.chooserv2.ComponentSelector>

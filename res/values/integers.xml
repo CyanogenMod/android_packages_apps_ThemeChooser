@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="default_items_per_page">4</integer>
+    <integer name="bootani_items_per_page">3</integer>
+</resources>

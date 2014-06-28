@@ -77,4 +77,9 @@
 
     <string name="font_component_item_text">Aa</string>
 
+    <!-- Bottom bar items -->
+    <string name="btn_wallpaper_text">Wallpaper</string>
+    <string name="btn_customize_text">Customize</string>
+    <string name="btn_theme_store_text">Theme Store</string>
+
 </resources>

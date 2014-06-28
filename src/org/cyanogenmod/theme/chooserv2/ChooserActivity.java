@@ -52,6 +52,14 @@ public class ChooserActivity extends FragmentActivity
     private ThemesAdapter mAdapter;
     private ThemeManager mService;
     private boolean mExpanded = false;
+    private Button mStatusBar;
+    private Button mNavBar;
+    private Button mIcons;
+    private Button mFonts;
+    private Button mStyles;
+    private Button mWallpaper;
+    private Button mBootani;
+    private ComponentSelector mSelector;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +113,26 @@ public class ChooserActivity extends FragmentActivity
             }
         });
 
+        mSelector = (ComponentSelector) findViewById(R.id.component_selector);
+
+        if (ComponentSelector.DEBUG_SELECTOR) {
+            findViewById(R.id.selector_testing).setVisibility(View.VISIBLE);
+            mStatusBar = (Button) findViewById(R.id.show_status_bar);
+            mNavBar = (Button) findViewById(R.id.show_nav_bar);
+            mIcons = (Button) findViewById(R.id.show_icons);
+            mFonts = (Button) findViewById(R.id.show_fonts);
+            mStyles = (Button) findViewById(R.id.show_styles);
+            mWallpaper = (Button) findViewById(R.id.show_wallpaper);
+            mBootani = (Button) findViewById(R.id.show_bootani);
+            mStatusBar.setOnClickListener(mButtonClickListener);
+            mNavBar.setOnClickListener(mButtonClickListener);
+            mIcons.setOnClickListener(mButtonClickListener);
+            mFonts.setOnClickListener(mButtonClickListener);
+            mStyles.setOnClickListener(mButtonClickListener);
+            mWallpaper.setOnClickListener(mButtonClickListener);
+            mBootani.setOnClickListener(mButtonClickListener);
+        }
+
         mService = (ThemeManager) getSystemService(Context.THEME_SERVICE);
         getSupportLoaderManager().initLoader(0, null, this);
     }
@@ -117,7 +145,9 @@ public class ChooserActivity extends FragmentActivity
 
     @Override
     public void onBackPressed() {
-        if (mExpanded) {
+        if (mSelector.getVisibility() == View.VISIBLE) {
+            mSelector.hide();
+        } else if (mExpanded) {
             mExpanded = false;
             mContainer.collapse();
             ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
@@ -145,6 +175,49 @@ public class ChooserActivity extends FragmentActivity
         String name = mAdapter.getItemName(position);
         mThemeName.setText(name);
     }
+
+    private View.OnClickListener mButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (v == mStatusBar) {
+                mSelector.setNumItemsPerPage(4);
+                mSelector.setHeight(getResources().getDimensionPixelSize(
+                        R.dimen.component_selection_cell_height));
+                mSelector.setComponentType(ThemesColumns.MODIFIES_STATUS_BAR);
+            } else if (v == mNavBar) {
+                mSelector.setNumItemsPerPage(4);
+                mSelector.setHeight(getResources().getDimensionPixelSize(
+                        R.dimen.component_selection_cell_height));
+                mSelector.setComponentType(ThemesColumns.MODIFIES_NAVIGATION_BAR);
+            } else if (v == mIcons) {
+                mSelector.setNumItemsPerPage(4);
+                mSelector.setHeight(getResources().getDimensionPixelSize(
+                        R.dimen.component_selection_cell_height));
+                mSelector.setComponentType(ThemesColumns.MODIFIES_ICONS);
+            } else if (v == mFonts) {
+                mSelector.setNumItemsPerPage(4);
+                mSelector.setHeight(getResources().getDimensionPixelSize(
+                        R.dimen.component_selection_cell_height));
+                mSelector.setComponentType(ThemesColumns.MODIFIES_FONTS);
+            } else if (v == mStyles) {
+                mSelector.setNumItemsPerPage(4);
+                mSelector.setHeight(getResources().getDimensionPixelSize(
+                        R.dimen.component_selection_cell_height));
+                mSelector.setComponentType(ThemesColumns.MODIFIES_OVERLAYS);
+            } else if (v == mWallpaper) {
+                mSelector.setNumItemsPerPage(4);
+                mSelector.setHeight(getResources().getDimensionPixelSize(
+                        R.dimen.component_selection_cell_height));
+                mSelector.setComponentType(ThemesColumns.MODIFIES_LAUNCHER);
+            } else if (v == mBootani) {
+                mSelector.setNumItemsPerPage(3);
+                mSelector.setHeight(getResources().getDimensionPixelSize(
+                        R.dimen.component_selection_cell_height_boot_anim));
+                mSelector.setComponentType(ThemesColumns.MODIFIES_BOOT_ANIM);
+            }
+            if (mSelector.getVisibility() == View.GONE) mSelector.show();
+        }
+    };
 
     private View.OnClickListener mPagerClickListener = new View.OnClickListener() {
         @Override

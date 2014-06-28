@@ -37,4 +37,8 @@
         <attr name="component" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="ComponentSelector">
+        <attr name="itemsPerPage" format="integer"/>
+    </declare-styleable>
+
 </resources>

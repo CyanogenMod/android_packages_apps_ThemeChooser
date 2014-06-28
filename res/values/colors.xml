@@ -29,4 +29,9 @@
 
     <color name="font_preview_color">#ffffff</color>
     <color name="font_preview_shadow_color">#dd000000</color>
+
+    <color name="component_selection_background">#e6212121</color>
+    <color name="component_divider_color">#80cccccc</color>
+    <color name="background">#d6d6d8</color>
+    <drawable name="component_selection_pressed">#40000000</drawable>
 </resources>

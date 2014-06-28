@@ -1,28 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="@dimen/component_selection_item_width"
-    android:layout_height="@dimen/component_selection_item_height"
-    android:background="#000000">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/component_selection_cell_height"
+    android:background="@drawable/component_selection_selector">
 
-    <ImageView
-        android:id="@+id/slot1"
-        style="@style/StatusBarComponentIcon"
-        android:layout_gravity="top|left"/>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/container"
+        android:layout_width="@dimen/component_selection_content_width"
+        android:layout_height="@dimen/component_selection_content_height"
+        android:layout_marginTop="@dimen/component_margin_top"
+        android:background="#000000"
+        android:layout_centerHorizontal="true">
 
-    <ImageView
-        android:id="@+id/slot2"
-        style="@style/StatusBarComponentIcon"
-        android:layout_gravity="top|right"/>
-    <ImageView
-        android:id="@+id/slot3"
-        style="@style/StatusBarComponentIcon"
-        android:layout_gravity="bottom|left"/>
+        <ImageView
+            android:id="@+id/slot1"
+            style="@style/status_bar_component_icon"
+            android:layout_gravity="top|left"/>
 
-    <ImageView
-        android:id="@+id/slot4"
-        style="@style/StatusBarComponentIcon"
-        android:layout_gravity="bottom|right"/>
+        <ImageView
+            android:id="@+id/slot2"
+            style="@style/status_bar_component_icon"
+            android:layout_gravity="top|right"/>
+        <ImageView
+            android:id="@+id/slot3"
+            style="@style/status_bar_component_icon"
+            android:layout_gravity="bottom|left"/>
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/slot4"
+            style="@style/status_bar_component_icon"
+            android:layout_gravity="bottom|right"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/container"
+        android:layout_centerHorizontal="true"
+        style="@style/component_title"/>
+
+</RelativeLayout>

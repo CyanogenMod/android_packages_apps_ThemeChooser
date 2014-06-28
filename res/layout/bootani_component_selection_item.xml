@@ -2,14 +2,12 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/component_selection_cell_height">
+    android:layout_height="@dimen/component_selection_cell_height_boot_anim">
 
     <ImageView
-        android:id="@+id/icon"
-        android:layout_width="@dimen/component_selection_content_width"
-        android:layout_height="@dimen/component_selection_content_height"
-        android:src="@drawable/ic_app_themes"
-        android:scaleType="fitCenter"
+        android:id="@+id/preview"
+        android:layout_width="@dimen/component_selection_bootani_content_width"
+        android:layout_height="@dimen/component_selection_bootani_content_height"
         android:layout_marginTop="@dimen/component_margin_top"
         android:layout_centerHorizontal="true"/>
 
@@ -17,7 +15,7 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/icon"
+        android:layout_below="@id/preview"
         android:layout_centerHorizontal="true"
         style="@style/component_title"/>
 

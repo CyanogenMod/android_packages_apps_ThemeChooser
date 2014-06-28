@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<org.cyanogenmod.theme.util.FittedTextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/component_selection_item_width"
-    android:layout_height="@dimen/component_selection_item_height"
-    android:background="#000000"
-    android:textColor="@android:color/white"
-    android:text="@string/font_component_item_text">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/component_selection_cell_height">
 
-</org.cyanogenmod.theme.util.FittedTextView>
+    <org.cyanogenmod.theme.util.FittedTextView
+        android:id="@+id/text_preview"
+        android:layout_width="@dimen/component_selection_content_width"
+        android:layout_height="@dimen/component_selection_content_height"
+        android:textColor="@android:color/white"
+        android:text="@string/font_component_item_text"
+        android:layout_marginTop="@dimen/component_margin_top"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_preview"
+        android:layout_centerHorizontal="true"
+        style="@style/component_title"/>
+
+</RelativeLayout>
