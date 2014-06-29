@@ -42,7 +42,7 @@
   <string name="menu_item_get_more_themes">Získať viac</string>
   <string name="get_more_description">Viac tém môžete získať z nasledujúcich odkazov:</string>
   <string-array name="get_more_entry_names">
-    <item>Témy vzhľadu pre CyanogenMod</item>
+    <item>Témy vzhľadu CyanogenModu</item>
     <item>Obchod Play</item>
     <item>Viac informácií na CM Wiki</item>
   </string-array>

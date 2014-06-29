@@ -40,4 +40,10 @@
   <string name="theme_installed_notification_title">%s telepítve</string>
   <string name="theme_installed_notification_text">Téma sikeresen telepítve.</string>
   <string name="menu_item_get_more_themes">Továbbiak beszerzése</string>
+  <string name="get_more_description">További témákat az alábbi linkeken találhat:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod Témák Showcase</item>
+    <item>Play Áruház</item>
+    <item>További információ a CM Wiki oldalán</item>
+  </string-array>
 </resources>

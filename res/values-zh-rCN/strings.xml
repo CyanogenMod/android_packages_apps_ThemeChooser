@@ -40,4 +40,10 @@
   <string name="theme_installed_notification_title">%s 已安装</string>
   <string name="theme_installed_notification_text">主题已成功安装。</string>
   <string name="menu_item_get_more_themes">获取更多主题</string>
+  <string name="get_more_description">你可以从下面的链接获取更多主题：</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod 主题展示</item>
+    <item>Play 商店</item>
+    <item>CM Wiki 上的更多信息</item>
+  </string-array>
 </resources>

@@ -31,6 +31,7 @@
   <string name="applying">Rakendan\u2026</string>
   <string name="remove">Eemalda</string>
   <string name="update">Värskenda</string>
+  <string name="no_preview_available">Eelvaade pole saadaval</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Teade</string>
   <string name="ringtone_label">Helin</string>
@@ -38,4 +39,11 @@
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s installitud</string>
   <string name="theme_installed_notification_text">Teema edukalt installitud.</string>
+  <string name="menu_item_get_more_themes">Saa rohkem</string>
+  <string name="get_more_description">Sa saad rohkem teemasid järgnevatelt linkidelt:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod Teemade Esitlus</item>
+    <item>Play Pood</item>
+    <item>Rohkem teavet CM Wiki\'st</item>
+  </string-array>
 </resources>

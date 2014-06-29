@@ -40,4 +40,10 @@
   <string name="theme_installed_notification_title">%s instalado</string>
   <string name="theme_installed_notification_text">Tema instalado com sucesso.</string>
   <string name="menu_item_get_more_themes">Obter mais</string>
+  <string name="get_more_description">Você pode obter mais temas nos seguintes links:</string>
+  <string-array name="get_more_entry_names">
+    <item>Vitrine de Temas CyanogenMod</item>
+    <item>Play Store</item>
+    <item>Mais informação no CM Wiki</item>
+  </string-array>
 </resources>

@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 <resources>
-  <string name="app_name">Témata</string>
+  <string name="app_name">Motivy</string>
   <string name="lock_screen">Tapety zámku obrazovky</string>
   <string name="icons">Ikony</string>
   <string name="fonts">Písma</string>
@@ -37,6 +37,13 @@
   <string name="ringtone_label">Vyzváněcí tón</string>
   <string name="unknown_author">Neznámý autor</string>
   <string name="font_preview_letters">AaBbCcDd123 ěščřžýáíé</string>
-  <string name="theme_installed_notification_title">%s instalováno</string>
-  <string name="theme_installed_notification_text">Téma byla úspěšně nainstalováno.</string>
+  <string name="theme_installed_notification_title">%s instalován</string>
+  <string name="theme_installed_notification_text">Motiv byl úspěšně nainstalován.</string>
+  <string name="menu_item_get_more_themes">Získat více</string>
+  <string name="get_more_description">Další motivy můžete získat z následujících odkazů:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod Themes Showcase</item>
+    <item>Obchod Play</item>
+    <item>Více informací na Wiki CM</item>
+  </string-array>
 </resources>

@@ -20,7 +20,7 @@
   <string name="lock_screen">Ekrano užrakto fonai</string>
   <string name="icons">Piktogramos</string>
   <string name="fonts">Šriftai</string>
-  <string name="wallpapers">Ekrano fonai</string>
+  <string name="wallpapers">Darbalaukio fonai</string>
   <string name="boot_anims">Įkrovos animacijos</string>
   <string name="ringtones">Melodijos</string>
   <string name="notifications">Pranešimai</string>
@@ -40,4 +40,10 @@
   <string name="theme_installed_notification_title">%s įdiegta</string>
   <string name="theme_installed_notification_text">Tema sėkmingai įdiegta.</string>
   <string name="menu_item_get_more_themes">Gauti daugiau</string>
+  <string name="get_more_description">Galite gauti daugiau temų iš šių nuorodų:</string>
+  <string-array name="get_more_entry_names">
+    <item>„CyanogenMod“ temų vitrina</item>
+    <item>„Play“ parduotuvė</item>
+    <item>Daugiau informacijos CM vikipedijoje</item>
+  </string-array>
 </resources>
