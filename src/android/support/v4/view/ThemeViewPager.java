@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cyanogenmod.theme.chooserv2;
+package android.support.v4.view;
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
+
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class ThemeViewPager extends ViewPager {
     private boolean mExpanded;
@@ -77,5 +81,24 @@ public class ThemeViewPager extends ViewPager {
         }
 
         return super.onTouchEvent(ev);
+    }
+
+    /**
+     * This method will return the view associated with a given position. This is neccessary
+     * because the index value in 'getChildAt(index)' does not neccessarily associate with
+     * the viewpager's position.
+     *
+     */
+    public View getViewForPosition(int position) {
+        View view = null;
+        for(int i=0; i < getChildCount(); i++) {
+            View v = getChildAt(i);
+            ItemInfo info = infoForChild(v);
+            if (position == info.position) {
+                view = v;
+                break;
+            }
+        }
+        return view;
     }
 }

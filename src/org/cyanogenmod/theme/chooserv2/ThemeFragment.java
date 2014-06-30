@@ -15,7 +15,6 @@
  */
 package org.cyanogenmod.theme.chooserv2;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -24,10 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.AbsListView;
-import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.widget.ScrollView;
 
 import org.cyanogenmod.theme.chooser.R;
 
@@ -38,11 +34,14 @@ public class ThemeFragment extends Fragment {
     public static final int ANIMATE_START_DELAY = 75;
     public static final int ANIMATE_DURATION = 500;
     public static final int ANIMATE_INTERPOLATE_FACTOR = 3;
-    private ListView mListView;
-    private ListAdapter mListAdapter;
+    private ScrollView mScrollView;
+    private ViewGroup mScrollContent;
 
-    static ThemeFragment newInstance() {
+    static ThemeFragment newInstance(String pkgName) {
         ThemeFragment f = new ThemeFragment();
+        Bundle args = new Bundle();
+        args.putString("pkgName", pkgName);
+        f.setArguments(args);
         return f;
     }
 
@@ -69,136 +68,93 @@ public class ThemeFragment extends Fragment {
         View v = inflater.inflate(R.layout.v2_fragment_pager_list, container, false);
         v.setLayoutParams(params);
 
-        mListView = (ListView) v.findViewById(android.R.id.list);
+        mScrollView = (ScrollView) v.findViewById(android.R.id.list);
+        mScrollContent = (ViewGroup) mScrollView.getChildAt(0);
 
         return v;
     }
 
     public void expand() {
-        ((ThemePreviewAdapter) mListAdapter).setExpanded(true);
-        ((ThemePreviewAdapter) mListAdapter).notifyDataSetChanged();
+        for (int i = 0; i < mScrollContent.getChildCount(); i++) {
+            View child = mScrollContent.getChildAt(i);
+            ViewGroup.LayoutParams layout = child.getLayoutParams();
+            layout.height = 400;
+            child.setLayoutParams(layout);
+        }
+        mScrollContent.requestLayout();
         animateChildren();
     }
 
 
     public void collapse() {
-        ((ThemePreviewAdapter) mListAdapter).setExpanded(false);
-        ((ThemePreviewAdapter) mListAdapter).notifyDataSetChanged();
+        for (int i = 0; i < mScrollContent.getChildCount(); i++) {
+            View child = mScrollContent.getChildAt(i);
+            ViewGroup.LayoutParams layout = child.getLayoutParams();
+            layout.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            child.setLayoutParams(layout);
+        }
+        mScrollContent.requestLayout();
+
         animateChildren();
     }
 
     // This will animate the children's vertical value between the existing and
     // new layout changes
     private void animateChildren() {
-        // Animate each child in the listview
+        final ViewGroup root = (ViewGroup) getActivity().getWindow()
+                .getDecorView().findViewById(android.R.id.content);
+
+        // Get the child's current location
         final List<Float> prevYs = new ArrayList<Float>();
-        for (int i = 0; i < mListView.getChildCount(); i++) {
-            final View v = mListView.getChildAt(i);
-            prevYs.add(v.getY());
+        for (int i = 0; i < mScrollContent.getChildCount(); i++) {
+            final View v = mScrollContent.getChildAt(i);
+            int[] pos = new int[2];
+            v.getLocationInWindow(pos);
+            prevYs.add((float) pos[1]);
+        }
 
-            final ViewTreeObserver observer = mListView.getViewTreeObserver();
-            observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                public boolean onPreDraw() {
-                    observer.removeOnPreDrawListener(this);
-                    for (int i = 0; i < mListView.getChildCount(); i++) {
-                        View v = mListView.getChildAt(i);
-                        float prevY = prevYs.get(i);
-                        final float endY = v.getY();
-                          v.setTranslationY(prevY - endY);
-                          v.animate()
-                               .setStartDelay(ANIMATE_START_DELAY)
-                               .translationY(0)
-                               .setDuration(ANIMATE_DURATION)
-                               .setInterpolator(
-                                       new DecelerateInterpolator(ANIMATE_INTERPOLATE_FACTOR));
+        // Grab the child's new location and animate from prev to current loc.
+        final ViewTreeObserver observer = mScrollContent.getViewTreeObserver();
+        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                observer.removeOnPreDrawListener(this);
+
+                for (int i = mScrollContent.getChildCount() - 1; i >= 0; i--) {
+                    final View v = mScrollContent.getChildAt(i);
+
+                    float prevY;
+                    float endY;
+                    if (i >= prevYs.size()) {
+                        // View is being created
+                        prevY = mScrollContent.getTop() + mScrollContent.getHeight();
+                        endY = v.getY();
+                    } else {
+                        prevY = prevYs.get(i);
+                        int[] endPos = new int[2];
+                        v.getLocationInWindow(endPos);
+                        endY = endPos[1];
                     }
-                    return false;
+
+                    v.setTranslationY((prevY - endY));
+                    root.getOverlay().add(v);
+
+                    v.animate()
+                            .setStartDelay(ANIMATE_START_DELAY)
+                            .translationY(0)
+                            .setDuration(ANIMATE_DURATION)
+                            .setInterpolator(
+                                    new DecelerateInterpolator(ANIMATE_INTERPOLATE_FACTOR))
+                            .withEndAction(new Runnable() {
+                                public void run() {
+                                    root.getOverlay().remove(v);
+                                    mScrollContent.addView(v, 0);
+                                }
+                            });
+
+
                 }
-            });
-        }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mListAdapter = new ThemePreviewAdapter(getActivity(), null);
-        mListView.setAdapter(mListAdapter);
-    }
-
-    public static class ThemePreviewAdapter extends BaseAdapter {
-        public static final String PLACEHOLDER_TAG = "placeholder";
-        private static final int PLACEHOLDER_POSITION = 0;
-
-        int[] layouts = {0,
-                R.layout.v2item_statusbar,
-                R.layout.v2item_font,
-                R.layout.v2item_icon,
-                R.layout.v2item_navbar};
-
-        private Context mContext;
-        private LayoutInflater mInflater;
-        private boolean mIsExpanded;
-        private List<String> mList;
-
-        public ThemePreviewAdapter(Context context, List<String> list) {
-            mContext = context;
-            mInflater = LayoutInflater.from(context);
-            mList = list;
-        }
-
-        public void setExpanded(boolean isExpanded) {
-            mIsExpanded = isExpanded;
-        }
-
-        @Override
-        public int getCount() {
-            return layouts.length;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            // This is just prototype code, needs to actually use convertView and
-            // view holder patterns
-            View view;
-            if (position == PLACEHOLDER_POSITION) {
-                view = new View(mContext);
-                view.setTag(PLACEHOLDER_TAG);
-
-                int height = 0;
-                if (mIsExpanded) {
-                    //TODO: There is probably a better way than hardcoding a height value
-                    //Maybe seperate expanded/collapsed layouts for our child views,
-                    //Or pass the expand mode through onMeasure.
-                    height = 200;
-                }
-
-                ListView.LayoutParams layout =
-                        new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-                view.setLayoutParams(layout);
-            } else {
-                view = mInflater.inflate(layouts[position], null, false);
-                if (mIsExpanded) {
-                    AbsListView.LayoutParams layout =
-                            (AbsListView.LayoutParams) view.getLayoutParams();
-                    if (layout == null) {
-                        layout = new AbsListView.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT, 400);
-                    }
-                    view.setLayoutParams(layout);
-                }
+                return false;
             }
-
-            return view;
-        }
+        });
     }
 }

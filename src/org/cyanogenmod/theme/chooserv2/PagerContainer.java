@@ -26,13 +26,16 @@ package org.cyanogenmod.theme.chooserv2;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.support.v4.view.ThemeViewPager;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 /**
  * PagerContainer: A layout that displays a ViewPager with its children that are outside
@@ -47,25 +50,23 @@ public class PagerContainer extends FrameLayout implements ViewPager.OnPageChang
     private ThemeViewPager mPager;
     private Point mCenter = new Point();
     private Point mInitialTouch = new Point();
+    private int mCollapsedHeight;
 
     boolean mNeedsRedraw = false;
 
     public PagerContainer(Context context) {
-        super(context);
-        init();
+        this(context, null, 0);
     }
 
     public PagerContainer(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public PagerContainer(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
-    }
 
-    private void init() {
+        mCollapsedHeight = generateLayoutParams(attrs).height;
+
         //Disable clipping of children so non-selected pages are visible
         setClipChildren(false);
 
@@ -127,31 +128,53 @@ public class PagerContainer extends FrameLayout implements ViewPager.OnPageChang
     }
 
     public void expand() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(getLayoutParams());
+        params.height = LinearLayout.LayoutParams.MATCH_PARENT;
+        setLayoutParams(params);
+
         mPager.setExpanded(true);
-        int current = mPager.getCurrentItem();
+        final int current = mPager.getCurrentItem();
+        final int prevY = (int) getY();
 
-        if (current != 0) {
-            View lchild = mPager.getChildAt(current - 1);
-            animateChildOut(lchild, lchild.getX() - getWidth());
-        }
+        final ViewTreeObserver observer = mPager.getViewTreeObserver();
+        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                observer.removeOnPreDrawListener(this);
+                if (current != 0) {
+                    View lchild = mPager.getViewForPosition(current - 1);
+                    lchild.setTranslationY(prevY - getY());
+                    animateChildOut(lchild, -getWidth());
+                }
 
-        if (current < mPager.getAdapter().getCount() - 1) {
-            View rchild = mPager.getChildAt(current + 1);
-            animateChildOut(rchild, rchild.getX() + getWidth());
-        }
+                if (current < mPager.getAdapter().getCount() - 1) {
+                    View rchild =  mPager.getViewForPosition(current + 1);
+                    rchild.setTranslationY(prevY - getY());
+                    animateChildOut(rchild, getWidth());
+                }
+                return false;
+            }
+        });
     }
 
     public void collapse() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(getLayoutParams());
+        params.height = mCollapsedHeight;
+        setLayoutParams(params);
+
         mPager.setExpanded(false);
         int current = mPager.getCurrentItem();
+        final int prevY = (int) getY();
 
         if (current != 0) {
-            View lchild = mPager.getChildAt(current - 1);
+
+            View lchild = mPager.getViewForPosition(current - 1);
+            lchild.setTranslationY(0);
             animateChildIn(lchild);
         }
 
         if (current < mPager.getAdapter().getCount() - 1) {
-            View rchild = mPager.getChildAt(current + 1);
+            View rchild = mPager.getViewForPosition(current + 1);
+            rchild.setTranslationY(0);
             animateChildIn(rchild);
         }
     }
