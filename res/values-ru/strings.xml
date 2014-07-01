@@ -31,12 +31,19 @@
   <string name="applying">Применение\u2026</string>
   <string name="remove">Удалить</string>
   <string name="update">Обновить</string>
+  <string name="no_preview_available">Предпросмотр недоступен</string>
   <string name="alarm_label">Будильник</string>
   <string name="notification_label">Уведомление</string>
   <string name="ringtone_label">Рингтон</string>
   <string name="unknown_author">Автор не указан</string>
   <string name="font_preview_letters">АаБбCcDd123</string>
-  <string name="no_boot_animation_preview">Предпросмотр недоступен</string>
   <string name="theme_installed_notification_title">Тема «%s» установлена</string>
   <string name="theme_installed_notification_text">Тема успешно установлена.</string>
+  <string name="menu_item_get_more_themes">Скачать ещё</string>
+  <string name="get_more_description">Вы можете скачать темы по следующим ссылкам:</string>
+  <string-array name="get_more_entry_names">
+    <item>«Магазин тем» CyanogenMod</item>
+    <item>Play Маркет</item>
+    <item>Дополнительные сведения в Wiki CM</item>
+  </string-array>
 </resources>

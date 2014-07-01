@@ -20,7 +20,7 @@
     <style name="AppTheme" parent="android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/ThemeChooserActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ThemeChooserActionBarTabText</item>
-        <item name="android:actionMenuTextColor">#333333</item>
+        <item name="android:actionMenuTextColor">#ffffff</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowActionBarOverlay">false</item>
     </style>

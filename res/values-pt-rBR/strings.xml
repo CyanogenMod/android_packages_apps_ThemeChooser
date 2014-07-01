@@ -31,12 +31,19 @@
   <string name="applying">Aplicando\u2026</string>
   <string name="remove">Remover</string>
   <string name="update">Atualizar</string>
+  <string name="no_preview_available">Sem previsualização</string>
   <string name="alarm_label">Alarme</string>
   <string name="notification_label">Notificação</string>
   <string name="ringtone_label">Toque</string>
   <string name="unknown_author">Autor desconhecido</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_boot_animation_preview">Sem previsualização</string>
   <string name="theme_installed_notification_title">%s instalado</string>
   <string name="theme_installed_notification_text">Tema instalado com sucesso.</string>
+  <string name="menu_item_get_more_themes">Obter mais</string>
+  <string name="get_more_description">Você pode obter mais temas nos seguintes links:</string>
+  <string-array name="get_more_entry_names">
+    <item>Vitrine de Temas CyanogenMod</item>
+    <item>Play Store</item>
+    <item>Mais informação no CM Wiki</item>
+  </string-array>
 </resources>

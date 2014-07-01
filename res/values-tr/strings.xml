@@ -31,12 +31,19 @@
   <string name="applying">Uygulanıyor\u2026</string>
   <string name="remove">Kaldır</string>
   <string name="update">Güncelle</string>
+  <string name="no_preview_available">Mevcut önizleme yok</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Bildirim</string>
   <string name="ringtone_label">Zil sesi</string>
   <string name="unknown_author">Sahibi bilinmiyor</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_boot_animation_preview">Mevcut önizleme yok</string>
   <string name="theme_installed_notification_title">%s yüklendi</string>
   <string name="theme_installed_notification_text">Tema başarıyla yüklendi.</string>
+  <string name="menu_item_get_more_themes">Daha fazlasını edinin</string>
+  <string name="get_more_description">Aşağıdaki bağlantılardan daha fazla temaya ulaşabilirsiniz:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod Tema Vitrini</item>
+    <item>Play Store</item>
+    <item>CM Wiki hakkında daha fazla bilgi</item>
+  </string-array>
 </resources>

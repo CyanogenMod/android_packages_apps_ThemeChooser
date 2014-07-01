@@ -91,6 +91,7 @@ public class WallpaperAndIconPreviewFragment extends Fragment
 
     private ImageView mImageView;
     private LinearLayout mIconContainer;
+    private TextView mNoPreview;
 
     static WallpaperAndIconPreviewFragment newInstance(String imageUrl, String pkgName, boolean isLegacyTheme, boolean hasIcons) {
         final WallpaperAndIconPreviewFragment f = new WallpaperAndIconPreviewFragment();
@@ -119,6 +120,7 @@ public class WallpaperAndIconPreviewFragment extends Fragment
         View view = inflater.inflate(R.layout.image_preview_item, container, false);
         mImageView = (ImageView) view.findViewById(R.id.image);
         mIconContainer = (LinearLayout) view.findViewById(R.id.icon_container);
+        mNoPreview = (TextView) view.findViewById(R.id.no_preview);
         return view;
     }
 
@@ -179,6 +181,9 @@ public class WallpaperAndIconPreviewFragment extends Fragment
         @Override
         public void onLoadFinished(Loader<Bitmap> loader, Bitmap result) {
             mImageView.setImageBitmap(result);
+            if (result == null && !mHasIcons) {
+                mNoPreview.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
@@ -200,14 +205,15 @@ public class WallpaperAndIconPreviewFragment extends Fragment
 
             mIconContainer.removeAllViews();
             for (IconInfo info : infos) {
-                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(0,
                         LayoutParams.WRAP_CONTENT, 1f);
+                lparams.weight = 1f / infos.size();
                 TextView tv = new TextView(loader.getContext());
                 tv.setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
                 tv.setTextColor(Color.WHITE);
                 tv.setGravity(Gravity.CENTER_HORIZONTAL);
                 tv.setLayoutParams(lparams);
-                tv.setCompoundDrawablesWithIntrinsicBounds(null, info.icon, null, null);
+                tv.setCompoundDrawables(null, info.icon, null, null);
                 tv.setText(info.name);
 
                 mIconContainer.addView(tv);

@@ -28,7 +28,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/no_boot_animation_preview"
+        android:text="@string/no_preview_available"
+        android:textSize="20sp"
         android:visibility="invisible" />
 
     <ProgressBar

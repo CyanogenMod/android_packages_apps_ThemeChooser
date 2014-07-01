@@ -74,7 +74,7 @@ public class ChooserActivity extends FragmentActivity {
         Fragment fragment = null;
         if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasExtra(EXTRA_PKGNAME)) {
             String pkgName = intent.getStringExtra(EXTRA_PKGNAME);
-            fragment = ChooserDetailFragment.newInstance(pkgName, null);
+            fragment = ChooserDetailFragment.newInstance(pkgName, filtersList);
             // Handle case where Theme Store or some other app wishes to open
             // a detailed theme view for a given package
             try {

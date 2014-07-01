@@ -31,12 +31,19 @@
   <string name="applying">Wird angewendet\u2026</string>
   <string name="remove">Entfernen</string>
   <string name="update">Aktualisieren</string>
+  <string name="no_preview_available">Keine Vorschau verfügbar</string>
   <string name="alarm_label">Wecker</string>
   <string name="notification_label">Benachrichtigung</string>
   <string name="ringtone_label">Klingelton</string>
   <string name="unknown_author">Autor unbekannt</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="no_boot_animation_preview">Keine Vorschau verfügbar</string>
   <string name="theme_installed_notification_title">%s installiert</string>
   <string name="theme_installed_notification_text">Design erfolgreich installiert</string>
+  <string name="menu_item_get_more_themes">Mehr beziehen</string>
+  <string name="get_more_description">Weitere Designs erhalten Sie unter den folgenden Links:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod-Design-Galerie</item>
+    <item>Play Store</item>
+    <item>Weitere Informationen im CM-Wiki</item>
+  </string-array>
 </resources>
