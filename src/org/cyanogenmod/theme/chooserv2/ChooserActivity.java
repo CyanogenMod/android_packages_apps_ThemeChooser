@@ -17,8 +17,10 @@ package org.cyanogenmod.theme.chooserv2;
 
 import android.content.Context;
 import android.content.res.ThemeConfig;
+import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ThemesContract;
 import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -31,20 +33,25 @@ import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.cyanogenmod.theme.chooser.R;
 
 public class ChooserActivity extends FragmentActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>, ThemeManager.ThemeChangeListener {
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
 
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
     private TextView mThemeName;
+    private Button mApply;
+    private Button mEdit;
+    private ViewGroup mApplyEditBtns;
     private ThemesAdapter mAdapter;
+    private ThemeManager mService;
     private boolean mExpanded = false;
-
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +60,9 @@ public class ChooserActivity extends FragmentActivity
         mContainer = (PagerContainer) findViewById(R.id.pager_container);
         mPager = (ThemeViewPager) findViewById(R.id.viewpager);
         mThemeName = (TextView) findViewById(R.id.theme_name);
+        mApplyEditBtns = (ViewGroup) findViewById(R.id.apply_edit_container);
+        mApply = (Button) findViewById(R.id.apply);
+        mEdit = (Button) findViewById(R.id.edit);
 
         mPager.setOnClickListener(mPagerClickListener);
         mAdapter = new ThemesAdapter(this);
@@ -77,7 +87,57 @@ public class ChooserActivity extends FragmentActivity
             }
         });
 
+        mApply.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                int position = mPager.getCurrentItem();
+                String pkgName = mAdapter.getItemPkgName(position);
+                mService.requestThemeChange(pkgName);
+            }
+        });
+
+        mEdit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mExpanded = true;
+                mContainer.expand();
+                ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
+                        .findFragmentByTag(getFragmentTag(mPager.getCurrentItem()));
+                f.expand();
+            }
+        });
+
+        mService = (ThemeManager) getSystemService(Context.THEME_SERVICE);
         getSupportLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mService.onClientResumed("temp_placeholder", this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mExpanded) {
+            mExpanded = false;
+            mContainer.collapse();
+            ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
+                    .findFragmentByTag(getFragmentTag(mPager.getCurrentItem()));
+            f.collapse();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mService.onClientPaused("temp_placeholder");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mService.onClientDestroyed("temp_placeholder");
     }
 
     private void updateThemeName() {
@@ -139,6 +199,16 @@ public class ChooserActivity extends FragmentActivity
                 selectionArgs, sortOrder);
     }
 
+    @Override
+    public void onProgress(int progress) {
+
+    }
+
+    @Override
+    public void onFinish(boolean isSuccess) {
+
+    }
+
     public class ThemesAdapter extends FragmentPagerAdapter {
         private Cursor mCursor;
         private Context mContext;
@@ -168,6 +238,13 @@ public class ChooserActivity extends FragmentActivity
             String title = DEFAULT.equals(pkgName) ? mContext.getString(R.string.holo)
                     : mCursor.getString(titleIdx);
             return title;
+        }
+
+        public String getItemPkgName(int position) {
+            mCursor.moveToPosition(position);
+            int pkgIdx = mCursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+            String pkgName = mCursor.getString(pkgIdx);
+            return pkgName;
         }
 
         public void swapCursor(Cursor c) {

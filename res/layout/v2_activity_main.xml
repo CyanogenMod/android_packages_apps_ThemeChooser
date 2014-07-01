@@ -26,4 +26,22 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"/>
     </org.cyanogenmod.theme.chooserv2.PagerContainer>
+    <LinearLayout
+        android:id="@+id/apply_edit_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp">
+        <Button android:id="@+id/apply"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="@string/apply"/>
+
+        <Button android:id="@+id/edit"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="@string/edit"/>
+    </LinearLayout>
 </LinearLayout>
