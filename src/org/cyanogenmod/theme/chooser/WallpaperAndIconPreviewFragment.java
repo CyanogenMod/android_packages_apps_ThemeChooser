@@ -63,7 +63,7 @@ public class WallpaperAndIconPreviewFragment extends Fragment
     private static final ComponentName COMPONENT_CAMERANEXT =
             new ComponentName("com.cyngn.cameranext", "com.android.camera.CameraLauncher");
     private static final ComponentName COMPONENT_CAMERA =
-            new ComponentName("com.android.camera2", "com.android.camera.CameraActivity");
+            new ComponentName("com.android.camera2", "com.android.camera.CameraLauncher");
     private static final ComponentName COMPONENT_BROWSER =
             new ComponentName("com.android.browser", "com.android.browser.BrowserActivity");
     private static final ComponentName COMPONENT_SETTINGS =
