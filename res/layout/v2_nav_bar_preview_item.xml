@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/navigation_bar"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="@*android:dimen/system_bar_height"
+              android:layout_alignParentBottom="true"
+              android:paddingStart="6dp"
+              android:paddingEnd="6dp"
+              android:background="#00000000">
+
+    <!-- Dummy view for padding -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <ImageView
+        android:id="@+id/back_button"
+        android:layout_width="@dimen/navigation_button_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical" />
+
+    <ImageView
+        android:id="@+id/home_button"
+        android:layout_width="@dimen/navigation_button_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical" />
+
+    <ImageView
+        android:id="@+id/recent_button"
+        android:layout_width="@dimen/navigation_button_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical" />
+
+    <!-- Dummy view for padding -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+</LinearLayout>

@@ -19,4 +19,7 @@
     <dimen name="button_bar_height">62dip</dimen>
     <dimen name="sliding_up_panel_parallax_distance">150dp</dimen>
     <dimen name="item_browse_height">260dp</dimen>
+    <dimen name="expanded_preview_margin">66dp</dimen>
+    <dimen name="navigation_button_width">80dp</dimen>
+    <dimen name="theme_preview_height">264dp</dimen>
 </resources>

@@ -131,7 +131,7 @@ public class IconPreviewHelper {
      * @param activityName
      * @return
      */
-    private Drawable getDefaultIcon(String pkgName, String activityName) {
+    public Drawable getDefaultIcon(String pkgName, String activityName) {
         Drawable drawable = null;
         ComponentName component = new ComponentName(pkgName, activityName);
         PackageManager pm = mContext.getPackageManager();

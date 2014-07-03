@@ -10,15 +10,26 @@
                 android:layout_gravity="center_vertical"
                 android:divider="@null"
                 android:scrollbars="none"
+                android:fillViewport="true"
                 android:drawSelectorOnTop="false">
-
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      android:orientation="vertical">
-            <include layout="@layout/v2item_statusbar"/>
-            <include layout="@layout/v2item_font"/>
-            <include layout="@layout/v2item_icon"/>
-            <include layout="@layout/v2item_navbar"/>
-        </LinearLayout>
+        <FrameLayout android:layout_width="match_parent"
+                     android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/wallpaper"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/theme_preview_height"
+                android:scaleType="centerCrop"
+                />
+            <RelativeLayout
+                android:id="@+id/preview_container"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/theme_preview_height"
+                android:orientation="vertical">
+                <include layout="@layout/v2_status_bar_preview_item"/>
+                <include layout="@layout/v2item_font"/>
+                <include layout="@layout/v2item_icon"/>
+                <include layout="@layout/v2_nav_bar_preview_item"/>
+            </RelativeLayout>
+        </FrameLayout>
     </ScrollView>
 </LinearLayout>

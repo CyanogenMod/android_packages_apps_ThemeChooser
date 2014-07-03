@@ -26,4 +26,7 @@
     <color name="apply_button_progress_color">#6bd1e9</color>
     <color name="apply_button_default_color">#00b1e5</color>
     <color name="apply_button_pressed_color">#008ef2</color>
+
+    <color name="font_preview_color">#ffffff</color>
+    <color name="font_preview_shadow_color">#dd000000</color>
 </resources>

@@ -70,4 +70,8 @@
         <item>https://play.google.com/store/search?q=theme+engine&amp;c=apps</item>
         <item>http://wiki.cyanogenmod.org/w/Themes</item>
     </string-array>
+
+    <string name="status_bar_clock_text" translatable="false">5:30</string>
+    <string name="status_bar">Status bar</string>
+    <string name="navigation_bar">Navigation bar</string>
 </resources>

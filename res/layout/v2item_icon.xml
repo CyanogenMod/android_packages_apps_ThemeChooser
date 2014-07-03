@@ -3,27 +3,28 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/icon_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/font_preview"
+    android:layout_marginTop="40dp"
     android:gravity="center_horizontal"
     android:orientation="horizontal"
     android:paddingLeft="30dp"
-    android:paddingRight="40dp"
-    android:paddingTop="40dp" >
+    android:paddingRight="30dp">
     <ImageView
         android:layout_width="0px"
         android:layout_weight="1"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:src="@drawable/comp_icon1"
         />
     <ImageView
         android:layout_width="0px"
         android:layout_weight="1"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:src="@drawable/comp_icon2"
         />
     <ImageView
         android:layout_width="0px"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_weight="1"
         android:src="@drawable/comp_icon3"
         />
