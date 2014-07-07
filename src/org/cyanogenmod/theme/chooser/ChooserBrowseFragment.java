@@ -182,7 +182,7 @@ public class ChooserBrowseFragment extends Fragment
 
         final WebView webView = new WebView(context);
         String html = createGetThemesHtml(context);
-        webView.loadData(html.toString(), "text/html", null);
+        webView.loadData(html.toString(), "text/html; charset=UTF-8", null);
 
         // Setup the dialog
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
