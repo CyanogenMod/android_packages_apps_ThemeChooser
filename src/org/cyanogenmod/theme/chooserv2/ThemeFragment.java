@@ -57,17 +57,22 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final int ANIMATE_DURATION = 800;
     public static final int ANIMATE_INTERPOLATE_FACTOR = 3;
 
+    private static final ComponentName COMPONENT_DIALER =
+            new ComponentName("com.android.dialer", "com.android.dialer.DialtactsActivity");
     private static final ComponentName COMPONENT_MESSAGING =
             new ComponentName("com.android.mms", "com.android.mms.ui.ConversationList");
     private static final ComponentName COMPONENT_CAMERANEXT =
             new ComponentName("com.cyngn.cameranext", "com.android.camera.CameraLauncher");
     private static final ComponentName COMPONENT_CAMERA =
             new ComponentName("com.android.camera2", "com.android.camera.CameraActivity");
+    private static final ComponentName COMPONENT_BROWSER =
+            new ComponentName("com.android.browser", "com.android.browser.BrowserActivity");
     private static final ComponentName COMPONENT_SETTINGS =
             new ComponentName("com.android.settings", "com.android.settings.Settings");
-    private static final ComponentName COMPONENT_PEOPLE =
-            new ComponentName("com.android.contacts",
-                    "com.android.contacts.activities.PeopleActivity");
+    private static final ComponentName COMPONENT_CALENDAR =
+            new ComponentName("com.android.calendar", "com.android.calendar.AllInOneActivity");
+    private static final ComponentName COMPONENT_GALERY =
+            new ComponentName("com.android.gallery3d", "com.android.gallery3d.app.GalleryActivity");
     private static final String CAMERA_NEXT_PACKAGE = "com.cyngn.cameranext";
 
     private static ComponentName[] sIconComponents;
@@ -452,23 +457,30 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public static ComponentName[] getIconComponents(Context context) {
         if (sIconComponents == null || sIconComponents.length == 0) {
-            sIconComponents = new ComponentName[]{COMPONENT_CAMERA, COMPONENT_MESSAGING,
-                    COMPONENT_PEOPLE};
+            sIconComponents = new ComponentName[]{COMPONENT_DIALER, COMPONENT_MESSAGING,
+                    COMPONENT_CAMERA, COMPONENT_BROWSER};
 
             PackageManager pm = context.getPackageManager();
 
+            // if device does not have telephony replace dialer and mms
+            if (!pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+                sIconComponents[0] = COMPONENT_CALENDAR;
+                sIconComponents[1] = COMPONENT_GALERY;
+            }
+
             if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-                sIconComponents[0] = COMPONENT_SETTINGS;
+                sIconComponents[2] = COMPONENT_SETTINGS;
             } else {
                 // decide on which camera icon to use
                 try {
                     if (pm.getPackageInfo(CAMERA_NEXT_PACKAGE, 0) != null) {
-                        sIconComponents[0] = COMPONENT_CAMERANEXT;
+                        sIconComponents[2] = COMPONENT_CAMERANEXT;
                     }
                 } catch (PackageManager.NameNotFoundException e) {
                     // default to COMPONENT_CAMERA
                 }
             }
+
         }
         return sIconComponents;
     }
