@@ -16,6 +16,7 @@
 package org.cyanogenmod.theme.chooserv2;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
@@ -23,6 +24,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.ThemesContract;
@@ -49,13 +52,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.viewpagerindicator.PageIndicator;
 import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.util.AudioUtils;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
 
 import java.util.HashMap;
 
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
@@ -74,6 +81,9 @@ public class ComponentSelector extends LinearLayout
     private static final int LOADER_ID_STYLE = 104;
     private static final int LOADER_ID_WALLPAPER = 105;
     private static final int LOADER_ID_BOOTANIMATIONS = 106;
+    private static final int LOADER_ID_RINGTONE = 107;
+    private static final int LOADER_ID_NOTIFICATION = 108;
+    private static final int LOADER_ID_ALARM = 109;
 
     private Context mContext;
     private LayoutInflater mInflater;
@@ -90,6 +100,8 @@ public class ComponentSelector extends LinearLayout
     private Animation mAnimateOut;
 
     private OnItemClickedListener mListener;
+
+    private MediaPlayer mMediaPlayer;
 
     public ComponentSelector(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -122,6 +134,7 @@ public class ComponentSelector extends LinearLayout
             public void onAnimationRepeat(Animation animation) {
             }
         });
+        mMediaPlayer = new MediaPlayer();
     }
 
     @Override
@@ -135,6 +148,9 @@ public class ComponentSelector extends LinearLayout
 
         // set navbar_padding to GONE if no on screen navigation bar is available
         if (!hasNavigationBar()) findViewById(R.id.navbar_padding).setVisibility(View.GONE);
+        setNumItemsPerPage(2);
+        setComponentType(MODIFIES_RINGTONES);
+        show();
     }
 
     public void setComponentType(String component) {
@@ -177,6 +193,7 @@ public class ComponentSelector extends LinearLayout
 
     public void hide() {
         startAnimation(mAnimateOut);
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) mMediaPlayer.stop();
     }
 
     private boolean hasNavigationBar() {
@@ -204,6 +221,15 @@ public class ComponentSelector extends LinearLayout
         }
         if (MODIFIES_BOOT_ANIM.equals(component)) {
             return LOADER_ID_BOOTANIMATIONS;
+        }
+        if (MODIFIES_RINGTONES.equals(component)) {
+            return LOADER_ID_RINGTONE;
+        }
+        if (MODIFIES_NOTIFICATIONS.equals(component)) {
+            return LOADER_ID_NOTIFICATION;
+        }
+        if (MODIFIES_ALARMS.equals(component)) {
+            return LOADER_ID_ALARM;
         }
         return -1;
     }
@@ -289,6 +315,15 @@ public class ComponentSelector extends LinearLayout
                         ThemesColumns.PKG_NAME
                 };
                 break;
+            case LOADER_ID_RINGTONE:
+                selection = MODIFIES_RINGTONES + "=?";
+                break;
+            case LOADER_ID_NOTIFICATION:
+                selection = MODIFIES_NOTIFICATIONS + "=?";
+                break;
+            case LOADER_ID_ALARM:
+                selection = MODIFIES_ALARMS + "=?";
+                break;
             default:
                 return null;
         }
@@ -318,6 +353,8 @@ public class ComponentSelector extends LinearLayout
     public class CursorPagerAdapter<T extends View> extends PagerAdapter {
         LinearLayout.LayoutParams mItemParams =
                 new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
+        LinearLayout.LayoutParams mSoundItemParams =
+                new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0, 1.0f);
         private Cursor mCursor;
         private int mItemsPerPage;
         HashMap<String, ThemedTypefaceHelper> mTypefaceHelpers =
@@ -356,6 +393,16 @@ public class ComponentSelector extends LinearLayout
             }
             if (MODIFIES_BOOT_ANIM.equals(mComponentType)) {
                 newBootanimationView(mCursor, v, position);
+            }
+            if (MODIFIES_RINGTONES.equals(mComponentType) ||
+                    MODIFIES_NOTIFICATIONS.equals(mComponentType) ||
+                    MODIFIES_ALARMS.equals(mComponentType)) {
+                v = (ViewGroup) mInflater.inflate(R.layout.component_selection_sounds_pager_item,
+                        container, false);
+                if (v instanceof LinearLayout) {
+                    ((LinearLayout) v).setWeightSum(mItemsPerPage);
+                }
+                newSoundView(mCursor, v, position, mComponentType);
             }
             container.addView(v);
             return v;
@@ -564,6 +611,48 @@ public class ComponentSelector extends LinearLayout
                 v.setOnClickListener(mItemClickListener);
                 parent.addView(v, mItemParams);
                 addDividerIfNeeded(parent, i, index, cursor);
+            }
+        }
+
+        private void newSoundView(Cursor cursor, ViewGroup parent, int position, String component) {
+            for (int i = 0; i < mItemsPerPage; i++) {
+                int index = position * mItemsPerPage + i;
+                if (cursor.getCount() <= index) continue;
+                cursor.moveToPosition(index);
+                View v = mInflater.inflate(R.layout.sound_component_selection_item, parent,
+                        false);
+                final int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+
+                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+                v.setTag(cursor.getString(pkgNameIndex));
+                v.setOnClickListener(mItemClickListener);
+                parent.addView(v, mSoundItemParams);
+                View playButton = v.findViewById(R.id.play_button);
+                playButton.setTag(cursor.getString(pkgNameIndex));
+                playButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int type;
+                        String pkgName = (String) v.getTag();
+                        if (mComponentType.equals(MODIFIES_RINGTONES)) {
+                            type = RingtoneManager.TYPE_RINGTONE;
+                        } else if (mComponentType.equals(MODIFIES_NOTIFICATIONS)) {
+                            type = RingtoneManager.TYPE_NOTIFICATION;
+                        } else {
+                            type = RingtoneManager.TYPE_ALARM;
+                        }
+                        try {
+                            if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                                mMediaPlayer.stop();
+                            }
+                            AudioUtils.loadThemeAudible(mContext, type, pkgName,
+                                    mMediaPlayer);
+                            mMediaPlayer.start();
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         }
 
