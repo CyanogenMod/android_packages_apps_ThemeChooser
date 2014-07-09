@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/font_preview"
+<org.cyanogenmod.theme.chooserv2.ComponentCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/font_preview_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/status_bar"
-    android:text="@string/font_preview_letters"
-    android:textColor="@color/font_preview_color"
-    android:shadowColor="@color/font_preview_shadow_color"
-    android:shadowDx="2"
-    android:shadowDy="2"
-    android:shadowRadius="4"
-    android:textSize="32sp"
-    android:gravity="center_horizontal"
-/>
+    android:layout_below="@+id/status_bar_container"
+    android:orientation="vertical"
+    android:background="@drawable/theme_component_bg_transition">
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        android:text="@string/font_label"
+        style="@style/card_label"/>
+    <TextView
+        android:id="@+id/font_preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/font_preview_letters"
+        android:textColor="@color/font_preview_color"
+        android:shadowColor="@color/font_preview_shadow_color"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="4"
+        android:textSize="32sp"
+        android:gravity="center_horizontal"
+        />
+</org.cyanogenmod.theme.chooserv2.ComponentCardView>

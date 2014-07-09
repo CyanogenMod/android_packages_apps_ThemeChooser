@@ -152,4 +152,11 @@
         <item name="android:maxLines">1</item>
     </style>
 
+    <style name="card_label">
+        <item name="android:textColor">@color/component_label_color</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">6pt</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

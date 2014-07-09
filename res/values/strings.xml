@@ -86,4 +86,9 @@
 
     <string name="save_and_apply_title">Save &amp; apply</string>
 
+    <string name="icon_label">Icons</string>
+    <string name="font_label">Fonts</string>
+    <string name="statusbar_label">Status</string>
+    <string name="navbar_label">Navigation</string>
+
 </resources>

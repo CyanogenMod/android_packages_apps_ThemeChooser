@@ -24,11 +24,13 @@ import android.content.res.ThemeConfig;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.provider.ThemesContract;
 import android.provider.ThemesContract.PreviewColumns;
@@ -37,7 +39,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,7 @@ import java.util.List;
 
 public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int ANIMATE_START_DELAY = 200;
-    public static final int ANIMATE_DURATION = 800;
+    public static final int ANIMATE_DURATION = 300;
     public static final int ANIMATE_INTERPOLATE_FACTOR = 3;
 
     public static final String CURRENTLY_APPLIED_THEME = "currently_applied_theme";
@@ -109,6 +110,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private ImageView mHomeButton;
     private ImageView mRecentButton;
 
+    private Handler mHandler;
+
     static ThemeFragment newInstance(String pkgName) {
         ThemeFragment f = new ThemeFragment();
         Bundle args = new Bundle();
@@ -132,6 +135,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         helper.load(getActivity(), CURRENTLY_APPLIED_THEME.equals(mPkgName) ?
                 getAppliedFontPackageName() : mPkgName);
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
+
+        mHandler = new Handler();
     }
 
     @Override
@@ -179,60 +184,98 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void expand() {
-        ViewGroup.LayoutParams layoutParams = mScrollContent.getLayoutParams();
+        // Full width and height!
+        ViewGroup content = (ViewGroup) mScrollView.getParent();
+        content.setPadding(0, 0, 0, 0);
+        ViewGroup.LayoutParams  layoutParams = mPreviewContent.getLayoutParams();
         layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        mScrollContent.setLayoutParams(layoutParams);
 
-        layoutParams = mPreviewContent.getLayoutParams();
-        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-
+        // Expand the children
         for (int i = 0; i < mPreviewContent.getChildCount(); i++) {
-            View child = mPreviewContent.getChildAt(i);
-            RelativeLayout.LayoutParams layout =
+            ComponentCardView child = (ComponentCardView) mPreviewContent.getChildAt(i);
+            RelativeLayout.LayoutParams lparams =
                     (RelativeLayout.LayoutParams) child.getLayoutParams();
-            int botMargin = (int) child.getContext().getResources()
-                    .getDimension(R.dimen.expanded_preview_margin);
-            layout.setMargins(0, 0, 0, botMargin);
-            child.setLayoutParams(layout);
-        }
-        mScrollContent.requestLayout();
-        animateChildren(true);
-        animateWallpaperOut();
 
+            int top = (int) child.getResources()
+                    .getDimension(R.dimen.expanded_card_margin_top);
+            lparams.setMargins(0, top, 0, 0);
+            if (child.getId() == R.id.navigation_bar_container) {
+                lparams.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                lparams.addRule(RelativeLayout.BELOW, R.id.icon_container);
+            }
+
+            child.setLayoutParams(lparams);
+            child.expand();
+        }
+
+        // Collect the present position of all the children. The next layout/draw cycle will
+        // change these bounds since we just expanded them. Then we can animate from prev location
+        // to the new location.
+        animateChildren(true, getChildrensGlobalBounds());
+        animateWallpaperOut();
+    }
+
+    // Returns the boundaries for all the children in the scrollview relative to the window
+    private List<Rect> getChildrensGlobalBounds() {
+        List<Rect> bounds = new ArrayList<Rect>();
+        for (int i = 0; i < mPreviewContent.getChildCount(); i++) {
+            final View v = mPreviewContent.getChildAt(i);
+            int[] pos = new int[2];
+            v.getLocationInWindow(pos);
+            Rect boundary = new Rect(pos[0], pos[1], pos[0]+v.getWidth(), pos[1]+v.getHeight());
+            bounds.add(boundary);
+        }
+        return bounds;
+    }
+
+    public void fadeOutCards(Runnable endAction) {
+        for (int i = 0; i < mPreviewContent.getChildCount(); i++) {
+            ComponentCardView v = (ComponentCardView) mPreviewContent.getChildAt(i);
+            v.animateFadeOut();
+        }
+        mHandler.postDelayed(endAction, ComponentCardView.CARD_FADE_DURATION);
     }
 
     public void collapse() {
+        // Pad the  view so it appears thinner
+        ViewGroup content = (ViewGroup) mScrollView.getParent();
+        Resources r = mScrollView.getContext().getResources();
+        int leftRightPadding = (int) r.getDimension(R.dimen.collapsed_theme_page_padding);
+        content.setPadding(leftRightPadding, 0, leftRightPadding, 0);
+
+        // Shrink the height
         ViewGroup.LayoutParams layoutParams = mPreviewContent.getLayoutParams();
         Resources resources = mPreviewContent.getResources();
         layoutParams.height = (int) resources.getDimension(R.dimen.theme_preview_height);
 
         for (int i = 0; i < mPreviewContent.getChildCount(); i++) {
-            View child = mPreviewContent.getChildAt(i);
-            RelativeLayout.LayoutParams layout =
+            ComponentCardView child = (ComponentCardView) mPreviewContent.getChildAt(i);
+            RelativeLayout.LayoutParams lparams =
                     (RelativeLayout.LayoutParams) child.getLayoutParams();
-            layout.setMargins(0, 0, 0, 0);
-            child.setLayoutParams(layout);
+            lparams.setMargins(0, 0, 0, 0);
+
+            if (child.getId() == R.id.navigation_bar_container) {
+                lparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                lparams.removeRule(RelativeLayout.BELOW);
+            } else if (child.getId() == R.id.icon_container) {
+                int top = (int) child.getResources()
+                        .getDimension(R.dimen.collapsed_icon_card_margin_top);
+                lparams.setMargins(0, top, 0, 0);
+            }
+
+            child.getLayoutParams();
+            child.collapse();
         }
         mPreviewContent.requestLayout();
-
-        animateChildren(false);
+        animateChildren(false, getChildrensGlobalBounds());
         animateWallpaperIn();
     }
 
-    // This will animate the children's vertical value between the existing and
-    // new layout changes
-    private void animateChildren(final boolean isExpanding) {
+    // This will animate the children's vertical positions between the previous bounds and the
+    // new bounds which occur on the next draw
+    private void animateChildren(final boolean isExpanding, final List<Rect> prevBounds) {
         final ViewGroup root = (ViewGroup) getActivity().getWindow()
                 .getDecorView().findViewById(android.R.id.content);
-
-        // Get the child's current location
-        final List<Float> prevYs = new ArrayList<Float>();
-        for (int i = 0; i < mPreviewContent.getChildCount(); i++) {
-            final View v = mPreviewContent.getChildAt(i);
-            int[] pos = new int[2];
-            v.getLocationInWindow(pos);
-            prevYs.add((float) pos[1]);
-        }
 
         // Grab the child's new location and animate from prev to current loc.
         final ViewTreeObserver observer = mScrollContent.getViewTreeObserver();
@@ -241,22 +284,28 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 observer.removeOnPreDrawListener(this);
 
                 for (int i = mPreviewContent.getChildCount() - 1; i >= 0; i--) {
-                    final View v = mPreviewContent.getChildAt(i);
+                    final ComponentCardView v = (ComponentCardView) mPreviewContent.getChildAt(i);
 
-                    float prevY;
-                    float endY;
-                    if (i >= prevYs.size()) {
+                    float prevY; float endY;
+                    float prevHeight; float endHeight;
+                    if (i >= prevBounds.size()) {
                         // View is being created
                         prevY = mPreviewContent.getTop() + mPreviewContent.getHeight();
                         endY = v.getY();
+                        prevHeight = v.getHeight();
+                        endHeight = v.getHeight();
                     } else {
-                        prevY = prevYs.get(i);
+                        Rect boundary = prevBounds.get(i);
+                        prevY = boundary.top;
+                        prevHeight = boundary.height();
+
                         int[] endPos = new int[2];
                         v.getLocationInWindow(endPos);
                         endY = endPos[1];
+                        endHeight = v.getHeight();
                     }
 
-                    v.setTranslationY((prevY - endY));
+                    v.setTranslationY((prevY - endY) + (prevHeight - endHeight) / 2);
                     root.getOverlay().add(v);
 
                     // Expanding has a delay while the wallpaper begins to fade out
@@ -275,6 +324,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                                     mPreviewContent.addView(v, 0);
                                 }
                             });
+                    v.postDelayed(new Runnable() {
+                        public void run() {
+                            if (isExpanding) {
+                                v.animateExpand();
+                            }
+                        }
+                    }, ANIMATE_DURATION / 2);
 
 
                 }
@@ -313,16 +369,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void animateWallpaperIn() {
+                mWallpaper.setVisibility(View.VISIBLE);
                 mWallpaper.setTranslationY(0);
                 mWallpaper.animate()
-                        .setStartDelay(ANIMATE_START_DELAY)
                         .alpha(1f)
-                        .setDuration(300)
-                        .withEndAction(new Runnable() {
-                            public void run() {
-                                mWallpaper.setVisibility(View.VISIBLE);
-                            }
-                        });
+                        .setDuration(300);
     }
 
     private String getAppliedFontPackageName() {
@@ -394,6 +445,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
         c.moveToFirst();
+        if (c.getCount() == 0) return;
         loadWallpaper(c);
         loadStatusBar(c);
         loadIcons(c);
@@ -462,7 +514,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         // fall back to the default icon set
         IconPreviewHelper helper = new IconPreviewHelper(getActivity(), "");
         for(int i=0; i < mIconContainer.getChildCount() && i < iconIdx.length; i++) {
-            ImageView v = (ImageView) mIconContainer.getChildAt(i);
+            ImageView v = (ImageView) ((ViewGroup)mIconContainer.getChildAt(1)).getChildAt(i);
             Bitmap bitmap = Utils.loadBitmapBlob(c, iconIdx[i]);
             if (bitmap == null) {
                 ComponentName component = sIconComponents[i];

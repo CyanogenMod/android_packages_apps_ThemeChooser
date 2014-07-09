@@ -82,7 +82,7 @@ public class ChooserActivity extends FragmentActivity
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, dm);
-        mPager.setPageMargin(margin);
+        mPager.setPageMargin(-margin / 2);
         mPager.setOffscreenPageLimit(3);
 
         mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -187,10 +187,14 @@ public class ChooserActivity extends FragmentActivity
             hideSaveApplyButton();
         } else if (mExpanded) {
             mExpanded = false;
-            mContainer.collapse();
-            ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
+            final ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
                     .findFragmentByTag(getFragmentTag(mPager.getCurrentItem()));
-            f.collapse();
+            f.fadeOutCards(new Runnable() {
+                public void run() {
+                    mContainer.collapse();
+                    f.collapse();
+                }
+            });
         } else {
             super.onBackPressed();
         }
@@ -261,17 +265,12 @@ public class ChooserActivity extends FragmentActivity
     private View.OnClickListener mPagerClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            mExpanded = !mExpanded;
-            if (mExpanded) {
+            if (!mExpanded) {
+                mExpanded = true;
                 mContainer.expand();
                 ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
                         .findFragmentByTag(getFragmentTag(mPager.getCurrentItem()));
                 f.expand();
-            } else {
-                mContainer.collapse();
-                ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
-                        .findFragmentByTag(getFragmentTag(mPager.getCurrentItem()));
-                f.collapse();
             }
         }
     };

@@ -32,6 +32,8 @@
 
     <color name="component_selection_background">#e6212121</color>
     <color name="component_divider_color">#80cccccc</color>
+    <color name="component_label_color">#bebebe</color>
+
     <drawable name="component_selection_pressed">#40000000</drawable>
     <color name="component_selection_current_text_color">#50acff</color>
     <color name="background">#d6d6d8</color>

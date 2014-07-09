@@ -133,8 +133,29 @@ public class PagerContainer extends FrameLayout implements ViewPager.OnPageChang
         setLayoutParams(params);
 
         mPager.setExpanded(true);
+
         final int current = mPager.getCurrentItem();
         final int prevY = (int) getY();
+
+        //Since our viewpager's width is changing to fill the screen
+        //we must start the left/right children of the current page inwards on first draw
+        final int lChildPrevXf;
+        final int rChildPrevXf;
+
+        if (current != 0) {
+            final View lchild = mPager.getViewForPosition(current - 1);
+            lChildPrevXf = (int) lchild.getX();
+        } else {
+            lChildPrevXf = 0;
+        }
+
+        if (current < mPager.getAdapter().getCount() - 1) {
+            View rchild =  mPager.getViewForPosition(current + 1);
+            rChildPrevXf = (int) rchild.getX();
+        } else {
+            rChildPrevXf = 0;
+        }
+
 
         final ViewTreeObserver observer = mPager.getViewTreeObserver();
         observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -143,11 +164,13 @@ public class PagerContainer extends FrameLayout implements ViewPager.OnPageChang
                 if (current != 0) {
                     View lchild = mPager.getViewForPosition(current - 1);
                     lchild.setTranslationY(prevY - getY());
+                    lchild.setX(lChildPrevXf);
                     animateChildOut(lchild, -getWidth());
                 }
 
                 if (current < mPager.getAdapter().getCount() - 1) {
                     View rchild =  mPager.getViewForPosition(current + 1);
+                    rchild.setX(rChildPrevXf);
                     rchild.setTranslationY(prevY - getY());
                     animateChildOut(rchild, getWidth());
                 }
@@ -166,7 +189,6 @@ public class PagerContainer extends FrameLayout implements ViewPager.OnPageChang
         final int prevY = (int) getY();
 
         if (current != 0) {
-
             View lchild = mPager.getViewForPosition(current - 1);
             lchild.setTranslationY(0);
             animateChildIn(lchild);
