@@ -26,6 +26,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.ThemesContract;
+import android.provider.ThemesContract.MixnMatchColumns;
 import android.provider.ThemesContract.PreviewColumns;
 import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.FragmentActivity;
@@ -82,6 +83,7 @@ public class ComponentSelector extends LinearLayout
     private CursorPagerAdapter mAdapter;
     private int mBatteryStyle;
     private int mItemsPerPage;
+    private String mAppliedComponentPkgName;
 
     // animations for bringing selector in and out of view
     private Animation mAnimateIn;
@@ -136,6 +138,20 @@ public class ComponentSelector extends LinearLayout
     }
 
     public void setComponentType(String component) {
+        // Find out which theme is currently applied for this component
+        String selection = MixnMatchColumns.COL_KEY + "=?";
+        String[] selectionArgs = { MixnMatchColumns.componentToMixNMatchKey(component) };
+        Cursor c = mContext.getContentResolver().query(MixnMatchColumns.CONTENT_URI,
+                null, selection, selectionArgs, null);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                mAppliedComponentPkgName = c.getString(
+                        c.getColumnIndex(MixnMatchColumns.COL_VALUE));
+            }
+            c.close();
+        } else {
+            mAppliedComponentPkgName = null;
+        }
         mComponentType = component;
         mAdapter = new CursorPagerAdapter<View>(null, mItemsPerPage);
         mPager.setAdapter(mAdapter);
@@ -397,7 +413,6 @@ public class ComponentSelector extends LinearLayout
                 int bluetoothIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BLUETOOTH_ICON);
                 int batteryIndex = cursor.getColumnIndex(getBatteryIndex(mBatteryStyle));
                 int backgroundIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
-                int titleIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.TITLE);
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.slot1)).setImageBitmap(
@@ -408,7 +423,7 @@ public class ComponentSelector extends LinearLayout
                         loadBitmapBlob(cursor, bluetoothIndex));
                 ((ImageView) v.findViewById(R.id.slot4)).setImageBitmap(
                         loadBitmapBlob(cursor, batteryIndex));
-                ((TextView) v.findViewById(R.id.title)).setText(cursor.getString(titleIndex));
+                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.findViewById(R.id.container).setBackground(
                         new BitmapDrawable(loadBitmapBlob(cursor, backgroundIndex)));
                 v.setTag(cursor.getString(pkgNameIndex));
@@ -427,12 +442,11 @@ public class ComponentSelector extends LinearLayout
                         false);
                 int backIndex = cursor.getColumnIndex(PreviewColumns.NAVBAR_BACK_BUTTON);
                 int backgroundIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
-                int titleIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.TITLE);
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.back)).setImageBitmap(
                         loadBitmapBlob(cursor, backIndex));
-                ((TextView) v.findViewById(R.id.title)).setText(cursor.getString(titleIndex));
+                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.findViewById(R.id.container).setBackground(
                         new BitmapDrawable(loadBitmapBlob(cursor, backgroundIndex)));
                 v.setTag(cursor.getString(pkgNameIndex));
@@ -449,7 +463,6 @@ public class ComponentSelector extends LinearLayout
                 cursor.moveToPosition(index);
                 View v = mInflater.inflate(R.layout.font_component_selection_item, parent,
                         false);
-                int titleIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.TITLE);
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 TextView preview = (TextView) v.findViewById(R.id.text_preview);
@@ -466,7 +479,7 @@ public class ComponentSelector extends LinearLayout
                 Typeface typefaceNormal = helper.getTypeface(Typeface.NORMAL);
                 preview.setTypeface(typefaceNormal);
 
-                ((TextView) v.findViewById(R.id.title)).setText(cursor.getString(titleIndex));
+                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);
                 parent.addView(v, mItemParams);
@@ -482,12 +495,11 @@ public class ComponentSelector extends LinearLayout
                 View v = mInflater.inflate(R.layout.icon_component_selection_item, parent,
                         false);
                 int iconIndex = cursor.getColumnIndex(PreviewColumns.ICON_PREVIEW_1);
-                int titleIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.TITLE);
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
                         loadBitmapBlob(cursor, iconIndex));
-                ((TextView) v.findViewById(R.id.title)).setText(cursor.getString(titleIndex));
+                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);
                 parent.addView(v, mItemParams);
@@ -503,12 +515,11 @@ public class ComponentSelector extends LinearLayout
                 View v = mInflater.inflate(R.layout.icon_component_selection_item, parent,
                         false);
                 int styleIndex = cursor.getColumnIndex(PreviewColumns.STYLE_PREVIEW);
-                int titleIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.TITLE);
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
                         loadBitmapBlob(cursor, styleIndex));
-                ((TextView) v.findViewById(R.id.title)).setText(cursor.getString(titleIndex));
+                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);
                 parent.addView(v, mItemParams);
@@ -524,12 +535,11 @@ public class ComponentSelector extends LinearLayout
                 View v = mInflater.inflate(R.layout.wallpaper_component_selection_item, parent,
                         false);
                 int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.WALLPAPER_THUMBNAIL);
-                int titleIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.TITLE);
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
                         loadBitmapBlob(cursor, wallpaperIndex));
-                ((TextView) v.findViewById(R.id.title)).setText(cursor.getString(titleIndex));
+                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);
                 parent.addView(v, mItemParams);
@@ -545,12 +555,11 @@ public class ComponentSelector extends LinearLayout
                 View v = mInflater.inflate(R.layout.bootani_component_selection_item, parent,
                         false);
                 int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.BOOTANIMATION_THUMBNAIL);
-                int titleIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.TITLE);
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.preview)).setImageBitmap(
                         loadBitmapBlob(cursor,wallpaperIndex));
-                ((TextView) v.findViewById(R.id.title)).setText(cursor.getString(titleIndex));
+                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);
                 parent.addView(v, mItemParams);
@@ -576,6 +585,15 @@ public class ComponentSelector extends LinearLayout
                 Cursor cursor) {
             if (position < mItemsPerPage - 1 && cursorIndex < cursor.getCount() - 1) {
                 addDivider(parent);
+            }
+        }
+
+        private void setTitle(TextView titleView, Cursor cursor) {
+            String pkgName = cursor.getString(cursor.getColumnIndex(ThemesColumns.PKG_NAME));
+            titleView.setText(cursor.getString(cursor.getColumnIndex(ThemesColumns.TITLE)));
+            if (pkgName.equals(mAppliedComponentPkgName)) {
+                titleView.setTextColor(getResources().getColor(
+                        R.color.component_selection_current_text_color));
             }
         }
     }
