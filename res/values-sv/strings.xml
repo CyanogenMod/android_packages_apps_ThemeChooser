@@ -39,4 +39,11 @@
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s installerad</string>
   <string name="theme_installed_notification_text">Temat installerades.</string>
+  <string name="menu_item_get_more_themes">Hitta fler</string>
+  <string name="get_more_description">Du kan få fler teman från följande länkar:</string>
+  <string-array name="get_more_entry_names">
+    <item>Visning av CyanogenMod-teman</item>
+    <item>Play Butik</item>
+    <item>Mer info på CyanogenMods Wiki</item>
+  </string-array>
 </resources>

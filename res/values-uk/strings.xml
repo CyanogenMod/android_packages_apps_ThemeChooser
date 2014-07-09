@@ -31,6 +31,7 @@
   <string name="applying">Застосування\u2026</string>
   <string name="remove">Вилучити</string>
   <string name="update">Оновити</string>
+  <string name="no_preview_available">Перегляд недоступний</string>
   <string name="alarm_label">Будильник</string>
   <string name="notification_label">Сповіщення</string>
   <string name="ringtone_label">Дзвінок</string>
@@ -38,4 +39,11 @@
   <string name="font_preview_letters">АаБбCcDd123</string>
   <string name="theme_installed_notification_title">Тема «%s» встановлена</string>
   <string name="theme_installed_notification_text">Тема успішно встановлена.</string>
+  <string name="menu_item_get_more_themes">Більше</string>
+  <string name="get_more_description">Додаткові теми можна отримати тут:</string>
+  <string-array name="get_more_entry_names">
+    <item>Магазин тем CyanogenMod</item>
+    <item>Play Маркет</item>
+    <item>Детальнішу інформацію можна отримати на Wiki CM</item>
+  </string-array>
 </resources>
