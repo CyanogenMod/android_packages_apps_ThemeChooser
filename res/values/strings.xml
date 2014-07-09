@@ -82,4 +82,6 @@
     <string name="btn_customize_text">Customize</string>
     <string name="btn_theme_store_text">Theme Store</string>
 
+    <string name="my_theme">My theme</string>
+
 </resources>

@@ -18,7 +18,9 @@ package org.cyanogenmod.theme.chooserv2;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.ThemeConfig;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -56,6 +58,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final int ANIMATE_START_DELAY = 200;
     public static final int ANIMATE_DURATION = 800;
     public static final int ANIMATE_INTERPOLATE_FACTOR = 3;
+
+    public static final String CURRENTLY_APPLIED_THEME = "currently_applied_theme";
 
     private static final ComponentName COMPONENT_DIALER =
             new ComponentName("com.android.dialer", "com.android.dialer.DialtactsActivity");
@@ -124,7 +128,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         getIconComponents(getActivity());
         ThemedTypefaceHelper helper = new ThemedTypefaceHelper();
-        helper.load(getActivity(), mPkgName);
+        helper.load(getActivity(), CURRENTLY_APPLIED_THEME.equals(mPkgName) ?
+                getAppliedFontPackageName() : mPkgName);
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
     }
 
@@ -160,6 +165,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         getLoaderManager().initLoader(0, null, this);
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
+            if (getLoaderManager().getLoader(0) != null) {
+                getLoaderManager().restartLoader(0, null, this);
+            }
+        }
     }
 
     public void expand() {
@@ -309,6 +324,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         });
     }
 
+    private String getAppliedFontPackageName() {
+        final Configuration config = getActivity().getResources().getConfiguration();
+        final ThemeConfig themeConfig = config != null ? config.themeConfig : null;
+        return themeConfig != null ? themeConfig.getFontPkgName() :
+                ThemeConfig.getSystemTheme().getFontPkgName();
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {
@@ -338,6 +360,33 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Uri uri = ThemesContract.PreviewColumns.CONTENT_URI;
         String selection = ThemesContract.ThemesColumns.PKG_NAME + "= ?";
         String[] selectionArgs = new String[]{mPkgName};
+
+        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
+            projection = new String[] {
+                    PreviewColumns.WALLPAPER_PREVIEW,
+                    PreviewColumns.STATUSBAR_BACKGROUND,
+                    PreviewColumns.STATUSBAR_WIFI_ICON,
+                    PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
+                    PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
+                    PreviewColumns.STATUSBAR_SIGNAL_ICON,
+                    PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
+                    PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
+                    PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
+                    PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
+                    PreviewColumns.NAVBAR_BACK_BUTTON,
+                    PreviewColumns.NAVBAR_HOME_BUTTON,
+                    PreviewColumns.NAVBAR_RECENT_BUTTON,
+                    PreviewColumns.ICON_PREVIEW_1,
+                    PreviewColumns.ICON_PREVIEW_2,
+                    PreviewColumns.ICON_PREVIEW_3,
+                    PreviewColumns.ICON_PREVIEW_4,
+                    // TODO: add this to the ThemesContract if this design moves beyond prototype
+                    "navbar_background"
+            };
+            uri = PreviewColumns.APPLIED_URI;
+            selection = null;
+            selectionArgs = null;
+        }
         return new CursorLoader(getActivity(), uri, projection, selection, selectionArgs, null);
     }
 
@@ -356,9 +405,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void loadWallpaper(Cursor c) {
-        int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
-        Bitmap bitmap = loadBitmapBlob(c, wpIdx);
-        mWallpaper.setImageBitmap(bitmap);
+        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
+            mWallpaper.setBackground(getActivity().getWallpaper());
+        } else {
+            int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
+            Bitmap bitmap = loadBitmapBlob(c, wpIdx);
+            mWallpaper.setImageBitmap(bitmap);
+        }
     }
 
     private void loadStatusBar(Cursor c) {
@@ -450,6 +503,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private Bitmap loadBitmapBlob(Cursor cursor, int columnIdx) {
+        if (columnIdx < 0) return null;
         byte[] blob = cursor.getBlob(columnIdx);
         if (blob == null) return null;
         return BitmapFactory.decodeByteArray(blob, 0, blob.length);

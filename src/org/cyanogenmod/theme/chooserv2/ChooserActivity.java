@@ -293,31 +293,46 @@ public class ChooserActivity extends FragmentActivity
 
         @Override
         public Fragment getItem(int position) {
-            mCursor.moveToPosition(position);
-            int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
-            String pkgName = (String) mCursor.getString(pkgIdx);
+            String pkgName;
+            if (position == 0) {
+                pkgName = ThemeFragment.CURRENTLY_APPLIED_THEME;
+            } else {
+                mCursor.moveToPosition(position - 1);
+                int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
+                pkgName = mCursor.getString(pkgIdx);
+            }
             return ThemeFragment.newInstance(pkgName);
         }
 
+        /**
+         * The first card should be the user's currently applied theme components so we
+         * will always return at least 1 or mCursor.getCount() + 1
+         * @return
+         */
         public int getCount() {
-            return mCursor == null ? 0 : mCursor.getCount();
+            return mCursor == null ? 1 : mCursor.getCount() + 1;
         }
 
         public String getItemName(int position) {
-            mCursor.moveToPosition(position);
+            if (position == 0) {
+                return getString(R.string.my_theme);
+            }
+
+            mCursor.moveToPosition(position - 1);
             int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
             int titleIdx = mCursor.getColumnIndex(ThemesColumns.TITLE);
             String pkgName = mCursor.getString(pkgIdx);
-            String title = DEFAULT.equals(pkgName) ? mContext.getString(R.string.holo)
+            return DEFAULT.equals(pkgName) ? mContext.getString(R.string.holo)
                     : mCursor.getString(titleIdx);
-            return title;
         }
 
         public String getItemPkgName(int position) {
-            mCursor.moveToPosition(position);
+            if (position == 0) {
+                return ThemeFragment.CURRENTLY_APPLIED_THEME;
+            }
+            mCursor.moveToPosition(position - 1);
             int pkgIdx = mCursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
-            String pkgName = mCursor.getString(pkgIdx);
-            return pkgName;
+            return mCursor.getString(pkgIdx);
         }
 
         public void swapCursor(Cursor c) {
