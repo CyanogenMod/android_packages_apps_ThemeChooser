@@ -108,4 +108,5 @@
         </LinearLayout>
     </LinearLayout>
     <include layout="@layout/component_selector"/>
+    <include layout="@layout/save_apply_button_2"/>
 </FrameLayout>

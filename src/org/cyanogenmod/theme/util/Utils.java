@@ -24,6 +24,7 @@ import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ViewConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -234,5 +235,9 @@ public class Utils {
                 file.delete();
             }
         }
+    }
+
+    public static boolean hasNavigationBar(Context context) {
+        return !ViewConfiguration.get(context).hasPermanentMenuKey();
     }
 }

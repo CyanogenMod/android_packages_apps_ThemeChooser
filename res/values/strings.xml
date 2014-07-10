@@ -84,4 +84,6 @@
 
     <string name="my_theme">My theme</string>
 
+    <string name="save_and_apply_title">Save &amp; apply</string>
+
 </resources>

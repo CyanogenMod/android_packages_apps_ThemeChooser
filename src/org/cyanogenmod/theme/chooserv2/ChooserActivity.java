@@ -34,10 +34,13 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
 import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.util.Utils;
 
 public class ChooserActivity extends FragmentActivity
         implements LoaderManager.LoaderCallbacks<Cursor>, ThemeManager.ThemeChangeListener {
@@ -60,6 +63,7 @@ public class ChooserActivity extends FragmentActivity
     private Button mWallpaper;
     private Button mBootani;
     private ComponentSelector mSelector;
+    private View mSaveApplyLayout;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +118,7 @@ public class ChooserActivity extends FragmentActivity
         });
 
         mSelector = (ComponentSelector) findViewById(R.id.component_selector);
+        mSelector.setOnOpenCloseListener(mOpenCloseListener);
 
         if (ComponentSelector.DEBUG_SELECTOR) {
             findViewById(R.id.selector_testing).setVisibility(View.VISIBLE);
@@ -135,6 +140,37 @@ public class ChooserActivity extends FragmentActivity
 
         mService = (ThemeManager) getSystemService(Context.THEME_SERVICE);
         getSupportLoaderManager().initLoader(0, null, this);
+
+        mSaveApplyLayout = findViewById(R.id.save_apply_layout);
+        if (!Utils.hasNavigationBar(this)) {
+            mSaveApplyLayout.findViewById(R.id.navbar_padding).setVisibility(View.GONE);
+        }
+        mSaveApplyLayout.findViewById(R.id.save_apply_button).setOnClickListener(
+                new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSaveApplyButton();
+            }
+        });
+    }
+
+    private void hideSaveApplyButton() {
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.component_selection_animate_out);
+        mSaveApplyLayout.startAnimation(anim);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mSaveApplyLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
     }
 
     @Override
@@ -147,6 +183,8 @@ public class ChooserActivity extends FragmentActivity
     public void onBackPressed() {
         if (mSelector.getVisibility() == View.VISIBLE) {
             mSelector.hide();
+        } else if (mSaveApplyLayout.getVisibility() == View.VISIBLE) {
+            hideSaveApplyButton();
         } else if (mExpanded) {
             mExpanded = false;
             mContainer.collapse();
@@ -215,6 +253,7 @@ public class ChooserActivity extends FragmentActivity
                         R.dimen.component_selection_cell_height_boot_anim));
                 mSelector.setComponentType(ThemesColumns.MODIFIES_BOOT_ANIM);
             }
+            if (mSaveApplyLayout.getVisibility() == View.VISIBLE) hideSaveApplyButton();
             if (mSelector.getVisibility() == View.GONE) mSelector.show();
         }
     };
@@ -234,6 +273,19 @@ public class ChooserActivity extends FragmentActivity
                         .findFragmentByTag(getFragmentTag(mPager.getCurrentItem()));
                 f.collapse();
             }
+        }
+    };
+
+    private ComponentSelector.OnOpenCloseListener mOpenCloseListener = new ComponentSelector.OnOpenCloseListener() {
+        @Override
+        public void onSelectorOpened() {
+        }
+
+        @Override
+        public void onSelectorClosed() {
+            mSaveApplyLayout.setVisibility(View.VISIBLE);
+            mSaveApplyLayout.startAnimation(AnimationUtils.loadAnimation(ChooserActivity.this,
+                    R.anim.component_selection_animate_in));
         }
     };
 

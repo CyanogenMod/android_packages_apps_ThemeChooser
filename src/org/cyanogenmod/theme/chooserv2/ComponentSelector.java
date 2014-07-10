@@ -54,6 +54,7 @@ import com.viewpagerindicator.PageIndicator;
 import org.cyanogenmod.theme.chooser.R;
 import org.cyanogenmod.theme.util.AudioUtils;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
+import org.cyanogenmod.theme.util.Utils;
 
 import java.util.HashMap;
 
@@ -101,6 +102,8 @@ public class ComponentSelector extends LinearLayout
 
     private OnItemClickedListener mListener;
 
+    private OnOpenCloseListener mOpenCloseListener;
+
     private MediaPlayer mMediaPlayer;
 
     public ComponentSelector(Context context, AttributeSet attrs) {
@@ -120,6 +123,20 @@ public class ComponentSelector extends LinearLayout
                 R.anim.component_selection_animate_in);
         mAnimateOut = AnimationUtils.loadAnimation(mContext,
                 R.anim.component_selection_animate_out);
+        mAnimateIn.setAnimationListener(new AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (mOpenCloseListener != null) mOpenCloseListener.onSelectorOpened();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
         mAnimateOut.setAnimationListener(new AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -128,6 +145,7 @@ public class ComponentSelector extends LinearLayout
             @Override
             public void onAnimationEnd(Animation animation) {
                 setVisibility(View.GONE);
+                if (mOpenCloseListener != null) mOpenCloseListener.onSelectorClosed();
             }
 
             @Override
@@ -147,7 +165,9 @@ public class ComponentSelector extends LinearLayout
         indicator.setViewPager(mPager);
 
         // set navbar_padding to GONE if no on screen navigation bar is available
-        if (!hasNavigationBar()) findViewById(R.id.navbar_padding).setVisibility(View.GONE);
+        if (!Utils.hasNavigationBar(mContext)) {
+            findViewById(R.id.navbar_padding).setVisibility(View.GONE);
+        }
         setNumItemsPerPage(2);
         setComponentType(MODIFIES_RINGTONES);
         show();
@@ -194,10 +214,6 @@ public class ComponentSelector extends LinearLayout
     public void hide() {
         startAnimation(mAnimateOut);
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) mMediaPlayer.stop();
-    }
-
-    private boolean hasNavigationBar() {
-        return !ViewConfiguration.get(mContext).hasPermanentMenuKey();
     }
 
     private int getLoaderIdFromComponent(String component) {
@@ -348,6 +364,10 @@ public class ComponentSelector extends LinearLayout
 
     public void setOnItemClickedListener(OnItemClickedListener listener) {
         mListener = listener;
+    }
+
+    public void setOnOpenCloseListener(OnOpenCloseListener listener) {
+        mOpenCloseListener = listener;
     }
 
     public class CursorPagerAdapter<T extends View> extends PagerAdapter {
@@ -689,5 +709,10 @@ public class ComponentSelector extends LinearLayout
 
     public interface OnItemClickedListener {
         public void onItemClicked(String pkgName);
+    }
+
+    public interface OnOpenCloseListener {
+        public void onSelectorOpened();
+        public void onSelectorClosed();
     }
 }

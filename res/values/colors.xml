@@ -35,4 +35,8 @@
     <drawable name="component_selection_pressed">#40000000</drawable>
     <color name="component_selection_current_text_color">#50acff</color>
     <color name="background">#d6d6d8</color>
+
+    <drawable name="save_apply_button_normal">#cd00b3e6</drawable>
+    <drawable name="save_apply_button_focused">#cd1fcdff</drawable>
+    <drawable name="save_apply_button_pressed">#cd0093bd</drawable>
 </resources>
