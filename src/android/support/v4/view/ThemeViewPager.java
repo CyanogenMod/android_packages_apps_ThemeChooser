@@ -48,7 +48,7 @@ public class ThemeViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return true;
+        return !mExpanded;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ThemeViewPager extends ViewPager {
         }
 
         if (mExpanded) {
-            return true;
+            return false;
         }
 
         return super.onTouchEvent(ev);

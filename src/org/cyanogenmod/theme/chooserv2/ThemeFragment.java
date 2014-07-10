@@ -23,7 +23,6 @@ import android.content.res.Resources;
 import android.content.res.ThemeConfig;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -39,6 +38,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,12 +49,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.chooserv2.ComponentSelector.OnItemClickedListener;
 import org.cyanogenmod.theme.util.IconPreviewHelper;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
 import org.cyanogenmod.theme.util.Utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
 public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int ANIMATE_START_DELAY = 200;
@@ -81,7 +95,19 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             new ComponentName("com.android.gallery3d", "com.android.gallery3d.app.GalleryActivity");
     private static final String CAMERA_NEXT_PACKAGE = "com.cyngn.cameranext";
 
+    private static final int LOADER_ID_ALL = 0;
+    private static final int LOADER_ID_STATUS_BAR = 1;
+    private static final int LOADER_ID_FONT = 2;
+    private static final int LOADER_ID_ICONS = 3;
+    private static final int LOADER_ID_WALLPAPER = 4;
+    private static final int LOADER_ID_NAVIGATION_BAR = 5;
+
     private static ComponentName[] sIconComponents;
+
+    /**
+     * Maps the card's resource ID to a theme component
+     */
+    private static final SparseArray<String> sCardIdsToComponentTypes = new SparseArray<String>();
 
     private String mPkgName;
     private Typeface mTypefaceNormal;
@@ -112,6 +138,17 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private Handler mHandler;
 
+    private int mActiveCardId = -1;
+    private ComponentSelector mSelector;
+    private Map<String, String> mSelectedComponentsMap;
+
+    static {
+        sCardIdsToComponentTypes.put(R.id.status_bar_container, MODIFIES_STATUS_BAR);
+        sCardIdsToComponentTypes.put(R.id.font_preview_container, MODIFIES_FONTS);
+        sCardIdsToComponentTypes.put(R.id.icon_container, MODIFIES_ICONS);
+        sCardIdsToComponentTypes.put(R.id.navigation_bar_container, MODIFIES_NAVIGATION_BAR);
+    }
+
     static ThemeFragment newInstance(String pkgName) {
         ThemeFragment f = new ThemeFragment();
         Bundle args = new Bundle();
@@ -137,6 +174,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
 
         mHandler = new Handler();
+
+        mSelectedComponentsMap = new HashMap<String, String>();
     }
 
     @Override
@@ -168,7 +207,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mHomeButton = (ImageView) v.findViewById(R.id.home_button);
         mRecentButton = (ImageView) v.findViewById(R.id.recent_button);
 
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
+
+        initCards(v);
 
         return v;
     }
@@ -213,6 +254,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         // to the new location.
         animateChildren(true, getChildrensGlobalBounds());
         animateWallpaperOut();
+        mSelector = ((ChooserActivity) getActivity()).getComponentSelector();
+        mSelector.setOnItemClickedListener(mOnComponentItemClicked);
     }
 
     // Returns the boundaries for all the children in the scrollview relative to the window
@@ -222,7 +265,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             final View v = mPreviewContent.getChildAt(i);
             int[] pos = new int[2];
             v.getLocationInWindow(pos);
-            Rect boundary = new Rect(pos[0], pos[1], pos[0]+v.getWidth(), pos[1]+v.getHeight());
+            Rect boundary = new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1]+v.getHeight());
             bounds.add(boundary);
         }
         return bounds;
@@ -385,59 +428,116 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {
-                ThemesColumns.PKG_NAME,
-                ThemesColumns.TITLE,
-                ThemesColumns.WALLPAPER_URI,
-                ThemesColumns.HOMESCREEN_URI,
-                PreviewColumns.WALLPAPER_PREVIEW,
-                PreviewColumns.STATUSBAR_BACKGROUND,
-                PreviewColumns.STATUSBAR_WIFI_ICON,
-                PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
-                PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
-                PreviewColumns.STATUSBAR_SIGNAL_ICON,
-                PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
-                PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
-                PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
-                PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
-                PreviewColumns.NAVBAR_BACK_BUTTON,
-                PreviewColumns.NAVBAR_HOME_BUTTON,
-                PreviewColumns.NAVBAR_RECENT_BUTTON,
-                PreviewColumns.ICON_PREVIEW_1,
-                PreviewColumns.ICON_PREVIEW_2,
-                PreviewColumns.ICON_PREVIEW_3,
-                PreviewColumns.ICON_PREVIEW_4
-        };
-
+        String pkgName = mPkgName;
+        if (args != null) {
+            pkgName = args.getString("pkgName");
+        }
         Uri uri = ThemesContract.PreviewColumns.CONTENT_URI;
         String selection = ThemesContract.ThemesColumns.PKG_NAME + "= ?";
-        String[] selectionArgs = new String[]{mPkgName};
-
-        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
-            projection = new String[] {
-                    PreviewColumns.WALLPAPER_PREVIEW,
-                    PreviewColumns.STATUSBAR_BACKGROUND,
-                    PreviewColumns.STATUSBAR_WIFI_ICON,
-                    PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
-                    PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
-                    PreviewColumns.STATUSBAR_SIGNAL_ICON,
-                    PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
-                    PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
-                    PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
-                    PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
-                    PreviewColumns.NAVBAR_BACK_BUTTON,
-                    PreviewColumns.NAVBAR_HOME_BUTTON,
-                    PreviewColumns.NAVBAR_RECENT_BUTTON,
-                    PreviewColumns.ICON_PREVIEW_1,
-                    PreviewColumns.ICON_PREVIEW_2,
-                    PreviewColumns.ICON_PREVIEW_3,
-                    PreviewColumns.ICON_PREVIEW_4,
-                    // TODO: add this to the ThemesContract if this design moves beyond prototype
-                    "navbar_background"
-            };
-            uri = PreviewColumns.APPLIED_URI;
-            selection = null;
-            selectionArgs = null;
+        String[] selectionArgs = new String[] { pkgName };
+        String[] projection = null;
+        switch (id) {
+            case LOADER_ID_ALL:
+                if (!CURRENTLY_APPLIED_THEME.equals(pkgName)) {
+                    projection = new String[] {
+                            ThemesColumns.PKG_NAME,
+                            ThemesColumns.TITLE,
+                            ThemesColumns.WALLPAPER_URI,
+                            ThemesColumns.HOMESCREEN_URI,
+                            PreviewColumns.WALLPAPER_PREVIEW,
+                            PreviewColumns.STATUSBAR_BACKGROUND,
+                            PreviewColumns.STATUSBAR_WIFI_ICON,
+                            PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
+                            PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
+                            PreviewColumns.STATUSBAR_SIGNAL_ICON,
+                            PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
+                            PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
+                            PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
+                            PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
+                            PreviewColumns.NAVBAR_BACK_BUTTON,
+                            PreviewColumns.NAVBAR_HOME_BUTTON,
+                            PreviewColumns.NAVBAR_RECENT_BUTTON,
+                            PreviewColumns.ICON_PREVIEW_1,
+                            PreviewColumns.ICON_PREVIEW_2,
+                            PreviewColumns.ICON_PREVIEW_3,
+                            PreviewColumns.ICON_PREVIEW_4
+                    };
+                } else {
+                    projection = new String[] {
+                            PreviewColumns.WALLPAPER_PREVIEW,
+                            PreviewColumns.STATUSBAR_BACKGROUND,
+                            PreviewColumns.STATUSBAR_WIFI_ICON,
+                            PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
+                            PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
+                            PreviewColumns.STATUSBAR_SIGNAL_ICON,
+                            PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
+                            PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
+                            PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
+                            PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
+                            PreviewColumns.NAVBAR_BACK_BUTTON,
+                            PreviewColumns.NAVBAR_HOME_BUTTON,
+                            PreviewColumns.NAVBAR_RECENT_BUTTON,
+                            PreviewColumns.ICON_PREVIEW_1,
+                            PreviewColumns.ICON_PREVIEW_2,
+                            PreviewColumns.ICON_PREVIEW_3,
+                            PreviewColumns.ICON_PREVIEW_4,
+                            // TODO: add this to the ThemesContract if this
+                            // design moves beyond prototype
+                            "navbar_background"
+                    };
+                    uri = PreviewColumns.APPLIED_URI;
+                    selection = null;
+                    selectionArgs = null;
+                }
+                break;
+            case LOADER_ID_STATUS_BAR:
+                projection = new String[] {
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE,
+                        PreviewColumns.STATUSBAR_BACKGROUND,
+                        PreviewColumns.STATUSBAR_WIFI_ICON,
+                        PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
+                        PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
+                        PreviewColumns.STATUSBAR_SIGNAL_ICON,
+                        PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
+                        PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
+                        PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
+                        PreviewColumns.STATUSBAR_BATTERY_PORTRAIT
+                };
+                break;
+            case LOADER_ID_FONT:
+                projection = new String[] {
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE
+                };
+                break;
+            case LOADER_ID_ICONS:
+                projection = new String[] {
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE,
+                        PreviewColumns.ICON_PREVIEW_1,
+                        PreviewColumns.ICON_PREVIEW_2,
+                        PreviewColumns.ICON_PREVIEW_3,
+                        PreviewColumns.ICON_PREVIEW_4
+                };
+                break;
+            case LOADER_ID_WALLPAPER:
+                projection = new String[] {
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE,
+                        PreviewColumns.WALLPAPER_PREVIEW
+                };
+                break;
+            case LOADER_ID_NAVIGATION_BAR:
+                projection = new String[] {
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE,
+                        PreviewColumns.STATUSBAR_BACKGROUND,
+                        PreviewColumns.NAVBAR_BACK_BUTTON,
+                        PreviewColumns.NAVBAR_HOME_BUTTON,
+                        PreviewColumns.NAVBAR_RECENT_BUTTON
+                };
+                break;
         }
         return new CursorLoader(getActivity(), uri, projection, selection, selectionArgs, null);
     }
@@ -446,16 +546,34 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
         c.moveToFirst();
         if (c.getCount() == 0) return;
-        loadWallpaper(c);
-        loadStatusBar(c);
-        loadIcons(c);
-        loadNavBar(c);
+        switch (loader.getId()) {
+            case LOADER_ID_ALL:
+                loadWallpaper(c);
+                loadStatusBar(c);
+                loadIcons(c);
+                loadNavBar(c);
+                loadFont(c);
+                break;
+            case LOADER_ID_STATUS_BAR:
+                loadStatusBar(c);
+                break;
+            case LOADER_ID_FONT:
+                loadFont(c);
+                break;
+            case LOADER_ID_ICONS:
+                loadIcons(c);
+                break;
+            case LOADER_ID_WALLPAPER:
+                loadWallpaper(c);
+                break;
+            case LOADER_ID_NAVIGATION_BAR:
+                loadNavBar(c);
+                break;
+        }
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
+    public void onLoaderReset(Loader<Cursor> loader) {}
 
     private void loadWallpaper(Cursor c) {
         if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
@@ -475,6 +593,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int signalIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_SIGNAL_ICON);
         int batteryIdx = c.getColumnIndex(Utils.getBatteryIndex(mBatteryStyle));
         int clockColorIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR);
+        int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
 
         Bitmap background = Utils.loadBitmapBlob(c, backgroundIdx);
         Bitmap bluetoothIcon = Utils.loadBitmapBlob(c, bluetoothIdx);
@@ -494,26 +613,38 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         ViewGroup.MarginLayoutParams params =
                 (ViewGroup.MarginLayoutParams) mWifi.getLayoutParams();
         params.setMarginEnd(wifiMargin);
-        mWifi.requestLayout();
+        mWifi.setLayoutParams(params);
 
         if (mBatteryStyle == 4) {
             mBattery.setVisibility(View.GONE);
         } else {
             mBattery.setVisibility(View.VISIBLE);
         }
+        mStatusBar.post(new Runnable() {
+            @Override
+            public void run() {
+                mStatusBar.invalidate();
+            }
+        });
+        if (pkgNameIdx > -1) {
+            String pkgName = c.getString(pkgNameIdx);
+            mSelectedComponentsMap.put(MODIFIES_STATUS_BAR, pkgName);
+        }
     }
 
     private void loadIcons(Cursor c) {
         int[] iconIdx = new int[4];
         iconIdx[0] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_1);
-        iconIdx[1] =  c.getColumnIndex(PreviewColumns.ICON_PREVIEW_2);
+        iconIdx[1] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_2);
         iconIdx[2] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_3);
         iconIdx[3] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_4);
+        int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
 
         // Set the icons. If the provider does not have an icon preview then
         // fall back to the default icon set
         IconPreviewHelper helper = new IconPreviewHelper(getActivity(), "");
-        for(int i=0; i < mIconContainer.getChildCount() && i < iconIdx.length; i++) {
+        ViewGroup container = (ViewGroup) mIconContainer.findViewById(R.id.icon_preview_container);
+        for(int i=0; i < container.getChildCount() && i < iconIdx.length; i++) {
             ImageView v = (ImageView) ((ViewGroup)mIconContainer.getChildAt(1)).getChildAt(i);
             Bitmap bitmap = Utils.loadBitmapBlob(c, iconIdx[i]);
             if (bitmap == null) {
@@ -525,6 +656,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 v.setImageBitmap(bitmap);
             }
         }
+        if (pkgNameIdx > -1) {
+            String pkgName = c.getString(pkgNameIdx);
+            mSelectedComponentsMap.put(MODIFIES_ICONS, pkgName);
+        }
     }
 
     private void loadNavBar(Cursor c) {
@@ -532,6 +667,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int homeButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_HOME_BUTTON);
         int recentButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_RECENT_BUTTON);
         int backgroundIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
+        int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
 
         Bitmap background = Utils.loadBitmapBlob(c, backgroundIdx);
         Bitmap backButton = Utils.loadBitmapBlob(c, backButtonIdx);
@@ -542,6 +678,22 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mBackButton.setImageBitmap(backButton);
         mHomeButton.setImageBitmap(homeButton);
         mRecentButton.setImageBitmap(recentButton);
+
+        if (pkgNameIdx > -1) {
+            String pkgName = c.getString(pkgNameIdx);
+            mSelectedComponentsMap.put(MODIFIES_NAVIGATION_BAR, pkgName);
+        }
+    }
+
+    private void loadFont(Cursor c) {
+        int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
+        String pkgName = pkgNameIdx >= 0 ? c.getString(pkgNameIdx) : mPkgName;
+        ThemedTypefaceHelper helper = new ThemedTypefaceHelper();
+        helper.load(getActivity(), CURRENTLY_APPLIED_THEME.equals(pkgName) ?
+                getAppliedFontPackageName() : pkgName);
+        mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
+        mFontPreview.setTypeface(mTypefaceNormal);
+        mSelectedComponentsMap.put(MODIFIES_FONTS, pkgName);
     }
 
     public static ComponentName[] getIconComponents(Context context) {
@@ -572,5 +724,82 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         }
         return sIconComponents;
+    }
+
+    private void initCards(View parent) {
+        for (int i = 0; i < sCardIdsToComponentTypes.size(); i++) {
+            parent.findViewById(sCardIdsToComponentTypes.keyAt(i))
+                    .setOnClickListener(mCardClickListener);
+        }
+    }
+
+    private View.OnClickListener mCardClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mActiveCardId > 0) {
+                mActiveCardId = -1;
+                getActivity().onBackPressed();
+                return;
+            }
+            mActiveCardId = v.getId();
+            String component = sCardIdsToComponentTypes.get(mActiveCardId);
+            ((ChooserActivity) getActivity()).showComponentSelector(component, v);
+            fadeOutNonSelectedCards(mActiveCardId);
+        }
+    };
+
+    private OnItemClickedListener mOnComponentItemClicked = new OnItemClickedListener() {
+        @Override
+        public void onItemClicked(String pkgName) {
+            Bundle args = new Bundle();
+            args.putString("pkgName", pkgName);
+            int loaderId = -1;
+            String component = mSelector.getComponentType();
+            if (MODIFIES_STATUS_BAR.equals(component)) {
+                loaderId = LOADER_ID_STATUS_BAR;
+            } else if (MODIFIES_FONTS.equals(component)) {
+                loaderId = LOADER_ID_FONT;
+            } else if (MODIFIES_ICONS.equals(component)) {
+                loaderId = LOADER_ID_ICONS;
+            } else if (MODIFIES_NAVIGATION_BAR.equals(component)) {
+                loaderId = LOADER_ID_NAVIGATION_BAR;
+            } else {
+                return;
+            }
+            getLoaderManager().restartLoader(loaderId, args, ThemeFragment.this);
+        }
+    };
+
+    private void fadeOutNonSelectedCards(int selectedCardId) {
+        for (int i = 0; i < sCardIdsToComponentTypes.size(); i++) {
+            if (sCardIdsToComponentTypes.keyAt(i) != selectedCardId) {
+                ComponentCardView card = (ComponentCardView) getView().findViewById(
+                        sCardIdsToComponentTypes.keyAt(i));
+                card.animateCardFadeOut();
+            }
+        }
+    }
+
+    public void fadeInCards() {
+        mActiveCardId = -1;
+        for (int i = 0; i < sCardIdsToComponentTypes.size(); i++) {
+            ComponentCardView card = (ComponentCardView) getView().findViewById(
+                    sCardIdsToComponentTypes.keyAt(i));
+            card.animateCardFadeIn();
+        }
+    }
+
+    public boolean componentsChanged() {
+        for (String key : mSelectedComponentsMap.keySet()) {
+            if (!mPkgName.equals(mSelectedComponentsMap.get(key))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void clearChanges() {
+        mSelectedComponentsMap.clear();
+        getLoaderManager().restartLoader(LOADER_ID_ALL, null, ThemeFragment.this);
     }
 }

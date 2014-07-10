@@ -20,6 +20,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
@@ -70,7 +71,7 @@ public class ComponentSelector extends LinearLayout
         implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = ComponentSelector.class.getSimpleName();
 
-    public static final boolean DEBUG_SELECTOR = true;
+    public static final boolean DEBUG_SELECTOR = false;
 
     private static final int LOADER_ID_STATUS_BAR = 100;
     private static final int LOADER_ID_NAVIGATION_BAR = 101;
@@ -165,51 +166,69 @@ public class ComponentSelector extends LinearLayout
         if (!Utils.hasNavigationBar(mContext)) {
             findViewById(R.id.navbar_padding).setVisibility(View.GONE);
         }
-        setNumItemsPerPage(2);
-        setComponentType(MODIFIES_RINGTONES);
-        show();
     }
 
     public void setComponentType(String component) {
-        // Find out which theme is currently applied for this component
-        String selection = MixnMatchColumns.COL_KEY + "=?";
-        String[] selectionArgs = { MixnMatchColumns.componentToMixNMatchKey(component) };
-        Cursor c = mContext.getContentResolver().query(MixnMatchColumns.CONTENT_URI,
-                null, selection, selectionArgs, null);
-        if (c != null) {
-            if (c.moveToFirst()) {
-                mAppliedComponentPkgName = c.getString(
-                        c.getColumnIndex(MixnMatchColumns.COL_VALUE));
+        if (!component.equals(mComponentType)) {
+            // Find out which theme is currently applied for this component
+            String selection = MixnMatchColumns.COL_KEY + "=?";
+            String[] selectionArgs = {MixnMatchColumns.componentToMixNMatchKey(component)};
+            Cursor c = mContext.getContentResolver().query(MixnMatchColumns.CONTENT_URI,
+                    null, selection, selectionArgs, null);
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    mAppliedComponentPkgName = c.getString(
+                            c.getColumnIndex(MixnMatchColumns.COL_VALUE));
+                }
+                c.close();
+            } else {
+                mAppliedComponentPkgName = null;
             }
-            c.close();
-        } else {
-            mAppliedComponentPkgName = null;
+            mComponentType = component;
+            mPager.setCurrentItem(0);
+            ((FragmentActivity) mContext).getSupportLoaderManager().restartLoader(
+                    getLoaderIdFromComponent(component), null, this);
         }
-        mComponentType = component;
-        mAdapter = new CursorPagerAdapter<View>(null, mItemsPerPage);
-        mPager.setAdapter(mAdapter);
-        ((FragmentActivity) mContext).getSupportLoaderManager().initLoader(
-                getLoaderIdFromComponent(component), null, this);
+    }
+
+    public String getComponentType() {
+        return mComponentType;
     }
 
     public void setNumItemsPerPage(int itemsPerPage) {
-        mItemsPerPage = itemsPerPage;
+        if (mItemsPerPage != itemsPerPage) {
+            mItemsPerPage = itemsPerPage;
+            mAdapter.setNumItemsPerPage(mItemsPerPage);
+        }
     }
 
     public void setHeight(int height) {
         ViewGroup.LayoutParams params = mPager.getLayoutParams();
-        params.height = height;
-        mPager.setLayoutParams(params);
-        requestLayout();
+        if (params.height != height) {
+            params.height = height;
+            mPager.setLayoutParams(params);
+            requestLayout();
+        }
+    }
+
+    public void show(String componentType, int itemsPerPage, int height) {
+        setNumItemsPerPage(itemsPerPage);
+        setHeight(height);
+        setComponentType(componentType);
+        show();
     }
 
     public void show() {
-        setVisibility(View.VISIBLE);
-        startAnimation(mAnimateIn);
+        if (getVisibility() == View.GONE) {
+            setVisibility(View.VISIBLE);
+            startAnimation(mAnimateIn);
+        }
     }
 
     public void hide() {
-        startAnimation(mAnimateOut);
+        if (getVisibility() == View.VISIBLE) {
+            startAnimation(mAnimateOut);
+        }
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) mMediaPlayer.stop();
     }
 
@@ -333,13 +352,11 @@ public class ComponentSelector extends LinearLayout
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
-        mAdapter.notifyDataSetChanged();
     }
 
     public void setOnItemClickedListener(OnItemClickedListener listener) {
@@ -363,6 +380,10 @@ public class ComponentSelector extends LinearLayout
         public CursorPagerAdapter(Cursor cursor, int itemsPerPage) {
             super();
             mCursor = cursor;
+            mItemsPerPage = itemsPerPage;
+        }
+
+        public void setNumItemsPerPage(int itemsPerPage) {
             mItemsPerPage = itemsPerPage;
         }
 
@@ -425,9 +446,13 @@ public class ComponentSelector extends LinearLayout
             return view == object;
         }
 
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
         public void swapCursor(Cursor c) {
-            if (mCursor == c)
-                return;
+            if (mCursor == c) return;
 
             mCursor = c;
             notifyDataSetChanged();

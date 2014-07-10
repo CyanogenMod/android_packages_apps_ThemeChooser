@@ -60,4 +60,6 @@
     <dimen name="status_bar_component_icon_height">20dp</dimen>
     <dimen name="status_bar_component_icon_margin">2dp</dimen>
     <dimen name="icon_component_margin">4dp</dimen>
+
+    <dimen name="content_offset_padding">10dp</dimen>
 </resources>

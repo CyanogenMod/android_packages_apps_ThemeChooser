@@ -47,66 +47,9 @@
                 android:layout_weight="1"
                 android:text="@string/edit"/>
         </LinearLayout>
-
-        <!-- selector_testing and it's children are for testing the component
-             selector and should be removed once this is no longer needed -->
-        <LinearLayout
-            android:id="@+id/selector_testing"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/show_status_bar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/status_bar"/>
-
-            <Button
-                android:id="@+id/show_nav_bar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/navigation_bar"/>
-
-            <Button
-                android:id="@+id/show_icons"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/icons"/>
-
-            <Button
-                android:id="@+id/show_fonts"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/fonts"/>
-
-            <Button
-                android:id="@+id/show_styles"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/style"/>
-
-            <Button
-                android:id="@+id/show_wallpaper"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/wallpapers"/>
-
-            <Button
-                android:id="@+id/show_bootani"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/boot_anims"/>
-
-        </LinearLayout>
     </LinearLayout>
+
     <include layout="@layout/component_selector"/>
     <include layout="@layout/save_apply_button_2"/>
+
 </FrameLayout>

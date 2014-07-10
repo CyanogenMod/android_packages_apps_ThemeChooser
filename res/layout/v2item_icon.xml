@@ -16,6 +16,7 @@
         android:text="@string/icon_label"
         style="@style/card_label"/>
     <LinearLayout
+        android:id="@+id/icon_preview_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"

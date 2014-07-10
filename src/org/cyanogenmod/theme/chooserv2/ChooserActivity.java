@@ -16,6 +16,7 @@
 package org.cyanogenmod.theme.chooserv2;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
 import android.database.Cursor;
@@ -40,11 +41,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.chooserv2.ComponentSelector.OnOpenCloseListener;
 import org.cyanogenmod.theme.util.Utils;
+
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
 
 public class ChooserActivity extends FragmentActivity
         implements LoaderManager.LoaderCallbacks<Cursor>, ThemeManager.ThemeChangeListener {
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
+
+    private static final long SLIDE_CONTENT_ANIM_DURATION = 300L;
 
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
@@ -55,15 +64,9 @@ public class ChooserActivity extends FragmentActivity
     private ThemesAdapter mAdapter;
     private ThemeManager mService;
     private boolean mExpanded = false;
-    private Button mStatusBar;
-    private Button mNavBar;
-    private Button mIcons;
-    private Button mFonts;
-    private Button mStyles;
-    private Button mWallpaper;
-    private Button mBootani;
     private ComponentSelector mSelector;
     private View mSaveApplyLayout;
+    private int mContainerYOffset = 0;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,32 +114,13 @@ public class ChooserActivity extends FragmentActivity
             public void onClick(View v) {
                 mExpanded = true;
                 mContainer.expand();
-                ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
-                        .findFragmentByTag(getFragmentTag(mPager.getCurrentItem()));
+                ThemeFragment f = getCurrentFragment();
                 f.expand();
             }
         });
 
         mSelector = (ComponentSelector) findViewById(R.id.component_selector);
         mSelector.setOnOpenCloseListener(mOpenCloseListener);
-
-        if (ComponentSelector.DEBUG_SELECTOR) {
-            findViewById(R.id.selector_testing).setVisibility(View.VISIBLE);
-            mStatusBar = (Button) findViewById(R.id.show_status_bar);
-            mNavBar = (Button) findViewById(R.id.show_nav_bar);
-            mIcons = (Button) findViewById(R.id.show_icons);
-            mFonts = (Button) findViewById(R.id.show_fonts);
-            mStyles = (Button) findViewById(R.id.show_styles);
-            mWallpaper = (Button) findViewById(R.id.show_wallpaper);
-            mBootani = (Button) findViewById(R.id.show_bootani);
-            mStatusBar.setOnClickListener(mButtonClickListener);
-            mNavBar.setOnClickListener(mButtonClickListener);
-            mIcons.setOnClickListener(mButtonClickListener);
-            mFonts.setOnClickListener(mButtonClickListener);
-            mStyles.setOnClickListener(mButtonClickListener);
-            mWallpaper.setOnClickListener(mButtonClickListener);
-            mBootani.setOnClickListener(mButtonClickListener);
-        }
 
         mService = (ThemeManager) getSystemService(Context.THEME_SERVICE);
         getSupportLoaderManager().initLoader(0, null, this);
@@ -147,14 +131,22 @@ public class ChooserActivity extends FragmentActivity
         }
         mSaveApplyLayout.findViewById(R.id.save_apply_button).setOnClickListener(
                 new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSaveApplyButton();
-            }
-        });
+                    @Override
+                    public void onClick(View v) {
+                        hideSaveApplyButton();
+                        mExpanded = false;
+                        final ThemeFragment f = getCurrentFragment();
+                        f.fadeOutCards(new Runnable() {
+                            public void run() {
+                                mContainer.collapse();
+                                f.collapse();
+                            }
+                        });
+                    }
+                });
     }
 
-    private void hideSaveApplyButton() {
+    public void hideSaveApplyButton() {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.component_selection_animate_out);
         mSaveApplyLayout.startAnimation(anim);
         anim.setAnimationListener(new Animation.AnimationListener() {
@@ -173,6 +165,50 @@ public class ChooserActivity extends FragmentActivity
         });
     }
 
+    public ComponentSelector getComponentSelector() {
+        return mSelector;
+    }
+
+    public void showComponentSelector(String component, View v) {
+        if (component != null) {
+            final Resources res = getResources();
+            int itemsPerPage = res.getInteger(R.integer.default_items_per_page);
+            int height = res.getDimensionPixelSize(R.dimen.component_selection_cell_height);
+            if (MODIFIES_BOOT_ANIM.equals(component)) {
+                itemsPerPage = res.getInteger(R.integer.bootani_items_per_page);
+                height = res.getDimensionPixelSize(
+                        R.dimen.component_selection_cell_height_boot_anim);
+            } else if (MODIFIES_ALARMS.equals(component) ||
+                    MODIFIES_NOTIFICATIONS.equals(component) ||
+                    MODIFIES_RINGTONES.equals(component)) {
+                itemsPerPage = 2;
+                height = res.getDimensionPixelSize(
+                        R.dimen.component_selection_cell_height_sounds);
+            }
+            if (mSaveApplyLayout.getVisibility() == View.VISIBLE) hideSaveApplyButton();
+            mSelector.show(component, itemsPerPage, height);
+
+            // determine if we need to shift the cards up
+            int[] coordinates = new int[2];
+            v.getLocationOnScreen(coordinates);
+            coordinates[1] += v.getHeight();
+            int top = getWindowManager().getDefaultDisplay().getHeight() - height;
+            if (coordinates[1] > top) {
+                slideContentUp(top - coordinates[1]);
+            }
+        }
+    }
+
+    private void slideContentUp(int yDelta) {
+        yDelta -= getResources().getDimensionPixelSize(R.dimen.content_offset_padding);
+        mContainerYOffset = yDelta;
+        mContainer.animate().translationYBy(yDelta).setDuration(SLIDE_CONTENT_ANIM_DURATION);
+    }
+
+    private void slideContentDown(final int yDelta) {
+        mContainer.animate().translationYBy(-yDelta).setDuration(SLIDE_CONTENT_ANIM_DURATION);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -183,12 +219,19 @@ public class ChooserActivity extends FragmentActivity
     public void onBackPressed() {
         if (mSelector.getVisibility() == View.VISIBLE) {
             mSelector.hide();
-        } else if (mSaveApplyLayout.getVisibility() == View.VISIBLE) {
-            hideSaveApplyButton();
+            if (mContainerYOffset != 0) {
+                slideContentDown(mContainerYOffset);
+                mContainerYOffset = 0;
+            }
+            final ThemeFragment f = getCurrentFragment();
+            f.fadeInCards();
         } else if (mExpanded) {
+            if (mSaveApplyLayout.getVisibility() == View.VISIBLE) {
+                hideSaveApplyButton();
+                getCurrentFragment().clearChanges();
+            }
             mExpanded = false;
-            final ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
-                    .findFragmentByTag(getFragmentTag(mPager.getCurrentItem()));
+            final ThemeFragment f = getCurrentFragment();
             f.fadeOutCards(new Runnable() {
                 public void run() {
                     mContainer.collapse();
@@ -218,75 +261,39 @@ public class ChooserActivity extends FragmentActivity
         mThemeName.setText(name);
     }
 
-    private View.OnClickListener mButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v == mStatusBar) {
-                mSelector.setNumItemsPerPage(4);
-                mSelector.setHeight(getResources().getDimensionPixelSize(
-                        R.dimen.component_selection_cell_height));
-                mSelector.setComponentType(ThemesColumns.MODIFIES_STATUS_BAR);
-            } else if (v == mNavBar) {
-                mSelector.setNumItemsPerPage(4);
-                mSelector.setHeight(getResources().getDimensionPixelSize(
-                        R.dimen.component_selection_cell_height));
-                mSelector.setComponentType(ThemesColumns.MODIFIES_NAVIGATION_BAR);
-            } else if (v == mIcons) {
-                mSelector.setNumItemsPerPage(4);
-                mSelector.setHeight(getResources().getDimensionPixelSize(
-                        R.dimen.component_selection_cell_height));
-                mSelector.setComponentType(ThemesColumns.MODIFIES_ICONS);
-            } else if (v == mFonts) {
-                mSelector.setNumItemsPerPage(4);
-                mSelector.setHeight(getResources().getDimensionPixelSize(
-                        R.dimen.component_selection_cell_height));
-                mSelector.setComponentType(ThemesColumns.MODIFIES_FONTS);
-            } else if (v == mStyles) {
-                mSelector.setNumItemsPerPage(4);
-                mSelector.setHeight(getResources().getDimensionPixelSize(
-                        R.dimen.component_selection_cell_height));
-                mSelector.setComponentType(ThemesColumns.MODIFIES_OVERLAYS);
-            } else if (v == mWallpaper) {
-                mSelector.setNumItemsPerPage(4);
-                mSelector.setHeight(getResources().getDimensionPixelSize(
-                        R.dimen.component_selection_cell_height));
-                mSelector.setComponentType(ThemesColumns.MODIFIES_LAUNCHER);
-            } else if (v == mBootani) {
-                mSelector.setNumItemsPerPage(3);
-                mSelector.setHeight(getResources().getDimensionPixelSize(
-                        R.dimen.component_selection_cell_height_boot_anim));
-                mSelector.setComponentType(ThemesColumns.MODIFIES_BOOT_ANIM);
-            }
-            if (mSaveApplyLayout.getVisibility() == View.VISIBLE) hideSaveApplyButton();
-            if (mSelector.getVisibility() == View.GONE) mSelector.show();
-        }
-    };
-
     private View.OnClickListener mPagerClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (!mExpanded) {
                 mExpanded = true;
                 mContainer.expand();
-                ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
-                        .findFragmentByTag(getFragmentTag(mPager.getCurrentItem()));
+                ThemeFragment f = getCurrentFragment();
                 f.expand();
             }
         }
     };
 
-    private ComponentSelector.OnOpenCloseListener mOpenCloseListener = new ComponentSelector.OnOpenCloseListener() {
+    private OnOpenCloseListener mOpenCloseListener = new OnOpenCloseListener() {
         @Override
         public void onSelectorOpened() {
         }
 
         @Override
         public void onSelectorClosed() {
-            mSaveApplyLayout.setVisibility(View.VISIBLE);
-            mSaveApplyLayout.startAnimation(AnimationUtils.loadAnimation(ChooserActivity.this,
-                    R.anim.component_selection_animate_in));
+            ThemeFragment f = getCurrentFragment();
+            if (f.componentsChanged()) {
+                mSaveApplyLayout.setVisibility(View.VISIBLE);
+                mSaveApplyLayout.startAnimation(AnimationUtils.loadAnimation(ChooserActivity.this,
+                        R.anim.component_selection_animate_in));
+            }
         }
     };
+
+    private ThemeFragment getCurrentFragment() {
+        ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
+                .findFragmentByTag(getFragmentTag(mPager.getCurrentItem()));
+        return f;
+    }
 
     private String getFragmentTag(int pos){
         return "android:switcher:"+R.id.viewpager+":"+pos;

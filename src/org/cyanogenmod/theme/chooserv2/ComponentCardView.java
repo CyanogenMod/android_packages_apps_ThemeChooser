@@ -1,5 +1,7 @@
 package org.cyanogenmod.theme.chooserv2;
 
+import android.animation.IntEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
@@ -13,6 +15,9 @@ import org.cyanogenmod.theme.chooser.R;
 
 public class ComponentCardView extends LinearLayout {
     public static final int CARD_FADE_DURATION = 300;
+
+    private static final float SEMI_OPAQUE_ALPHA = 0.2f;
+    private static final int BACKGROUND_SEMI_OPAQUE_ALPHA = (int) (256.0f * SEMI_OPAQUE_ALPHA);
 
     private TextView mLabel;
 
@@ -87,4 +92,42 @@ public class ComponentCardView extends LinearLayout {
         background.reverseTransition(CARD_FADE_DURATION);
     }
 
+    /**
+     * Animates the card background and the title to 20% opacity.
+     */
+    public void animateCardFadeOut() {
+        if (mLabel != null) {
+            mLabel.animate().alpha(SEMI_OPAQUE_ALPHA).setDuration(CARD_FADE_DURATION);
+        }
+        final ValueAnimator bgAlphaAnimator = ValueAnimator.ofObject(new IntEvaluator(), 255,
+                BACKGROUND_SEMI_OPAQUE_ALPHA);
+        bgAlphaAnimator.setDuration(CARD_FADE_DURATION);
+        bgAlphaAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                getBackground().setAlpha((Integer) animation.getAnimatedValue());
+            }
+        });
+        bgAlphaAnimator.start();
+    }
+
+    /**
+     * Animates the card background and the title back to full opacity.
+     */
+    public void animateCardFadeIn() {
+        if (getBackground().getAlpha() > 51) return;
+        if (mLabel != null) {
+            mLabel.animate().alpha(1f).setDuration(CARD_FADE_DURATION);
+        }
+        final ValueAnimator bgAlphaAnimator = ValueAnimator.ofObject(new IntEvaluator(),
+                BACKGROUND_SEMI_OPAQUE_ALPHA, 255);
+        bgAlphaAnimator.setDuration(CARD_FADE_DURATION);
+        bgAlphaAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                getBackground().setAlpha((Integer) animation.getAnimatedValue());
+            }
+        });
+        bgAlphaAnimator.start();
+    }
 }

@@ -7,12 +7,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="0dp"
+    android:clickable="true"
+    android:focusable="true"
     android:background="@drawable/theme_component_bg_transition">
     <TextView
         android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:visibility="gone"
+        android:clickable="false"
+        android:focusable="false"
         android:text="@string/statusbar_label"
         style="@style/card_label"/>
     <LinearLayout
