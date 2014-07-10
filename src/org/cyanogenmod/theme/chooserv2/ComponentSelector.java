@@ -20,8 +20,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
@@ -41,7 +39,6 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -248,23 +245,6 @@ public class ComponentSelector extends LinearLayout
             return LOADER_ID_ALARM;
         }
         return -1;
-    }
-
-    private String getBatteryIndex(int type) {
-        switch(type) {
-            case 2:
-                return PreviewColumns.STATUSBAR_BATTERY_CIRCLE;
-            case 5:
-                return PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE;
-            default:
-                return PreviewColumns.STATUSBAR_BATTERY_PORTRAIT;
-        }
-    }
-
-    private Bitmap loadBitmapBlob(Cursor cursor, int columnIdx) {
-        byte[] blob = cursor.getBlob(columnIdx);
-        if (blob == null) return null;
-        return BitmapFactory.decodeByteArray(blob, 0, blob.length);
     }
 
     @Override
@@ -478,21 +458,21 @@ public class ComponentSelector extends LinearLayout
                 int wifiIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_WIFI_ICON);
                 int signalIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_SIGNAL_ICON);
                 int bluetoothIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BLUETOOTH_ICON);
-                int batteryIndex = cursor.getColumnIndex(getBatteryIndex(mBatteryStyle));
+                int batteryIndex = cursor.getColumnIndex(Utils.getBatteryIndex(mBatteryStyle));
                 int backgroundIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.slot1)).setImageBitmap(
-                        loadBitmapBlob(cursor, wifiIndex));
+                        Utils.loadBitmapBlob(cursor, wifiIndex));
                 ((ImageView) v.findViewById(R.id.slot2)).setImageBitmap(
-                        loadBitmapBlob(cursor, signalIndex));
+                        Utils.loadBitmapBlob(cursor, signalIndex));
                 ((ImageView) v.findViewById(R.id.slot3)).setImageBitmap(
-                        loadBitmapBlob(cursor, bluetoothIndex));
+                        Utils.loadBitmapBlob(cursor, bluetoothIndex));
                 ((ImageView) v.findViewById(R.id.slot4)).setImageBitmap(
-                        loadBitmapBlob(cursor, batteryIndex));
+                        Utils.loadBitmapBlob(cursor, batteryIndex));
                 setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.findViewById(R.id.container).setBackground(
-                        new BitmapDrawable(loadBitmapBlob(cursor, backgroundIndex)));
+                        new BitmapDrawable(Utils.loadBitmapBlob(cursor, backgroundIndex)));
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);
                 parent.addView(v, mItemParams);
@@ -512,10 +492,10 @@ public class ComponentSelector extends LinearLayout
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.back)).setImageBitmap(
-                        loadBitmapBlob(cursor, backIndex));
+                        Utils.loadBitmapBlob(cursor, backIndex));
                 setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.findViewById(R.id.container).setBackground(
-                        new BitmapDrawable(loadBitmapBlob(cursor, backgroundIndex)));
+                        new BitmapDrawable(Utils.loadBitmapBlob(cursor, backgroundIndex)));
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);
                 parent.addView(v, mItemParams);
@@ -565,7 +545,7 @@ public class ComponentSelector extends LinearLayout
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
-                        loadBitmapBlob(cursor, iconIndex));
+                        Utils.loadBitmapBlob(cursor, iconIndex));
                 setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);
@@ -585,7 +565,7 @@ public class ComponentSelector extends LinearLayout
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
-                        loadBitmapBlob(cursor, styleIndex));
+                        Utils.loadBitmapBlob(cursor, styleIndex));
                 setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);
@@ -605,7 +585,7 @@ public class ComponentSelector extends LinearLayout
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
-                        loadBitmapBlob(cursor, wallpaperIndex));
+                        Utils.loadBitmapBlob(cursor, wallpaperIndex));
                 setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);
@@ -625,7 +605,7 @@ public class ComponentSelector extends LinearLayout
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.preview)).setImageBitmap(
-                        loadBitmapBlob(cursor,wallpaperIndex));
+                        Utils.loadBitmapBlob(cursor, wallpaperIndex));
                 setTitle(((TextView) v.findViewById(R.id.title)), cursor);
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);

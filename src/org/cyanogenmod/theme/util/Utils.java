@@ -18,10 +18,12 @@ package org.cyanogenmod.theme.util;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
+import android.provider.ThemesContract;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ViewConfiguration;
@@ -240,4 +242,26 @@ public class Utils {
     public static boolean hasNavigationBar(Context context) {
         return !ViewConfiguration.get(context).hasPermanentMenuKey();
     }
+
+    public static Bitmap loadBitmapBlob(Cursor cursor, int columnIdx) {
+        if (columnIdx < 0) {
+            Log.w(TAG, "loadBitmapBlob(): Invalid index provided, returning null");
+            return null;
+        }
+        byte[] blob = cursor.getBlob(columnIdx);
+        if (blob == null) return null;
+        return BitmapFactory.decodeByteArray(blob, 0, blob.length);
+    }
+
+    public static String getBatteryIndex(int type) {
+        switch(type) {
+            case 2:
+                return ThemesContract.PreviewColumns.STATUSBAR_BATTERY_CIRCLE;
+            case 5:
+                return ThemesContract.PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE;
+            default:
+                return ThemesContract.PreviewColumns.STATUSBAR_BATTERY_PORTRAIT;
+        }
+    }
+
 }

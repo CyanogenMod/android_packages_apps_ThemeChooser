@@ -50,6 +50,7 @@ import android.widget.TextView;
 import org.cyanogenmod.theme.chooser.R;
 import org.cyanogenmod.theme.util.IconPreviewHelper;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
+import org.cyanogenmod.theme.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -409,7 +410,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             mWallpaper.setBackground(getActivity().getWallpaper());
         } else {
             int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
-            Bitmap bitmap = loadBitmapBlob(c, wpIdx);
+            Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
             mWallpaper.setImageBitmap(bitmap);
         }
     }
@@ -420,14 +421,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int wifiMarginIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END);
         int bluetoothIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_BLUETOOTH_ICON);
         int signalIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_SIGNAL_ICON);
-        int batteryIdx = c.getColumnIndex(getBatteryIndex(mBatteryStyle));
+        int batteryIdx = c.getColumnIndex(Utils.getBatteryIndex(mBatteryStyle));
         int clockColorIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR);
 
-        Bitmap background = loadBitmapBlob(c, backgroundIdx);
-        Bitmap bluetoothIcon = loadBitmapBlob(c, bluetoothIdx);
-        Bitmap wifiIcon = loadBitmapBlob(c, wifiIdx);
-        Bitmap signalIcon = loadBitmapBlob(c, signalIdx);
-        Bitmap batteryIcon = loadBitmapBlob(c, batteryIdx);
+        Bitmap background = Utils.loadBitmapBlob(c, backgroundIdx);
+        Bitmap bluetoothIcon = Utils.loadBitmapBlob(c, bluetoothIdx);
+        Bitmap wifiIcon = Utils.loadBitmapBlob(c, wifiIdx);
+        Bitmap signalIcon = Utils.loadBitmapBlob(c, signalIdx);
+        Bitmap batteryIcon = Utils.loadBitmapBlob(c, batteryIdx);
         int wifiMargin = c.getInt(wifiMarginIdx);
         int clockTextColor = c.getInt(clockColorIdx);
 
@@ -450,17 +451,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private String getBatteryIndex(int type) {
-        switch(type) {
-            case 2:
-                return PreviewColumns.STATUSBAR_BATTERY_CIRCLE;
-            case 5:
-                return PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE;
-            default:
-                return PreviewColumns.STATUSBAR_BATTERY_PORTRAIT;
-        }
-    }
-
     private void loadIcons(Cursor c) {
         int[] iconIdx = new int[4];
         iconIdx[0] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_1);
@@ -473,7 +463,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         IconPreviewHelper helper = new IconPreviewHelper(getActivity(), "");
         for(int i=0; i < mIconContainer.getChildCount() && i < iconIdx.length; i++) {
             ImageView v = (ImageView) mIconContainer.getChildAt(i);
-            Bitmap bitmap = loadBitmapBlob(c, iconIdx[i]);
+            Bitmap bitmap = Utils.loadBitmapBlob(c, iconIdx[i]);
             if (bitmap == null) {
                 ComponentName component = sIconComponents[i];
                 Drawable icon = helper.getDefaultIcon(component.getPackageName(),
@@ -491,22 +481,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int recentButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_RECENT_BUTTON);
         int backgroundIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
 
-        Bitmap background = loadBitmapBlob(c, backgroundIdx);
-        Bitmap backButton = loadBitmapBlob(c, backButtonIdx);
-        Bitmap homeButton = loadBitmapBlob(c, homeButtonIdx);
-        Bitmap recentButton = loadBitmapBlob(c, recentButtonIdx);
+        Bitmap background = Utils.loadBitmapBlob(c, backgroundIdx);
+        Bitmap backButton = Utils.loadBitmapBlob(c, backButtonIdx);
+        Bitmap homeButton = Utils.loadBitmapBlob(c, homeButtonIdx);
+        Bitmap recentButton = Utils.loadBitmapBlob(c, recentButtonIdx);
 
         mNavBar.setBackground(new BitmapDrawable(getActivity().getResources(), background));
         mBackButton.setImageBitmap(backButton);
         mHomeButton.setImageBitmap(homeButton);
         mRecentButton.setImageBitmap(recentButton);
-    }
-
-    private Bitmap loadBitmapBlob(Cursor cursor, int columnIdx) {
-        if (columnIdx < 0) return null;
-        byte[] blob = cursor.getBlob(columnIdx);
-        if (blob == null) return null;
-        return BitmapFactory.decodeByteArray(blob, 0, blob.length);
     }
 
     public static ComponentName[] getIconComponents(Context context) {
