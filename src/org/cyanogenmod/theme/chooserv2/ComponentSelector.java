@@ -52,6 +52,7 @@ import com.viewpagerindicator.PageIndicator;
 import org.cyanogenmod.theme.chooser.R;
 import org.cyanogenmod.theme.util.AudioUtils;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
+import org.cyanogenmod.theme.util.TypefaceHelperCache;
 import org.cyanogenmod.theme.util.Utils;
 
 import java.util.HashMap;
@@ -374,13 +375,13 @@ public class ComponentSelector extends LinearLayout
                 new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0, 1.0f);
         private Cursor mCursor;
         private int mItemsPerPage;
-        HashMap<String, ThemedTypefaceHelper> mTypefaceHelpers =
-                new HashMap<String, ThemedTypefaceHelper>();
+        private TypefaceHelperCache mTypefaceCache;
 
         public CursorPagerAdapter(Cursor cursor, int itemsPerPage) {
             super();
             mCursor = cursor;
             mItemsPerPage = itemsPerPage;
+            mTypefaceCache = TypefaceHelperCache.getInstance();
         }
 
         public void setNumItemsPerPage(int itemsPerPage) {
@@ -540,14 +541,7 @@ public class ComponentSelector extends LinearLayout
                 TextView preview = (TextView) v.findViewById(R.id.text_preview);
                 String pkgName = cursor.getString(pkgNameIndex);
 
-                ThemedTypefaceHelper helper;
-                if (!mTypefaceHelpers.containsKey(pkgName)) {
-                    helper = new ThemedTypefaceHelper();
-                    helper.load(mContext, pkgName);
-                    mTypefaceHelpers.put(pkgName, helper);
-                } else {
-                    helper = mTypefaceHelpers.get(pkgName);
-                }
+                ThemedTypefaceHelper helper = mTypefaceCache.getHelperForTheme(mContext, pkgName);
                 Typeface typefaceNormal = helper.getTypeface(Typeface.NORMAL);
                 preview.setTypeface(typefaceNormal);
 

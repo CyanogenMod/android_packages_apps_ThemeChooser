@@ -20,6 +20,7 @@ import android.content.res.Resources;
 import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ThemesContract;
 import android.provider.ThemesContract.ThemesColumns;
@@ -42,6 +43,7 @@ import android.widget.TextView;
 
 import org.cyanogenmod.theme.chooser.R;
 import org.cyanogenmod.theme.chooserv2.ComponentSelector.OnOpenCloseListener;
+import org.cyanogenmod.theme.util.TypefaceHelperCache;
 import org.cyanogenmod.theme.util.Utils;
 
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
@@ -67,6 +69,7 @@ public class ChooserActivity extends FragmentActivity
     private ComponentSelector mSelector;
     private View mSaveApplyLayout;
     private int mContainerYOffset = 0;
+    private TypefaceHelperCache mTypefaceHelperCache;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,6 +147,7 @@ public class ChooserActivity extends FragmentActivity
                         });
                     }
                 });
+        mTypefaceHelperCache = TypefaceHelperCache.getInstance();
     }
 
     public void hideSaveApplyButton() {
@@ -253,6 +257,14 @@ public class ChooserActivity extends FragmentActivity
     public void onDestroy() {
         super.onDestroy();
         mService.onClientDestroyed("temp_placeholder");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mTypefaceHelperCache.getTypefaceCount() <= 0) {
+            new TypefacePreloadTask().execute();
+        }
     }
 
     private void updateThemeName() {
@@ -395,6 +407,25 @@ public class ChooserActivity extends FragmentActivity
 
         public void swapCursor(Cursor c) {
             mCursor = c;
+        }
+    }
+
+    private class TypefacePreloadTask extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            String[] projection = { ThemesColumns.PKG_NAME };
+            String selection = ThemesColumns.MODIFIES_FONTS + "=?";
+            String[] selectionArgs = { "1" };
+            Cursor c = getContentResolver().query(ThemesColumns.CONTENT_URI, projection, selection,
+                    selectionArgs, null);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    mTypefaceHelperCache.getHelperForTheme(ChooserActivity.this, c.getString(0));
+                }
+                c.close();
+            }
+            return null;
         }
     }
 }

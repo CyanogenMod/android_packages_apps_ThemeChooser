@@ -52,6 +52,7 @@ import org.cyanogenmod.theme.chooser.R;
 import org.cyanogenmod.theme.chooserv2.ComponentSelector.OnItemClickedListener;
 import org.cyanogenmod.theme.util.IconPreviewHelper;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
+import org.cyanogenmod.theme.util.TypefaceHelperCache;
 import org.cyanogenmod.theme.util.Utils;
 
 import java.util.ArrayList;
@@ -688,9 +689,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private void loadFont(Cursor c) {
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         String pkgName = pkgNameIdx >= 0 ? c.getString(pkgNameIdx) : mPkgName;
-        ThemedTypefaceHelper helper = new ThemedTypefaceHelper();
-        helper.load(getActivity(), CURRENTLY_APPLIED_THEME.equals(pkgName) ?
-                getAppliedFontPackageName() : pkgName);
+        TypefaceHelperCache cache = TypefaceHelperCache.getInstance();
+        ThemedTypefaceHelper helper = cache.getHelperForTheme(getActivity(),
+                CURRENTLY_APPLIED_THEME.equals(pkgName) ? getAppliedFontPackageName() : pkgName);
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
         mFontPreview.setTypeface(mTypefaceNormal);
         mSelectedComponentsMap.put(MODIFIES_FONTS, pkgName);
