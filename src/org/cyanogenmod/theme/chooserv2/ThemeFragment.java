@@ -66,12 +66,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
@@ -81,6 +75,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final int ANIMATE_START_DELAY = 200;
     public static final int ANIMATE_DURATION = 300;
     public static final int ANIMATE_INTERPOLATE_FACTOR = 3;
+    public static final int ANIMATE_COMPONENT_CHANGE_DURATION = 200;
+    public static final int ANIMATE_COMPONENT_ICON_DELAY = 50;
 
     public static final String CURRENTLY_APPLIED_THEME = "currently_applied_theme";
 
@@ -694,7 +690,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             case LOADER_ID_ALL:
                 loadWallpaper(c);
                 loadStatusBar(c);
-                loadIcons(c);
+                loadIcons(c, false);
                 loadNavBar(c);
                 loadTitle(c);
                 loadFont(c);
@@ -706,7 +702,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loadFont(c);
                 break;
             case LOADER_ID_ICONS:
-                loadIcons(c);
+                loadIcons(c, true);
                 break;
             case LOADER_ID_WALLPAPER:
                 loadWallpaper(c);
@@ -787,7 +783,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void loadIcons(Cursor c) {
+    private void loadIcons(Cursor c, boolean animate) {
         int[] iconIdx = new int[4];
         iconIdx[0] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_1);
         iconIdx[1] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_2);
@@ -800,15 +796,32 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         IconPreviewHelper helper = new IconPreviewHelper(getActivity(), "");
         ViewGroup container = (ViewGroup) mIconContainer.findViewById(R.id.icon_preview_container);
         for(int i=0; i < container.getChildCount() && i < iconIdx.length; i++) {
-            ImageView v = (ImageView) ((ViewGroup)mIconContainer.getChildAt(1)).getChildAt(i);
+            final ImageView v = (ImageView) ((ViewGroup)mIconContainer.getChildAt(1)).getChildAt(i);
             Bitmap bitmap = Utils.loadBitmapBlob(c, iconIdx[i]);
+            Drawable oldIcon = v.getDrawable();
+            Drawable newIcon;
             if (bitmap == null) {
                 ComponentName component = sIconComponents[i];
-                Drawable icon = helper.getDefaultIcon(component.getPackageName(),
+                newIcon = helper.getDefaultIcon(component.getPackageName(),
                         component.getClassName());
-                v.setImageDrawable(icon);
             } else {
-                v.setImageBitmap(bitmap);
+                newIcon = new BitmapDrawable(getResources(), bitmap);
+            }
+            if (animate) {
+                Drawable[] layers = new Drawable[2];
+                layers[0] = oldIcon instanceof IconTransitionDrawable ?
+                        ((IconTransitionDrawable) oldIcon).getDrawable(1) : oldIcon;
+                layers[1] = newIcon;
+                final IconTransitionDrawable itd = new IconTransitionDrawable(layers);
+                v.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        itd.startTransition(ANIMATE_COMPONENT_CHANGE_DURATION);
+                        v.setImageDrawable(itd);
+                    }
+                }, ANIMATE_COMPONENT_ICON_DELAY * i);
+            } else {
+                v.setImageDrawable(newIcon);
             }
         }
         if (pkgNameIdx > -1) {
