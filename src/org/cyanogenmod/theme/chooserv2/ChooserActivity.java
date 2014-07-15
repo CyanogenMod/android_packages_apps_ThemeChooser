@@ -59,10 +59,7 @@ public class ChooserActivity extends FragmentActivity
 
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
-    private TextView mThemeName;
-    private Button mApply;
     private Button mEdit;
-    private ViewGroup mApplyEditBtns;
     private ThemesAdapter mAdapter;
     private ThemeManager mService;
     private boolean mExpanded = false;
@@ -77,9 +74,6 @@ public class ChooserActivity extends FragmentActivity
 
         mContainer = (PagerContainer) findViewById(R.id.pager_container);
         mPager = (ThemeViewPager) findViewById(R.id.viewpager);
-        mThemeName = (TextView) findViewById(R.id.theme_name);
-        mApplyEditBtns = (ViewGroup) findViewById(R.id.apply_edit_container);
-        mApply = (Button) findViewById(R.id.apply);
         mEdit = (Button) findViewById(R.id.edit);
 
         mPager.setOnClickListener(mPagerClickListener);
@@ -93,7 +87,6 @@ public class ChooserActivity extends FragmentActivity
 
         mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageSelected(int position) {
-                updateThemeName();
             }
 
             public void onPageScrolled(int position,
@@ -102,14 +95,6 @@ public class ChooserActivity extends FragmentActivity
             }
 
             public void onPageScrollStateChanged(int state) {
-            }
-        });
-
-        mApply.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                int position = mPager.getCurrentItem();
-                String pkgName = mAdapter.getItemPkgName(position);
-                mService.requestThemeChange(pkgName);
             }
         });
 
@@ -267,12 +252,6 @@ public class ChooserActivity extends FragmentActivity
         }
     }
 
-    private void updateThemeName() {
-        int position = mPager.getCurrentItem();
-        String name = mAdapter.getItemName(position);
-        mThemeName.setText(name);
-    }
-
     private View.OnClickListener mPagerClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -317,8 +296,6 @@ public class ChooserActivity extends FragmentActivity
         // old cursor once we return.)
         mAdapter.swapCursor(data);
         mAdapter.notifyDataSetChanged();
-
-        updateThemeName();
     }
 
     @Override
@@ -381,19 +358,6 @@ public class ChooserActivity extends FragmentActivity
          */
         public int getCount() {
             return mCursor == null ? 1 : mCursor.getCount() + 1;
-        }
-
-        public String getItemName(int position) {
-            if (position == 0) {
-                return getString(R.string.my_theme);
-            }
-
-            mCursor.moveToPosition(position - 1);
-            int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
-            int titleIdx = mCursor.getColumnIndex(ThemesColumns.TITLE);
-            String pkgName = mCursor.getString(pkgIdx);
-            return DEFAULT.equals(pkgName) ? mContext.getString(R.string.holo)
-                    : mCursor.getString(titleIdx);
         }
 
         public String getItemPkgName(int position) {

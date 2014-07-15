@@ -16,14 +16,13 @@
 package android.support.v4.view;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import org.cyanogenmod.theme.chooser.R;
 
 public class ThemeViewPager extends ViewPager {
     private boolean mExpanded;
@@ -48,7 +47,37 @@ public class ThemeViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return !mExpanded;
+        boolean intercept = false;
+
+        if (!mExpanded)  {
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    intercept = !isTouchingApplyButton(ev);
+                    break;
+            }
+        }
+
+        return intercept;
+    }
+
+    private boolean isTouchingApplyButton(MotionEvent ev) {
+        int x = (int) ev.getRawX();
+        int y = (int) ev.getRawY();
+        View v = getViewForPosition(getCurrentItem());
+        View apply = v.findViewById(R.id.apply);
+        if (apply == null) return false;
+
+        int location[] = new int[2];
+        apply.getLocationOnScreen(location);
+        int viewX = location[0];
+        int viewY = location[1];
+
+        if((x > viewX && x < (viewX + apply.getWidth())) &&
+                ( y > viewY && y < (viewY + apply.getHeight()))){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

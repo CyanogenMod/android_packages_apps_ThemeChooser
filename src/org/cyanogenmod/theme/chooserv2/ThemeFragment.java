@@ -15,18 +15,22 @@
  */
 package org.cyanogenmod.theme.chooserv2;
 
+import android.animation.IntEvaluator;
+import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
+import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,8 +46,10 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -126,6 +132,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private TextView mClock;
 
     // Other Misc Preview Views
+    private FrameLayout mShadowFrame;
     private ImageView mWallpaper;
     private ViewGroup mStatusBar;
     private TextView mFontPreview;
@@ -136,6 +143,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private ImageView mBackButton;
     private ImageView mHomeButton;
     private ImageView mRecentButton;
+
+    // Title Card Views
+    private ViewGroup mTitleCard;
+    private TextView mTitle;
+    private ImageView mApply;
+    private ImageView mOverflow;
 
     private Handler mHandler;
 
@@ -196,17 +209,34 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mBattery = (ImageView) v.findViewById(R.id.battery);
         mClock = (TextView) v.findViewById(R.id.clock);
 
-        // Wallpaper / Font / Icons
+        // Wallpaper / Font / Icons / etc
         mWallpaper = (ImageView) v.findViewById(R.id.wallpaper);
         mFontPreview = (TextView) v.findViewById(R.id.font_preview);
         mFontPreview.setTypeface(mTypefaceNormal);
         mIconContainer = (ViewGroup) v.findViewById(R.id.icon_container);
+        mShadowFrame = (FrameLayout) v.findViewById(R.id.shadow_frame);
 
         // Nav Bar
         mNavBar = (ViewGroup) v.findViewById(R.id.navigation_bar);
         mBackButton = (ImageView) v.findViewById(R.id.back_button);
         mHomeButton = (ImageView) v.findViewById(R.id.home_button);
         mRecentButton = (ImageView) v.findViewById(R.id.recent_button);
+
+        // Title Card
+        mTitleCard = (ViewGroup)v.findViewById(R.id.title_card);
+        mTitle = (TextView) v.findViewById(R.id.title);
+        mOverflow = (ImageView) v.findViewById(R.id.overflow);
+        mApply = (ImageView) v.findViewById(R.id.apply);
+        mApply.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Context context = getActivity();
+                if (context != null) {
+                    ThemeManager mService =
+                            (ThemeManager) context.getSystemService(Context.THEME_SERVICE);
+                    mService.requestThemeChange(mPkgName);
+                }
+            }
+        });
 
         getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
 
@@ -231,6 +261,20 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         content.setPadding(0, 0, 0, 0);
         ViewGroup.LayoutParams  layoutParams = mPreviewContent.getLayoutParams();
         layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        mPreviewContent.setLayoutParams(layoutParams);
+        mScrollView.setPadding(0,0,0,0);
+
+        // The parent of the wallpaper squishes the wp slightly because of padding from the 9 patch
+        // When the parent expands, the wallpaper returns to regular size which creates an
+        // undesireable effect.
+        Rect padding = new Rect();
+        NinePatchDrawable bg = (NinePatchDrawable) mShadowFrame.getBackground();
+        bg.getPadding(padding);
+        ViewGroup.LayoutParams wpParams = mWallpaper.getLayoutParams();
+        wpParams.width -= padding.left + padding.right;
+        mWallpaper.setLayoutParams(wpParams);
+        mIconContainer.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        mShadowFrame.setBackground(null);
 
         // Expand the children
         for (int i = 0; i < mPreviewContent.getChildCount(); i++) {
@@ -252,11 +296,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         // Collect the present position of all the children. The next layout/draw cycle will
         // change these bounds since we just expanded them. Then we can animate from prev location
-        // to the new location.
-        animateChildren(true, getChildrensGlobalBounds());
+        // to the new location. Note that the order of these calls matter as they all
+        // add themselves to the root layout as overlays
+        mScrollView.requestLayout();
         animateWallpaperOut();
+        animateTitleCard(true);
+        animateChildren(true, getChildrensGlobalBounds());
         mSelector = ((ChooserActivity) getActivity()).getComponentSelector();
         mSelector.setOnItemClickedListener(mOnComponentItemClicked);
+
+
     }
 
     // Returns the boundaries for all the children in the scrollview relative to the window
@@ -287,6 +336,36 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int leftRightPadding = (int) r.getDimension(R.dimen.collapsed_theme_page_padding);
         content.setPadding(leftRightPadding, 0, leftRightPadding, 0);
 
+        //Move the theme preview so that it is near the center of page per spec
+        int paddingTop = (int) r.getDimension(R.dimen.collapsed_theme_page_padding_top);
+        mScrollView.setPadding(0, paddingTop, 0, 0);
+
+        // During expand the wallpaper size decreases slightly to makeup for 9patch padding
+        // so when we collapse we should increase it again.
+        mShadowFrame.setBackgroundResource(R.drawable.bg_themepreview_shadow);
+        Rect padding = new Rect();
+        final NinePatchDrawable bg = (NinePatchDrawable) mShadowFrame.getBackground();
+        bg.getPadding(padding);
+        ViewGroup.LayoutParams wpParams = mWallpaper.getLayoutParams();
+        wpParams.width += padding.left + padding.right;
+        mWallpaper.setLayoutParams(wpParams);
+
+        // Gradually fade the drop shadow back in or else it will be out of place
+        ValueAnimator shadowAnimation = ValueAnimator.ofObject(new IntEvaluator(), 0, 255);
+        shadowAnimation.setDuration(ANIMATE_DURATION);
+        shadowAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                bg.setAlpha((Integer) animator.getAnimatedValue());
+            }
+
+        });
+        shadowAnimation.start();
+
+        //Move the title card back in
+        mTitleCard.setVisibility(View.VISIBLE);
+        mTitleCard.setTranslationY(0);
+
         // Shrink the height
         ViewGroup.LayoutParams layoutParams = mPreviewContent.getLayoutParams();
         Resources resources = mPreviewContent.getResources();
@@ -310,9 +389,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             child.getLayoutParams();
             child.collapse();
         }
-        mPreviewContent.requestLayout();
+        mScrollView.requestLayout();
         animateChildren(false, getChildrensGlobalBounds());
         animateWallpaperIn();
+        animateTitleCard(false);
     }
 
     // This will animate the children's vertical positions between the previous bounds and the
@@ -375,15 +455,62 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                             }
                         }
                     }, ANIMATE_DURATION / 2);
-
-
                 }
-                return false;
+                return true;
+            }
+        });
+    }
+
+    private void animateTitleCard(final boolean expand) {
+        final ViewGroup parent = (ViewGroup) mTitleCard.getParent();
+        // Get current location of the title card
+        int[] location = new int[2];
+        mTitleCard.getLocationOnScreen(location);
+        final int prevY = location[1];
+
+        final ViewTreeObserver observer = mScrollContent.getViewTreeObserver();
+        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                observer.removeOnPreDrawListener(this);
+
+                final ViewGroup root = (ViewGroup) getActivity().getWindow()
+                        .getDecorView().findViewById(android.R.id.content);
+
+                root.getOverlay().add(mTitleCard);
+
+                //Move title card back where it was before the relayout
+                float alpha = 1f;
+                if (expand) {
+                    int[] endPos = new int[2];
+                    mTitleCard.getLocationInWindow(endPos);
+                    int endY = endPos[1];
+                    mTitleCard.setTranslationY(prevY - endY);
+                    alpha = 0;
+                } else {
+                }
+
+                // Fade the title card and move it out of the way
+                mTitleCard.animate()
+                        .alpha(alpha)
+                        .setDuration(ANIMATE_DURATION)
+                        .withEndAction(new Runnable() {
+                            public void run() {
+                                root.getOverlay().remove(mTitleCard);
+                                parent.addView(mTitleCard);
+                                if (expand) {
+                                    mTitleCard.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                return true;
             }
         });
     }
 
     private void animateWallpaperOut() {
+        final ViewGroup root = (ViewGroup) getActivity().getWindow()
+                .getDecorView().findViewById(android.R.id.content);
+
         int[] location = new int[2];
         mWallpaper.getLocationOnScreen(location);
 
@@ -393,6 +520,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 observer.removeOnPreDrawListener(this);
+                root.getOverlay().add(mWallpaper);
 
                 int[] location = new int[2];
                 mWallpaper.getLocationOnScreen(location);
@@ -400,14 +528,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
                 mWallpaper.setTranslationY(prevY - newY);
                 mWallpaper.animate()
-                        .alpha(0)
+                        .alpha(0f)
                         .setDuration(300)
                         .withEndAction(new Runnable() {
                             public void run() {
+                                root.getOverlay().remove(mWallpaper);
+                                mShadowFrame.addView(mWallpaper, 0);
                                 mWallpaper.setVisibility(View.GONE);
                             }
                         });
-                return false;
+                return true;
             }
         });
     }
@@ -553,6 +683,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loadStatusBar(c);
                 loadIcons(c);
                 loadNavBar(c);
+                loadTitle(c);
                 loadFont(c);
                 break;
             case LOADER_ID_STATUS_BAR:
@@ -575,6 +706,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {}
+
+    private void loadTitle(Cursor c) {
+        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
+            mTitle.setText(R.string.my_theme);
+        } else {
+            int titleIdx = c.getColumnIndex(ThemesColumns.TITLE);
+            String title = c.getString(titleIdx);
+            mTitle.setText(title);
+        }
+    }
 
     private void loadWallpaper(Cursor c) {
         if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {

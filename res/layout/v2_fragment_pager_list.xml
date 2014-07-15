@@ -8,31 +8,71 @@
     <ScrollView android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingTop="@dimen/collapsed_theme_page_padding_top"
                 android:gravity="center"
                 android:layout_gravity="center_vertical"
                 android:divider="@null"
                 android:scrollbars="none"
                 android:fillViewport="true"
                 android:drawSelectorOnTop="false">
-        <FrameLayout android:layout_width="match_parent"
-                     android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/wallpaper"
-                android:layout_width="@dimen/theme_preview_width"
-                android:layout_height="@dimen/theme_preview_height"
-                android:layout_gravity="center_horizontal"
-                android:scaleType="centerCrop"
-                />
-            <RelativeLayout
-                android:id="@+id/preview_container"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <FrameLayout
+                android:id="@+id/shadow_frame"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/theme_preview_height"
-                android:orientation="vertical">
-                <include layout="@layout/v2_status_bar_preview_item"/>
-                <include layout="@layout/v2item_font"/>
-                <include layout="@layout/v2item_icon"/>
-                <include layout="@layout/v2_nav_bar_preview_item"/>
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_themepreview_shadow">
+                <ImageView
+                    android:id="@+id/wallpaper"
+                    android:layout_width="@dimen/theme_preview_width"
+                    android:layout_height="@dimen/theme_preview_height"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop"
+                    />
+                <RelativeLayout
+                    android:id="@+id/preview_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/theme_preview_height">
+                    <include layout="@layout/v2_status_bar_preview_item"/>
+                    <include layout="@layout/v2item_font"/>
+                    <include layout="@layout/v2item_icon"/>
+                    <include layout="@layout/v2_nav_bar_preview_item"/>
+                </RelativeLayout>
+            </FrameLayout>
+            <RelativeLayout
+                android:id="@+id/title_card"
+                android:layout_below="@id/shadow_frame"
+                android:layout_width="@dimen/theme_preview_width"
+                android:layout_height="48dp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/card_themepreview_bg">
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginStart="16dp"
+                    android:gravity="center"
+                    android:ellipsize="end"
+                    android:textColor="#78000000"/>
+
+                <ImageView
+                    android:id="@+id/apply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/overflow"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/ic_theme_apply2"/>
+
+                <ImageView
+                    android:id="@+id/overflow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="8dp"
+                    android:src="@drawable/ic_overflow_dark"/>
             </RelativeLayout>
-        </FrameLayout>
+        </RelativeLayout>
     </ScrollView>
 </LinearLayout>

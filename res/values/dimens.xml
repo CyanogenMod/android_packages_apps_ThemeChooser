@@ -22,7 +22,7 @@
     <dimen name="expanded_preview_margin">24dp</dimen>
     <dimen name="navigation_button_width">80dp</dimen>
     <dimen name="theme_preview_width">264dp</dimen>
-    <dimen name="theme_preview_height">264dp</dimen>
+    <dimen name="theme_preview_height">300dp</dimen>
 
     <dimen name="component_selection_cell_width">80dp</dimen>
     <dimen name="component_selection_cell_height">112dp</dimen>
@@ -50,6 +50,9 @@
      alone. The value of this padding should makeup
      for the difference in width of the expanded cards-->
     <dimen name="collapsed_theme_page_padding">24dp</dimen>
+
+    <!-- Distance from top of screen to the collapsed theme preview -->
+    <dimen name="collapsed_theme_page_padding_top">119dp</dimen>
 
     <dimen name="component_divider_height">32dp</dimen>
     <dimen name="component_divider_height_bootani">48dp</dimen>

@@ -5,6 +5,8 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -56,12 +58,15 @@ public class ComponentCardView extends LinearLayout {
 
     public void expand() {
         TransitionDrawable bg = (TransitionDrawable) getBackground();
-        Rect paddingRect = new Rect();
-        bg.getPadding(paddingRect);
+        if (bg != null) {
+            Rect paddingRect = new Rect();
+            bg.getPadding(paddingRect);
+        }
 
         setPadding(mExpandPadLeft, mExpandPadTop, mExpandPadRight, mExpandPadBottom);
 
         if (mLabel != null) {
+            mLabel.setAlpha(0f);
             mLabel.setVisibility(View.VISIBLE);
         }
     }

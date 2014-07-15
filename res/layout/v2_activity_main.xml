@@ -4,24 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_grid">
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_gravity="center_vertical">
-        <TextView
-            android:id="@+id/theme_name"
-            android:layout_width="264dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="48dp"
-            android:paddingBottom="24dp"
-            android:textSize="24sp"
-            />
         <org.cyanogenmod.theme.chooserv2.PagerContainer
             android:id="@+id/pager_container"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical">
             <android.support.v4.view.ThemeViewPager
                 android:id="@+id/viewpager"
