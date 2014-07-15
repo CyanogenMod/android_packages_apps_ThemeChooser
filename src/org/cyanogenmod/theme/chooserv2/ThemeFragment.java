@@ -20,6 +20,7 @@ import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.pm.ThemeUtils;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
@@ -46,7 +47,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
@@ -189,7 +189,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         mHandler = new Handler();
 
-        mSelectedComponentsMap = new HashMap<String, String>();
+        // populate mSelectedComponentsMap with supported components for this theme
+        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
+            List<String> components = ThemeUtils.getSupportedComponents(getActivity(), mPkgName);
+            mSelectedComponentsMap = new HashMap<String, String>(components.size());
+            for (String component : components) {
+                mSelectedComponentsMap.put(component, mPkgName);
+            }
+        } else {
+            mSelectedComponentsMap = new HashMap<String, String>();
+        }
     }
 
     @Override
@@ -231,9 +240,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             public void onClick(View v) {
                 Context context = getActivity();
                 if (context != null) {
-                    ThemeManager mService =
-                            (ThemeManager) context.getSystemService(Context.THEME_SERVICE);
-                    mService.requestThemeChange(mPkgName);
+                    if (mSelectedComponentsMap != null && mSelectedComponentsMap.size() > 0) {
+                        ThemeManager mService =
+                                (ThemeManager) context.getSystemService(Context.THEME_SERVICE);
+                        mService.requestThemeChange(mSelectedComponentsMap);
+                    }
                 }
             }
         });
@@ -410,8 +421,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 for (int i = mPreviewContent.getChildCount() - 1; i >= 0; i--) {
                     final ComponentCardView v = (ComponentCardView) mPreviewContent.getChildAt(i);
 
-                    float prevY; float endY;
-                    float prevHeight; float endHeight;
+                    float prevY;
+                    float endY;
+                    float prevHeight;
+                    float endHeight;
                     if (i >= prevBounds.size()) {
                         // View is being created
                         prevY = mPreviewContent.getTop() + mPreviewContent.getHeight();
@@ -835,7 +848,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 CURRENTLY_APPLIED_THEME.equals(pkgName) ? getAppliedFontPackageName() : pkgName);
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
         mFontPreview.setTypeface(mTypefaceNormal);
-        mSelectedComponentsMap.put(MODIFIES_FONTS, pkgName);
+        if (pkgNameIdx > -1) {
+            mSelectedComponentsMap.put(MODIFIES_FONTS, pkgName);
+        }
     }
 
     public static ComponentName[] getIconComponents(Context context) {

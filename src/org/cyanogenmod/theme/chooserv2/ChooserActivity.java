@@ -46,6 +46,8 @@ import org.cyanogenmod.theme.chooserv2.ComponentSelector.OnOpenCloseListener;
 import org.cyanogenmod.theme.util.TypefaceHelperCache;
 import org.cyanogenmod.theme.util.Utils;
 
+import java.util.Map;
+
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
@@ -201,7 +203,7 @@ public class ChooserActivity extends FragmentActivity
     @Override
     protected void onResume() {
         super.onResume();
-        mService.onClientResumed("temp_placeholder", this);
+        mService.onClientResumed(this);
     }
 
     @Override
@@ -235,13 +237,13 @@ public class ChooserActivity extends FragmentActivity
     @Override
     public void onPause() {
         super.onPause();
-        mService.onClientPaused("temp_placeholder");
+        mService.onClientPaused(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mService.onClientDestroyed("temp_placeholder");
+        mService.onClientDestroyed(this);
     }
 
     @Override
