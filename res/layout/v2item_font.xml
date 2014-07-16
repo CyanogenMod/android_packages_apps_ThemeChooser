@@ -17,7 +17,8 @@
     <TextView
         android:id="@+id/font_preview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
         android:text="@string/font_preview_letters"
         android:textColor="@color/font_preview_color"
         android:shadowColor="@color/font_preview_shadow_color"
@@ -25,6 +26,6 @@
         android:shadowDy="2"
         android:shadowRadius="4"
         android:textSize="32sp"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         />
 </org.cyanogenmod.theme.chooserv2.ComponentCardView>
