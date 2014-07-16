@@ -48,9 +48,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -71,12 +75,17 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
-public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        ThemeManager.ThemeChangeListener {
     public static final int ANIMATE_START_DELAY = 200;
     public static final int ANIMATE_DURATION = 300;
     public static final int ANIMATE_INTERPOLATE_FACTOR = 3;
     public static final int ANIMATE_COMPONENT_CHANGE_DURATION = 200;
     public static final int ANIMATE_COMPONENT_ICON_DELAY = 50;
+    public static final int ANIMATE_PROGRESS_IN_DURATION = 500;
+    public static final int ANIMATE_TITLE_OUT_DURATION = 400;
+    public static final int ANIMATE_PROGRESS_OUT_DURATION = 400;
+    public static final int ANIMATE_TITLE_IN_DURATION = 500;
 
     public static final String CURRENTLY_APPLIED_THEME = "currently_applied_theme";
 
@@ -142,9 +151,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     // Title Card Views
     private ViewGroup mTitleCard;
+    private ViewGroup mTitleLayout;
     private TextView mTitle;
     private ImageView mApply;
     private ImageView mOverflow;
+    private ProgressBar mProgress;
 
     private Handler mHandler;
 
@@ -186,7 +197,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mHandler = new Handler();
 
         // populate mSelectedComponentsMap with supported components for this theme
-        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
+        if (!CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
             List<String> components = ThemeUtils.getSupportedComponents(getActivity(), mPkgName);
             mSelectedComponentsMap = new HashMap<String, String>(components.size());
             for (String component : components) {
@@ -229,19 +240,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         // Title Card
         mTitleCard = (ViewGroup)v.findViewById(R.id.title_card);
+        mTitleLayout = (ViewGroup) v.findViewById(R.id.title_layout);
         mTitle = (TextView) v.findViewById(R.id.title);
+        mProgress = (ProgressBar) v.findViewById(R.id.apply_progress);
         mOverflow = (ImageView) v.findViewById(R.id.overflow);
         mApply = (ImageView) v.findViewById(R.id.apply);
         mApply.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Context context = getActivity();
-                if (context != null) {
-                    if (mSelectedComponentsMap != null && mSelectedComponentsMap.size() > 0) {
-                        ThemeManager mService =
-                                (ThemeManager) context.getSystemService(Context.THEME_SERVICE);
-                        mService.requestThemeChange(mSelectedComponentsMap);
-                    }
-                }
+                applyTheme();
             }
         });
 
@@ -259,6 +265,28 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (getLoaderManager().getLoader(0) != null) {
                 getLoaderManager().restartLoader(0, null, this);
             }
+        }
+    }
+
+    @Override
+    public void onProgress(int progress) {
+        mProgress.setProgress(progress);
+    }
+
+    @Override
+    public void onFinish(boolean isSuccess) {
+        // We post a runnable to mHandler so the client is removed from the same thread
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ThemeManager tm = getThemeManager();
+                if (tm != null) tm.removeClient(ThemeFragment.this);
+            }
+        });
+        if (isSuccess) {
+            mProgress.setProgress(100);
+            animateProgressOut();
+            ((ChooserActivity) getActivity()).themeChangeEnded();
         }
     }
 
@@ -564,6 +592,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         final ThemeConfig themeConfig = config != null ? config.themeConfig : null;
         return themeConfig != null ? themeConfig.getFontPkgName() :
                 ThemeConfig.getSystemTheme().getFontPkgName();
+    }
+
+    private ThemeManager getThemeManager() {
+        final Context context = getActivity();
+        if (context != null) {
+            return (ThemeManager) context.getSystemService(Context.THEME_SERVICE);
+        }
+        return null;
     }
 
     @Override
@@ -980,6 +1016,83 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private void animateContentChange(int parentId, View viewToAnimate, Drawable overlay) {
         ((ComponentCardView) getView().findViewById(parentId))
                 .animateContentChange(viewToAnimate, overlay, ANIMATE_COMPONENT_CHANGE_DURATION);
+    }
+
+    private Runnable mApplyThemeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            final Context context = getActivity();
+            if (context != null) {
+                if (mSelectedComponentsMap != null && mSelectedComponentsMap.size() > 0) {
+                    // Post this on mHandler so the client is added and removed from the same
+                    // thread
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ThemeManager tm = getThemeManager();
+                            if (tm != null) {
+                                tm.addClient(ThemeFragment.this);
+                                tm.requestThemeChange(mSelectedComponentsMap);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    };
+
+    private void applyTheme() {
+        if (mSelectedComponentsMap == null || mSelectedComponentsMap.size() <= 0) return;
+        ((ChooserActivity) getActivity()).themeChangeStarted();
+        animateProgressIn(mApplyThemeRunnable);
+    }
+
+    private void animateProgressIn(Runnable endAction) {
+        mProgress.setVisibility(View.VISIBLE);
+        mProgress.setProgress(0);
+        float pivotX = mTitleLayout.getWidth() -
+                getResources().getDimensionPixelSize(R.dimen.apply_progress_padding);
+        ScaleAnimation scaleAnim = new ScaleAnimation(0f, 1f, 1f, 1f,
+                pivotX, 0f);
+        scaleAnim.setDuration(ANIMATE_PROGRESS_IN_DURATION);
+
+        mTitleLayout.animate()
+                .translationXBy(-(pivotX / 4))
+                .alpha(0f)
+                .setDuration(ANIMATE_TITLE_OUT_DURATION)
+                .setInterpolator(new AccelerateInterpolator())
+                .withEndAction(endAction).start();
+        mProgress.startAnimation(scaleAnim);
+    }
+
+    private void animateProgressOut() {
+        mProgress.setVisibility(View.VISIBLE);
+        float pivotX = mTitleLayout.getWidth() -
+                getResources().getDimensionPixelSize(R.dimen.apply_progress_padding);
+        ScaleAnimation scaleAnim = new ScaleAnimation(1f, 0f, 1f, 1f,
+                pivotX, 0f);
+        scaleAnim.setDuration(ANIMATE_PROGRESS_OUT_DURATION);
+        scaleAnim.setFillAfter(false);
+        scaleAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mProgress.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+
+        mTitleLayout.animate()
+                .translationXBy((pivotX / 4))
+                .alpha(1f)
+                .setDuration(ANIMATE_TITLE_IN_DURATION)
+                .setInterpolator(new AccelerateInterpolator())
+                .start();
+        mProgress.startAnimation(scaleAnim);
     }
 
     public void fadeInCards() {

@@ -35,18 +35,14 @@ import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.TextView;
 
 import org.cyanogenmod.theme.chooser.R;
 import org.cyanogenmod.theme.chooserv2.ComponentSelector.OnOpenCloseListener;
 import org.cyanogenmod.theme.util.TypefaceHelperCache;
 import org.cyanogenmod.theme.util.Utils;
-
-import java.util.Map;
 
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
@@ -154,6 +150,25 @@ public class ChooserActivity extends FragmentActivity
             public void onAnimationRepeat(Animation animation) {
             }
         });
+    }
+
+    /**
+     * Disable the ViewPager while a theme change is occuring
+     */
+    public void themeChangeStarted() {
+        mPager.setEnabled(false);
+    }
+
+    /**
+     * Re-enable the ViewPager and update the "My theme" fragment if available
+     */
+    public void themeChangeEnded() {
+        ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
+                .findFragmentByTag(getFragmentTag(0));
+        if (f != null) {
+            f.clearChanges();
+            mPager.setEnabled(true);
+        }
     }
 
     public ComponentSelector getComponentSelector() {

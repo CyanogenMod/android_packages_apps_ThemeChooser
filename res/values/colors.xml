@@ -41,4 +41,7 @@
     <drawable name="save_apply_button_normal">#cd00b3e6</drawable>
     <drawable name="save_apply_button_focused">#cd1fcdff</drawable>
     <drawable name="save_apply_button_pressed">#cd0093bd</drawable>
+
+    <color name="apply_progress_background_color">#e0dfe1</color>
+    <color name="apply_progress_color">#00b3e6</color>
 </resources>

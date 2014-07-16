@@ -44,6 +44,7 @@
         <activity android:name="org.cyanogenmod.theme.chooserv2.ChooserActivity"
                   android:label="@string/app_name"
                   android:theme="@style/ThemeChooserV2Theme"
+                  android:configChanges="themeChange"
                   android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

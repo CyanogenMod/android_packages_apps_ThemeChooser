@@ -49,7 +49,7 @@ public class ThemeViewPager extends ViewPager {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         boolean intercept = false;
 
-        if (!mExpanded)  {
+        if (!mExpanded && isEnabled())  {
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     intercept = !isTouchingApplyButton(ev);
