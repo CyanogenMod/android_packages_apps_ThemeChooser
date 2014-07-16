@@ -689,17 +689,17 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         switch (loader.getId()) {
             case LOADER_ID_ALL:
                 loadWallpaper(c);
-                loadStatusBar(c);
+                loadStatusBar(c, false);
                 loadIcons(c, false);
-                loadNavBar(c);
+                loadNavBar(c, false);
                 loadTitle(c);
-                loadFont(c);
+                loadFont(c, false);
                 break;
             case LOADER_ID_STATUS_BAR:
-                loadStatusBar(c);
+                loadStatusBar(c, true);
                 break;
             case LOADER_ID_FONT:
-                loadFont(c);
+                loadFont(c, true);
                 break;
             case LOADER_ID_ICONS:
                 loadIcons(c, true);
@@ -708,7 +708,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loadWallpaper(c);
                 break;
             case LOADER_ID_NAVIGATION_BAR:
-                loadNavBar(c);
+                loadNavBar(c, true);
                 break;
         }
     }
@@ -736,7 +736,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void loadStatusBar(Cursor c) {
+    private void loadStatusBar(Cursor c, boolean animate) {
         int backgroundIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
         int wifiIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_WIFI_ICON);
         int wifiMarginIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END);
@@ -753,6 +753,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Bitmap batteryIcon = Utils.loadBitmapBlob(c, batteryIdx);
         int wifiMargin = c.getInt(wifiMarginIdx);
         int clockTextColor = c.getInt(clockColorIdx);
+
+        if (!mStatusBar.isDrawingCacheEnabled()) mStatusBar.setDrawingCacheEnabled(true);
+        Drawable d = null;
+        if (animate) {
+            d = new BitmapDrawable(getResources(), mStatusBar.getDrawingCache());
+        }
 
         mStatusBar.setBackground(new BitmapDrawable(getActivity().getResources(), background));
         mBluetooth.setImageBitmap(bluetoothIcon);
@@ -780,6 +786,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (pkgNameIdx > -1) {
             String pkgName = c.getString(pkgNameIdx);
             mSelectedComponentsMap.put(MODIFIES_STATUS_BAR, pkgName);
+        }
+        if (animate) {
+            animateContentChange(R.id.status_bar_container, mStatusBar, d);
         }
     }
 
@@ -830,7 +839,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void loadNavBar(Cursor c) {
+    private void loadNavBar(Cursor c, boolean animate) {
         int backButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_BACK_BUTTON);
         int homeButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_HOME_BUTTON);
         int recentButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_RECENT_BUTTON);
@@ -842,6 +851,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Bitmap homeButton = Utils.loadBitmapBlob(c, homeButtonIdx);
         Bitmap recentButton = Utils.loadBitmapBlob(c, recentButtonIdx);
 
+        if (!mNavBar.isDrawingCacheEnabled()) mNavBar.setDrawingCacheEnabled(true);
+        Drawable d = null;
+        if (animate) {
+            d = new BitmapDrawable(getResources(), mNavBar.getDrawingCache());
+        }
+
         mNavBar.setBackground(new BitmapDrawable(getActivity().getResources(), background));
         mBackButton.setImageBitmap(backButton);
         mHomeButton.setImageBitmap(homeButton);
@@ -851,9 +866,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             String pkgName = c.getString(pkgNameIdx);
             mSelectedComponentsMap.put(MODIFIES_NAVIGATION_BAR, pkgName);
         }
+        if (animate) {
+            animateContentChange(R.id.navigation_bar_container, mNavBar, d);
+        }
     }
 
-    private void loadFont(Cursor c) {
+    private void loadFont(Cursor c, boolean animate) {
+        if (!mFontPreview.isDrawingCacheEnabled()) mFontPreview.setDrawingCacheEnabled(true);
+        Drawable d = null;
+        if (animate) {
+            d = new BitmapDrawable(getResources(), mFontPreview.getDrawingCache());
+        }
+
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         String pkgName = pkgNameIdx >= 0 ? c.getString(pkgNameIdx) : mPkgName;
         TypefaceHelperCache cache = TypefaceHelperCache.getInstance();
@@ -863,6 +887,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mFontPreview.setTypeface(mTypefaceNormal);
         if (pkgNameIdx > -1) {
             mSelectedComponentsMap.put(MODIFIES_FONTS, pkgName);
+        }
+        if (animate) {
+            animateContentChange(R.id.font_preview_container, mFontPreview, d);
         }
     }
 
@@ -948,6 +975,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 card.animateCardFadeOut();
             }
         }
+    }
+
+    private void animateContentChange(int parentId, View viewToAnimate, Drawable overlay) {
+        ((ComponentCardView) getView().findViewById(parentId))
+                .animateContentChange(viewToAnimate, overlay, ANIMATE_COMPONENT_CHANGE_DURATION);
     }
 
     public void fadeInCards() {

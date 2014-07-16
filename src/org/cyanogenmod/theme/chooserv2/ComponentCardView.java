@@ -1,15 +1,18 @@
 package org.cyanogenmod.theme.chooserv2;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.IntEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.NinePatchDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewOverlay;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -134,5 +137,61 @@ public class ComponentCardView extends LinearLayout {
             }
         });
         bgAlphaAnimator.start();
+    }
+
+    /**
+     * Animates a change in the content of the card
+     * @param v View in card to animate
+     * @param overlay Drawable to animate as a ViewOverlay
+     * @param duration Duration of animation
+     */
+    public void animateContentChange(View v, final Drawable overlay, long duration) {
+        final ViewOverlay viewOverlay = this.getOverlay();
+        viewOverlay.add(overlay);
+        final int x = (int) v.getX();
+        final int y = (int) v.getY();
+        final int width = v.getWidth();
+        final int height = v.getHeight();
+        overlay.setBounds(x, y, x + v.getWidth(), y + v.getHeight());
+
+        final ValueAnimator overlayAnimator = ValueAnimator.ofFloat(1f, 0f);
+        overlayAnimator.setDuration(duration);
+        overlayAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (Float) animation.getAnimatedValue();
+                overlay.setAlpha((int) (255 * value));
+                int newWidth = (int) (value * width);
+                int newHeight = (int) (value * height);
+                int dw = (width - newWidth) / 2;
+                int dh = (height - newHeight) / 2;
+                overlay.setBounds(x + dw, y + dh, x + dw + newWidth, y + dh + newHeight);
+            }
+        });
+        overlayAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {}
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Clear out the ViewOverlay now that we are done animating
+                viewOverlay.clear();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
+
+        AnimatorSet set = new AnimatorSet();
+        set.play(ObjectAnimator.ofFloat(v, "alpha", 0f, 1f))
+                .with(ObjectAnimator.ofFloat(v, "scaleX", 0f, 1f))
+                .with(ObjectAnimator.ofFloat(v, "scaleY", 0f, 1f));
+        set.setDuration(duration);
+
+        set.start();
+        overlayAnimator.start();
     }
 }
