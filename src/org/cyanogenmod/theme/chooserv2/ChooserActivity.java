@@ -125,7 +125,7 @@ public class ChooserActivity extends FragmentActivity
                         f.fadeOutCards(new Runnable() {
                             public void run() {
                                 mContainer.collapse();
-                                f.collapse();
+                                f.collapse(true);
                             }
                         });
                     }
@@ -241,7 +241,7 @@ public class ChooserActivity extends FragmentActivity
             f.fadeOutCards(new Runnable() {
                 public void run() {
                     mContainer.collapse();
-                    f.collapse();
+                    f.collapse(false);
                 }
             });
         } else {

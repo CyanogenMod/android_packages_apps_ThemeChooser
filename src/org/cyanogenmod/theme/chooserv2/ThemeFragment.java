@@ -335,7 +335,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         // add themselves to the root layout as overlays
         mScrollView.requestLayout();
         animateWallpaperOut();
-        animateTitleCard(true);
+        animateTitleCard(true, false);
         animateChildren(true, getChildrensGlobalBounds());
         mSelector = ((ChooserActivity) getActivity()).getComponentSelector();
         mSelector.setOnItemClickedListener(mOnComponentItemClicked);
@@ -364,7 +364,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mHandler.postDelayed(endAction, ComponentCardView.CARD_FADE_DURATION);
     }
 
-    public void collapse() {
+    public void collapse(final boolean applyTheme) {
         // Pad the  view so it appears thinner
         ViewGroup content = (ViewGroup) mScrollView.getParent();
         Resources r = mScrollView.getContext().getResources();
@@ -427,7 +427,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mScrollView.requestLayout();
         animateChildren(false, getChildrensGlobalBounds());
         animateWallpaperIn();
-        animateTitleCard(false);
+        animateTitleCard(false, applyTheme);
     }
 
     // This will animate the children's vertical positions between the previous bounds and the
@@ -498,7 +498,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
-    private void animateTitleCard(final boolean expand) {
+    private void animateTitleCard(final boolean expand, final boolean applyTheme) {
         final ViewGroup parent = (ViewGroup) mTitleCard.getParent();
         // Get current location of the title card
         int[] location = new int[2];
@@ -536,6 +536,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                                 parent.addView(mTitleCard);
                                 if (expand) {
                                     mTitleCard.setVisibility(View.GONE);
+                                } else if (applyTheme) {
+                                    // since the title card is the last animation when collapsing
+                                    // we will handle applying the theme, if applicable, here
+                                    applyTheme();
                                 }
                             }
                         });
