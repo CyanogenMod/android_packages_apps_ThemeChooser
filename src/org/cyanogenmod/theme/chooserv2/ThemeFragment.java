@@ -27,6 +27,7 @@ import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -44,6 +45,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.SparseArray;
+import android.util.TypedValue;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +73,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
@@ -159,6 +163,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private ImageView mOverflow;
     private ProgressBar mProgress;
 
+    // Additional Card Views
+    private RelativeLayout mAdditionalCards;
+    private WallpaperCardView mWallpaperCard;
+
     private Handler mHandler;
 
     private int mActiveCardId = -1;
@@ -170,6 +178,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         sCardIdsToComponentTypes.put(R.id.font_preview_container, MODIFIES_FONTS);
         sCardIdsToComponentTypes.put(R.id.icon_container, MODIFIES_ICONS);
         sCardIdsToComponentTypes.put(R.id.navigation_bar_container, MODIFIES_NAVIGATION_BAR);
+        sCardIdsToComponentTypes.put(R.id.wallpaper_card, MODIFIES_LAUNCHER);
     }
 
     static ThemeFragment newInstance(String pkgName) {
@@ -253,6 +262,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
 
+        // Additional cards which should hang out offscreen until expanded
+        mAdditionalCards = (RelativeLayout) v.findViewById(R.id.additional_cards);
+        mWallpaperCard = (WallpaperCardView) v.findViewById(R.id.wallpaper_card);
+        int translationY = getDistanceToMoveBelowScreen(mWallpaperCard);
+        mWallpaperCard.setTranslationY(translationY);
+
+
         getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
 
         initCards(v);
@@ -312,20 +328,25 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mWallpaper.setLayoutParams(wpParams);
         mIconContainer.setPadding(padding.left, padding.top, padding.right, padding.bottom);
         mShadowFrame.setBackground(null);
+        mAdditionalCards.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+
+        // Off screen cards will become visible and then be animated in
+        mWallpaperCard.setVisibility(View.VISIBLE);
 
         // Expand the children
+        int top = (int) getResources()
+                .getDimension(R.dimen.expanded_card_margin_top);
         for (int i = 0; i < mPreviewContent.getChildCount(); i++) {
             ComponentCardView child = (ComponentCardView) mPreviewContent.getChildAt(i);
+
             RelativeLayout.LayoutParams lparams =
                     (RelativeLayout.LayoutParams) child.getLayoutParams();
-
-            int top = (int) child.getResources()
-                    .getDimension(R.dimen.expanded_card_margin_top);
             lparams.setMargins(0, top, 0, 0);
             if (child.getId() == R.id.navigation_bar_container) {
                 lparams.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 lparams.addRule(RelativeLayout.BELOW, R.id.icon_container);
             }
+
 
             child.setLayoutParams(lparams);
             child.expand();
@@ -339,11 +360,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         animateWallpaperOut();
         animateTitleCard(true, false);
         animateChildren(true, getChildrensGlobalBounds());
+        animateExtras(true, getChildrensGlobalBounds());
         mSelector = ((ChooserActivity) getActivity()).getComponentSelector();
         mSelector.setOnItemClickedListener(mOnComponentItemClicked);
-
-
     }
+
+
 
     // Returns the boundaries for all the children in the scrollview relative to the window
     private List<Rect> getChildrensGlobalBounds() {
@@ -426,8 +448,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             child.getLayoutParams();
             child.collapse();
         }
+
         mScrollView.requestLayout();
         animateChildren(false, getChildrensGlobalBounds());
+        animateExtras(false, getChildrensGlobalBounds());
         animateWallpaperIn();
         animateTitleCard(false, applyTheme);
     }
@@ -498,6 +522,78 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 return true;
             }
         });
+    }
+
+    private void animateExtras(final boolean isExpanding, final List<Rect> prevBounds) {
+        final ViewGroup root = (ViewGroup) getActivity().getWindow()
+                .getDecorView().findViewById(android.R.id.content);
+        // Expanding has a delay while the wallpaper begins to fade out
+        // Collapsing is opposite of this so wallpaper will have the delay instead
+        final int startDelay = isExpanding ? ANIMATE_START_DELAY : 0;
+
+        if (!isExpanding) {
+            // If we are collapsing then we do not wait for the onPreDraw() because
+            // 1) We will simply translate the view out and 2) The view will get "squished"
+            // during the layout change (due to parent's padding) which is undesireable.
+            for (int i = mAdditionalCards.getChildCount() - 1; i >= 0; i--) {
+                final ComponentCardView v = (ComponentCardView) mAdditionalCards.getChildAt(i);
+                root.getOverlay().add(v);
+
+                int translationY = getDistanceToMoveBelowScreen(v);
+                v.animate()
+                        .setStartDelay(0)
+                        .translationY(translationY)
+                        .setDuration(ANIMATE_DURATION)
+                        .setInterpolator(
+                                new DecelerateInterpolator(ANIMATE_INTERPOLATE_FACTOR))
+                        .withEndAction(new Runnable() {
+                            public void run() {
+                                root.getOverlay().remove(v);
+                                mAdditionalCards.addView(v, 0);
+                                v.setVisibility(View.INVISIBLE);
+                            }
+                        });
+            }
+        } else {
+            final ViewTreeObserver observer = mScrollContent.getViewTreeObserver();
+            observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                public boolean onPreDraw() {
+                    observer.removeOnPreDrawListener(this);
+
+                    for (int i = mAdditionalCards.getChildCount() - 1; i >= 0; i--) {
+                        final ComponentCardView v =
+                                (ComponentCardView) mAdditionalCards.getChildAt(i);
+                        root.getOverlay().add(v);
+                        v.animate()
+                                .setStartDelay(startDelay)
+                                .translationY(0)
+                                .setDuration(ANIMATE_DURATION+100)
+                                .setInterpolator(
+                                        new DecelerateInterpolator(ANIMATE_INTERPOLATE_FACTOR))
+                                .withEndAction(new Runnable() {
+                                    public void run() {
+                                        root.getOverlay().remove(v);
+                                        mAdditionalCards.addView(v, 0);
+                                    }
+                                });
+
+                    }
+                    return false;
+                }
+            });
+        }
+    }
+
+    private int getDistanceToMoveBelowScreen(View v) {
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point p = new Point();
+        display.getSize(p);
+        int heightId = getResources()
+                .getIdentifier("system_bar_height", "dimen", "android");
+        int navbar_height = getResources().getDimensionPixelSize(heightId);
+        int[] pos = new int[2];
+        v.getLocationInWindow(pos);
+        return p.y + navbar_height - pos[1];
     }
 
     private void animateTitleCard(final boolean expand, final boolean applyTheme) {
@@ -769,12 +865,22 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void loadWallpaper(Cursor c) {
-        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
-            mWallpaper.setBackground(getActivity().getWallpaper());
-        } else {
-            int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
+        int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
+        int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
+
+        if (pkgNameIdx > -1) {
             Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
             mWallpaper.setImageBitmap(bitmap);
+            mWallpaperCard.setWallpaper(new BitmapDrawable(bitmap));
+            String pkgName = c.getString(pkgNameIdx);
+            mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
+        } else {
+            Drawable wp = getActivity().getWallpaper();
+            if (wp == null) {
+                wp = new BitmapDrawable(Utils.loadBitmapBlob(c, wpIdx));
+            }
+            mWallpaper.setBackground(wp);
+            mWallpaperCard.setWallpaper(wp);
         }
     }
 
@@ -1005,6 +1111,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loaderId = LOADER_ID_ICONS;
             } else if (MODIFIES_NAVIGATION_BAR.equals(component)) {
                 loaderId = LOADER_ID_NAVIGATION_BAR;
+            } else if (MODIFIES_LAUNCHER.equals(component)) {
+                loaderId = LOADER_ID_WALLPAPER;
             } else {
                 return;
             }

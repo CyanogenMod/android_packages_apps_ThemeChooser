@@ -24,7 +24,7 @@ public class ComponentCardView extends LinearLayout {
     private static final float SEMI_OPAQUE_ALPHA = 0.2f;
     private static final int BACKGROUND_SEMI_OPAQUE_ALPHA = (int) (256.0f * SEMI_OPAQUE_ALPHA);
 
-    private TextView mLabel;
+    protected TextView mLabel;
 
     // Expanded Padding
     int mExpandPadLeft;
@@ -60,7 +60,10 @@ public class ComponentCardView extends LinearLayout {
     }
 
     public void expand() {
-        TransitionDrawable bg = (TransitionDrawable) getBackground();
+        TransitionDrawable bg = null;
+        if (getBackground() instanceof TransitionDrawable) {
+            bg = (TransitionDrawable) getBackground();
+        }
         if (bg != null) {
             Rect paddingRect = new Rect();
             bg.getPadding(paddingRect);
@@ -96,8 +99,11 @@ public class ComponentCardView extends LinearLayout {
         if (mLabel != null) {
             mLabel.animate().alpha(0f).setDuration(CARD_FADE_DURATION);
         }
-        TransitionDrawable background = (TransitionDrawable) getBackground();
-        background.reverseTransition(CARD_FADE_DURATION);
+
+        if (getBackground() instanceof TransitionDrawable) {
+            TransitionDrawable background = (TransitionDrawable) getBackground();
+            background.reverseTransition(CARD_FADE_DURATION);
+        }
     }
 
     /**

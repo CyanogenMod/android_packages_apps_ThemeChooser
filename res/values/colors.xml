@@ -44,4 +44,6 @@
 
     <color name="apply_progress_background_color">#e0dfe1</color>
     <color name="apply_progress_color">#00b3e6</color>
+    <color name="wallpaper_label">#ffffff</color>
+
 </resources>

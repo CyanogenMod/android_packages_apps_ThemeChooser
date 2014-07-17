@@ -86,8 +86,11 @@
 
     <string name="save_and_apply_title">Save &amp; apply</string>
 
+    <!-- Labels for each theme component card -->
     <string name="icon_label">Icons</string>
     <string name="font_label">Fonts</string>
     <string name="statusbar_label">Status</string>
     <string name="navbar_label">Navigation</string>
+    <string name="wallpaper_label">Wallpaper</string>
+
 </resources>

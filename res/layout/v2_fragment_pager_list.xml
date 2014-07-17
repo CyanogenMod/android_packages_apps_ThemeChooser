@@ -40,6 +40,19 @@
                     <include layout="@layout/v2_nav_bar_preview_item"/>
                 </RelativeLayout>
             </FrameLayout>
+            <RelativeLayout
+                android:id="@+id/additional_cards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/shadow_frame"
+                android:layout_marginTop="@dimen/expanded_card_margin_top">
+                <org.cyanogenmod.theme.chooserv2.WallpaperCardView
+                    android:id="@+id/wallpaper_card"
+                    android:visibility="invisible"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/wallpaper_card_height"
+                    />
+            </RelativeLayout>
             <FrameLayout
                 android:id="@+id/title_card"
                 android:layout_width="@dimen/theme_preview_width"

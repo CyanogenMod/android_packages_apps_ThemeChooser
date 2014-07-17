@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/label"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/label_height"
+    android:paddingLeft="@dimen/card_padding_left_right"
+    android:text="@string/wallpaper_label"
+    android:textColor="@color/wallpaper_label"
+    android:background="@drawable/wallpaper_label_bg"
+    style="@style/card_label"/>
