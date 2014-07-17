@@ -87,6 +87,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final int ANIMATE_PROGRESS_OUT_DURATION = 400;
     public static final int ANIMATE_TITLE_IN_DURATION = 500;
 
+    private static final String NAVIGATION_BAR_BACKGROUND = "navbar_background";
+
     public static final String CURRENTLY_APPLIED_THEME = "currently_applied_theme";
 
     private static final ComponentName COMPONENT_DIALER =
@@ -663,7 +665,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                             PreviewColumns.ICON_PREVIEW_4,
                             // TODO: add this to the ThemesContract if this
                             // design moves beyond prototype
-                            "navbar_background"
+                            NAVIGATION_BAR_BACKGROUND
                     };
                     uri = PreviewColumns.APPLIED_URI;
                     selection = null;
@@ -883,7 +885,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int backButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_BACK_BUTTON);
         int homeButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_HOME_BUTTON);
         int recentButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_RECENT_BUTTON);
-        int backgroundIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
+        int backgroundIdx = c.getColumnIndex(NAVIGATION_BAR_BACKGROUND);
+        if (backgroundIdx == -1) {
+            backgroundIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
+        }
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
 
         Bitmap background = Utils.loadBitmapBlob(c, backgroundIdx);
