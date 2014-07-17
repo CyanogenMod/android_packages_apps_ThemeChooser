@@ -17,6 +17,7 @@ package org.cyanogenmod.theme.chooserv2;
 
 import android.animation.IntEvaluator;
 import android.animation.ValueAnimator;
+import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -868,18 +869,21 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
 
+        final Resources res = getResources();
         if (pkgNameIdx > -1) {
             Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
             mWallpaper.setImageBitmap(bitmap);
-            mWallpaperCard.setWallpaper(new BitmapDrawable(bitmap));
+            mWallpaperCard.setWallpaper(new BitmapDrawable(res, bitmap));
             String pkgName = c.getString(pkgNameIdx);
             mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
         } else {
-            Drawable wp = getActivity().getWallpaper();
+            final Context context = getActivity();
+            Drawable wp = context == null ? null :
+                    WallpaperManager.getInstance(context).getDrawable();
             if (wp == null) {
-                wp = new BitmapDrawable(Utils.loadBitmapBlob(c, wpIdx));
+                wp = new BitmapDrawable(res, Utils.loadBitmapBlob(c, wpIdx));
             }
-            mWallpaper.setBackground(wp);
+            mWallpaper.setImageDrawable(wp);
             mWallpaperCard.setWallpaper(wp);
         }
     }
