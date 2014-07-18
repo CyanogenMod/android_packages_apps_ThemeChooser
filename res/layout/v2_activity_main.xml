@@ -18,7 +18,8 @@
                 android:id="@+id/viewpager"
                 android:layout_width="312dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:overScrollMode="never"/>
         </org.cyanogenmod.theme.chooserv2.PagerContainer>
         <LinearLayout
             android:id="@+id/apply_edit_container"
