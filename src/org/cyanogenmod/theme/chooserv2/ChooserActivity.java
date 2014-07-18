@@ -163,12 +163,17 @@ public class ChooserActivity extends FragmentActivity
      * Re-enable the ViewPager and update the "My theme" fragment if available
      */
     public void themeChangeEnded() {
-        ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
-                .findFragmentByTag(getFragmentTag(0));
-        if (f != null) {
-            f.clearChanges();
-            mPager.setEnabled(true);
+        if (mPager.getCurrentItem() != 0) {
+            // Clear the "My theme" card so it loads the newly applied changes
+            ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
+                    .findFragmentByTag(getFragmentTag(0));
+            if (f != null) f.clearChanges();
+
+            // clear the current card so it returns to it's previous state
+            f = getCurrentFragment();
+            if (f != null) f.clearChanges();
         }
+        mPager.setEnabled(true);
     }
 
     public ComponentSelector getComponentSelector() {
