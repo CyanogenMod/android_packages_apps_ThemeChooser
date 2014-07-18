@@ -54,6 +54,7 @@ public class ChooserActivity extends FragmentActivity
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
 
     private static final long SLIDE_CONTENT_ANIM_DURATION = 300L;
+    private static final long MOVE_TO_MY_THEME_DELAY = 750L;
 
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
@@ -172,6 +173,12 @@ public class ChooserActivity extends FragmentActivity
             // clear the current card so it returns to it's previous state
             f = getCurrentFragment();
             if (f != null) f.clearChanges();
+            mPager.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mPager.setCurrentItem(0, true);
+                }
+            }, MOVE_TO_MY_THEME_DELAY);
         }
         mPager.setEnabled(true);
     }
