@@ -170,26 +170,24 @@ public class ComponentSelector extends LinearLayout
     }
 
     public void setComponentType(String component) {
-        if (!component.equals(mComponentType)) {
-            // Find out which theme is currently applied for this component
-            String selection = MixnMatchColumns.COL_KEY + "=?";
-            String[] selectionArgs = {MixnMatchColumns.componentToMixNMatchKey(component)};
-            Cursor c = mContext.getContentResolver().query(MixnMatchColumns.CONTENT_URI,
-                    null, selection, selectionArgs, null);
-            if (c != null) {
-                if (c.moveToFirst()) {
-                    mAppliedComponentPkgName = c.getString(
-                            c.getColumnIndex(MixnMatchColumns.COL_VALUE));
-                }
-                c.close();
-            } else {
-                mAppliedComponentPkgName = null;
+        // Find out which theme is currently applied for this component
+        String selection = MixnMatchColumns.COL_KEY + "=?";
+        String[] selectionArgs = {MixnMatchColumns.componentToMixNMatchKey(component)};
+        Cursor c = mContext.getContentResolver().query(MixnMatchColumns.CONTENT_URI,
+                null, selection, selectionArgs, null);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                mAppliedComponentPkgName = c.getString(
+                        c.getColumnIndex(MixnMatchColumns.COL_VALUE));
             }
-            mComponentType = component;
-            mPager.setCurrentItem(0);
-            ((FragmentActivity) mContext).getSupportLoaderManager().restartLoader(
-                    getLoaderIdFromComponent(component), null, this);
+            c.close();
+        } else {
+            mAppliedComponentPkgName = null;
         }
+        if (mComponentType == null || !mComponentType.equals(component)) mPager.setCurrentItem(0);
+        mComponentType = component;
+        ((FragmentActivity) mContext).getSupportLoaderManager().restartLoader(
+                getLoaderIdFromComponent(component), null, this);
     }
 
     public String getComponentType() {
