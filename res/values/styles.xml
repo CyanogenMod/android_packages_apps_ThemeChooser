@@ -32,7 +32,8 @@
         <item name="android:logo">@drawable/ic_app_themes_bw</item>
     </style>
 
-    <style name="ThemeChooserV2Theme" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+    <style name="ThemeChooserV2Theme" parent="@android:style/Theme.NoTitleBar">
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
