@@ -26,7 +26,7 @@ import android.provider.ThemesContract;
 import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -56,6 +56,8 @@ public class ChooserActivity extends FragmentActivity
     private static final long SLIDE_CONTENT_ANIM_DURATION = 300L;
     private static final long MOVE_TO_MY_THEME_DELAY = 750L;
 
+    private static final int OFFSCREEN_PAGE_LIMIT = 3;
+
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
     private Button mEdit;
@@ -82,7 +84,7 @@ public class ChooserActivity extends FragmentActivity
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, dm);
         mPager.setPageMargin(-margin / 2);
-        mPager.setOffscreenPageLimit(3);
+        mPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
 
         mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageSelected(int position) {
@@ -165,10 +167,12 @@ public class ChooserActivity extends FragmentActivity
      */
     public void themeChangeEnded() {
         if (mPager.getCurrentItem() != 0) {
-            // Clear the "My theme" card so it loads the newly applied changes
-            ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
-                    .findFragmentByTag(getFragmentTag(0));
-            if (f != null) f.clearChanges();
+            ThemeFragment f;
+            if (mPager.getCurrentItem() <= OFFSCREEN_PAGE_LIMIT) {
+                // Clear the "My theme" card so it loads the newly applied changes
+                f = (ThemeFragment) mAdapter.instantiateItem(mPager, 0);
+                if (f != null) f.clearChanges();
+            }
 
             // clear the current card so it returns to it's previous state
             f = getCurrentFragment();
@@ -310,13 +314,9 @@ public class ChooserActivity extends FragmentActivity
     };
 
     private ThemeFragment getCurrentFragment() {
-        ThemeFragment f = (ThemeFragment) getSupportFragmentManager()
-                .findFragmentByTag(getFragmentTag(mPager.getCurrentItem()));
-        return f;
-    }
-
-    private String getFragmentTag(int pos){
-        return "android:switcher:"+R.id.viewpager+":"+pos;
+        // instantiateItem will return the fragment if it already exists and not instantiate it,
+        // which should be the case for the current fragment.
+        return (ThemeFragment) mAdapter.instantiateItem(mPager, mPager.getCurrentItem());
     }
 
     @Override
@@ -358,7 +358,7 @@ public class ChooserActivity extends FragmentActivity
 
     }
 
-    public class ThemesAdapter extends FragmentPagerAdapter {
+    public class ThemesAdapter extends FragmentStatePagerAdapter {
         private Cursor mCursor;
         private Context mContext;
 
@@ -387,15 +387,6 @@ public class ChooserActivity extends FragmentActivity
          */
         public int getCount() {
             return mCursor == null ? 1 : mCursor.getCount() + 1;
-        }
-
-        public String getItemPkgName(int position) {
-            if (position == 0) {
-                return ThemeFragment.CURRENTLY_APPLIED_THEME;
-            }
-            mCursor.moveToPosition(position - 1);
-            int pkgIdx = mCursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
-            return mCursor.getString(pkgIdx);
         }
 
         public void swapCursor(Cursor c) {
