@@ -28,6 +28,7 @@ import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -905,10 +906,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int wifiMargin = c.getInt(wifiMarginIdx);
         int clockTextColor = c.getInt(clockColorIdx);
 
-        if (!mStatusBar.isDrawingCacheEnabled()) mStatusBar.setDrawingCacheEnabled(true);
-        Drawable d = null;
+        Drawable overlay = null;
         if (animate) {
-            d = new BitmapDrawable(getResources(), mStatusBar.getDrawingCache());
+            overlay = getOverlayDrawable(mStatusBar, false);
         }
 
         mStatusBar.setBackground(new BitmapDrawable(getActivity().getResources(), background));
@@ -939,7 +939,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             mSelectedComponentsMap.put(MODIFIES_STATUS_BAR, pkgName);
         }
         if (animate) {
-            animateContentChange(R.id.status_bar_container, mStatusBar, d);
+            animateContentChange(R.id.status_bar_container, mStatusBar, overlay);
         }
     }
 
@@ -1005,10 +1005,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Bitmap homeButton = Utils.loadBitmapBlob(c, homeButtonIdx);
         Bitmap recentButton = Utils.loadBitmapBlob(c, recentButtonIdx);
 
-        if (!mNavBar.isDrawingCacheEnabled()) mNavBar.setDrawingCacheEnabled(true);
-        Drawable d = null;
+        Drawable overlay = null;
         if (animate) {
-            d = new BitmapDrawable(getResources(), mNavBar.getDrawingCache());
+            overlay = getOverlayDrawable(mNavBar, false);
         }
 
         mNavBar.setBackground(new BitmapDrawable(getActivity().getResources(), background));
@@ -1021,15 +1020,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             mSelectedComponentsMap.put(MODIFIES_NAVIGATION_BAR, pkgName);
         }
         if (animate) {
-            animateContentChange(R.id.navigation_bar_container, mNavBar, d);
+            animateContentChange(R.id.navigation_bar_container, mNavBar, overlay);
         }
     }
 
     private void loadFont(Cursor c, boolean animate) {
-        if (!mFontPreview.isDrawingCacheEnabled()) mFontPreview.setDrawingCacheEnabled(true);
-        Drawable d = null;
+        Drawable overlay = null;
         if (animate) {
-            d = new BitmapDrawable(getResources(), mFontPreview.getDrawingCache());
+            overlay = getOverlayDrawable(mFontPreview, true);
         }
 
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
@@ -1043,8 +1041,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             mSelectedComponentsMap.put(MODIFIES_FONTS, pkgName);
         }
         if (animate) {
-            animateContentChange(R.id.font_preview_container, mFontPreview, d);
+            animateContentChange(R.id.font_preview_container, mFontPreview, overlay);
         }
+    }
+
+    private Drawable getOverlayDrawable(View v, boolean requiresTransparency) {
+        if (!v.isDrawingCacheEnabled()) v.setDrawingCacheEnabled(true);
+        Bitmap cache = v.getDrawingCache(true).copy(
+                requiresTransparency ? Config.ARGB_8888 : Config.RGB_565, false);
+        Drawable d = cache != null ? new BitmapDrawable(getResources(), cache) : null;
+        v.destroyDrawingCache();
+
+        return d;
     }
 
     public static ComponentName[] getIconComponents(Context context) {
