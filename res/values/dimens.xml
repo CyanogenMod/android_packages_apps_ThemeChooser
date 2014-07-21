@@ -21,8 +21,13 @@
     <dimen name="item_browse_height">260dp</dimen>
     <dimen name="expanded_preview_margin">24dp</dimen>
     <dimen name="navigation_button_width">80dp</dimen>
-    <dimen name="theme_preview_width">264dp</dimen>
-    <dimen name="theme_preview_height">300dp</dimen>
+
+    <!-- Theme fragment width should account for the fact that there will be cards which expand -->
+    <dimen name="theme_fragment_width">320dp</dimen>
+    <dimen name="theme_preview_width">272dp</dimen>
+    <!-- Should be same as theme_preview_width less the 9patch padding -->
+    <dimen name="wallpaper_preview_width">264dp</dimen>
+    <dimen name="theme_preview_height">264dp</dimen>
 
     <dimen name="component_selection_cell_width">80dp</dimen>
     <dimen name="component_selection_cell_height">112dp</dimen>
@@ -34,11 +39,12 @@
     <dimen name="component_selection_bootani_content_height">142dp</dimen>
     <dimen name="component_margin_top">24dp</dimen>
 
-    <dimen name="card_padding_top">0dp</dimen>
+    <dimen name="card_padding_top">4dp</dimen>
     <dimen name="card_padding_bottom">24dp</dimen>
-    <dimen name="card_padding_left_right">24dp</dimen>
-    <dimen name="collapsed_icon_card_margin_top">40dp</dimen>
-    <dimen name="expanded_card_margin_top">24dp</dimen>
+    <dimen name="card_padding_left_right">28dp</dimen>
+    <dimen name="collapsed_font_card_margin_top">22dp</dimen>
+    <dimen name="collapsed_icon_card_margin_top">48dp</dimen>
+    <dimen name="expanded_card_margin_top">16dp</dimen>
     <dimen name="wallpaper_card_height">168dp</dimen>
 
     <!-- This is a hack. The viewpager needs to expand horizontally

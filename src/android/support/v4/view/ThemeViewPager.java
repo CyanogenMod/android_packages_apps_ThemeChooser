@@ -16,7 +16,6 @@
 package android.support.v4.view;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,6 +25,7 @@ import org.cyanogenmod.theme.chooser.R;
 
 public class ThemeViewPager extends ViewPager {
     private boolean mExpanded;
+    private boolean mIsAnimating;
 
     private boolean mIsDragging = false;
     private float mSlop;
@@ -45,11 +45,15 @@ public class ThemeViewPager extends ViewPager {
         mExpanded = expanded;
     }
 
+    public void setAnimating(boolean isAnimating) {
+        mIsAnimating = isAnimating;
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         boolean intercept = false;
 
-        if (!mExpanded && isEnabled())  {
+        if (!mExpanded && isEnabled()  && !mIsAnimating)  {
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     intercept = !isTouchingApplyButton(ev);

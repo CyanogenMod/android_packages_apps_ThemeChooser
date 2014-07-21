@@ -324,11 +324,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Rect padding = new Rect();
         NinePatchDrawable bg = (NinePatchDrawable) mShadowFrame.getBackground();
         bg.getPadding(padding);
-        ViewGroup.LayoutParams wpParams = mWallpaper.getLayoutParams();
-        wpParams.width -= padding.left + padding.right;
-        mWallpaper.setLayoutParams(wpParams);
         mIconContainer.setPadding(padding.left, padding.top, padding.right, padding.bottom);
         mShadowFrame.setBackground(null);
+        mShadowFrame.setPadding(0, 0, 0, 0);
         mAdditionalCards.setPadding(padding.left, padding.top, padding.right, padding.bottom);
 
         // Off screen cards will become visible and then be animated in
@@ -360,19 +358,19 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mScrollView.requestLayout();
         animateWallpaperOut();
         animateTitleCard(true, false);
-        animateChildren(true, getChildrensGlobalBounds());
-        animateExtras(true, getChildrensGlobalBounds());
+        animateChildren(true, getChildrensGlobalBounds(mPreviewContent));
+        animateExtras(true, getChildrensGlobalBounds(mAdditionalCards));
         mSelector = ((ChooserActivity) getActivity()).getComponentSelector();
         mSelector.setOnItemClickedListener(mOnComponentItemClicked);
     }
 
 
 
-    // Returns the boundaries for all the children in the scrollview relative to the window
-    private List<Rect> getChildrensGlobalBounds() {
+    // Returns the boundaries for all the children of parent relative to the app window
+    private List<Rect> getChildrensGlobalBounds(ViewGroup parent) {
         List<Rect> bounds = new ArrayList<Rect>();
-        for (int i = 0; i < mPreviewContent.getChildCount(); i++) {
-            final View v = mPreviewContent.getChildAt(i);
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            final View v = parent.getChildAt(i);
             int[] pos = new int[2];
             v.getLocationInWindow(pos);
             Rect boundary = new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1]+v.getHeight());
@@ -406,9 +404,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Rect padding = new Rect();
         final NinePatchDrawable bg = (NinePatchDrawable) mShadowFrame.getBackground();
         bg.getPadding(padding);
-        ViewGroup.LayoutParams wpParams = mWallpaper.getLayoutParams();
-        wpParams.width += padding.left + padding.right;
-        mWallpaper.setLayoutParams(wpParams);
+        mShadowFrame.setPadding(padding.left, padding.top, padding.right, padding.bottom);
 
         // Gradually fade the drop shadow back in or else it will be out of place
         ValueAnimator shadowAnimation = ValueAnimator.ofObject(new IntEvaluator(), 0, 255);
@@ -444,6 +440,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 int top = (int) child.getResources()
                         .getDimension(R.dimen.collapsed_icon_card_margin_top);
                 lparams.setMargins(0, top, 0, 0);
+            } else if (child.getId() == R.id.font_preview_container) {
+                int top = (int) child.getResources()
+                        .getDimension(R.dimen.collapsed_font_card_margin_top);
+                lparams.setMargins(0, top, 0, 0);
             }
 
             child.getLayoutParams();
@@ -451,8 +451,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
 
         mScrollView.requestLayout();
-        animateChildren(false, getChildrensGlobalBounds());
-        animateExtras(false, getChildrensGlobalBounds());
+        animateChildren(false, getChildrensGlobalBounds(mPreviewContent));
+        animateExtras(false, getChildrensGlobalBounds(mAdditionalCards));
         animateWallpaperIn();
         animateTitleCard(false, applyTheme);
     }
@@ -493,7 +493,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         endHeight = v.getHeight();
                     }
 
-                    v.setTranslationY((prevY - endY) + (prevHeight - endHeight) / 2);
+                    int paddingTop = v.getPaddingTop();
+                    v.setTranslationY((prevY - endY - paddingTop) + (prevHeight - endHeight) / 2);
                     root.getOverlay().add(v);
 
                     // Expanding has a delay while the wallpaper begins to fade out
@@ -678,6 +679,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                             }
                         });
                 return true;
+
             }
         });
     }
@@ -954,9 +956,17 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         // Set the icons. If the provider does not have an icon preview then
         // fall back to the default icon set
         IconPreviewHelper helper = new IconPreviewHelper(getActivity(), "");
-        ViewGroup container = (ViewGroup) mIconContainer.findViewById(R.id.icon_preview_container);
-        for(int i=0; i < container.getChildCount() && i < iconIdx.length; i++) {
-            final ImageView v = (ImageView) ((ViewGroup)mIconContainer.getChildAt(1)).getChildAt(i);
+        int numOfChildren = ((ViewGroup)mIconContainer.getChildAt(1)).getChildCount();
+
+        List<ImageView> iconViews = new ArrayList<ImageView>(numOfChildren);
+        for(int i=0; i < numOfChildren; i++) {
+            final View view = (View) ((ViewGroup)mIconContainer.getChildAt(1)).getChildAt(i);
+            if (!(view instanceof ImageView)) continue;
+            iconViews.add((ImageView) view);
+        }
+
+        for(int i=0; i < iconViews.size() && i < iconIdx.length; i++) {
+            final ImageView v = iconViews.get(i);
             Bitmap bitmap = Utils.loadBitmapBlob(c, iconIdx[i]);
             Drawable oldIcon = v.getDrawable();
             Drawable newIcon;

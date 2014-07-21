@@ -25,7 +25,7 @@
                 android:background="@drawable/bg_themepreview_shadow">
                 <ImageView
                     android:id="@+id/wallpaper"
-                    android:layout_width="@dimen/theme_preview_width"
+                    android:layout_width="@dimen/wallpaper_preview_width"
                     android:layout_height="@dimen/theme_preview_height"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerCrop"

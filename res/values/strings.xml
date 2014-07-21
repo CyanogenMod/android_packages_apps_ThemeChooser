@@ -47,7 +47,7 @@
 
     <string name="unknown_author">Author unknown</string>
 
-    <string name="font_preview_letters">AaBbCcDd123</string>
+    <string name="font_preview_letters">AaBbCcDd</string>
 
     <string name="theme_installed_notification_title">%s installed</string>
     <string name="theme_installed_notification_text">Theme successfully installed.</string>

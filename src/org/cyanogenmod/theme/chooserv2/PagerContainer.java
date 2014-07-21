@@ -51,6 +51,7 @@ public class PagerContainer extends FrameLayout implements ViewPager.OnPageChang
     private Point mCenter = new Point();
     private Point mInitialTouch = new Point();
     private int mCollapsedHeight;
+    private boolean mIsAnimating = false;
 
     boolean mNeedsRedraw = false;
 
@@ -92,7 +93,16 @@ public class PagerContainer extends FrameLayout implements ViewPager.OnPageChang
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mIsAnimating) return true;
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        // Do not allow touch events to propagate if we are animating
+        if (mIsAnimating) return true;
+
         //We capture any touches not already handled by the ViewPager
         // to implement scrolling from a touch outside the pager bounds.
         switch (ev.getAction()) {
@@ -120,6 +130,10 @@ public class PagerContainer extends FrameLayout implements ViewPager.OnPageChang
     @Override
     public void onPageScrollStateChanged(int state) {
         mNeedsRedraw = (state != ThemeViewPager.SCROLL_STATE_IDLE);
+    }
+
+    public void setIsAnimating(boolean isAnimating) {
+        mIsAnimating = isAnimating;
     }
 
     public void expand() {

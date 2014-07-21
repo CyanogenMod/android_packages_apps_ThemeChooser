@@ -20,28 +20,29 @@
         android:id="@+id/icon_preview_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
         >
+        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
         <ImageView
-            android:layout_width="0px"
-            android:layout_weight="1"
+            android:layout_width="48dp"
             android:layout_height="48dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/comp_icon1"
             />
+        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
         <ImageView
-            android:layout_width="0px"
-            android:layout_weight="1"
+            android:layout_width="48dp"
             android:layout_height="48dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/comp_icon2"
             />
+        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
         <ImageView
-            android:layout_width="0px"
+            android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_weight="1"
+            android:scaleType="fitCenter"
             android:src="@drawable/comp_icon3"
             />
+        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
     </LinearLayout>
 </org.cyanogenmod.theme.chooserv2.ComponentCardView>

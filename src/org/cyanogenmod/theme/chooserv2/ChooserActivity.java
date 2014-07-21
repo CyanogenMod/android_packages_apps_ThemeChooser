@@ -22,6 +22,7 @@ import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ThemesContract;
 import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.Fragment;
@@ -61,6 +62,7 @@ public class ChooserActivity extends FragmentActivity
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
     private Button mEdit;
+
     private ThemesAdapter mAdapter;
     private ThemeManager mService;
     private boolean mExpanded = false;
@@ -68,6 +70,8 @@ public class ChooserActivity extends FragmentActivity
     private View mSaveApplyLayout;
     private int mContainerYOffset = 0;
     private TypefaceHelperCache mTypefaceHelperCache;
+    private boolean mIsAnimating;
+    private Handler mHandler;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +86,7 @@ public class ChooserActivity extends FragmentActivity
         mPager.setAdapter(mAdapter);
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, dm);
+        int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, dm);
         mPager.setPageMargin(-margin / 2);
         mPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
 
@@ -102,9 +106,11 @@ public class ChooserActivity extends FragmentActivity
         mEdit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mExpanded = true;
+                mContainer.setClickable(false);
                 mContainer.expand();
                 ThemeFragment f = getCurrentFragment();
                 f.expand();
+                setAnimatingStateAndScheduleFinish();
             }
         });
 
@@ -122,8 +128,10 @@ public class ChooserActivity extends FragmentActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (mIsAnimating) return;
                         hideSaveApplyButton();
                         mExpanded = false;
+                        mContainer.setClickable(false);
                         final ThemeFragment f = getCurrentFragment();
                         f.fadeOutCards(new Runnable() {
                             public void run() {
@@ -131,9 +139,11 @@ public class ChooserActivity extends FragmentActivity
                                 f.collapse(true);
                             }
                         });
+                        setAnimatingStateAndScheduleFinish();
                     }
                 });
         mTypefaceHelperCache = TypefaceHelperCache.getInstance();
+        mHandler = new Handler();
     }
 
     public void hideSaveApplyButton() {
@@ -153,6 +163,17 @@ public class ChooserActivity extends FragmentActivity
             public void onAnimationRepeat(Animation animation) {
             }
         });
+    }
+
+    private void setAnimatingStateAndScheduleFinish() {
+        mIsAnimating = true;
+        mContainer.setIsAnimating(true);
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                mIsAnimating = false;
+                mContainer.setIsAnimating(false);
+            }
+        }, ThemeFragment.ANIMATE_START_DELAY + ThemeFragment.ANIMATE_DURATION);
     }
 
     /**
@@ -248,6 +269,10 @@ public class ChooserActivity extends FragmentActivity
             final ThemeFragment f = getCurrentFragment();
             f.fadeInCards();
         } else if (mExpanded) {
+            if (mIsAnimating) {
+                return;
+            }
+
             if (mSaveApplyLayout.getVisibility() == View.VISIBLE) {
                 hideSaveApplyButton();
                 getCurrentFragment().clearChanges();
@@ -260,6 +285,7 @@ public class ChooserActivity extends FragmentActivity
                     f.collapse(false);
                 }
             });
+            setAnimatingStateAndScheduleFinish();
         } else {
             super.onBackPressed();
         }
@@ -288,11 +314,13 @@ public class ChooserActivity extends FragmentActivity
     private View.OnClickListener mPagerClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (!mExpanded) {
+            if (!mExpanded && !mIsAnimating) {
                 mExpanded = true;
+                mContainer.setClickable(false);
                 mContainer.expand();
                 ThemeFragment f = getCurrentFragment();
                 f.expand();
+                setAnimatingStateAndScheduleFinish();
             }
         }
     };
