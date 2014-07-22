@@ -58,8 +58,10 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import org.cyanogenmod.theme.chooser.R;
@@ -71,10 +73,12 @@ import org.cyanogenmod.theme.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
@@ -120,6 +124,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final int LOADER_ID_ICONS = 3;
     private static final int LOADER_ID_WALLPAPER = 4;
     private static final int LOADER_ID_NAVIGATION_BAR = 5;
+    private static final int LOADER_ID_LOCKSCREEN = 6;
+    private static final int LOADER_ID_APPLIED = 20;
 
     private static ComponentName[] sIconComponents;
 
@@ -165,14 +171,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private ProgressBar mProgress;
 
     // Additional Card Views
-    private RelativeLayout mAdditionalCards;
+    private LinearLayout mAdditionalCards;
     private WallpaperCardView mWallpaperCard;
+    private WallpaperCardView mLockScreenCard;
 
     private Handler mHandler;
 
     private int mActiveCardId = -1;
     private ComponentSelector mSelector;
-    private Map<String, String> mSelectedComponentsMap;
+    // Supported components for the theme this fragment represents
+    private Map<String, String> mSelectedComponentsMap = new HashMap<String, String>();
+    // Current system theme configuration as component -> pkgName
+    private Map<String, String> mCurrentTheme = new HashMap<String, String>();
 
     static {
         sCardIdsToComponentTypes.put(R.id.status_bar_container, MODIFIES_STATUS_BAR);
@@ -180,6 +190,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         sCardIdsToComponentTypes.put(R.id.icon_container, MODIFIES_ICONS);
         sCardIdsToComponentTypes.put(R.id.navigation_bar_container, MODIFIES_NAVIGATION_BAR);
         sCardIdsToComponentTypes.put(R.id.wallpaper_card, MODIFIES_LAUNCHER);
+        sCardIdsToComponentTypes.put(R.id.lockscreen_card, MODIFIES_LOCKSCREEN);
     }
 
     static ThemeFragment newInstance(String pkgName) {
@@ -207,17 +218,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
 
         mHandler = new Handler();
-
-        // populate mSelectedComponentsMap with supported components for this theme
-        if (!CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
-            List<String> components = ThemeUtils.getSupportedComponents(getActivity(), mPkgName);
-            mSelectedComponentsMap = new HashMap<String, String>(components.size());
-            for (String component : components) {
-                mSelectedComponentsMap.put(component, mPkgName);
-            }
-        } else {
-            mSelectedComponentsMap = new HashMap<String, String>();
-        }
     }
 
     @Override
@@ -264,13 +264,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         });
 
         // Additional cards which should hang out offscreen until expanded
-        mAdditionalCards = (RelativeLayout) v.findViewById(R.id.additional_cards);
+        mAdditionalCards = (LinearLayout) v.findViewById(R.id.additional_cards);
+
+
         mWallpaperCard = (WallpaperCardView) v.findViewById(R.id.wallpaper_card);
-        int translationY = getDistanceToMoveBelowScreen(mWallpaperCard);
-        mWallpaperCard.setTranslationY(translationY);
+        mLockScreenCard = (WallpaperCardView) v.findViewById(R.id.lockscreen_card);
+        int translationY = getDistanceToMoveBelowScreen(mAdditionalCards);
+        mAdditionalCards.setTranslationY(translationY);
 
-
-        getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
+        getLoaderManager().initLoader(LOADER_ID_APPLIED, null, this);
 
         initCards(v);
 
@@ -346,9 +348,19 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 lparams.addRule(RelativeLayout.BELOW, R.id.icon_container);
             }
 
-
             child.setLayoutParams(lparams);
             child.expand();
+        }
+
+        // Expand the additional children.
+        mAdditionalCards.setVisibility(View.VISIBLE);
+        for (int i = 0; i < mAdditionalCards.getChildCount(); i++) {
+            View v = mAdditionalCards.getChildAt(i);
+            if (v instanceof ComponentCardView) {
+                ComponentCardView card = (ComponentCardView) v;
+                card.setVisibility(View.VISIBLE);
+                card.expand();
+            }
         }
 
         // Collect the present position of all the children. The next layout/draw cycle will
@@ -359,7 +371,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         animateWallpaperOut();
         animateTitleCard(true, false);
         animateChildren(true, getChildrensGlobalBounds(mPreviewContent));
-        animateExtras(true, getChildrensGlobalBounds(mAdditionalCards));
+        animateExtras(true);
         mSelector = ((ChooserActivity) getActivity()).getComponentSelector();
         mSelector.setOnItemClickedListener(mOnComponentItemClicked);
     }
@@ -450,9 +462,19 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             child.collapse();
         }
 
+        // Collapse additional cards
+        for (int i = 0; i < mAdditionalCards.getChildCount(); i++) {
+            View v = mAdditionalCards.getChildAt(i);
+            if (v instanceof ComponentCardView) {
+                ComponentCardView card = (ComponentCardView) v;
+                card.setVisibility(View.VISIBLE);
+                card.collapse();
+            }
+        }
+
         mScrollView.requestLayout();
         animateChildren(false, getChildrensGlobalBounds(mPreviewContent));
-        animateExtras(false, getChildrensGlobalBounds(mAdditionalCards));
+        animateExtras(false);
         animateWallpaperIn();
         animateTitleCard(false, applyTheme);
     }
@@ -526,64 +548,53 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
-    private void animateExtras(final boolean isExpanding, final List<Rect> prevBounds) {
+    private void animateExtras(final boolean isExpanding) {
+        int[] pos = new int[2];
+        mAdditionalCards.getLocationInWindow(pos);
+        final ViewGroup parent = (ViewGroup) mAdditionalCards.getParent();
         final ViewGroup root = (ViewGroup) getActivity().getWindow()
                 .getDecorView().findViewById(android.R.id.content);
+
+        // During a collapse we don't want the card to shrink so add it to the overlay now
+        // During an expand we want the card to expand so add it to the overlay post-layout
+        if (!isExpanding) {
+            root.getOverlay().add(mAdditionalCards);
+        }
+
         // Expanding has a delay while the wallpaper begins to fade out
         // Collapsing is opposite of this so wallpaper will have the delay instead
         final int startDelay = isExpanding ? ANIMATE_START_DELAY : 0;
+        final ViewTreeObserver observer = mScrollContent.getViewTreeObserver();
+        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                observer.removeOnPreDrawListener(this);
 
-        if (!isExpanding) {
-            // If we are collapsing then we do not wait for the onPreDraw() because
-            // 1) We will simply translate the view out and 2) The view will get "squished"
-            // during the layout change (due to parent's padding) which is undesireable.
-            for (int i = mAdditionalCards.getChildCount() - 1; i >= 0; i--) {
-                final ComponentCardView v = (ComponentCardView) mAdditionalCards.getChildAt(i);
-                root.getOverlay().add(v);
+                int translationY = 0;
+                if (isExpanding) {
+                    root.getOverlay().add(mAdditionalCards);
+                } else {
+                    translationY = getDistanceToMoveBelowScreen(mAdditionalCards);
+                }
 
-                int translationY = getDistanceToMoveBelowScreen(v);
-                v.animate()
-                        .setStartDelay(0)
+                int duration = isExpanding ? ANIMATE_DURATION + 100 : ANIMATE_DURATION;
+                mAdditionalCards.animate()
+                        .setStartDelay(startDelay)
                         .translationY(translationY)
-                        .setDuration(ANIMATE_DURATION)
+                        .setDuration(duration)
                         .setInterpolator(
                                 new DecelerateInterpolator(ANIMATE_INTERPOLATE_FACTOR))
                         .withEndAction(new Runnable() {
                             public void run() {
-                                root.getOverlay().remove(v);
-                                mAdditionalCards.addView(v, 0);
-                                v.setVisibility(View.INVISIBLE);
+                                if (!isExpanding) {
+                                    mAdditionalCards.setVisibility(View.INVISIBLE);
+                                }
+                                root.getOverlay().remove(mAdditionalCards);
+                                parent.addView(mAdditionalCards);
                             }
                         });
+                return false;
             }
-        } else {
-            final ViewTreeObserver observer = mScrollContent.getViewTreeObserver();
-            observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                public boolean onPreDraw() {
-                    observer.removeOnPreDrawListener(this);
-
-                    for (int i = mAdditionalCards.getChildCount() - 1; i >= 0; i--) {
-                        final ComponentCardView v =
-                                (ComponentCardView) mAdditionalCards.getChildAt(i);
-                        root.getOverlay().add(v);
-                        v.animate()
-                                .setStartDelay(startDelay)
-                                .translationY(0)
-                                .setDuration(ANIMATE_DURATION+100)
-                                .setInterpolator(
-                                        new DecelerateInterpolator(ANIMATE_INTERPOLATE_FACTOR))
-                                .withEndAction(new Runnable() {
-                                    public void run() {
-                                        root.getOverlay().remove(v);
-                                        mAdditionalCards.addView(v, 0);
-                                    }
-                                });
-
-                    }
-                    return false;
-                }
-            });
-        }
+        });
     }
 
     private int getDistanceToMoveBelowScreen(View v) {
@@ -725,6 +736,19 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                             ThemesColumns.TITLE,
                             ThemesColumns.WALLPAPER_URI,
                             ThemesColumns.HOMESCREEN_URI,
+                            // Theme abilities
+                            ThemesColumns.MODIFIES_LAUNCHER,
+                            ThemesColumns.MODIFIES_LOCKSCREEN,
+                            ThemesColumns.MODIFIES_ALARMS,
+                            ThemesColumns.MODIFIES_BOOT_ANIM,
+                            ThemesColumns.MODIFIES_FONTS,
+                            ThemesColumns.MODIFIES_ICONS,
+                            ThemesColumns.MODIFIES_NAVIGATION_BAR,
+                            ThemesColumns.MODIFIES_OVERLAYS,
+                            ThemesColumns.MODIFIES_RINGTONES,
+                            ThemesColumns.MODIFIES_STATUS_BAR,
+                            ThemesColumns.MODIFIES_NOTIFICATIONS,
+                            //Previews
                             PreviewColumns.WALLPAPER_PREVIEW,
                             PreviewColumns.STATUSBAR_BACKGROUND,
                             PreviewColumns.STATUSBAR_WIFI_ICON,
@@ -741,7 +765,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                             PreviewColumns.ICON_PREVIEW_1,
                             PreviewColumns.ICON_PREVIEW_2,
                             PreviewColumns.ICON_PREVIEW_3,
-                            PreviewColumns.ICON_PREVIEW_4
+                            PreviewColumns.ICON_PREVIEW_4,
+                            PreviewColumns.LOCK_WALLPAPER_PREVIEW
                     };
                 } else {
                     projection = new String[] {
@@ -762,6 +787,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                             PreviewColumns.ICON_PREVIEW_2,
                             PreviewColumns.ICON_PREVIEW_3,
                             PreviewColumns.ICON_PREVIEW_4,
+                            PreviewColumns.LOCK_WALLPAPER_PREVIEW,
                             // TODO: add this to the ThemesContract if this
                             // design moves beyond prototype
                             NAVIGATION_BAR_BACKGROUND
@@ -819,6 +845,20 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         PreviewColumns.NAVBAR_RECENT_BUTTON
                 };
                 break;
+            case LOADER_ID_LOCKSCREEN:
+                projection = new String[]{
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE,
+                        PreviewColumns.LOCK_WALLPAPER_PREVIEW
+                };
+                break;
+            case LOADER_ID_APPLIED:
+                //TODO: Mix n match query should only be done once
+                uri = ThemesContract.MixnMatchColumns.CONTENT_URI;
+                projection = null;
+                selection = null;
+                selectionArgs = null;
+                break;
         }
         return new CursorLoader(getActivity(), uri, projection, selection, selectionArgs, null);
     }
@@ -829,12 +869,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (c.getCount() == 0) return;
         switch (loader.getId()) {
             case LOADER_ID_ALL:
-                loadWallpaper(c);
+                populateSupportedComponents(c);
                 loadStatusBar(c, false);
                 loadIcons(c, false);
                 loadNavBar(c, false);
                 loadTitle(c);
                 loadFont(c, false);
+                loadAndRemoveAdditionalCards(c);
                 break;
             case LOADER_ID_STATUS_BAR:
                 loadStatusBar(c, true);
@@ -851,7 +892,99 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             case LOADER_ID_NAVIGATION_BAR:
                 loadNavBar(c, true);
                 break;
+            case LOADER_ID_LOCKSCREEN:
+                loadLockScreen(c);
+                break;
+            case LOADER_ID_APPLIED:
+                getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
+                populateCurrentTheme(c);
+                break;
         }
+    }
+
+    private void loadAndRemoveAdditionalCards(Cursor c) {
+        LinkedList<View> removeList = new LinkedList<View>();
+        for(int i=0; i < mAdditionalCards.getChildCount(); i++) {
+            View v = mAdditionalCards.getChildAt(i);
+            if (v instanceof ComponentCardView) {
+                String component = sCardIdsToComponentTypes.get(v.getId());
+                if (shouldShowComponentCard(component)) {
+                    loadAdditionalCard(c, component);
+                } else {
+                    removeList.add(v);
+                }
+            }
+        }
+
+        // TODO: It might make more sense to not inflate so many views if we do not
+        // plan to actually use them. But it is nice to be able to declare them in the
+        // xml layout under additionalCards
+        for(View v : removeList) {
+            mAdditionalCards.removeView(v);
+        }
+
+        if (shouldShowComponentCard(MODIFIES_LOCKSCREEN)) {
+            loadLockScreen(c);
+        } else {
+            mAdditionalCards.removeView(mLockScreenCard);
+        }
+    }
+
+    private void loadAdditionalCard(Cursor c, String component) {
+        if (MODIFIES_LOCKSCREEN.equals(component)) {
+            loadLockScreen(c);
+        } else if (MODIFIES_LAUNCHER.equals(component)) {
+            loadWallpaper(c);
+        } else {
+            throw new IllegalArgumentException("Don't know how to load: " +component);
+        }
+    }
+
+    private void populateSupportedComponents(Cursor c) {
+        // Currently applied theme doesn't return the columns we expect and
+        // it doesn't matter because currently applied theme shows everything anyhow
+        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
+            return;
+        }
+
+        List<String> components = ThemeUtils.getAllComponents();
+        for(String component : components) {
+            int pkgIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
+            int modifiesCompIdx = c.getColumnIndex(component);
+
+            String pkg = c.getString(pkgIdx);
+            boolean supported = c.getInt(modifiesCompIdx) == 1;
+            if (supported) {
+                mSelectedComponentsMap.put(component, pkg);
+            }
+        }
+    }
+
+    private void populateCurrentTheme(Cursor c) {
+        c.moveToPosition(-1);
+        while(c.moveToNext()) {
+            int mixkeyIdx = c.getColumnIndex(ThemesContract.MixnMatchColumns.COL_KEY);
+            int pkgIdx = c.getColumnIndex(ThemesContract.MixnMatchColumns.COL_VALUE);
+            String mixkey = c.getString(mixkeyIdx);
+            String component = ThemesContract.MixnMatchColumns.mixNMatchKeyToComponent(mixkey);
+            String pkg = c.getString(pkgIdx);
+            mCurrentTheme.put(component, pkg);
+        }
+    }
+
+    /**
+     *  Determines whether a card should be shown or not.
+     *  UX Rules:
+     *    1) "My Theme" always shows all cards
+     *    2) Other themes only show what has been implemented in the theme
+     *
+     */
+    private Boolean shouldShowComponentCard(String component) {
+        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
+            return true;
+        }
+        String pkg = mSelectedComponentsMap.get(component);
+        return pkg != null && pkg.equals(mPkgName);
     }
 
     @Override
@@ -887,6 +1020,27 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
             mWallpaper.setImageDrawable(wp);
             mWallpaperCard.setWallpaper(wp);
+        }
+    }
+
+    public void loadLockScreen(Cursor c) {
+        int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
+        int wpIdx = c.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_PREVIEW);
+
+        final Resources res = getResources();
+        if (pkgNameIdx > -1) {
+            Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
+            mLockScreenCard.setWallpaper(new BitmapDrawable(res, bitmap));
+            String pkgName = c.getString(pkgNameIdx);
+            mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN, pkgName);
+        } else {
+            final Context context = getActivity();
+            Drawable wp = context == null ? null :
+                    WallpaperManager.getInstance(context).getFastKeyguardDrawable();
+            if (wp == null) {
+                wp = new BitmapDrawable(res, Utils.loadBitmapBlob(c, wpIdx));
+            }
+            mLockScreenCard.setWallpaper(wp);
         }
     }
 
@@ -1134,6 +1288,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loaderId = LOADER_ID_NAVIGATION_BAR;
             } else if (MODIFIES_LAUNCHER.equals(component)) {
                 loaderId = LOADER_ID_WALLPAPER;
+            } else if (MODIFIES_LOCKSCREEN.equals(component)) {
+                loaderId = LOADER_ID_LOCKSCREEN;
             } else {
                 return;
             }

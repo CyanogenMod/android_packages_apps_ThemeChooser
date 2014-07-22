@@ -92,5 +92,6 @@
     <string name="statusbar_label">Status</string>
     <string name="navbar_label">Navigation</string>
     <string name="wallpaper_label">Wallpaper</string>
+    <string name="lockscreen_label">Lockscreen wallpaper</string>
 
 </resources>

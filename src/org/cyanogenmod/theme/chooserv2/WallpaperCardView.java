@@ -1,6 +1,7 @@
 package org.cyanogenmod.theme.chooserv2;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -25,6 +26,11 @@ public class WallpaperCardView extends ComponentCardView {
 
     public WallpaperCardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WallpaperCardView);
+        String labelText = a.getString(R.styleable.WallpaperCardView_labelText);
+        a.recycle();
+
         setOrientation(LinearLayout.VERTICAL);
 
         setBackgroundResource(R.drawable.card_bg);
@@ -35,9 +41,19 @@ public class WallpaperCardView extends ComponentCardView {
         addView(frameLayout);
         mLabel = (TextView) frameLayout.findViewById(R.id.label);
         mImage = (ImageView) frameLayout.findViewById(R.id.image);
+
+        mLabel.setText(labelText);
     }
 
     public void setWallpaper(Drawable drawable) {
         mImage.setImageDrawable(drawable);
+    }
+
+    public void expand() {
+        // Do nothing
+    }
+
+    public void collapse() {
+        // Do nothing
     }
 }

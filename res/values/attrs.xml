@@ -41,4 +41,9 @@
         <attr name="itemsPerPage" format="integer"/>
     </declare-styleable>
 
+    <!-- Attributes for Wallpaper Card -->
+    <declare-styleable name="WallpaperCardView">
+        <attr name="labelText" format="string" />
+    </declare-styleable>
+
 </resources>

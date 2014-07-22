@@ -48,6 +48,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.viewpagerindicator.PageIndicator;
 import org.cyanogenmod.theme.chooser.R;
 import org.cyanogenmod.theme.util.AudioUtils;
@@ -60,6 +61,7 @@ import java.util.HashMap;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
@@ -84,6 +86,7 @@ public class ComponentSelector extends LinearLayout
     private static final int LOADER_ID_RINGTONE = 107;
     private static final int LOADER_ID_NOTIFICATION = 108;
     private static final int LOADER_ID_ALARM = 109;
+    private static final int LOADER_ID_LOCKSCREEN = 110;
 
     private Context mContext;
     private LayoutInflater mInflater;
@@ -262,6 +265,9 @@ public class ComponentSelector extends LinearLayout
         if (MODIFIES_ALARMS.equals(component)) {
             return LOADER_ID_ALARM;
         }
+        if (MODIFIES_LOCKSCREEN.equals(component)) {
+            return LOADER_ID_LOCKSCREEN;
+        }
         return -1;
     }
 
@@ -337,6 +343,14 @@ public class ComponentSelector extends LinearLayout
                 break;
             case LOADER_ID_ALARM:
                 selection = MODIFIES_ALARMS + "=?";
+                break;
+            case LOADER_ID_LOCKSCREEN:
+                selection = MODIFIES_LOCKSCREEN + "=?";
+                projection = new String[] {
+                        PreviewColumns.LOCK_WALLPAPER_THUMBNAIL,
+                        ThemesColumns.TITLE,
+                        ThemesColumns.PKG_NAME
+                };
                 break;
             default:
                 return null;
@@ -423,6 +437,9 @@ public class ComponentSelector extends LinearLayout
                     ((LinearLayout) v).setWeightSum(mItemsPerPage);
                 }
                 newSoundView(mCursor, v, position, mComponentType);
+            }
+            if (MODIFIES_LOCKSCREEN.equals(mComponentType)) {
+                newLockScreenView(mCursor, v, position);
             }
             container.addView(v);
             return v;
@@ -599,6 +616,26 @@ public class ComponentSelector extends LinearLayout
                 View v = mInflater.inflate(R.layout.wallpaper_component_selection_item, parent,
                         false);
                 int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.WALLPAPER_THUMBNAIL);
+                int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+
+                ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
+                        Utils.loadBitmapBlob(cursor, wallpaperIndex));
+                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+                v.setTag(cursor.getString(pkgNameIndex));
+                v.setOnClickListener(mItemClickListener);
+                parent.addView(v, mItemParams);
+                addDividerIfNeeded(parent, i, index, cursor);
+            }
+        }
+
+        private void newLockScreenView(Cursor cursor, ViewGroup parent, int position) {
+            for (int i = 0; i < mItemsPerPage; i++) {
+                int index = position * mItemsPerPage + i;
+                if (cursor.getCount() <= index) continue;
+                cursor.moveToPosition(index);
+                View v = mInflater.inflate(R.layout.wallpaper_component_selection_item, parent,
+                        false);
+                int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL);
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
