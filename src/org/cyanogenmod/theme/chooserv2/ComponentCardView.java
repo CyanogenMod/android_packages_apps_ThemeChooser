@@ -72,7 +72,7 @@ public class ComponentCardView extends LinearLayout {
         setPadding(mExpandPadLeft, mExpandPadTop, mExpandPadRight, mExpandPadBottom);
 
         if (mLabel != null) {
-            mLabel.setAlpha(0f);
+            mLabel.setAlpha(1f);
             mLabel.setVisibility(View.VISIBLE);
         }
     }

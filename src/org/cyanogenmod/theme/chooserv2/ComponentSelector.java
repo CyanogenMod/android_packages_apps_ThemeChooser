@@ -314,7 +314,7 @@ public class ComponentSelector extends LinearLayout
             case LOADER_ID_STYLE:
                 selection = MODIFIES_OVERLAYS + "=?";
                 projection = new String[] {
-                        PreviewColumns.STYLE_PREVIEW,
+                        PreviewColumns.STYLE_THUMBNAIL,
                         ThemesColumns.TITLE,
                         ThemesColumns.PKG_NAME
                 };
@@ -595,7 +595,7 @@ public class ComponentSelector extends LinearLayout
                 cursor.moveToPosition(index);
                 View v = mInflater.inflate(R.layout.icon_component_selection_item, parent,
                         false);
-                int styleIndex = cursor.getColumnIndex(PreviewColumns.STYLE_PREVIEW);
+                int styleIndex = cursor.getColumnIndex(PreviewColumns.STYLE_THUMBNAIL);
                 int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
                 ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(

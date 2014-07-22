@@ -79,6 +79,7 @@ import java.util.Map;
 
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
@@ -125,6 +126,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final int LOADER_ID_WALLPAPER = 4;
     private static final int LOADER_ID_NAVIGATION_BAR = 5;
     private static final int LOADER_ID_LOCKSCREEN = 6;
+    private static final int LOADER_ID_STYLE = 7;
     private static final int LOADER_ID_APPLIED = 20;
 
     private static ComponentName[] sIconComponents;
@@ -155,6 +157,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private ViewGroup mStatusBar;
     private TextView mFontPreview;
     private ViewGroup mIconContainer;
+    private ViewGroup mStyleContainer;
 
     // Nav Bar Views
     private ViewGroup mNavBar;
@@ -175,6 +178,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private WallpaperCardView mWallpaperCard;
     private WallpaperCardView mLockScreenCard;
 
+    // Style views
+    private ImageView mStylePreview;
+
     private Handler mHandler;
 
     private int mActiveCardId = -1;
@@ -191,6 +197,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         sCardIdsToComponentTypes.put(R.id.navigation_bar_container, MODIFIES_NAVIGATION_BAR);
         sCardIdsToComponentTypes.put(R.id.wallpaper_card, MODIFIES_LAUNCHER);
         sCardIdsToComponentTypes.put(R.id.lockscreen_card, MODIFIES_LOCKSCREEN);
+        sCardIdsToComponentTypes.put(R.id.style_card, MODIFIES_OVERLAYS);
     }
 
     static ThemeFragment newInstance(String pkgName) {
@@ -243,6 +250,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mFontPreview.setTypeface(mTypefaceNormal);
         mIconContainer = (ViewGroup) v.findViewById(R.id.icon_container);
         mShadowFrame = (FrameLayout) v.findViewById(R.id.shadow_frame);
+        mStyleContainer = (ViewGroup) v.findViewById(R.id.style_card);
+        mStylePreview = (ImageView) v.findViewById(R.id.style_preview);
 
         // Nav Bar
         mNavBar = (ViewGroup) v.findViewById(R.id.navigation_bar);
@@ -765,8 +774,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                             PreviewColumns.ICON_PREVIEW_1,
                             PreviewColumns.ICON_PREVIEW_2,
                             PreviewColumns.ICON_PREVIEW_3,
-                            PreviewColumns.ICON_PREVIEW_4,
-                            PreviewColumns.LOCK_WALLPAPER_PREVIEW
+                            PreviewColumns.LOCK_WALLPAPER_PREVIEW,
+                            PreviewColumns.STYLE_PREVIEW
                     };
                 } else {
                     projection = new String[] {
@@ -786,8 +795,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                             PreviewColumns.ICON_PREVIEW_1,
                             PreviewColumns.ICON_PREVIEW_2,
                             PreviewColumns.ICON_PREVIEW_3,
-                            PreviewColumns.ICON_PREVIEW_4,
                             PreviewColumns.LOCK_WALLPAPER_PREVIEW,
+                            PreviewColumns.STYLE_PREVIEW,
                             // TODO: add this to the ThemesContract if this
                             // design moves beyond prototype
                             NAVIGATION_BAR_BACKGROUND
@@ -852,6 +861,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         PreviewColumns.LOCK_WALLPAPER_PREVIEW
                 };
                 break;
+            case LOADER_ID_STYLE:
+                projection = new String[] {
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE,
+                        PreviewColumns.STYLE_PREVIEW
+                };
+                break;
             case LOADER_ID_APPLIED:
                 //TODO: Mix n match query should only be done once
                 uri = ThemesContract.MixnMatchColumns.CONTENT_URI;
@@ -876,6 +892,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loadTitle(c);
                 loadFont(c, false);
                 loadAndRemoveAdditionalCards(c);
+                loadStyle(c, false);
                 break;
             case LOADER_ID_STATUS_BAR:
                 loadStatusBar(c, true);
@@ -895,10 +912,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             case LOADER_ID_LOCKSCREEN:
                 loadLockScreen(c);
                 break;
+            case LOADER_ID_STYLE:
+                loadStyle(c, true);
+                break;
             case LOADER_ID_APPLIED:
                 getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
                 populateCurrentTheme(c);
-                break;
         }
     }
 
@@ -935,6 +954,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             loadLockScreen(c);
         } else if (MODIFIES_LAUNCHER.equals(component)) {
             loadWallpaper(c);
+        } else if (MODIFIES_OVERLAYS.equals(component)) {
+            loadStyle(c, false);
         } else {
             throw new IllegalArgumentException("Don't know how to load: " +component);
         }
@@ -1209,6 +1230,24 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
+    private void loadStyle(Cursor c, boolean animate) {
+        Drawable overlay = null;
+        if (animate) {
+            overlay = getOverlayDrawable(mStylePreview, true);
+        }
+
+        int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
+        int styleIdx = c.getColumnIndex(PreviewColumns.STYLE_PREVIEW);
+        mStylePreview.setImageBitmap(Utils.loadBitmapBlob(c, styleIdx));
+        if (pkgNameIdx > -1) {
+            String pkgName = c.getString(pkgNameIdx);
+            mSelectedComponentsMap.put(MODIFIES_OVERLAYS, pkgName);
+        }
+        if (animate) {
+            animateContentChange(R.id.style_card, mStylePreview, overlay);
+        }
+    }
+
     private Drawable getOverlayDrawable(View v, boolean requiresTransparency) {
         if (!v.isDrawingCacheEnabled()) v.setDrawingCacheEnabled(true);
         Bitmap cache = v.getDrawingCache(true).copy(
@@ -1290,6 +1329,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loaderId = LOADER_ID_WALLPAPER;
             } else if (MODIFIES_LOCKSCREEN.equals(component)) {
                 loaderId = LOADER_ID_LOCKSCREEN;
+            } else if (MODIFIES_OVERLAYS.equals(component)) {
+                loaderId = LOADER_ID_STYLE;
             } else {
                 return;
             }
