@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
+import libcore.io.IoUtils;
 import org.cyanogenmod.theme.util.BootAnimationHelper;
 
 import java.io.IOException;
@@ -58,21 +59,31 @@ public class BootAniImageView extends ImageView {
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mActive = false;
-        removeCallbacks(mUpdateAnimationRunnable);
-
-        if (mBootAniZip != null) {
-            try {
-                mBootAniZip.close();
-            } catch (IOException e) {
-            }
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        if (visibility == VISIBLE) {
+            if (mBootAniZip != null) start();
+        } else {
+            stop();
         }
-
     }
 
-    public boolean setBootAnimation(ZipFile bootAni) {
+    public synchronized boolean setBootAnimation(ZipFile bootAni) {
+        // make sure we are stopped first
+        stop();
+
+        if (mBootAniZip != null) {
+            IoUtils.closeQuietly(mBootAniZip);
+            // This boot animation may be a different size than the previous
+            // one so clear out the buffers so they can be recreated with
+            // the correct size.
+            for (int i = 0; i < MAX_BUFFERS; i++) {
+                if (mBuffers[i] != null) {
+                    mBuffers[i].recycle();
+                    mBuffers[i] = null;
+                }
+            }
+        }
         mBootAniZip = bootAni;
         try {
             mAnimationParts = BootAnimationHelper.parseAnimation(mContext, mBootAniZip);
@@ -84,6 +95,8 @@ public class BootAniImageView extends ImageView {
         mCurrentPart = 0;
         mCurrentPartPlayCount = part.playCount;
         mFrameDuration = part.frameRateMillis;
+        mWriteBufferIndex = mReadBufferIndex = 0;
+        mCurrentFrame = 0;
 
         getNextFrame();
 
@@ -94,6 +107,7 @@ public class BootAniImageView extends ImageView {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inBitmap = mBuffers[mWriteBufferIndex];
         opts.inPreferredConfig = Bitmap.Config.RGB_565;
+        opts.inMutable = true;
         final BootAnimationHelper.AnimationPart part = mAnimationParts.get(mCurrentPart);
         try {
             mBuffers[mWriteBufferIndex] =
@@ -107,8 +121,11 @@ public class BootAniImageView extends ImageView {
             if (mCurrentPartPlayCount > 0) {
                 if (--mCurrentPartPlayCount == 0) {
                     mCurrentPart++;
+                    if (mCurrentPart >= mAnimationParts.size()) mCurrentPart = 0;
                     mCurrentFrame = 0;
                     mCurrentPartPlayCount = mAnimationParts.get(mCurrentPart).playCount;
+                } else {
+                    mCurrentFrame = 0;
                 }
             } else {
                 mCurrentFrame = 0;
@@ -121,14 +138,22 @@ public class BootAniImageView extends ImageView {
         post(mUpdateAnimationRunnable);
     }
 
+    public void stop() {
+        mActive = false;
+        removeCallbacks(mUpdateImageRunnable);
+        removeCallbacks(mUpdateAnimationRunnable);
+    }
+
     private Runnable mUpdateAnimationRunnable = new Runnable() {
         @Override
         public void run() {
             if (!mActive) return;
             BootAniImageView.this.postDelayed(mUpdateAnimationRunnable, mFrameDuration);
-            BootAniImageView.this.post(mUpdateImageRunnable);
-            mReadBufferIndex = (mReadBufferIndex + 1) % MAX_BUFFERS;
-            getNextFrame();
+            if (!isOffScreen()) {
+                BootAniImageView.this.post(mUpdateImageRunnable);
+                mReadBufferIndex = (mReadBufferIndex + 1) % MAX_BUFFERS;
+                getNextFrame();
+            }
         }
     };
 
@@ -138,4 +163,10 @@ public class BootAniImageView extends ImageView {
             setImageBitmap(mBuffers[mReadBufferIndex]);
         }
     };
+
+    private boolean isOffScreen() {
+        int[] pos = new int[2];
+        getLocationOnScreen(pos);
+        return pos[1] >= mContext.getResources().getDisplayMetrics().heightPixels;
+    }
 }

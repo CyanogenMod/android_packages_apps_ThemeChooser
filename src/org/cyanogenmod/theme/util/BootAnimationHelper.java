@@ -26,6 +26,7 @@ import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,9 +40,12 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class BootAnimationHelper {
+    private static final int MAX_REPEAT_COUNT = 3;
+
     public static final String THEME_INTERNAL_BOOT_ANI_PATH =
             "assets/bootanimation/bootanimation.zip";
     public static final String SYSTEM_BOOT_ANI_PATH = "/system/media/bootanimation.zip";
+    public static final String CACHED_SUFFIX = "_bootanimation.zip";
 
     public static class AnimationPart {
         /**
@@ -75,7 +79,7 @@ public class BootAnimationHelper {
 
         public AnimationPart(int playCount, int pause, String partName, int frameRateMillis,
                              int width, int height) {
-            this.playCount = playCount;
+            this.playCount = playCount == 0 ? MAX_REPEAT_COUNT : playCount;
             this.pause = pause;
             this.partName = partName;
             this.frameRateMillis = frameRateMillis;
@@ -189,6 +193,16 @@ public class BootAnimationHelper {
         zis.close();
 
         return preview;
+    }
+
+    public static void clearBootAnimationCache(Context context) {
+        File cache = context.getCacheDir();
+        if (cache.exists()) {
+            for(File f : cache.listFiles()) {
+                // volley stores stuff in cache so don't delete the volley directory
+                if(!f.isDirectory() && f.getName().endsWith(CACHED_SUFFIX)) f.delete();
+            }
+        }
     }
 
     public static class LoadBootAnimationImage extends AsyncTask<Object, Void, Bitmap> {
