@@ -1359,6 +1359,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             final Context context = getActivity();
             if (context != null) {
                 if (mSelectedComponentsMap != null && mSelectedComponentsMap.size() > 0) {
+                    if (!CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
+                        ThemeUtils.completeComponentMap(getActivity(),
+                                mSelectedComponentsMap);
+                    }
                     // Post this on mHandler so the client is added and removed from the same
                     // thread
                     mHandler.post(new Runnable() {
@@ -1366,6 +1370,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         public void run() {
                             ThemeManager tm = getThemeManager();
                             if (tm != null) {
+                                // if this is not the "my theme" card, add missing components
+                                // from defaults
                                 tm.addClient(ThemeFragment.this);
                                 tm.requestThemeChange(mSelectedComponentsMap);
                             }
