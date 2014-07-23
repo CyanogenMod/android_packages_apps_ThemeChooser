@@ -22,6 +22,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ThemeUtils;
+import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
@@ -36,7 +37,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.os.Handler;
 import android.provider.Settings;
 import android.provider.ThemesContract;
@@ -46,6 +49,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -61,22 +65,30 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Space;
+
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.cyanogenmod.theme.chooser.R;
 import org.cyanogenmod.theme.chooserv2.ComponentSelector.OnItemClickedListener;
+import org.cyanogenmod.theme.util.BootAnimationHelper;
 import org.cyanogenmod.theme.util.IconPreviewHelper;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
 import org.cyanogenmod.theme.util.TypefaceHelperCache;
 import org.cyanogenmod.theme.util.Utils;
+import org.cyanogenmod.theme.widget.BootAniImageView;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipFile;
 
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
@@ -87,6 +99,8 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
 public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
         ThemeManager.ThemeChangeListener {
+    private static final String TAG = ThemeFragment.class.getSimpleName();
+
     public static final int ANIMATE_START_DELAY = 200;
     public static final int ANIMATE_DURATION = 300;
     public static final int ANIMATE_INTERPOLATE_FACTOR = 3;
@@ -127,6 +141,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final int LOADER_ID_NAVIGATION_BAR = 5;
     private static final int LOADER_ID_LOCKSCREEN = 6;
     private static final int LOADER_ID_STYLE = 7;
+    private static final int LOADER_ID_BOOT_ANIMATION = 8;
     private static final int LOADER_ID_APPLIED = 20;
 
     private static ComponentName[] sIconComponents;
@@ -140,7 +155,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private Typeface mTypefaceNormal;
     private int mBatteryStyle;
 
-    private ViewGroup mScrollView;
+    private ScrollView mScrollView;
     private ViewGroup mScrollContent;
     private ViewGroup mPreviewContent; // Contains icons, font, nav/status etc. Not wallpaper
 
@@ -158,6 +173,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private TextView mFontPreview;
     private ViewGroup mIconContainer;
     private ViewGroup mStyleContainer;
+    private ViewGroup mBootAnimationContainer;
+    private BootAniImageView mBootAnimation;
 
     // Nav Bar Views
     private ViewGroup mNavBar;
@@ -198,6 +215,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         sCardIdsToComponentTypes.put(R.id.wallpaper_card, MODIFIES_LAUNCHER);
         sCardIdsToComponentTypes.put(R.id.lockscreen_card, MODIFIES_LOCKSCREEN);
         sCardIdsToComponentTypes.put(R.id.style_card, MODIFIES_OVERLAYS);
+        sCardIdsToComponentTypes.put(R.id.bootani_preview_container, MODIFIES_BOOT_ANIM);
     }
 
     static ThemeFragment newInstance(String pkgName) {
@@ -232,7 +250,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.v2_fragment_pager_list, container, false);
 
-        mScrollView = (ViewGroup) v.findViewById(android.R.id.list);
+        mScrollView = (ScrollView) v.findViewById(android.R.id.list);
         mScrollContent = (ViewGroup) mScrollView.getChildAt(0);
         mPreviewContent = (ViewGroup) v.findViewById(R.id.preview_container);
 
@@ -252,6 +270,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mShadowFrame = (FrameLayout) v.findViewById(R.id.shadow_frame);
         mStyleContainer = (ViewGroup) v.findViewById(R.id.style_card);
         mStylePreview = (ImageView) v.findViewById(R.id.style_preview);
+        mBootAnimationContainer = (ViewGroup) v.findViewById(R.id.bootani_preview_container);
+        mBootAnimation =
+                (BootAniImageView) mBootAnimationContainer.findViewById(R.id.bootani_preview);
 
         // Nav Bar
         mNavBar = (ViewGroup) v.findViewById(R.id.navigation_bar);
@@ -383,6 +404,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         animateExtras(true);
         mSelector = ((ChooserActivity) getActivity()).getComponentSelector();
         mSelector.setOnItemClickedListener(mOnComponentItemClicked);
+        if (mBootAnimation != null) mBootAnimation.start();
     }
 
 
@@ -486,6 +508,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         animateExtras(false);
         animateWallpaperIn();
         animateTitleCard(false, applyTheme);
+        if (mBootAnimation != null) mBootAnimation.stop();
     }
 
     // This will animate the children's vertical positions between the previous bounds and the
@@ -868,6 +891,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         PreviewColumns.STYLE_PREVIEW
                 };
                 break;
+            case LOADER_ID_BOOT_ANIMATION:
+                projection = new String[] {
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE
+                };
+                break;
             case LOADER_ID_APPLIED:
                 //TODO: Mix n match query should only be done once
                 uri = ThemesContract.MixnMatchColumns.CONTENT_URI;
@@ -892,7 +921,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loadTitle(c);
                 loadFont(c, false);
                 loadAndRemoveAdditionalCards(c);
-                loadStyle(c, false);
                 break;
             case LOADER_ID_STATUS_BAR:
                 loadStatusBar(c, true);
@@ -915,6 +943,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             case LOADER_ID_STYLE:
                 loadStyle(c, true);
                 break;
+            case LOADER_ID_BOOT_ANIMATION:
+                loadBootAnimation(c, true);
+                break;
             case LOADER_ID_APPLIED:
                 getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
                 populateCurrentTheme(c);
@@ -931,6 +962,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     loadAdditionalCard(c, component);
                 } else {
                     removeList.add(v);
+                    // remove the Space below this card
+                    removeList.add(mAdditionalCards.getChildAt(i+1));
+                    sCardIdsToComponentTypes.remove(v.getId());
                 }
             }
         }
@@ -956,6 +990,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             loadWallpaper(c);
         } else if (MODIFIES_OVERLAYS.equals(component)) {
             loadStyle(c, false);
+        } else if (MODIFIES_BOOT_ANIM.equals(component)) {
+            loadBootAnimation(c, false);
         } else {
             throw new IllegalArgumentException("Don't know how to load: " +component);
         }
@@ -978,6 +1014,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (supported) {
                 mSelectedComponentsMap.put(component, pkg);
             }
+        }
+        if (!mSelectedComponentsMap.containsKey(MODIFIES_BOOT_ANIM)) {
+            mBootAnimation = null;
         }
     }
 
@@ -1248,6 +1287,21 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
+    private void loadBootAnimation(Cursor c, boolean autoStart) {
+        int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
+        if (mBootAnimation != null) {
+            String pkgName;
+            if (pkgNameIdx > -1) {
+                pkgName = c.getString(pkgNameIdx);
+                mSelectedComponentsMap.put(MODIFIES_BOOT_ANIM, pkgName);
+            } else {
+                pkgName = mCurrentTheme.get(MODIFIES_BOOT_ANIM);
+            }
+            mBootAnimation.stop();
+            new AnimationLoader(getActivity(), pkgName, mBootAnimation, autoStart).execute();
+        }
+    }
+
     private Drawable getOverlayDrawable(View v, boolean requiresTransparency) {
         if (!v.isDrawingCacheEnabled()) v.setDrawingCacheEnabled(true);
         Bitmap cache = v.getDrawingCache(true).copy(
@@ -1331,6 +1385,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loaderId = LOADER_ID_LOCKSCREEN;
             } else if (MODIFIES_OVERLAYS.equals(component)) {
                 loaderId = LOADER_ID_STYLE;
+            } else if (MODIFIES_BOOT_ANIM.equals(component)) {
+                loaderId = LOADER_ID_BOOT_ANIMATION;
             } else {
                 return;
             }
@@ -1457,5 +1513,90 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public void clearChanges() {
         mSelectedComponentsMap.clear();
         getLoaderManager().restartLoader(LOADER_ID_ALL, null, ThemeFragment.this);
+    }
+
+    class AnimationLoader extends AsyncTask<Void, Void, Boolean> {
+        Context mContext;
+        String mPkgName;
+        BootAniImageView mBootAnim;
+        boolean mAutoStart;
+
+        public AnimationLoader(Context context, String pkgName, BootAniImageView bootAnim) {
+            this(context, pkgName, bootAnim, false);
+        }
+
+        public AnimationLoader(Context context, String pkgName, BootAniImageView bootAnim,
+                boolean autoStart) {
+            mContext = context;
+            mPkgName = pkgName;
+            mBootAnim = bootAnim;
+            mAutoStart = autoStart;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mBootAnim.setImageDrawable(null);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            if (mContext == null) {
+                return Boolean.FALSE;
+            }
+            ZipFile zip = null;
+            if (ThemeConfig.HOLO_DEFAULT.equals(mPkgName)) {
+                try {
+                    zip = new ZipFile(new File(BootAnimationHelper.SYSTEM_BOOT_ANI_PATH));
+                } catch (Exception e) {
+                    Log.w(TAG, "Unable to load boot animation", e);
+                    return Boolean.FALSE;
+                }
+            } else {
+                // check if the bootanimation is cached
+                File f = new File(mContext.getCacheDir(),
+                        mPkgName + BootAnimationHelper.CACHED_SUFFIX);
+                if (!f.exists()) {
+                    // go easy on cache storage and clear out any previous boot animations
+                    BootAnimationHelper.clearBootAnimationCache(mContext);
+                    try {
+                        Context themeContext = mContext.createPackageContext(mPkgName, 0);
+                        AssetManager am = themeContext.getAssets();
+                        InputStream is = am.open("bootanimation/bootanimation.zip");
+                        FileUtils.copyToFile(is, f);
+                        is.close();
+                    } catch (Exception e) {
+                        Log.w(TAG, "Unable to load boot animation", e);
+                        return Boolean.FALSE;
+                    }
+                }
+                try {
+                    zip = new ZipFile(f);
+                } catch (IOException e) {
+                    Log.w(TAG, "Unable to load boot animation", e);
+                    return Boolean.FALSE;
+                }
+            }
+            if (zip != null) {
+                mBootAnim.setBootAnimation(zip);
+            } else {
+                return Boolean.FALSE;
+            }
+            return Boolean.TRUE;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isSuccess) {
+            super.onPostExecute(isSuccess);
+            if (isSuccess && mAutoStart) {
+                mBootAnim.start();
+                mScrollView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mScrollView.fullScroll(View.FOCUS_DOWN);
+                    }
+                }, 10);
+            }
+        }
     }
 }

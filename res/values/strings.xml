@@ -94,5 +94,6 @@
     <string name="wallpaper_label">Wallpaper</string>
     <string name="lockscreen_label">Lockscreen wallpaper</string>
     <string name="style_label">Controls</string>
+    <string name="boot_animation_label">Boot animation</string>
 
 </resources>

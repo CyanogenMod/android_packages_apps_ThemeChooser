@@ -41,6 +41,9 @@
                     <include layout="@layout/v2_nav_bar_preview_item"/>
                 </RelativeLayout>
             </FrameLayout>
+
+            <!--  Each card in this layout should have a Space below it
+                  with one final Space for devices that have a navbar -->
             <LinearLayout
                 android:id="@+id/additional_cards"
                 android:layout_width="match_parent"
@@ -68,6 +71,11 @@
                 <Space android:layout_width="match_parent"
                     android:layout_height="@dimen/expanded_card_margin_top" />
                 <include layout="@layout/v2item_style" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include layout="@layout/v2item_bootani"/>
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
 
                 <Space android:id="@+id/nav_bar_spacer"
                        android:layout_width="match_parent"
