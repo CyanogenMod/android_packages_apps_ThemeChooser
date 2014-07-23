@@ -162,4 +162,12 @@
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
     </style>
+
+    <style name="audible_name">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/audible_name_color</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
 </resources>

@@ -24,6 +24,7 @@ import android.content.res.AssetManager;
 import android.content.res.ThemeConfig;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.util.Log;
 
 import java.io.File;
@@ -124,4 +125,13 @@ public class AudioUtils {
         }
     }
 
+    public static Uri loadDefaultAudible(Context context, int type, MediaPlayer mp)
+            throws IOException {
+        Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(context, type);
+        mp.reset();
+        mp.setDataSource(context, ringtoneUri);
+        mp.prepare();
+
+        return ringtoneUri;
+    }
 }

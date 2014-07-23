@@ -45,5 +45,6 @@
     <color name="apply_progress_background_color">#e0dfe1</color>
     <color name="apply_progress_color">#00b3e6</color>
     <color name="wallpaper_label">#ffffff</color>
+    <color name="audible_name_color">#999999</color>
 
 </resources>

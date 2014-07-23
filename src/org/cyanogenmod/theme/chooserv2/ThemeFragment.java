@@ -36,6 +36,8 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -71,6 +73,7 @@ import android.widget.TextView;
 
 import org.cyanogenmod.theme.chooser.R;
 import org.cyanogenmod.theme.chooserv2.ComponentSelector.OnItemClickedListener;
+import org.cyanogenmod.theme.util.AudioUtils;
 import org.cyanogenmod.theme.util.BootAnimationHelper;
 import org.cyanogenmod.theme.util.IconPreviewHelper;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
@@ -88,10 +91,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipFile;
 
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
@@ -142,6 +148,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final int LOADER_ID_LOCKSCREEN = 6;
     private static final int LOADER_ID_STYLE = 7;
     private static final int LOADER_ID_BOOT_ANIMATION = 8;
+    private static final int LOADER_ID_RINGTONE = 9;
+    private static final int LOADER_ID_NOTIFICATION = 10;
+    private static final int LOADER_ID_ALARM = 11;
     private static final int LOADER_ID_APPLIED = 20;
 
     private static ComponentName[] sIconComponents;
@@ -198,6 +207,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     // Style views
     private ImageView mStylePreview;
 
+    // Sound cards
+    private ViewGroup mRingtoneContainer;
+    private ImageView mRingtonePlayPause;
+    private ViewGroup mNotificationContainer;
+    private ImageView mNotificationPlayPause;
+    private ViewGroup mAlarmContainer;
+    private ImageView mAlarmPlayPause;
+    private Map<ImageView, MediaPlayer> mMediaPlayers;
+
     private Handler mHandler;
 
     private int mActiveCardId = -1;
@@ -241,6 +259,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mCardIdsToComponentTypes.put(R.id.lockscreen_card, MODIFIES_LOCKSCREEN);
         mCardIdsToComponentTypes.put(R.id.style_card, MODIFIES_OVERLAYS);
         mCardIdsToComponentTypes.put(R.id.bootani_preview_container, MODIFIES_BOOT_ANIM);
+        mCardIdsToComponentTypes.put(R.id.ringtone_preview_container, MODIFIES_RINGTONES);
+        mCardIdsToComponentTypes.put(R.id.notification_preview_container, MODIFIES_NOTIFICATIONS);
+        mCardIdsToComponentTypes.put(R.id.alarm_preview_container, MODIFIES_ALARMS);
+
+        mMediaPlayers = new HashMap<ImageView, MediaPlayer>(3);
     }
 
     @Override
@@ -271,6 +294,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mBootAnimationContainer = (ViewGroup) v.findViewById(R.id.bootani_preview_container);
         mBootAnimation =
                 (BootAniImageView) mBootAnimationContainer.findViewById(R.id.bootani_preview);
+        mRingtoneContainer = (ViewGroup) v.findViewById(R.id.ringtone_preview_container);
+        mRingtonePlayPause = (ImageView) mRingtoneContainer.findViewById(R.id.play_pause);
+        mNotificationContainer = (ViewGroup) v.findViewById(R.id.notification_preview_container);
+        mNotificationPlayPause = (ImageView) mNotificationContainer.findViewById(R.id.play_pause);
+        mAlarmContainer = (ViewGroup) v.findViewById(R.id.alarm_preview_container);
+        mAlarmPlayPause = (ImageView) mAlarmContainer.findViewById(R.id.play_pause);
 
         // Nav Bar
         mNavBar = (ViewGroup) v.findViewById(R.id.navigation_bar);
@@ -315,6 +344,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 getLoaderManager().restartLoader(0, null, this);
             }
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopMediaPlayers();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        freeMediaPlayers();
     }
 
     @Override
@@ -507,6 +548,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         animateWallpaperIn();
         animateTitleCard(false, applyTheme);
         if (mBootAnimation != null) mBootAnimation.stop();
+        stopMediaPlayers();
     }
 
     // This will animate the children's vertical positions between the previous bounds and the
@@ -748,6 +790,61 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         return null;
     }
 
+    private void freeMediaPlayers() {
+        for (MediaPlayer mp : mMediaPlayers.values()) {
+            if (mp != null) {
+                mp.stop();
+                mp.release();
+            }
+        }
+        mMediaPlayers.clear();
+    }
+
+    private View.OnClickListener mPlayPauseClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            MediaPlayer mp = (MediaPlayer) v.getTag();
+            if (mp != null) {
+                if (mp.isPlaying()) {
+                    ((ImageView) v).setImageResource(R.drawable.media_sound_preview);
+                    mp.pause();
+                    mp.seekTo(0);
+                } else {
+                    stopMediaPlayers();
+                    ((ImageView) v).setImageResource(R.drawable.media_sound_stop);
+                    mp.start();
+                }
+            }
+        }
+    };
+
+    private MediaPlayer.OnCompletionListener mPlayCompletionListener
+            = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            for (ImageView v : mMediaPlayers.keySet()) {
+                if (mp == mMediaPlayers.get(v)) {
+                    if (v != null) {
+                        v.setImageResource(R.drawable.media_sound_preview);
+                    }
+                }
+            }
+        }
+    };
+
+    private void stopMediaPlayers() {
+        for (ImageView v : mMediaPlayers.keySet()) {
+            if (v != null) {
+                v.setImageResource(R.drawable.media_sound_preview);
+            }
+            MediaPlayer mp = mMediaPlayers.get(v);
+            if (mp != null && mp.isPlaying()) {
+                mp.pause();
+                mp.seekTo(0);
+            }
+        }
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String pkgName = mPkgName;
@@ -895,6 +992,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         ThemesColumns.TITLE
                 };
                 break;
+            case LOADER_ID_RINGTONE:
+            case LOADER_ID_NOTIFICATION:
+            case LOADER_ID_ALARM:
+                projection = new String[] {
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE
+                };
+                break;
             case LOADER_ID_APPLIED:
                 //TODO: Mix n match query should only be done once
                 uri = ThemesContract.MixnMatchColumns.CONTENT_URI;
@@ -943,6 +1048,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 break;
             case LOADER_ID_BOOT_ANIMATION:
                 loadBootAnimation(c, true);
+                break;
+            case LOADER_ID_RINGTONE:
+                loadAudible(RingtoneManager.TYPE_RINGTONE, c, true);
+                break;
+            case LOADER_ID_NOTIFICATION:
+                loadAudible(RingtoneManager.TYPE_NOTIFICATION, c, true);
+                break;
+            case LOADER_ID_ALARM:
+                loadAudible(RingtoneManager.TYPE_ALARM, c, true);
                 break;
             case LOADER_ID_APPLIED:
                 getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
@@ -993,8 +1107,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             loadStyle(c, false);
         } else if (MODIFIES_BOOT_ANIM.equals(component)) {
             loadBootAnimation(c, false);
+        } else if (MODIFIES_RINGTONES.equals(component)) {
+            loadAudible(RingtoneManager.TYPE_RINGTONE, c, false);
+        } else if (MODIFIES_NOTIFICATIONS.equals(component)) {
+            loadAudible(RingtoneManager.TYPE_NOTIFICATION, c, false);
+        } else if (MODIFIES_ALARMS.equals(component)) {
+            loadAudible(RingtoneManager.TYPE_ALARM, c, false);
         } else {
-            throw new IllegalArgumentException("Don't know how to load: " +component);
+            throw new IllegalArgumentException("Don't know how to load: " + component);
         }
     }
 
@@ -1303,6 +1423,70 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
+    private void loadAudible(int type, Cursor c, boolean animate) {
+        View audibleContainer = null;
+        ImageView playPause = null;
+        String component = null;
+        switch (type) {
+            case RingtoneManager.TYPE_RINGTONE:
+                audibleContainer = mRingtoneContainer;
+                playPause = mRingtonePlayPause;
+                component = MODIFIES_RINGTONES;
+                break;
+            case RingtoneManager.TYPE_NOTIFICATION:
+                audibleContainer = mNotificationContainer;
+                playPause = mNotificationPlayPause;
+                component = MODIFIES_NOTIFICATIONS;
+                break;
+            case RingtoneManager.TYPE_ALARM:
+                audibleContainer = mAlarmContainer;
+                playPause = mAlarmPlayPause;
+                component = MODIFIES_ALARMS;
+                break;
+        }
+        if (audibleContainer == null) return;
+        TextView label = (TextView) audibleContainer.findViewById(R.id.label);
+        label.setText(getAudibleLabel(type));
+
+        int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
+        int titleIdx = c.getColumnIndex(ThemesColumns.TITLE);
+        if (playPause == null) {
+            playPause =
+                    (ImageView) audibleContainer.findViewById(R.id.play_pause);
+        }
+        TextView title = (TextView) audibleContainer.findViewById(R.id.audible_name);
+        MediaPlayer mp = mMediaPlayers.get(playPause);
+        if (mp == null) {
+            mp = new MediaPlayer();
+        }
+        if (pkgNameIdx > -1) {
+            String pkgName = c.getString(pkgNameIdx);
+            try {
+                AudioUtils.loadThemeAudible(getActivity(), type, pkgName, mp);
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.w(TAG, "Unable to load sound for " + pkgName, e);
+                return;
+            }
+            title.setText(c.getString(titleIdx));
+            mSelectedComponentsMap.put(component, pkgName);
+        } else {
+            final Context context = getActivity();
+            Uri ringtoneUri;
+            try {
+                ringtoneUri = AudioUtils.loadDefaultAudible(context, type, mp);
+            } catch (IOException e) {
+                Log.w(TAG, "Unable to load default sound ", e);
+                return;
+            }
+            title.setText(RingtoneManager.getRingtone(context, ringtoneUri).getTitle(context));
+        }
+
+        playPause.setTag(mp);
+        mMediaPlayers.put(playPause, mp);
+        playPause.setOnClickListener(mPlayPauseClickListener);
+        mp.setOnCompletionListener(mPlayCompletionListener);
+    }
+
     private Drawable getOverlayDrawable(View v, boolean requiresTransparency) {
         if (!v.isDrawingCacheEnabled()) v.setDrawingCacheEnabled(true);
         Bitmap cache = v.getDrawingCache(true).copy(
@@ -1311,6 +1495,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         v.destroyDrawingCache();
 
         return d;
+    }
+
+    private String getAudibleLabel(int type) {
+        switch (type) {
+            case RingtoneManager.TYPE_RINGTONE:
+                return getString(R.string.ringtone_label);
+            case RingtoneManager.TYPE_NOTIFICATION:
+                return getString(R.string.notification_label);
+            case RingtoneManager.TYPE_ALARM:
+                return getString(R.string.alarm_label);
+        }
+        return null;
     }
 
     public static ComponentName[] getIconComponents(Context context) {
@@ -1362,6 +1558,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             String component = mCardIdsToComponentTypes.get(mActiveCardId);
             ((ChooserActivity) getActivity()).showComponentSelector(component, v);
             fadeOutNonSelectedCards(mActiveCardId);
+            stopMediaPlayers();
         }
     };
 
@@ -1388,6 +1585,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loaderId = LOADER_ID_STYLE;
             } else if (MODIFIES_BOOT_ANIM.equals(component)) {
                 loaderId = LOADER_ID_BOOT_ANIMATION;
+            } else if (MODIFIES_RINGTONES.equals(component)) {
+                loaderId = LOADER_ID_RINGTONE;
+            } else if (MODIFIES_NOTIFICATIONS.equals(component)) {
+                loaderId = LOADER_ID_NOTIFICATION;
+            } else if (MODIFIES_ALARMS.equals(component)) {
+                loaderId = LOADER_ID_ALARM;
             } else {
                 return;
             }
@@ -1473,7 +1676,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         scaleAnim.setFillAfter(false);
         scaleAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {}
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -1481,7 +1685,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationRepeat(Animation animation) {
+            }
         });
 
         mTitleLayout.animate()

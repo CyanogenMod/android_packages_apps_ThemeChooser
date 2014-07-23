@@ -73,6 +73,21 @@
                 <include layout="@layout/v2item_style" />
                 <Space android:layout_width="match_parent"
                     android:layout_height="@dimen/expanded_card_margin_top" />
+                <include
+                    android:id="@+id/ringtone_preview_container"
+                    layout="@layout/v2item_audible" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include
+                    android:id="@+id/notification_preview_container"
+                    layout="@layout/v2item_audible" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include
+                    android:id="@+id/alarm_preview_container"
+                    layout="@layout/v2item_audible" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
                 <include layout="@layout/v2item_bootani"/>
                 <Space android:layout_width="match_parent"
                     android:layout_height="@dimen/expanded_card_margin_top" />
