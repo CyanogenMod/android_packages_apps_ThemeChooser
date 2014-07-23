@@ -149,7 +149,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     /**
      * Maps the card's resource ID to a theme component
      */
-    private static final SparseArray<String> sCardIdsToComponentTypes = new SparseArray<String>();
+    private final SparseArray<String> mCardIdsToComponentTypes = new SparseArray<String>();
 
     private String mPkgName;
     private Typeface mTypefaceNormal;
@@ -207,17 +207,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     // Current system theme configuration as component -> pkgName
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
 
-    static {
-        sCardIdsToComponentTypes.put(R.id.status_bar_container, MODIFIES_STATUS_BAR);
-        sCardIdsToComponentTypes.put(R.id.font_preview_container, MODIFIES_FONTS);
-        sCardIdsToComponentTypes.put(R.id.icon_container, MODIFIES_ICONS);
-        sCardIdsToComponentTypes.put(R.id.navigation_bar_container, MODIFIES_NAVIGATION_BAR);
-        sCardIdsToComponentTypes.put(R.id.wallpaper_card, MODIFIES_LAUNCHER);
-        sCardIdsToComponentTypes.put(R.id.lockscreen_card, MODIFIES_LOCKSCREEN);
-        sCardIdsToComponentTypes.put(R.id.style_card, MODIFIES_OVERLAYS);
-        sCardIdsToComponentTypes.put(R.id.bootani_preview_container, MODIFIES_BOOT_ANIM);
-    }
-
     static ThemeFragment newInstance(String pkgName) {
         ThemeFragment f = new ThemeFragment();
         Bundle args = new Bundle();
@@ -243,6 +232,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
 
         mHandler = new Handler();
+
+        mCardIdsToComponentTypes.put(R.id.status_bar_container, MODIFIES_STATUS_BAR);
+        mCardIdsToComponentTypes.put(R.id.font_preview_container, MODIFIES_FONTS);
+        mCardIdsToComponentTypes.put(R.id.icon_container, MODIFIES_ICONS);
+        mCardIdsToComponentTypes.put(R.id.navigation_bar_container, MODIFIES_NAVIGATION_BAR);
+        mCardIdsToComponentTypes.put(R.id.wallpaper_card, MODIFIES_LAUNCHER);
+        mCardIdsToComponentTypes.put(R.id.lockscreen_card, MODIFIES_LOCKSCREEN);
+        mCardIdsToComponentTypes.put(R.id.style_card, MODIFIES_OVERLAYS);
+        mCardIdsToComponentTypes.put(R.id.bootani_preview_container, MODIFIES_BOOT_ANIM);
     }
 
     @Override
@@ -957,14 +955,17 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         for(int i=0; i < mAdditionalCards.getChildCount(); i++) {
             View v = mAdditionalCards.getChildAt(i);
             if (v instanceof ComponentCardView) {
-                String component = sCardIdsToComponentTypes.get(v.getId());
+                String component = mCardIdsToComponentTypes.get(v.getId());
                 if (shouldShowComponentCard(component)) {
                     loadAdditionalCard(c, component);
                 } else {
                     removeList.add(v);
                     // remove the Space below this card
                     removeList.add(mAdditionalCards.getChildAt(i+1));
-                    sCardIdsToComponentTypes.remove(v.getId());
+
+                    if (component != null && !shouldShowComponentCard(component)) {
+                        mCardIdsToComponentTypes.remove(v.getId());
+                    }
                 }
             }
         }
@@ -1343,8 +1344,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void initCards(View parent) {
-        for (int i = 0; i < sCardIdsToComponentTypes.size(); i++) {
-            parent.findViewById(sCardIdsToComponentTypes.keyAt(i))
+        for (int i = 0; i < mCardIdsToComponentTypes.size(); i++) {
+            parent.findViewById(mCardIdsToComponentTypes.keyAt(i))
                     .setOnClickListener(mCardClickListener);
         }
     }
@@ -1358,7 +1359,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 return;
             }
             mActiveCardId = v.getId();
-            String component = sCardIdsToComponentTypes.get(mActiveCardId);
+            String component = mCardIdsToComponentTypes.get(mActiveCardId);
             ((ChooserActivity) getActivity()).showComponentSelector(component, v);
             fadeOutNonSelectedCards(mActiveCardId);
         }
@@ -1395,10 +1396,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     };
 
     private void fadeOutNonSelectedCards(int selectedCardId) {
-        for (int i = 0; i < sCardIdsToComponentTypes.size(); i++) {
-            if (sCardIdsToComponentTypes.keyAt(i) != selectedCardId) {
+        for (int i = 0; i < mCardIdsToComponentTypes.size(); i++) {
+            if (mCardIdsToComponentTypes.keyAt(i) != selectedCardId) {
                 ComponentCardView card = (ComponentCardView) getView().findViewById(
-                        sCardIdsToComponentTypes.keyAt(i));
+                        mCardIdsToComponentTypes.keyAt(i));
                 card.animateCardFadeOut();
             }
         }
@@ -1488,9 +1489,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public void fadeInCards() {
         mActiveCardId = -1;
-        for (int i = 0; i < sCardIdsToComponentTypes.size(); i++) {
+        for (int i = 0; i < mCardIdsToComponentTypes.size(); i++) {
             ComponentCardView card = (ComponentCardView) getView().findViewById(
-                    sCardIdsToComponentTypes.keyAt(i));
+                    mCardIdsToComponentTypes.keyAt(i));
             card.animateCardFadeIn();
         }
     }
