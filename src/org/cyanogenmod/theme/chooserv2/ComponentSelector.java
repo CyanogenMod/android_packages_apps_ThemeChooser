@@ -187,7 +187,10 @@ public class ComponentSelector extends LinearLayout
         } else {
             mAppliedComponentPkgName = null;
         }
-        if (mComponentType == null || !mComponentType.equals(component)) mPager.setCurrentItem(0);
+        if (mComponentType == null || !mComponentType.equals(component)){
+            mPager.setCurrentItem(0);
+            mAdapter.swapCursor(null);
+        }
         mComponentType = component;
         ((FragmentActivity) mContext).getSupportLoaderManager().restartLoader(
                 getLoaderIdFromComponent(component), null, this);
@@ -363,7 +366,7 @@ public class ComponentSelector extends LinearLayout
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
         mAdapter.swapCursor(data);
     }
 
@@ -468,8 +471,6 @@ public class ComponentSelector extends LinearLayout
         }
 
         public void swapCursor(Cursor c) {
-            if (mCursor == c) return;
-
             mCursor = c;
             notifyDataSetChanged();
         }
