@@ -1076,13 +1076,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loadIcons(c, true);
                 break;
             case LOADER_ID_WALLPAPER:
-                loadWallpaper(c);
+                loadWallpaper(c, true);
                 break;
             case LOADER_ID_NAVIGATION_BAR:
                 loadNavBar(c, true);
                 break;
             case LOADER_ID_LOCKSCREEN:
-                loadLockScreen(c);
+                loadLockScreen(c, true);
                 break;
             case LOADER_ID_STYLE:
                 loadStyle(c, true);
@@ -1135,7 +1135,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
 
         if (shouldShowComponentCard(MODIFIES_LOCKSCREEN)) {
-            loadLockScreen(c);
+            loadLockScreen(c, false);
         } else {
             mAdditionalCards.removeView(mLockScreenCard);
         }
@@ -1143,9 +1143,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private void loadAdditionalCard(Cursor c, String component) {
         if (MODIFIES_LOCKSCREEN.equals(component)) {
-            loadLockScreen(c);
+            loadLockScreen(c, false);
         } else if (MODIFIES_LAUNCHER.equals(component)) {
-            loadWallpaper(c);
+            loadWallpaper(c, false);
         } else if (MODIFIES_OVERLAYS.equals(component)) {
             loadStyle(c, false);
         } else if (MODIFIES_BOOT_ANIM.equals(component)) {
@@ -1224,10 +1224,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void loadWallpaper(Cursor c) {
+    private void loadWallpaper(Cursor c, boolean animate) {
+        Drawable overlay = null;
+        if (animate) {
+            overlay = getOverlayDrawable(mWallpaperCard, true);
+        }
+
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
-
         final Resources res = getResources();
         if (pkgNameIdx > -1) {
             Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
@@ -1245,12 +1249,20 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             mWallpaper.setImageDrawable(wp);
             mWallpaperCard.setWallpaper(wp);
         }
+
+        if (animate) {
+            animateContentChange(R.id.wallpaper_card, mWallpaperCard, overlay);
+        }
     }
 
-    public void loadLockScreen(Cursor c) {
+    public void loadLockScreen(Cursor c, boolean animate) {
+        Drawable overlay = null;
+        if (animate) {
+            overlay = getOverlayDrawable(mLockScreenCard, true);
+        }
+
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         int wpIdx = c.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_PREVIEW);
-
         final Resources res = getResources();
         if (pkgNameIdx > -1) {
             Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
@@ -1265,6 +1277,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 wp = new BitmapDrawable(res, Utils.loadBitmapBlob(c, wpIdx));
             }
             mLockScreenCard.setWallpaper(wp);
+        }
+
+        if (animate) {
+            animateContentChange(R.id.lockscreen_card, mLockScreenCard, overlay);
         }
     }
 
