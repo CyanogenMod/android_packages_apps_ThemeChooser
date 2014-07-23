@@ -27,7 +27,10 @@
             android:id="@+id/page_indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:paddingTop="8dp"
+            themes:radius="4dp"
+            themes:spacing="16dp"
+            themes:pageColor="@android:color/transparent"
             themes:fillColor="@android:color/white"/>
 
     </FrameLayout>
