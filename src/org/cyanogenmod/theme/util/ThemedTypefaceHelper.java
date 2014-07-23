@@ -49,7 +49,7 @@ public class ThemedTypefaceHelper {
             loadThemedFonts(context, pkgName);
             return;
         } catch(Exception e) {
-            Log.e(TAG, "Unable to parse and load themed fonts. Falling back to system fonts", e);
+            Log.w(TAG, "Unable to parse and load themed fonts. Falling back to system fonts");
         }
 
         try {
