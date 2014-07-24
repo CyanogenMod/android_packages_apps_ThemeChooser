@@ -17,10 +17,10 @@
 -->
 <resources>
   <string name="app_name">سیم</string>
-  <string name="lock_screen">قوفڵکردنی وێنه‌ی سه‌رشاشه‌</string>
-  <string name="icons">ئایکۆن</string>
+  <string name="lock_screen">داخستنی وێنه‌ی سه‌ر ڕوونما</string>
+  <string name="icons">وێنۆچکه‌</string>
   <string name="fonts">فۆنته‌کان</string>
-  <string name="wallpapers">وێنه‌ی سه‌رشاشه‌</string>
+  <string name="wallpapers">وێنه‌ی سەر ڕوونما</string>
   <string name="boot_anims">ئه‌نیمه‌یشنی بووت</string>
   <string name="ringtones">زه‌نگ</string>
   <string name="notifications">تێبینیه‌کان</string>
