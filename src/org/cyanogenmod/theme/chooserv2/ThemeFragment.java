@@ -20,6 +20,8 @@ import android.animation.ValueAnimator;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ThemeUtils;
 import android.content.res.AssetManager;
@@ -56,6 +58,7 @@ import android.util.SparseArray;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +73,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -120,6 +122,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final int ANIMATE_TITLE_OUT_DURATION = 400;
     public static final int ANIMATE_PROGRESS_OUT_DURATION = 400;
     public static final int ANIMATE_TITLE_IN_DURATION = 500;
+    public static final int REQUEST_UNINSTALL = 1; // Request code
 
     private static final String NAVIGATION_BAR_BACKGROUND = "navbar_background";
 
@@ -222,6 +225,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private Handler mHandler;
 
+    private boolean mIsUninstalled;
     private int mActiveCardId = -1;
     private ComponentSelector mSelector;
     // Supported components for the theme this fragment represents
@@ -320,18 +324,34 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mOverflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu menu = new PopupMenu(getActivity(), mTitleCard, Gravity.END);
-                menu.getMenuInflater().inflate(R.menu.overflow, menu.getMenu());
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                PopupMenu popupmenu = new PopupMenu(getActivity(), mTitleCard, Gravity.END);
+                popupmenu.getMenuInflater().inflate(R.menu.overflow, popupmenu.getMenu());
+
+                if (CURRENTLY_APPLIED_THEME.equals(mPkgName) ||
+                        mPkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity())) ||
+                        mPkgName.equals(ThemeConfig.HOLO_DEFAULT)) {
+                    Menu menu = popupmenu.getMenu();
+                    menu.findItem(R.id.menu_delete).setEnabled(false);
+                }
+
+                popupmenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(getActivity(),
-                                item.toString(),
-                                Toast.LENGTH_LONG).show();
+                        switch(item.getItemId()) {
+                            case R.id.menu_author:
+                                Toast.makeText(getActivity(),
+                                        "Not supported",
+                                        Toast.LENGTH_LONG).show();
+                                break;
+                            case R.id.menu_delete:
+                                uninstallTheme();
+                                break;
+                        }
+
                         return true;
                     }
                 });
-                menu.show();
+                popupmenu.show();
             }
         });
         mApply = (ImageView) v.findViewById(R.id.apply);
@@ -1744,6 +1764,29 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         getLoaderManager().restartLoader(LOADER_ID_ALL, null, ThemeFragment.this);
     }
 
+    private void uninstallTheme() {
+        Uri packageURI = Uri.parse("package:" + mPkgName);
+        Intent uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageURI);
+        uninstallIntent.putExtra(Intent.EXTRA_UNINSTALL_ALL_USERS, true);
+        startActivityForResult(uninstallIntent,
+                ChooserActivity.REQUEST_UNINSTALL);
+    }
+
+    public void onActivityResult (int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_UNINSTALL) {
+            try {
+                ApplicationInfo ainfo = getActivity()
+                        .getPackageManager().getApplicationInfo(mPkgName, 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                mIsUninstalled = true;
+            }
+        }
+    }
+
+    public boolean isUninstalled() {
+        return mIsUninstalled;
+    }
+
     class AnimationLoader extends AsyncTask<Void, Void, Boolean> {
         Context mContext;
         String mPkgName;
@@ -1765,7 +1808,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mBootAnim.setImageDrawable(null);
         }
 
         @Override

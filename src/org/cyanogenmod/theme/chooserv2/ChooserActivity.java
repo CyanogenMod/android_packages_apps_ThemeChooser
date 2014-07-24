@@ -52,6 +52,7 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
 public class ChooserActivity extends FragmentActivity
         implements LoaderManager.LoaderCallbacks<Cursor>, ThemeManager.ThemeChangeListener {
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
+    public static final int REQUEST_UNINSTALL = 1; // Request code
 
     private static final long SLIDE_CONTENT_ANIM_DURATION = 300L;
     private static final long MOVE_TO_MY_THEME_DELAY = 750L;
@@ -405,6 +406,15 @@ public class ChooserActivity extends FragmentActivity
                 pkgName = mCursor.getString(pkgIdx);
             }
             return ThemeFragment.newInstance(pkgName);
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            ThemeFragment fragment = (ThemeFragment) object;
+            if (fragment.isUninstalled()) {
+                return POSITION_NONE;
+            }
+            return super.getItemPosition(object);
         }
 
         /**
