@@ -54,7 +54,9 @@ import android.support.v4.content.Loader;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -65,11 +67,13 @@ import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.cyanogenmod.theme.chooser.R;
 import org.cyanogenmod.theme.chooserv2.ComponentSelector.OnItemClickedListener;
@@ -313,6 +317,23 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mTitle = (TextView) v.findViewById(R.id.title);
         mProgress = (ProgressBar) v.findViewById(R.id.apply_progress);
         mOverflow = (ImageView) v.findViewById(R.id.overflow);
+        mOverflow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu menu = new PopupMenu(getActivity(), mTitleCard, Gravity.END);
+                menu.getMenuInflater().inflate(R.menu.overflow, menu.getMenu());
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Toast.makeText(getActivity(),
+                                item.toString(),
+                                Toast.LENGTH_LONG).show();
+                        return true;
+                    }
+                });
+                menu.show();
+            }
+        });
         mApply = (ImageView) v.findViewById(R.id.apply);
         mApply.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

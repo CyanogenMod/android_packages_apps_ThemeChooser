@@ -56,7 +56,7 @@ public class ThemeViewPager extends ViewPager {
         if (!mExpanded && isEnabled()  && !mIsAnimating)  {
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    intercept = !isTouchingApplyButton(ev);
+                    intercept = !isTouching(R.id.apply, ev) && !isTouching(R.id.overflow, ev);
                     break;
             }
         }
@@ -64,20 +64,20 @@ public class ThemeViewPager extends ViewPager {
         return intercept;
     }
 
-    private boolean isTouchingApplyButton(MotionEvent ev) {
+    private boolean isTouching(int viewId, MotionEvent ev) {
         int x = (int) ev.getRawX();
         int y = (int) ev.getRawY();
         View v = getViewForPosition(getCurrentItem());
-        View apply = v.findViewById(R.id.apply);
-        if (apply == null) return false;
+        View touchedView = v.findViewById(viewId);
+        if (touchedView == null) return false;
 
         int location[] = new int[2];
-        apply.getLocationOnScreen(location);
+        touchedView.getLocationOnScreen(location);
         int viewX = location[0];
         int viewY = location[1];
 
-        if((x > viewX && x < (viewX + apply.getWidth())) &&
-                ( y > viewY && y < (viewY + apply.getHeight()))){
+        if((x > viewX && x < (viewX + touchedView.getWidth())) &&
+                ( y > viewY && y < (viewY + touchedView.getHeight()))){
             return true;
         } else {
             return false;

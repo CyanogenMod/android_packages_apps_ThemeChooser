@@ -35,6 +35,15 @@
     <style name="ThemeChooserV2Theme" parent="@android:style/Theme.NoTitleBar">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:popupMenuStyle">@style/popupMenuStyle</item>
+
+    </style>
+
+    <!-- For the overflow popup window -->
+    <style name="popupMenuStyle" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">
+            @*android:drawable/menu_dropdown_panel_holo_light
+        </item>
     </style>
 
     <!-- ActionBar title text -->

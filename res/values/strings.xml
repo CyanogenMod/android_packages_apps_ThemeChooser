@@ -96,4 +96,7 @@
     <string name="style_label">Controls</string>
     <string name="boot_animation_label">Boot animation</string>
 
+    <string name="menu_author_info">Author</string>
+    <string name="menu_delete">Delete</string>
+
 </resources>
