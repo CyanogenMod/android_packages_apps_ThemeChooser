@@ -190,7 +190,6 @@ public class ComponentSelector extends LinearLayout
             mAppliedComponentPkgName = null;
         }
         if (mComponentType == null || !mComponentType.equals(component)){
-            mPager.setCurrentItem(0);
             mAdapter.swapCursor(null);
         }
         mComponentType = component;
@@ -475,6 +474,7 @@ public class ComponentSelector extends LinearLayout
         public void swapCursor(Cursor c) {
             mCursor = c;
             notifyDataSetChanged();
+            mPager.setCurrentItem(0, false);
         }
 
         public Cursor getCursor() {
