@@ -38,6 +38,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +108,7 @@ public class ComponentSelector extends LinearLayout
     private OnOpenCloseListener mOpenCloseListener;
 
     private MediaPlayer mMediaPlayer;
+    private ImageView mCurrentPlayPause;
 
     public ComponentSelector(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -682,7 +684,7 @@ public class ComponentSelector extends LinearLayout
                 v.setTag(cursor.getString(pkgNameIndex));
                 v.setOnClickListener(mItemClickListener);
                 parent.addView(v, mSoundItemParams);
-                View playButton = v.findViewById(R.id.play_button);
+                final View playButton = v.findViewById(R.id.play_button);
                 playButton.setTag(cursor.getString(pkgNameIndex));
                 playButton.setOnClickListener(new OnClickListener() {
                     @Override
@@ -696,15 +698,26 @@ public class ComponentSelector extends LinearLayout
                         } else {
                             type = RingtoneManager.TYPE_ALARM;
                         }
+                        boolean shouldStop = playButton == mCurrentPlayPause;
                         try {
                             if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
                                 mMediaPlayer.stop();
+                                if (mCurrentPlayPause != null) {
+                                    mCurrentPlayPause.setImageResource(
+                                            R.drawable.media_sound__selector_preview);
+                                }
+                                mCurrentPlayPause = null;
                             }
-                            AudioUtils.loadThemeAudible(mContext, type, pkgName,
-                                    mMediaPlayer);
-                            mMediaPlayer.start();
+                            if (mCurrentPlayPause != playButton && !shouldStop) {
+                                AudioUtils.loadThemeAudible(mContext, type, pkgName,
+                                        mMediaPlayer);
+                                mMediaPlayer.start();
+                                mCurrentPlayPause = (ImageView) playButton;
+                                mCurrentPlayPause.setImageResource(
+                                        R.drawable.media_sound__selector_stop);
+                            }
                         } catch (PackageManager.NameNotFoundException e) {
-                            e.printStackTrace();
+                            Log.w(TAG, "Unable to play preview sound", e);
                         }
                     }
                 });
