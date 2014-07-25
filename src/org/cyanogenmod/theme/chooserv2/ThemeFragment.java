@@ -15,7 +15,10 @@
  */
 package org.cyanogenmod.theme.chooserv2;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.IntEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
@@ -175,6 +178,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private ScrollView mScrollView;
     private ViewGroup mScrollContent;
     private ViewGroup mPreviewContent; // Contains icons, font, nav/status etc. Not wallpaper
+    private View mLoadingView;
 
     //Status Bar Views
     private ImageView mBluetooth;
@@ -286,6 +290,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mScrollView = (ScrollView) v.findViewById(android.R.id.list);
         mScrollContent = (ViewGroup) mScrollView.getChildAt(0);
         mPreviewContent = (ViewGroup) v.findViewById(R.id.preview_container);
+        mLoadingView = v.findViewById(R.id.loading_view);
 
         // Status Bar
         mStatusBar = (ViewGroup) v.findViewById(R.id.status_bar);
@@ -1065,6 +1070,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loadTitle(c);
                 loadFont(c, false);
                 loadAndRemoveAdditionalCards(c);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        animateContentIn();
+                    }
+                });
                 break;
             case LOADER_ID_STATUS_BAR:
                 loadStatusBar(c, true);
@@ -1101,6 +1112,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 break;
         }
     }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {}
 
     private void loadAndRemoveAdditionalCards(Cursor c) {
         LinkedList<View> removeList = new LinkedList<View>();
@@ -1193,9 +1207,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         String pkg = mSelectedComponentsMap.get(component);
         return pkg != null && pkg.equals(mPkgName);
     }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {}
 
     private void loadTitle(Cursor c) {
         if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
@@ -1738,6 +1749,32 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 .setInterpolator(new AccelerateInterpolator())
                 .start();
         mProgress.startAnimation(scaleAnim);
+    }
+
+    private void animateContentIn() {
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(ANIMATE_TITLE_IN_DURATION);
+        set.play(ObjectAnimator.ofFloat(mLoadingView, "alpha", 1f, 0f))
+                .with(ObjectAnimator.ofFloat(mTitleLayout, "alpha", 0f, 1f));
+        set.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mLoadingView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        set.start();
     }
 
     public void fadeInCards() {
