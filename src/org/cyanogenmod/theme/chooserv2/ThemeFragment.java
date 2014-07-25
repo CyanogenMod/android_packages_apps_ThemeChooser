@@ -1880,12 +1880,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             super.onPostExecute(isSuccess);
             if (isSuccess && mAutoStart) {
                 mBootAnim.start();
-                mScrollView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mScrollView.fullScroll(View.FOCUS_DOWN);
-                    }
-                }, 10);
             }
         }
     }
