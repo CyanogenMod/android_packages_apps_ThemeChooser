@@ -59,7 +59,7 @@ public class ComponentCardView extends LinearLayout {
                 (int) r.getDimension(R.dimen.card_padding_bottom) + getPaddingBottom();
     }
 
-    public void expand() {
+    public void expand(boolean showLabel) {
         TransitionDrawable bg = null;
         if (getBackground() instanceof TransitionDrawable) {
             bg = (TransitionDrawable) getBackground();
@@ -72,7 +72,7 @@ public class ComponentCardView extends LinearLayout {
         setPadding(mExpandPadLeft, mExpandPadTop, mExpandPadRight, mExpandPadBottom);
 
         if (mLabel != null) {
-            mLabel.setAlpha(1f);
+            mLabel.setAlpha(showLabel ? 1f : 0f);
             mLabel.setVisibility(View.VISIBLE);
         }
     }
@@ -82,7 +82,8 @@ public class ComponentCardView extends LinearLayout {
             TransitionDrawable background = (TransitionDrawable) getBackground();
             if (mLabel != null) {
                 mLabel.setVisibility(View.VISIBLE);
-                mLabel.animate().alpha(1f).setDuration(CARD_FADE_DURATION);
+                mLabel.setAlpha(0f);
+                mLabel.animate().alpha(1f).setDuration(CARD_FADE_DURATION).start();
             }
             background.startTransition(CARD_FADE_DURATION);
         }

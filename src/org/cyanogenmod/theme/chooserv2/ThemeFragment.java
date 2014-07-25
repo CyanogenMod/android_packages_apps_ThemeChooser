@@ -462,7 +462,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
 
             child.setLayoutParams(lparams);
-            child.expand();
+            child.expand(false);
         }
 
         // Expand the additional children.
@@ -472,7 +472,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (v instanceof ComponentCardView) {
                 ComponentCardView card = (ComponentCardView) v;
                 card.setVisibility(View.VISIBLE);
-                card.expand();
+                card.expand(true);
             }
         }
 

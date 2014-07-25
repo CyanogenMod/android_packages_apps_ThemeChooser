@@ -56,7 +56,7 @@ public class WallpaperCardView extends ComponentCardView {
     }
 
     @Override
-    public void expand() {
+    public void expand(boolean showLabel) {
         // Do nothing
     }
 
