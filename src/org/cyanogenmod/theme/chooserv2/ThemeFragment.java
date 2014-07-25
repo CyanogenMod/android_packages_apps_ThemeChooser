@@ -161,6 +161,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static ComponentName[] sIconComponents;
 
+    private static TypefaceHelperCache sTypefaceHelperCache;
+
     /**
      * Maps the card's resource ID to a theme component
      */
@@ -233,6 +235,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
 
     static ThemeFragment newInstance(String pkgName) {
+        if (sTypefaceHelperCache == null) {
+            sTypefaceHelperCache = TypefaceHelperCache.getInstance();
+        }
         ThemeFragment f = new ThemeFragment();
         Bundle args = new Bundle();
         args.putString("pkgName", pkgName);
@@ -246,14 +251,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final Context context = getActivity();
         mPkgName = getArguments().getString("pkgName");
-        mBatteryStyle = Settings.System.getInt(getActivity().getContentResolver(),
+        mBatteryStyle = Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_BATTERY, 0);
 
-        getIconComponents(getActivity());
-        ThemedTypefaceHelper helper = new ThemedTypefaceHelper();
-        helper.load(getActivity(), CURRENTLY_APPLIED_THEME.equals(mPkgName) ?
-                getAppliedFontPackageName() : mPkgName);
+        getIconComponents(context);
+        ThemedTypefaceHelper helper = sTypefaceHelperCache.getHelperForTheme(context,
+                CURRENTLY_APPLIED_THEME.equals(mPkgName) ? getAppliedFontPackageName() : mPkgName);
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
 
         mHandler = new Handler();
