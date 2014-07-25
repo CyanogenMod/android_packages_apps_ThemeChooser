@@ -360,6 +360,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 applyTheme();
             }
         });
+        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
+            mApply.setVisibility(View.GONE);
+        }
 
         // Additional cards which should hang out offscreen until expanded
         mAdditionalCards = (LinearLayout) v.findViewById(R.id.additional_cards);

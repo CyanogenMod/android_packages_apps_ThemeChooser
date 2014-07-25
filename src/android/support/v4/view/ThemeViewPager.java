@@ -69,7 +69,10 @@ public class ThemeViewPager extends ViewPager {
         int y = (int) ev.getRawY();
         View v = getViewForPosition(getCurrentItem());
         View touchedView = v.findViewById(viewId);
-        if (touchedView == null) return false;
+        if (touchedView == null ||
+                touchedView.getVisibility() != View.VISIBLE) {
+            return false;
+        }
 
         int location[] = new int[2];
         touchedView.getLocationOnScreen(location);
