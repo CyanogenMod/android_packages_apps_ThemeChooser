@@ -1061,6 +1061,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             case LOADER_ID_APPLIED:
                 getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
                 populateCurrentTheme(c);
+                getLoaderManager().destroyLoader(LOADER_ID_APPLIED);
+                break;
         }
     }
 
