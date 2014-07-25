@@ -158,7 +158,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final int LOADER_ID_RINGTONE = 9;
     private static final int LOADER_ID_NOTIFICATION = 10;
     private static final int LOADER_ID_ALARM = 11;
-    private static final int LOADER_ID_APPLIED = 20;
 
     private static ComponentName[] sIconComponents;
 
@@ -373,7 +372,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int translationY = getDistanceToMoveBelowScreen(mAdditionalCards);
         mAdditionalCards.setTranslationY(translationY);
 
-        getLoaderManager().initLoader(LOADER_ID_APPLIED, null, this);
+        getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
 
         initCards(v);
 
@@ -1044,13 +1043,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         ThemesColumns.TITLE
                 };
                 break;
-            case LOADER_ID_APPLIED:
-                //TODO: Mix n match query should only be done once
-                uri = ThemesContract.MixnMatchColumns.CONTENT_URI;
-                projection = null;
-                selection = null;
-                selectionArgs = null;
-                break;
         }
         return new CursorLoader(getActivity(), uri, projection, selection, selectionArgs, null);
     }
@@ -1101,11 +1093,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 break;
             case LOADER_ID_ALARM:
                 loadAudible(RingtoneManager.TYPE_ALARM, c, true);
-                break;
-            case LOADER_ID_APPLIED:
-                getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
-                populateCurrentTheme(c);
-                getLoaderManager().destroyLoader(LOADER_ID_APPLIED);
                 break;
         }
     }
@@ -1184,18 +1171,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
         if (!mSelectedComponentsMap.containsKey(MODIFIES_BOOT_ANIM)) {
             mBootAnimation = null;
-        }
-    }
-
-    private void populateCurrentTheme(Cursor c) {
-        c.moveToPosition(-1);
-        while(c.moveToNext()) {
-            int mixkeyIdx = c.getColumnIndex(ThemesContract.MixnMatchColumns.COL_KEY);
-            int pkgIdx = c.getColumnIndex(ThemesContract.MixnMatchColumns.COL_VALUE);
-            String mixkey = c.getString(mixkeyIdx);
-            String component = ThemesContract.MixnMatchColumns.mixNMatchKeyToComponent(mixkey);
-            String pkg = c.getString(pkgIdx);
-            mCurrentTheme.put(component, pkg);
         }
     }
 
@@ -1804,6 +1779,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public boolean isUninstalled() {
         return mIsUninstalled;
+    }
+
+    public void setCurrentTheme(Map<String, String> currentTheme) {
+        mCurrentTheme = currentTheme;
     }
 
     class AnimationLoader extends AsyncTask<Void, Void, Boolean> {

@@ -20,9 +20,11 @@ import android.content.res.Resources;
 import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ThemesContract;
 import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -44,6 +46,9 @@ import org.cyanogenmod.theme.chooserv2.ComponentSelector.OnOpenCloseListener;
 import org.cyanogenmod.theme.util.TypefaceHelperCache;
 import org.cyanogenmod.theme.util.Utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
@@ -59,6 +64,9 @@ public class ChooserActivity extends FragmentActivity
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
 
+    private static final int LOADER_ID_INSTALLED_THEMES = 1000;
+    private static final int LOADER_ID_APPLIED = 1001;
+
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
     private Button mEdit;
@@ -72,6 +80,9 @@ public class ChooserActivity extends FragmentActivity
     private TypefaceHelperCache mTypefaceHelperCache;
     private boolean mIsAnimating;
     private Handler mHandler;
+
+    // Current system theme configuration as component -> pkgName
+    private Map<String, String> mCurrentTheme = new HashMap<String, String>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +129,7 @@ public class ChooserActivity extends FragmentActivity
         mSelector.setOnOpenCloseListener(mOpenCloseListener);
 
         mService = (ThemeManager) getSystemService(Context.THEME_SERVICE);
-        getSupportLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
 
         mSaveApplyLayout = findViewById(R.id.save_apply_layout);
         if (!Utils.hasNavigationBar(this)) {
@@ -256,6 +267,7 @@ public class ChooserActivity extends FragmentActivity
     protected void onResume() {
         super.onResume();
         mService.onClientResumed(this);
+        getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
     }
 
     @Override
@@ -347,32 +359,70 @@ public class ChooserActivity extends FragmentActivity
         return (ThemeFragment) mAdapter.instantiateItem(mPager, mPager.getCurrentItem());
     }
 
+    private void populateCurrentTheme(Cursor c) {
+        c.moveToPosition(-1);
+        while(c.moveToNext()) {
+            int mixkeyIdx = c.getColumnIndex(ThemesContract.MixnMatchColumns.COL_KEY);
+            int pkgIdx = c.getColumnIndex(ThemesContract.MixnMatchColumns.COL_VALUE);
+            String mixkey = c.getString(mixkeyIdx);
+            String component = ThemesContract.MixnMatchColumns.mixNMatchKeyToComponent(mixkey);
+            String pkg = c.getString(pkgIdx);
+            mCurrentTheme.put(component, pkg);
+        }
+    }
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // Swap the new cursor in. (The framework will take care of closing the
-        // old cursor once we return.)
-        mAdapter.swapCursor(data);
-        mAdapter.notifyDataSetChanged();
+        switch (loader.getId()) {
+            case LOADER_ID_INSTALLED_THEMES:
+                // Swap the new cursor in. (The framework will take care of closing the
+                // old cursor once we return.)
+                mAdapter.swapCursor(data);
+                mAdapter.notifyDataSetChanged();
+                break;
+            case LOADER_ID_APPLIED:
+                getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null, this);
+                populateCurrentTheme(data);
+                break;
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-        mAdapter.notifyDataSetChanged();
+        switch (loader.getId()) {
+            case LOADER_ID_INSTALLED_THEMES:
+                mAdapter.swapCursor(null);
+                mAdapter.notifyDataSetChanged();
+                break;
+        }
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String selection;
+        String selection = null;
         String selectionArgs[] = null;
-        selection = ThemesColumns.PRESENT_AS_THEME + "=?";
-        selectionArgs = new String[] {"1"};
+        String sortOrder = null;
+        Uri contentUri = null;
 
-        // sort in ascending order but make sure the "default" theme is always first
-        String sortOrder = "(" + ThemesColumns.IS_DEFAULT_THEME + "=1) DESC, "
-                + ThemesColumns.TITLE + " ASC";
+        switch (id) {
+            case LOADER_ID_INSTALLED_THEMES:
+                selection = ThemesColumns.PRESENT_AS_THEME + "=?";
+                selectionArgs = new String[] { "1" };
+                // sort in ascending order but make sure the "default" theme is always first
+                sortOrder = "(" + ThemesColumns.IS_DEFAULT_THEME + "=1) DESC, "
+                        + ThemesColumns.TITLE + " ASC";
+                contentUri = ThemesColumns.CONTENT_URI;
+                break;
+            case LOADER_ID_APPLIED:
+                //TODO: Mix n match query should only be done once
+                contentUri = ThemesContract.MixnMatchColumns.CONTENT_URI;
+                selection = null;
+                selectionArgs = null;
+                break;
+        }
 
-        return new CursorLoader(this, ThemesColumns.CONTENT_URI, null, selection,
+
+        return new CursorLoader(this, contentUri, null, selection,
                 selectionArgs, sortOrder);
     }
 
@@ -405,7 +455,9 @@ public class ChooserActivity extends FragmentActivity
                 int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
                 pkgName = mCursor.getString(pkgIdx);
             }
-            return ThemeFragment.newInstance(pkgName);
+            ThemeFragment f = ThemeFragment.newInstance(pkgName);
+            f.setCurrentTheme(mCurrentTheme);
+            return f;
         }
 
         @Override
