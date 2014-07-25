@@ -103,25 +103,25 @@
                 android:layout_below="@id/shadow_frame"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/card_themepreview_bg">
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/title_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                     <TextView
                         android:id="@+id/title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
+                        android:layout_weight="1"
                         android:layout_marginStart="16dp"
-                        android:gravity="center"
+                        android:gravity="center_vertical"
                         android:ellipsize="end"
+                        android:singleLine="true"
                         android:textColor="#78000000"/>
 
                     <ImageView
                         android:id="@+id/apply"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_toLeftOf="@+id/overflow"
                         android:layout_marginRight="16dp"
                         android:src="@drawable/ic_theme_apply2"/>
 
@@ -129,10 +129,9 @@
                         android:id="@+id/overflow"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
                         android:layout_marginRight="8dp"
                         android:src="@drawable/ic_overflow_dark"/>
-                </RelativeLayout>
+                </LinearLayout>
                 <ProgressBar
                     android:id="@+id/apply_progress"
                     android:layout_width="match_parent"
