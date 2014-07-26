@@ -172,6 +172,7 @@ public class ComponentSelector extends LinearLayout
         if (!Utils.hasNavigationBar(mContext)) {
             findViewById(R.id.navbar_padding).setVisibility(View.GONE);
         }
+        setEnabled(false);
     }
 
     public void setComponentType(String component) {
@@ -226,13 +227,15 @@ public class ComponentSelector extends LinearLayout
 
     public void show() {
         if (getVisibility() == View.GONE) {
+            setEnabled(true);
             setVisibility(View.VISIBLE);
             startAnimation(mAnimateIn);
         }
     }
 
     public void hide() {
-        if (getVisibility() == View.VISIBLE) {
+        if (getVisibility() == View.VISIBLE && isEnabled()) {
+            setEnabled(false);
             startAnimation(mAnimateOut);
         }
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) mMediaPlayer.stop();

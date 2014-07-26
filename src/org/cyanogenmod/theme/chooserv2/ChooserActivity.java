@@ -272,7 +272,7 @@ public class ChooserActivity extends FragmentActivity
 
     @Override
     public void onBackPressed() {
-        if (mSelector.getVisibility() == View.VISIBLE) {
+        if (mSelector.isEnabled()) {
             mSelector.hide();
             if (mContainerYOffset != 0) {
                 slideContentDown(mContainerYOffset);
