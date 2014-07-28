@@ -18,6 +18,7 @@ package org.cyanogenmod.theme.widget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
@@ -65,6 +66,17 @@ public class BootAniImageView extends ImageView {
             if (mBootAniZip != null) start();
         } else {
             stop();
+        }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        // In case we end up in the mid dle of onDraw while the buffers are being recycled
+        // we catch the exception and just let frame not be rendered.
+        try {
+            super.onDraw(canvas);
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Unable to draw boot animation frame.");
         }
     }
 
