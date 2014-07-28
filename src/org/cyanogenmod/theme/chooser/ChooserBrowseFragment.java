@@ -27,7 +27,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
-import android.content.res.CustomTheme;
+import android.content.res.ThemeConfig;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -80,7 +80,7 @@ import java.util.List;
 public class ChooserBrowseFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String TAG = ChooserBrowseFragment.class.getCanonicalName();
-    public static final String DEFAULT = CustomTheme.HOLO_DEFAULT;
+    public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
 
     private static final String THEME_STORE_PACKAGE_NAME = "com.cyngn.theme.store";
     private static final String GET_THEMES_URL =

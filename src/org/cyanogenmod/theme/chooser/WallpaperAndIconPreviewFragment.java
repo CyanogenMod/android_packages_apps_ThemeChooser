@@ -24,7 +24,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
-import android.content.res.CustomTheme;
+import android.content.res.ThemeConfig;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -63,7 +63,7 @@ public class WallpaperAndIconPreviewFragment extends Fragment
     private static final ComponentName COMPONENT_CAMERANEXT =
             new ComponentName("com.cyngn.cameranext", "com.android.camera.CameraLauncher");
     private static final ComponentName COMPONENT_CAMERA =
-            new ComponentName("com.android.camera2", "com.android.camera.CameraActivity");
+            new ComponentName("com.android.camera2", "com.android.camera.CameraLauncher");
     private static final ComponentName COMPONENT_BROWSER =
             new ComponentName("com.android.browser", "com.android.browser.BrowserActivity");
     private static final ComponentName COMPONENT_SETTINGS =
@@ -258,7 +258,7 @@ public class WallpaperAndIconPreviewFragment extends Fragment
                 return loadLegacyImage();
             }
 
-            if (CustomTheme.HOLO_DEFAULT.equals(mPkgName)) {
+            if (ThemeConfig.HOLO_DEFAULT.equals(mPkgName)) {
                 Resources res = getContext().getResources();
                 AssetManager assets = new AssetManager();
                 assets.addAssetPath(FRAMEWORK_RES);
