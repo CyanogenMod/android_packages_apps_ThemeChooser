@@ -27,7 +27,6 @@ import android.content.res.AssetManager;
 import android.content.res.ThemeConfig;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
@@ -227,10 +226,10 @@ public class WallpaperAndIconPreviewFragment extends Fragment
     };
 
     public static class ImageLoader extends AsyncTaskLoader<Bitmap> {
-        private String mPkgName;
-        private boolean mIsLegacyTheme;
-        private String mImageUrl;
-        private Point mDisplaySize = new Point();
+        private final String mPkgName;
+        private final boolean mIsLegacyTheme;
+        private final String mImageUrl;
+        private final Point mDisplaySize = new Point();
 
         public ImageLoader(Context context, boolean isLegacyTheme, String pkgName, String imageUrl) {
             super(context);
@@ -264,14 +263,15 @@ public class WallpaperAndIconPreviewFragment extends Fragment
                 assets.addAssetPath(FRAMEWORK_RES);
                 Resources frameworkRes = new Resources(assets, res.getDisplayMetrics(),
                         res.getConfiguration());
-                bitmap = BitmapFactory.decodeResource(frameworkRes,
-                        com.android.internal.R.drawable.default_wallpaper);
+                bitmap = Utils.decodeResource(frameworkRes,
+                        com.android.internal.R.drawable.default_wallpaper, mDisplaySize.x,
+                        mDisplaySize.y);
             } else {
                 if (URLUtil.isAssetUrl(mImageUrl)) {
                     bitmap = Utils.getBitmapFromAsset(getContext(), mImageUrl, mDisplaySize.x,
                             mDisplaySize.y);
                 } else {
-                    bitmap = BitmapFactory.decodeFile(mImageUrl);
+                    bitmap = Utils.decodeFile(mImageUrl, mDisplaySize.x, mDisplaySize.y);
                 }
             }
             return bitmap;
@@ -285,7 +285,8 @@ public class WallpaperAndIconPreviewFragment extends Fragment
                 final Context themeContext = getContext().createPackageContext(mPkgName,
                         Context.CONTEXT_IGNORE_SECURITY);
                 final Resources res = themeContext.getResources();
-                bitmap = BitmapFactory.decodeResource(res, pi.legacyThemeInfos[0].previewResourceId);
+                bitmap = Utils.decodeResource(res, pi.legacyThemeInfos[0].previewResourceId,
+                        mDisplaySize.x, mDisplaySize.y);
             } catch (PackageManager.NameNotFoundException e) {
                 bitmap = null;
             }
