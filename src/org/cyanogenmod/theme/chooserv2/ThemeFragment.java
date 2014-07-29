@@ -626,7 +626,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         endY = v.getY();
                         prevHeight = v.getHeight();
                         endHeight = v.getHeight();
-                    s} else {
+                    } else {
                         Rect boundary = prevBounds.get(i);
                         prevY = boundary.top;
                         prevHeight = boundary.height();
