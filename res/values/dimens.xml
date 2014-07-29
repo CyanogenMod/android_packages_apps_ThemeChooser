@@ -47,6 +47,7 @@
     <dimen name="collapsed_navbar_card_margin_top">25dp</dimen>
     <dimen name="expanded_card_margin_top">16dp</dimen>
     <dimen name="wallpaper_card_height">168dp</dimen>
+    <dimen name="title_card_height">48dp</dimen>
 
     <!-- This is a hack. The viewpager needs to expand horizontally
      when a theme is going to be mix'n'matched in order to fit the larger padded theme cards.

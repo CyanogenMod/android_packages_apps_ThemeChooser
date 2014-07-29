@@ -106,14 +106,14 @@
             <FrameLayout
                 android:id="@+id/title_card"
                 android:layout_width="@dimen/theme_preview_width"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/shadow_frame"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/card_themepreview_bg">
                 <LinearLayout
                     android:id="@+id/title_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/title_card_height"
                     android:alpha="0">
                     <TextView
                         android:id="@+id/title"
