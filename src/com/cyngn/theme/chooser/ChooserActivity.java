@@ -16,6 +16,7 @@
 package com.cyngn.theme.chooser;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
@@ -34,6 +35,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ThemeViewPager;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
@@ -56,6 +58,7 @@ public class ChooserActivity extends FragmentActivity
         implements LoaderManager.LoaderCallbacks<Cursor>, ThemeManager.ThemeChangeListener {
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
     public static final int REQUEST_UNINSTALL = 1; // Request code
+    public static final String EXTRA_PKGNAME = "pkgName";
 
     private static final long SLIDE_CONTENT_ANIM_DURATION = 300L;
     private static final long MOVE_TO_MY_THEME_DELAY = 750L;
@@ -78,12 +81,18 @@ public class ChooserActivity extends FragmentActivity
     private boolean mIsAnimating;
     private Handler mHandler;
 
+    private String mSelectedTheme;
+
     // Current system theme configuration as component -> pkgName
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState == null) {
+            handleIntent(getIntent());
+        }
 
         mContainer = (PagerContainer) findViewById(R.id.pager_container);
         mPager = (ThemeViewPager) findViewById(R.id.viewpager);
@@ -159,6 +168,20 @@ public class ChooserActivity extends FragmentActivity
             public void onAnimationRepeat(Animation animation) {
             }
         });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasExtra(EXTRA_PKGNAME)) {
+            mSelectedTheme = intent.getStringExtra(EXTRA_PKGNAME);
+        } else {
+            mSelectedTheme = null;
+        }
     }
 
     private void setAnimatingStateAndScheduleFinish() {
@@ -362,8 +385,24 @@ public class ChooserActivity extends FragmentActivity
             case LOADER_ID_INSTALLED_THEMES:
                 // Swap the new cursor in. (The framework will take care of closing the
                 // old cursor once we return.)
+                int selectedThemeIndex = 0;
+                if (!TextUtils.isEmpty(mSelectedTheme)) {
+                    while(data.moveToNext()) {
+                        if (mSelectedTheme.equals(data.getString(
+                                data.getColumnIndex(ThemesColumns.PKG_NAME)))) {
+                            // we need to add one here since the first card is "My theme"
+                            selectedThemeIndex = data.getPosition() + 1;
+                            mSelectedTheme = null;
+                            break;
+                        }
+                    }
+                    data.moveToFirst();
+                }
                 mAdapter.swapCursor(data);
                 mAdapter.notifyDataSetChanged();
+                if (selectedThemeIndex != 0) {
+                    mPager.setCurrentItem(selectedThemeIndex, false);
+                }
                 break;
             case LOADER_ID_APPLIED:
                 getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null, this);
