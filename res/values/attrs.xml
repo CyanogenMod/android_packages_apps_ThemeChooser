@@ -16,27 +16,6 @@
 -->
 <resources>
 
-    <!-- Attributes for Sliding Panel -->
-    <declare-styleable name="SlidingUpPanelLayout">
-        <attr name="collapsedHeight" format="dimension" />
-        <attr name="shadowHeight" format="dimension" />
-        <attr name="fadeColor" format="color" />
-        <attr name="flingVelocity" format="integer" />
-        <attr name="dragView" format="reference" />
-        <attr name="startExpanded" format="boolean" />
-        <attr name="anchorPoint" format="float" />
-        <attr name="parallaxDistance" format="dimension" />
-    </declare-styleable>
-
-    <!-- Attributes for Drawer List -->
-    <declare-styleable name="DrawerItem">
-        <attr name="id" format="reference" />
-        <attr name="title" format="string" />
-        <attr name="icon" format="reference" />
-        <attr name="fragmentName" format="string" />
-        <attr name="component" format="string" />
-    </declare-styleable>
-
     <declare-styleable name="ComponentSelector">
         <attr name="itemsPerPage" format="integer"/>
     </declare-styleable>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.cyanogenmod.theme.chooser"
-    android:sharedUserId="org.cyanogenmod.themes"
+    package="com.cyngn.theme.chooser"
     android:versionCode="7"
     android:versionName="1.0" >
 
@@ -25,25 +24,10 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_app_themes"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:name="org.cyanogenmod.theme.chooser.ChooserActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="cyanogenmod.intent.category.APP_THEMES" />
-            </intent-filter>
-            <intent-filter >
-                <action android:name="android.intent.action.SET_WALLPAPER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name="org.cyanogenmod.theme.chooserv2.ChooserActivity"
+        android:theme="@style/ThemeChooserTheme" >
+        <activity android:name="com.cyngn.theme.chooser.ChooserActivity"
                   android:label="@string/app_name"
-                  android:theme="@style/ThemeChooserV2Theme"
+                  android:theme="@style/ThemeChooserTheme"
                   android:configChanges="themeChange"
                   android:launchMode="singleTop">
             <intent-filter>
@@ -52,7 +36,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="org.cyanogenmod.theme.chooser.AppReceiver" >
+        <receiver android:name="com.cyngn.theme.chooser.AppReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED" />
@@ -60,7 +44,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="org.cyanogenmod.theme.chooser.NotificationHijackingService"
+        <service android:name="com.cyngn.theme.chooser.NotificationHijackingService"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />

@@ -21,7 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import org.cyanogenmod.theme.chooser.R;
+import com.cyngn.theme.chooser.R;
 
 public class ThemeViewPager extends ViewPager {
     private boolean mExpanded;

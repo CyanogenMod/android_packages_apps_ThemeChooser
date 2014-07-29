@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.cyngn.theme.chooser.ComponentCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/navigation_bar_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/collapsed_navbar_card_margin_top"
+    android:orientation="vertical"
+    android:padding="0dp"
+    android:gravity="bottom"
+    android:background="@drawable/theme_component_bg_transition">
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        android:text="@string/navbar_label"
+        style="@style/card_label"/>
+
+    <LinearLayout
+        android:id="@+id/navigation_bar"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@*android:dimen/system_bar_height"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:background="#000">
+
+        <!-- Dummy view for padding -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="@dimen/navigation_button_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"/>
+
+        <ImageView
+            android:id="@+id/home_button"
+            android:layout_width="@dimen/navigation_button_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"/>
+
+        <ImageView
+            android:id="@+id/recent_button"
+            android:layout_width="@dimen/navigation_button_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"/>
+
+        <!-- Dummy view for padding -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+</com.cyngn.theme.chooser.ComponentCardView>

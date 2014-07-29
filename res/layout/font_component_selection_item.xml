@@ -5,7 +5,7 @@
     android:layout_height="@dimen/component_selection_cell_height"
     android:background="@drawable/component_selection_selector">
 
-    <org.cyanogenmod.theme.util.FittedTextView
+    <com.cyngn.theme.widget.FittedTextView
         android:id="@+id/text_preview"
         android:layout_width="@dimen/component_selection_content_width"
         android:layout_height="@dimen/component_selection_content_height"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<org.cyanogenmod.theme.chooserv2.ComponentSelector
+<com.cyngn.theme.chooser.ComponentSelector
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:themes="http://schemas.android.com/apk/res-auto"
     android:id="@+id/component_selector"
@@ -20,8 +20,7 @@
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="@dimen/component_selection_cell_height"
-            themes:itemsPerPage="4"
-            />
+            themes:itemsPerPage="4"/>
 
         <com.viewpagerindicator.CirclePageIndicator
             android:id="@+id/page_indicator"
@@ -40,4 +39,4 @@
         android:id="@+id/navbar_padding"
         android:layout_width="match_parent"
         android:layout_height="@*android:dimen/system_bar_height"/>
-</org.cyanogenmod.theme.chooserv2.ComponentSelector>
+</com.cyngn.theme.chooser.ComponentSelector>

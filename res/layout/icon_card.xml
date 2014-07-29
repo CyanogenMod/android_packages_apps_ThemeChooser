@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.cyngn.theme.chooser.ComponentCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/icon_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="0dp"
+    android:layout_marginTop="@dimen/collapsed_icon_card_margin_top"
+    android:background="@drawable/theme_component_bg_transition">
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        android:text="@string/icon_label"
+        style="@style/card_label"/>
+    <LinearLayout
+        android:id="@+id/icon_preview_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/comp_icon1"
+            />
+        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/comp_icon2"
+            />
+        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/comp_icon3"
+            />
+        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
+    </LinearLayout>
+</com.cyngn.theme.chooser.ComponentCardView>

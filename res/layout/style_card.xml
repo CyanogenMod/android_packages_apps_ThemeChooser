@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.cyngn.theme.chooser.ComponentCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/style_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/card_bg">
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:text="@string/style_label"
+        style="@style/card_label"/>
+    <ImageView
+        android:id="@+id/style_preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:gravity="center"/>
+</com.cyngn.theme.chooser.ComponentCardView>

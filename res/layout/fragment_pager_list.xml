@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:themes="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingStart="@dimen/collapsed_theme_page_padding"
+              android:paddingEnd="@dimen/collapsed_theme_page_padding">
+    <ScrollView android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="@dimen/collapsed_theme_page_padding_top"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:divider="@null"
+                android:scrollbars="none"
+                android:fillViewport="true"
+                android:drawSelectorOnTop="false">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <FrameLayout
+                android:id="@+id/shadow_frame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_themepreview_shadow">
+                <ImageView
+                    android:id="@+id/wallpaper"
+                    android:layout_width="@dimen/wallpaper_preview_width"
+                    android:layout_height="@dimen/theme_preview_height"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop"
+                    />
+                <LinearLayout
+                    android:id="@+id/preview_container"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/theme_preview_height">
+                    <include layout="@layout/status_bar_card"/>
+                    <include layout="@layout/font_card"/>
+                    <include layout="@layout/icon_card"/>
+                    <include layout="@layout/navbar_card"/>
+                </LinearLayout>
+                <ImageView
+                    android:id="@+id/loading_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_loading_placeholder"
+                    android:background="@android:color/white"/>
+            </FrameLayout>
+
+            <!--  Each card in this layout should have a Space below it
+                  with one final Space for devices that have a navbar -->
+            <LinearLayout
+                android:id="@+id/additional_cards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/shadow_frame"
+                android:layout_marginTop="@dimen/expanded_card_margin_top"
+                android:visibility="invisible">
+                <com.cyngn.theme.chooser.WallpaperCardView
+                    android:id="@+id/wallpaper_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/wallpaper_card_height"
+                    themes:labelText="@string/wallpaper_label"
+                    />
+                <Space android:layout_width="match_parent"
+                       android:layout_height="@dimen/expanded_card_margin_top" />
+                <com.cyngn.theme.chooser.WallpaperCardView
+                    android:id="@+id/lockscreen_card"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/wallpaper_card_height"
+                    android:layout_below="@id/wallpaper_card"
+                    themes:labelText="@string/lockscreen_label"
+                    />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include layout="@layout/style_card" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include
+                    android:id="@+id/ringtone_preview_container"
+                    layout="@layout/audible_card" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include
+                    android:id="@+id/notification_preview_container"
+                    layout="@layout/audible_card" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include
+                    android:id="@+id/alarm_preview_container"
+                    layout="@layout/audible_card" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include layout="@layout/bootanim_card"/>
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+
+                <Space android:id="@+id/nav_bar_spacer"
+                       android:layout_width="match_parent"
+                       android:layout_height="@*android:dimen/system_bar_height" />
+            </LinearLayout>
+            <FrameLayout
+                android:id="@+id/title_card"
+                android:layout_width="@dimen/theme_preview_width"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/shadow_frame"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/card_themepreview_bg">
+                <LinearLayout
+                    android:id="@+id/title_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/title_card_height"
+                    android:alpha="0">
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center_vertical"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:textColor="#78000000"/>
+
+                    <ImageView
+                        android:id="@+id/apply"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/ic_theme_apply2"/>
+
+                    <ImageView
+                        android:id="@+id/overflow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_overflow_dark"/>
+                </LinearLayout>
+                <ProgressBar
+                    android:id="@+id/apply_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical|right"
+                    android:padding="@dimen/apply_progress_padding"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/apply_progress_bar"
+                    android:visibility="gone"
+                    style="@android:style/Widget.ProgressBar.Horizontal"/>
+            </FrameLayout>
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>
