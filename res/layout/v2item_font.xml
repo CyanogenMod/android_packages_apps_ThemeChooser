@@ -4,7 +4,6 @@
     android:id="@+id/font_preview_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/status_bar_container"
     android:layout_marginTop="@dimen/collapsed_font_card_margin_top"
     android:orientation="vertical"
     android:padding="0dp"

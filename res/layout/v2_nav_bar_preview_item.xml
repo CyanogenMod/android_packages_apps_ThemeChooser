@@ -4,9 +4,10 @@
     android:id="@+id/navigation_bar_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
+    android:layout_marginTop="@dimen/collapsed_navbar_card_margin_top"
     android:orientation="vertical"
     android:padding="0dp"
+    android:gravity="bottom"
     android:background="@drawable/theme_component_bg_transition">
     <TextView
         android:id="@+id/label"

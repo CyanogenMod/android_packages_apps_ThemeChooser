@@ -31,15 +31,16 @@
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerCrop"
                     />
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/preview_container"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/theme_preview_height">
                     <include layout="@layout/v2_status_bar_preview_item"/>
                     <include layout="@layout/v2item_font"/>
                     <include layout="@layout/v2item_icon"/>
                     <include layout="@layout/v2_nav_bar_preview_item"/>
-                </RelativeLayout>
+                </LinearLayout>
                 <ImageView
                     android:id="@+id/loading_view"
                     android:layout_width="match_parent"

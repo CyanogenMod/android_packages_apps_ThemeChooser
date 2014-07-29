@@ -462,13 +462,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         for (int i = 0; i < mPreviewContent.getChildCount(); i++) {
             ComponentCardView child = (ComponentCardView) mPreviewContent.getChildAt(i);
 
-            RelativeLayout.LayoutParams lparams =
-                    (RelativeLayout.LayoutParams) child.getLayoutParams();
+            LinearLayout.LayoutParams lparams =
+                    (LinearLayout.LayoutParams) child.getLayoutParams();
             lparams.setMargins(0, top, 0, 0);
-            if (child.getId() == R.id.navigation_bar_container) {
-                lparams.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                lparams.addRule(RelativeLayout.BELOW, R.id.icon_container);
-            }
 
             child.setLayoutParams(lparams);
             child.expand(false);
@@ -564,20 +560,21 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         for (int i = 0; i < mPreviewContent.getChildCount(); i++) {
             ComponentCardView child = (ComponentCardView) mPreviewContent.getChildAt(i);
-            RelativeLayout.LayoutParams lparams =
-                    (RelativeLayout.LayoutParams) child.getLayoutParams();
+            LinearLayout.LayoutParams lparams =
+                    (LinearLayout.LayoutParams) child.getLayoutParams();
             lparams.setMargins(0, 0, 0, 0);
 
-            if (child.getId() == R.id.navigation_bar_container) {
-                lparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                lparams.removeRule(RelativeLayout.BELOW);
-            } else if (child.getId() == R.id.icon_container) {
+            if (child.getId() == R.id.icon_container) {
                 int top = (int) child.getResources()
                         .getDimension(R.dimen.collapsed_icon_card_margin_top);
                 lparams.setMargins(0, top, 0, 0);
             } else if (child.getId() == R.id.font_preview_container) {
                 int top = (int) child.getResources()
                         .getDimension(R.dimen.collapsed_font_card_margin_top);
+                lparams.setMargins(0, top, 0, 0);
+            } else if (child.getId() == R.id.navigation_bar_container) {
+                int top = (int) child.getResources()
+                        .getDimension(R.dimen.collapsed_navbar_card_margin_top);
                 lparams.setMargins(0, top, 0, 0);
             }
 
@@ -629,7 +626,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         endY = v.getY();
                         prevHeight = v.getHeight();
                         endHeight = v.getHeight();
-                    } else {
+                    s} else {
                         Rect boundary = prevBounds.get(i);
                         prevY = boundary.top;
                         prevHeight = boundary.height();
@@ -640,7 +637,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         endHeight = v.getHeight();
                     }
 
-                    int paddingTop = v.getPaddingTop();
+                    int paddingTop = v.getPaddingTop() / 2;
                     v.setTranslationY((prevY - endY - paddingTop) + (prevHeight - endHeight) / 2);
                     root.getOverlay().add(v);
 
