@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/component_selection_cell_height"
     android:background="@drawable/component_selection_selector">
@@ -12,14 +13,13 @@
         android:textColor="@android:color/white"
         android:text="@string/font_component_item_text"
         android:layout_marginTop="@dimen/component_margin_top"
-        android:layout_centerHorizontal="true"/>
+        android:layout_gravity="center_horizontal"/>
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/text_preview"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         style="@style/component_title"/>
 
-</RelativeLayout>
+</LinearLayout>
