@@ -735,6 +735,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int[] location = new int[2];
         mTitleCard.getLocationOnScreen(location);
         final int prevY = location[1];
+        final int position = parent.indexOfChild(mTitleCard);
 
         final ViewTreeObserver observer = mScrollContent.getViewTreeObserver();
         observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -764,13 +765,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         .withEndAction(new Runnable() {
                             public void run() {
                                 root.getOverlay().remove(mTitleCard);
-                                parent.addView(mTitleCard);
+                                parent.addView(mTitleCard, position);
                                 if (expand) {
-                                    mTitleCard.setVisibility(View.GONE);
-                                } else if (applyTheme) {
-                                    // since the title card is the last animation when collapsing
-                                    // we will handle applying the theme, if applicable, here
-                                    applyTheme();
+                                    mTitleCard.setVisibility(View.INVISIBLE);
+                                } else {
+                                    mTitleCard.setVisibility(View.VISIBLE);
+                                    if (applyTheme) {
+                                        // The title card is the last animation when collapsing so
+                                        // we will handle applying the theme, if applicable, here
+                                        applyTheme();
+                                    }
                                 }
                             }
                         });

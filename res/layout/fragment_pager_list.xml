@@ -16,8 +16,9 @@
                 android:scrollbars="none"
                 android:fillViewport="true"
                 android:drawSelectorOnTop="false">
-        <RelativeLayout
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <FrameLayout
                 android:id="@+id/shadow_frame"
@@ -49,66 +50,12 @@
                     android:background="@android:color/white"/>
             </FrameLayout>
 
-            <!--  Each card in this layout should have a Space below it
-                  with one final Space for devices that have a navbar -->
-            <LinearLayout
-                android:id="@+id/additional_cards"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_below="@id/shadow_frame"
-                android:layout_marginTop="@dimen/expanded_card_margin_top"
-                android:visibility="invisible">
-                <com.cyngn.theme.chooser.WallpaperCardView
-                    android:id="@+id/wallpaper_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/wallpaper_card_height"
-                    themes:labelText="@string/wallpaper_label"
-                    />
-                <Space android:layout_width="match_parent"
-                       android:layout_height="@dimen/expanded_card_margin_top" />
-                <com.cyngn.theme.chooser.WallpaperCardView
-                    android:id="@+id/lockscreen_card"
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/wallpaper_card_height"
-                    android:layout_below="@id/wallpaper_card"
-                    themes:labelText="@string/lockscreen_label"
-                    />
-                <Space android:layout_width="match_parent"
-                    android:layout_height="@dimen/expanded_card_margin_top" />
-                <include layout="@layout/style_card" />
-                <Space android:layout_width="match_parent"
-                    android:layout_height="@dimen/expanded_card_margin_top" />
-                <include
-                    android:id="@+id/ringtone_preview_container"
-                    layout="@layout/audible_card" />
-                <Space android:layout_width="match_parent"
-                    android:layout_height="@dimen/expanded_card_margin_top" />
-                <include
-                    android:id="@+id/notification_preview_container"
-                    layout="@layout/audible_card" />
-                <Space android:layout_width="match_parent"
-                    android:layout_height="@dimen/expanded_card_margin_top" />
-                <include
-                    android:id="@+id/alarm_preview_container"
-                    layout="@layout/audible_card" />
-                <Space android:layout_width="match_parent"
-                    android:layout_height="@dimen/expanded_card_margin_top" />
-                <include layout="@layout/bootanim_card"/>
-                <Space android:layout_width="match_parent"
-                    android:layout_height="@dimen/expanded_card_margin_top" />
-
-                <Space android:id="@+id/nav_bar_spacer"
-                       android:layout_width="match_parent"
-                       android:layout_height="@*android:dimen/system_bar_height" />
-            </LinearLayout>
+            <!-- Title card -->
             <FrameLayout
                 android:id="@+id/title_card"
                 android:layout_width="@dimen/theme_preview_width"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/shadow_frame"
-                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
                 android:background="@drawable/card_themepreview_bg">
                 <LinearLayout
                     android:id="@+id/title_layout"
@@ -153,6 +100,59 @@
                     android:visibility="gone"
                     style="@android:style/Widget.ProgressBar.Horizontal"/>
             </FrameLayout>
-        </RelativeLayout>
+
+            <!--  Each card in this layout should have a Space below it
+                  with one final Space for devices that have a navbar -->
+            <LinearLayout
+                android:id="@+id/additional_cards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/additional_cards_margin_top"
+                android:visibility="invisible">
+                <com.cyngn.theme.chooser.WallpaperCardView
+                    android:id="@+id/wallpaper_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/wallpaper_card_height"
+                    themes:labelText="@string/wallpaper_label"
+                    />
+                <Space android:layout_width="match_parent"
+                       android:layout_height="@dimen/expanded_card_margin_top" />
+                <com.cyngn.theme.chooser.WallpaperCardView
+                    android:id="@+id/lockscreen_card"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/wallpaper_card_height"
+                    themes:labelText="@string/lockscreen_label"
+                    />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include layout="@layout/style_card" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include
+                    android:id="@+id/ringtone_preview_container"
+                    layout="@layout/audible_card" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include
+                    android:id="@+id/notification_preview_container"
+                    layout="@layout/audible_card" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include
+                    android:id="@+id/alarm_preview_container"
+                    layout="@layout/audible_card" />
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+                <include layout="@layout/bootanim_card"/>
+                <Space android:layout_width="match_parent"
+                    android:layout_height="@dimen/expanded_card_margin_top" />
+
+                <Space android:id="@+id/nav_bar_spacer"
+                       android:layout_width="match_parent"
+                       android:layout_height="@*android:dimen/system_bar_height" />
+            </LinearLayout>
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -40,6 +40,7 @@
     <dimen name="collapsed_icon_card_margin_top">48dp</dimen>
     <dimen name="collapsed_navbar_card_margin_top">25dp</dimen>
     <dimen name="expanded_card_margin_top">16dp</dimen>
+    <dimen name="additional_cards_margin_top">-36dp</dimen>
     <dimen name="wallpaper_card_height">168dp</dimen>
     <dimen name="title_card_height">48dp</dimen>
 
