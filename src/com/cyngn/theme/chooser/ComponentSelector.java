@@ -153,6 +153,15 @@ public class ComponentSelector extends LinearLayout
             }
         });
         mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (mCurrentPlayPause != null) {
+                    mCurrentPlayPause.setImageResource(R.drawable.media_sound__selector_preview);
+                    mCurrentPlayPause = null;
+                }
+            }
+        });
     }
 
     @Override
