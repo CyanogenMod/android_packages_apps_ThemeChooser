@@ -20,7 +20,6 @@ import android.animation.AnimatorSet;
 import android.animation.IntEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -124,8 +123,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final int ANIMATE_PROGRESS_OUT_DURATION = 400;
     public static final int ANIMATE_TITLE_IN_DURATION = 500;
     public static final int REQUEST_UNINSTALL = 1; // Request code
-
-    protected static final String NAVIGATION_BAR_BACKGROUND = "navbar_background";
 
     public static final String CURRENTLY_APPLIED_THEME = "currently_applied_theme";
 
@@ -1327,7 +1324,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int backButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_BACK_BUTTON);
         int homeButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_HOME_BUTTON);
         int recentButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_RECENT_BUTTON);
-        int backgroundIdx = c.getColumnIndex(NAVIGATION_BAR_BACKGROUND);
+        int backgroundIdx = c.getColumnIndex(PreviewColumns.NAVBAR_BACKGROUND);
         if (backgroundIdx == -1) {
             backgroundIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
         }

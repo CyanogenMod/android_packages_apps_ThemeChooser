@@ -103,9 +103,7 @@ public class MyThemeFragment extends ThemeFragment {
                         PreviewColumns.ICON_PREVIEW_3,
                         PreviewColumns.LOCK_WALLPAPER_PREVIEW,
                         PreviewColumns.STYLE_PREVIEW,
-                        // TODO: add this to the ThemesContract if this
-                        // design moves beyond prototype
-                        NAVIGATION_BAR_BACKGROUND
+                        PreviewColumns.NAVBAR_BACKGROUND
                 };
                 uri = PreviewColumns.APPLIED_URI;
                 return new CursorLoader(getActivity(), uri, projection, null, null, null);
