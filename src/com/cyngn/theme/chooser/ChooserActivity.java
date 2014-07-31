@@ -41,7 +41,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
@@ -89,6 +88,7 @@ public class ChooserActivity extends FragmentActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        NotificationHijackingService.ensureEnabled(this);
 
         if (savedInstanceState == null) {
             handleIntent(getIntent());
