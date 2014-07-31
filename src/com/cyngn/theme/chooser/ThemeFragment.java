@@ -235,6 +235,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private Map<String, String> mSelectedComponentsMap = new HashMap<String, String>();
     // Current system theme configuration as component -> pkgName
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
+    private Cursor mCurrentCursor;
+    private int mCurrentLoaderId;
 
     static ThemeFragment newInstance(String pkgName) {
         ThemeFragment f = new ThemeFragment();
@@ -432,6 +434,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void expand() {
+        if (mCurrentLoaderId == LOADER_ID_ALL && mCurrentCursor != null) {
+            loadAndRemoveAdditionalCards(mCurrentCursor);
+            // we don't need this now that the additional cards are loaded, and
+            // we don't want to re-load these cards if the we expand again.
+            mCurrentCursor = null;
+        }
         // Full width and height!
         ViewGroup content = (ViewGroup) mScrollView.getParent();
         content.setPadding(0, 0, 0, 0);
@@ -1058,17 +1066,19 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
-        c.moveToFirst();
         if (c.getCount() == 0) return;
-        switch (loader.getId()) {
+        mCurrentCursor = c;
+        mCurrentLoaderId = loader.getId();
+        c.moveToFirst();
+        switch (mCurrentLoaderId) {
             case LOADER_ID_ALL:
                 populateSupportedComponents(c);
+                loadWallpaper(c, false);
                 loadStatusBar(c, false);
                 loadIcons(c, false);
                 loadNavBar(c, false);
                 loadTitle(c);
                 loadFont(c, false);
-                loadAndRemoveAdditionalCards(c);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -1098,7 +1108,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loadStyle(c, true);
                 break;
             case LOADER_ID_BOOT_ANIMATION:
-                loadBootAnimation(c, true);
+                loadBootAnimation(c);
                 break;
             case LOADER_ID_RINGTONE:
                 loadAudible(RingtoneManager.TYPE_RINGTONE, c, true);
@@ -1157,7 +1167,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         } else if (MODIFIES_OVERLAYS.equals(component)) {
             loadStyle(c, false);
         } else if (MODIFIES_BOOT_ANIM.equals(component)) {
-            loadBootAnimation(c, false);
+            loadBootAnimation(c);
         } else if (MODIFIES_RINGTONES.equals(component)) {
             loadAudible(RingtoneManager.TYPE_RINGTONE, c, false);
         } else if (MODIFIES_NOTIFICATIONS.equals(component)) {
@@ -1460,7 +1470,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void loadBootAnimation(Cursor c, boolean autoStart) {
+    private void loadBootAnimation(Cursor c) {
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         if (mBootAnimation != null) {
             String pkgName;
@@ -1471,7 +1481,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 pkgName = mCurrentTheme.get(MODIFIES_BOOT_ANIM);
             }
             mBootAnimation.stop();
-            new AnimationLoader(getActivity(), pkgName, mBootAnimation, autoStart).execute();
+            new AnimationLoader(getActivity(), pkgName, mBootAnimation).execute();
         }
     }
 
@@ -1832,18 +1842,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Context mContext;
         String mPkgName;
         BootAniImageView mBootAnim;
-        boolean mAutoStart;
 
         public AnimationLoader(Context context, String pkgName, BootAniImageView bootAnim) {
-            this(context, pkgName, bootAnim, false);
-        }
-
-        public AnimationLoader(Context context, String pkgName, BootAniImageView bootAnim,
-                boolean autoStart) {
             mContext = context;
             mPkgName = pkgName;
             mBootAnim = bootAnim;
-            mAutoStart = autoStart;
         }
 
         @Override
@@ -1900,7 +1903,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         @Override
         protected void onPostExecute(Boolean isSuccess) {
             super.onPostExecute(isSuccess);
-            if (isSuccess && mAutoStart) {
+            if (isSuccess) {
                 mBootAnim.start();
             }
         }
