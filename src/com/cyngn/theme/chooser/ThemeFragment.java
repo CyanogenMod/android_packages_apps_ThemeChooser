@@ -1777,12 +1777,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void fadeInCards() {
-        mActiveCardId = -1;
         for (int i = 0; i < mCardIdsToComponentTypes.size(); i++) {
-            ComponentCardView card = (ComponentCardView) getView().findViewById(
-                    mCardIdsToComponentTypes.keyAt(i));
-            if (card != null) card.animateCardFadeIn();
+            final int key = mCardIdsToComponentTypes.keyAt(i);
+            if (key != mActiveCardId) {
+                ComponentCardView card = (ComponentCardView) getView().findViewById(key);
+                if (card != null) card.animateCardFadeIn();
+            }
         }
+        mActiveCardId = -1;
     }
 
     public boolean componentsChanged() {
