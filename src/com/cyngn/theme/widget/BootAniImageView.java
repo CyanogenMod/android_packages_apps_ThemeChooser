@@ -116,6 +116,8 @@ public class BootAniImageView extends ImageView {
     }
 
     private void getNextFrame() {
+        if (mAnimationParts == null || mAnimationParts.size() == 0) return;
+
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inBitmap = mBuffers[mWriteBufferIndex];
         opts.inPreferredConfig = Bitmap.Config.RGB_565;
