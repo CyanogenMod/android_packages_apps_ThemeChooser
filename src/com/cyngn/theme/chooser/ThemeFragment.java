@@ -237,9 +237,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
 
     static ThemeFragment newInstance(String pkgName) {
-        if (sTypefaceHelperCache == null) {
-            sTypefaceHelperCache = TypefaceHelperCache.getInstance();
-        }
         ThemeFragment f = new ThemeFragment();
         Bundle args = new Bundle();
         args.putString("pkgName", pkgName);
@@ -259,6 +256,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 Settings.System.STATUS_BAR_BATTERY, 0);
 
         getIconComponents(context);
+        if (sTypefaceHelperCache == null) {
+            sTypefaceHelperCache = TypefaceHelperCache.getInstance();
+        }
         ThemedTypefaceHelper helper = sTypefaceHelperCache.getHelperForTheme(context,
                 CURRENTLY_APPLIED_THEME.equals(mPkgName) ? getAppliedFontPackageName() : mPkgName);
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
