@@ -1655,7 +1655,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (mCardIdsToComponentTypes.keyAt(i) != selectedCardId) {
                 ComponentCardView card = (ComponentCardView) getView().findViewById(
                         mCardIdsToComponentTypes.keyAt(i));
-                card.animateCardFadeOut();
+                if (card != null) card.animateCardFadeOut();
             }
         }
     }
@@ -1781,7 +1781,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         for (int i = 0; i < mCardIdsToComponentTypes.size(); i++) {
             ComponentCardView card = (ComponentCardView) getView().findViewById(
                     mCardIdsToComponentTypes.keyAt(i));
-            card.animateCardFadeIn();
+            if (card != null) card.animateCardFadeIn();
         }
     }
 
