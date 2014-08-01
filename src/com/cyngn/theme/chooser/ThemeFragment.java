@@ -75,6 +75,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -143,6 +144,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final ComponentName COMPONENT_GALERY =
             new ComponentName("com.android.gallery3d", "com.android.gallery3d.app.GalleryActivity");
     private static final String CAMERA_NEXT_PACKAGE = "com.cyngn.cameranext";
+
+    private static final int ADDITIONAL_CONTENT_SPACE_ID = 123456;
+    private static final long SLIDE_CONTENT_ANIM_DURATION = 300L;
 
     protected static final int LOADER_ID_ALL = 0;
     protected static final int LOADER_ID_STATUS_BAR = 1;
@@ -1745,6 +1749,76 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public void setCurrentTheme(Map<String, String> currentTheme) {
         mCurrentTheme = currentTheme;
+    }
+
+    /**
+     * Slides the scrollview content up and adds a space view at the bottom
+     * of mAdditionalCards so all content can be visible above the selector.
+     *
+     * We are using a ValueAnimator here to scroll the content rather than calling
+     * mScrollView.smoothScrollBy() since the speed of that animation cannot be customized.
+     * @param yDelta
+     * @param selectorHeight
+     */
+    public void slideContentUp(final int yDelta, int selectorHeight) {
+        Space space = new Space(getActivity());
+        space.setId(ADDITIONAL_CONTENT_SPACE_ID);
+        mAdditionalCards.addView(space, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, selectorHeight));
+        final int startY = mScrollView.getScrollY();
+        final ValueAnimator scrollAnimator =
+                ValueAnimator.ofInt(startY, startY + yDelta);
+        scrollAnimator.setDuration(SLIDE_CONTENT_ANIM_DURATION);
+        scrollAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (Integer) animation.getAnimatedValue();
+                mScrollView.scrollTo(0, value);
+            }
+        });
+        scrollAnimator.start();
+    }
+
+    /**
+     * Slides the scrollview content down and removes a space view at the bottom
+     * of mAdditionalCards.
+     *
+     * We are using a ValueAnimator here to scroll the content rather than calling
+     * mScrollView.smoothScrollBy() since the speed of that animation cannot be customized.
+     * @param yDelta
+     */
+    public void slideContentDown(int yDelta) {
+        final int startY = mScrollView.getScrollY();
+        final ValueAnimator scrollAnimator =
+                ValueAnimator.ofInt(startY, startY + yDelta);
+        scrollAnimator.setDuration(SLIDE_CONTENT_ANIM_DURATION);
+        scrollAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (Integer) animation.getAnimatedValue();
+                mScrollView.scrollTo(0, value);
+            }
+        });
+        scrollAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                View space = mAdditionalCards.findViewById(ADDITIONAL_CONTENT_SPACE_ID);
+                if (space != null) mAdditionalCards.removeView(space);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        scrollAnimator.start();
     }
 
     class AnimationLoader extends AsyncTask<Void, Void, Boolean> {

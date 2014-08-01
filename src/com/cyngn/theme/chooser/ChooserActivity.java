@@ -59,7 +59,6 @@ public class ChooserActivity extends FragmentActivity
     public static final int REQUEST_UNINSTALL = 1; // Request code
     public static final String EXTRA_PKGNAME = "pkgName";
 
-    private static final long SLIDE_CONTENT_ANIM_DURATION = 300L;
     private static final long MOVE_TO_MY_THEME_DELAY = 750L;
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
@@ -256,19 +255,19 @@ public class ChooserActivity extends FragmentActivity
             coordinates[1] += v.getHeight();
             int top = getWindowManager().getDefaultDisplay().getHeight() - height;
             if (coordinates[1] > top) {
-                slideContentUp(top - coordinates[1]);
+                slideContentUp(top - coordinates[1], height);
             }
         }
     }
 
-    private void slideContentUp(int yDelta) {
+    private void slideContentUp(int yDelta, int selectorHeight) {
         yDelta -= getResources().getDimensionPixelSize(R.dimen.content_offset_padding);
+        getCurrentFragment().slideContentUp(-yDelta, selectorHeight);
         mContainerYOffset = yDelta;
-        mContainer.animate().translationYBy(yDelta).setDuration(SLIDE_CONTENT_ANIM_DURATION);
     }
 
     private void slideContentDown(final int yDelta) {
-        mContainer.animate().translationYBy(-yDelta).setDuration(SLIDE_CONTENT_ANIM_DURATION);
+        getCurrentFragment().slideContentDown(yDelta);
     }
 
     @Override
