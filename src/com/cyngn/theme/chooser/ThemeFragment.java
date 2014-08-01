@@ -1124,7 +1124,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (MODIFIES_LOCKSCREEN.equals(component)) {
             loadLockScreen(c, false);
         } else if (MODIFIES_LAUNCHER.equals(component)) {
-            loadWallpaper(c, false);
+            // this was already loaded so no need to do this again.
         } else if (MODIFIES_OVERLAYS.equals(component)) {
             loadStyle(c, false);
         } else if (MODIFIES_BOOT_ANIM.equals(component)) {
