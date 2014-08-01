@@ -125,7 +125,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final int ANIMATE_TITLE_IN_DURATION = 500;
     public static final int REQUEST_UNINSTALL = 1; // Request code
 
-    private static final String NAVIGATION_BAR_BACKGROUND = "navbar_background";
+    protected static final String NAVIGATION_BAR_BACKGROUND = "navbar_background";
 
     public static final String CURRENTLY_APPLIED_THEME = "currently_applied_theme";
 
@@ -147,96 +147,96 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             new ComponentName("com.android.gallery3d", "com.android.gallery3d.app.GalleryActivity");
     private static final String CAMERA_NEXT_PACKAGE = "com.cyngn.cameranext";
 
-    private static final int LOADER_ID_ALL = 0;
-    private static final int LOADER_ID_STATUS_BAR = 1;
-    private static final int LOADER_ID_FONT = 2;
-    private static final int LOADER_ID_ICONS = 3;
-    private static final int LOADER_ID_WALLPAPER = 4;
-    private static final int LOADER_ID_NAVIGATION_BAR = 5;
-    private static final int LOADER_ID_LOCKSCREEN = 6;
-    private static final int LOADER_ID_STYLE = 7;
-    private static final int LOADER_ID_BOOT_ANIMATION = 8;
-    private static final int LOADER_ID_RINGTONE = 9;
-    private static final int LOADER_ID_NOTIFICATION = 10;
-    private static final int LOADER_ID_ALARM = 11;
+    protected static final int LOADER_ID_ALL = 0;
+    protected static final int LOADER_ID_STATUS_BAR = 1;
+    protected static final int LOADER_ID_FONT = 2;
+    protected static final int LOADER_ID_ICONS = 3;
+    protected static final int LOADER_ID_WALLPAPER = 4;
+    protected static final int LOADER_ID_NAVIGATION_BAR = 5;
+    protected static final int LOADER_ID_LOCKSCREEN = 6;
+    protected static final int LOADER_ID_STYLE = 7;
+    protected static final int LOADER_ID_BOOT_ANIMATION = 8;
+    protected static final int LOADER_ID_RINGTONE = 9;
+    protected static final int LOADER_ID_NOTIFICATION = 10;
+    protected static final int LOADER_ID_ALARM = 11;
 
-    private static ComponentName[] sIconComponents;
+    protected static ComponentName[] sIconComponents;
 
-    private static TypefaceHelperCache sTypefaceHelperCache;
+    protected static TypefaceHelperCache sTypefaceHelperCache;
 
     /**
      * Maps the card's resource ID to a theme component
      */
     private final SparseArray<String> mCardIdsToComponentTypes = new SparseArray<String>();
 
-    private String mPkgName;
-    private Typeface mTypefaceNormal;
-    private int mBatteryStyle;
+    protected String mPkgName;
+    protected Typeface mTypefaceNormal;
+    protected int mBatteryStyle;
 
-    private ScrollView mScrollView;
-    private ViewGroup mScrollContent;
-    private ViewGroup mPreviewContent; // Contains icons, font, nav/status etc. Not wallpaper
-    private View mLoadingView;
+    protected ScrollView mScrollView;
+    protected ViewGroup mScrollContent;
+    protected ViewGroup mPreviewContent; // Contains icons, font, nav/status etc. Not wallpaper
+    protected View mLoadingView;
 
     //Status Bar Views
-    private ImageView mBluetooth;
-    private ImageView mWifi;
-    private ImageView mSignal;
-    private ImageView mBattery;
-    private TextView mClock;
+    protected ImageView mBluetooth;
+    protected ImageView mWifi;
+    protected ImageView mSignal;
+    protected ImageView mBattery;
+    protected TextView mClock;
 
     // Other Misc Preview Views
-    private FrameLayout mShadowFrame;
-    private ImageView mWallpaper;
-    private ViewGroup mStatusBar;
-    private TextView mFontPreview;
-    private ViewGroup mIconContainer;
-    private ViewGroup mStyleContainer;
-    private ViewGroup mBootAnimationContainer;
-    private BootAniImageView mBootAnimation;
+    protected FrameLayout mShadowFrame;
+    protected ImageView mWallpaper;
+    protected ViewGroup mStatusBar;
+    protected TextView mFontPreview;
+    protected ViewGroup mIconContainer;
+    protected ViewGroup mStyleContainer;
+    protected ViewGroup mBootAnimationContainer;
+    protected BootAniImageView mBootAnimation;
 
     // Nav Bar Views
-    private ViewGroup mNavBar;
-    private ImageView mBackButton;
-    private ImageView mHomeButton;
-    private ImageView mRecentButton;
+    protected ViewGroup mNavBar;
+    protected ImageView mBackButton;
+    protected ImageView mHomeButton;
+    protected ImageView mRecentButton;
 
     // Title Card Views
-    private ViewGroup mTitleCard;
-    private ViewGroup mTitleLayout;
-    private TextView mTitle;
-    private ImageView mApply;
-    private ImageView mOverflow;
-    private ProgressBar mProgress;
+    protected ViewGroup mTitleCard;
+    protected ViewGroup mTitleLayout;
+    protected TextView mTitle;
+    protected ImageView mApply;
+    protected ImageView mOverflow;
+    protected ProgressBar mProgress;
 
     // Additional Card Views
-    private LinearLayout mAdditionalCards;
-    private WallpaperCardView mWallpaperCard;
-    private WallpaperCardView mLockScreenCard;
+    protected LinearLayout mAdditionalCards;
+    protected WallpaperCardView mWallpaperCard;
+    protected WallpaperCardView mLockScreenCard;
 
     // Style views
-    private ImageView mStylePreview;
+    protected ImageView mStylePreview;
 
     // Sound cards
-    private ViewGroup mRingtoneContainer;
-    private ImageView mRingtonePlayPause;
-    private ViewGroup mNotificationContainer;
-    private ImageView mNotificationPlayPause;
-    private ViewGroup mAlarmContainer;
-    private ImageView mAlarmPlayPause;
-    private Map<ImageView, MediaPlayer> mMediaPlayers;
+    protected ViewGroup mRingtoneContainer;
+    protected ImageView mRingtonePlayPause;
+    protected ViewGroup mNotificationContainer;
+    protected ImageView mNotificationPlayPause;
+    protected ViewGroup mAlarmContainer;
+    protected ImageView mAlarmPlayPause;
+    protected Map<ImageView, MediaPlayer> mMediaPlayers;
 
-    private Handler mHandler;
+    protected Handler mHandler;
 
-    private boolean mIsUninstalled;
-    private int mActiveCardId = -1;
-    private ComponentSelector mSelector;
+    protected boolean mIsUninstalled;
+    protected int mActiveCardId = -1;
+    protected ComponentSelector mSelector;
     // Supported components for the theme this fragment represents
-    private Map<String, String> mSelectedComponentsMap = new HashMap<String, String>();
+    protected Map<String, String> mSelectedComponentsMap = new HashMap<String, String>();
     // Current system theme configuration as component -> pkgName
-    private Map<String, String> mCurrentTheme = new HashMap<String, String>();
-    private Cursor mCurrentCursor;
-    private int mCurrentLoaderId;
+    protected Map<String, String> mCurrentTheme = new HashMap<String, String>();
+    protected Cursor mCurrentCursor;
+    protected int mCurrentLoaderId;
 
     static ThemeFragment newInstance(String pkgName) {
         ThemeFragment f = new ThemeFragment();
@@ -261,8 +261,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (sTypefaceHelperCache == null) {
             sTypefaceHelperCache = TypefaceHelperCache.getInstance();
         }
-        ThemedTypefaceHelper helper = sTypefaceHelperCache.getHelperForTheme(context,
-                CURRENTLY_APPLIED_THEME.equals(mPkgName) ? getAppliedFontPackageName() : mPkgName);
+        ThemedTypefaceHelper helper = sTypefaceHelperCache.getHelperForTheme(context, mPkgName);
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
 
         mHandler = new Handler();
@@ -384,19 +383,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
 
-        initCards(v);
+        setupCardClickListeners(v);
 
         return v;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
-            if (getLoaderManager().getLoader(0) != null) {
-                getLoaderManager().restartLoader(0, null, this);
-            }
-        }
     }
 
     @Override
@@ -835,7 +824,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         .setDuration(300);
     }
 
-    private String getAppliedFontPackageName() {
+    protected String getAppliedFontPackageName() {
         final Configuration config = getActivity().getResources().getConfiguration();
         final ThemeConfig themeConfig = config != null ? config.themeConfig : null;
         return themeConfig != null ? themeConfig.getFontPkgName() :
@@ -860,7 +849,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mMediaPlayers.clear();
     }
 
-    private View.OnClickListener mPlayPauseClickListener = new View.OnClickListener() {
+    protected View.OnClickListener mPlayPauseClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             MediaPlayer mp = (MediaPlayer) v.getTag();
@@ -878,7 +867,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     };
 
-    private MediaPlayer.OnCompletionListener mPlayCompletionListener
+    protected MediaPlayer.OnCompletionListener mPlayCompletionListener
             = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
@@ -917,72 +906,43 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         String[] projection = null;
         switch (id) {
             case LOADER_ID_ALL:
-                if (!CURRENTLY_APPLIED_THEME.equals(pkgName)) {
-                    projection = new String[] {
-                            ThemesColumns.PKG_NAME,
-                            ThemesColumns.TITLE,
-                            ThemesColumns.WALLPAPER_URI,
-                            ThemesColumns.HOMESCREEN_URI,
-                            // Theme abilities
-                            ThemesColumns.MODIFIES_LAUNCHER,
-                            ThemesColumns.MODIFIES_LOCKSCREEN,
-                            ThemesColumns.MODIFIES_ALARMS,
-                            ThemesColumns.MODIFIES_BOOT_ANIM,
-                            ThemesColumns.MODIFIES_FONTS,
-                            ThemesColumns.MODIFIES_ICONS,
-                            ThemesColumns.MODIFIES_NAVIGATION_BAR,
-                            ThemesColumns.MODIFIES_OVERLAYS,
-                            ThemesColumns.MODIFIES_RINGTONES,
-                            ThemesColumns.MODIFIES_STATUS_BAR,
-                            ThemesColumns.MODIFIES_NOTIFICATIONS,
-                            //Previews
-                            PreviewColumns.WALLPAPER_PREVIEW,
-                            PreviewColumns.STATUSBAR_BACKGROUND,
-                            PreviewColumns.STATUSBAR_WIFI_ICON,
-                            PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
-                            PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
-                            PreviewColumns.STATUSBAR_SIGNAL_ICON,
-                            PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
-                            PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
-                            PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
-                            PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
-                            PreviewColumns.NAVBAR_BACK_BUTTON,
-                            PreviewColumns.NAVBAR_HOME_BUTTON,
-                            PreviewColumns.NAVBAR_RECENT_BUTTON,
-                            PreviewColumns.ICON_PREVIEW_1,
-                            PreviewColumns.ICON_PREVIEW_2,
-                            PreviewColumns.ICON_PREVIEW_3,
-                            PreviewColumns.LOCK_WALLPAPER_PREVIEW,
-                            PreviewColumns.STYLE_PREVIEW
-                    };
-                } else {
-                    projection = new String[] {
-                            PreviewColumns.WALLPAPER_PREVIEW,
-                            PreviewColumns.STATUSBAR_BACKGROUND,
-                            PreviewColumns.STATUSBAR_WIFI_ICON,
-                            PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
-                            PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
-                            PreviewColumns.STATUSBAR_SIGNAL_ICON,
-                            PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
-                            PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
-                            PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
-                            PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
-                            PreviewColumns.NAVBAR_BACK_BUTTON,
-                            PreviewColumns.NAVBAR_HOME_BUTTON,
-                            PreviewColumns.NAVBAR_RECENT_BUTTON,
-                            PreviewColumns.ICON_PREVIEW_1,
-                            PreviewColumns.ICON_PREVIEW_2,
-                            PreviewColumns.ICON_PREVIEW_3,
-                            PreviewColumns.LOCK_WALLPAPER_PREVIEW,
-                            PreviewColumns.STYLE_PREVIEW,
-                            // TODO: add this to the ThemesContract if this
-                            // design moves beyond prototype
-                            NAVIGATION_BAR_BACKGROUND
-                    };
-                    uri = PreviewColumns.APPLIED_URI;
-                    selection = null;
-                    selectionArgs = null;
-                }
+                projection = new String[] {
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE,
+                        ThemesColumns.WALLPAPER_URI,
+                        ThemesColumns.HOMESCREEN_URI,
+                        // Theme abilities
+                        ThemesColumns.MODIFIES_LAUNCHER,
+                        ThemesColumns.MODIFIES_LOCKSCREEN,
+                        ThemesColumns.MODIFIES_ALARMS,
+                        ThemesColumns.MODIFIES_BOOT_ANIM,
+                        ThemesColumns.MODIFIES_FONTS,
+                        ThemesColumns.MODIFIES_ICONS,
+                        ThemesColumns.MODIFIES_NAVIGATION_BAR,
+                        ThemesColumns.MODIFIES_OVERLAYS,
+                        ThemesColumns.MODIFIES_RINGTONES,
+                        ThemesColumns.MODIFIES_STATUS_BAR,
+                        ThemesColumns.MODIFIES_NOTIFICATIONS,
+                        //Previews
+                        PreviewColumns.WALLPAPER_PREVIEW,
+                        PreviewColumns.STATUSBAR_BACKGROUND,
+                        PreviewColumns.STATUSBAR_WIFI_ICON,
+                        PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
+                        PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
+                        PreviewColumns.STATUSBAR_SIGNAL_ICON,
+                        PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
+                        PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
+                        PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
+                        PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
+                        PreviewColumns.NAVBAR_BACK_BUTTON,
+                        PreviewColumns.NAVBAR_HOME_BUTTON,
+                        PreviewColumns.NAVBAR_RECENT_BUTTON,
+                        PreviewColumns.ICON_PREVIEW_1,
+                        PreviewColumns.ICON_PREVIEW_2,
+                        PreviewColumns.ICON_PREVIEW_3,
+                        PreviewColumns.LOCK_WALLPAPER_PREVIEW,
+                        PreviewColumns.STYLE_PREVIEW
+                };
                 break;
             case LOADER_ID_STATUS_BAR:
                 projection = new String[] {
@@ -1179,13 +1139,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void populateSupportedComponents(Cursor c) {
-        // Currently applied theme doesn't return the columns we expect and
-        // it doesn't matter because currently applied theme shows everything anyhow
-        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
-            return;
-        }
-
+    protected void populateSupportedComponents(Cursor c) {
         List<String> components = ThemeUtils.getAllComponents();
         for(String component : components) {
             int pkgIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
@@ -1209,25 +1163,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
      *    2) Other themes only show what has been implemented in the theme
      *
      */
-    private Boolean shouldShowComponentCard(String component) {
-        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
-            return true;
-        }
+    protected Boolean shouldShowComponentCard(String component) {
         String pkg = mSelectedComponentsMap.get(component);
         return pkg != null && pkg.equals(mPkgName);
     }
 
-    private void loadTitle(Cursor c) {
-        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
-            mTitle.setText(R.string.my_theme);
-        } else {
-            int titleIdx = c.getColumnIndex(ThemesColumns.TITLE);
-            String title = c.getString(titleIdx);
-            mTitle.setText(title);
-        }
+    protected void loadTitle(Cursor c) {
+        int titleIdx = c.getColumnIndex(ThemesColumns.TITLE);
+        String title = c.getString(titleIdx);
+        mTitle.setText(title);
     }
 
-    private void loadWallpaper(Cursor c, boolean animate) {
+    protected void loadWallpaper(Cursor c, boolean animate) {
         Drawable overlay = null;
         if (animate) {
             overlay = getOverlayDrawable(mWallpaperCard, true);
@@ -1236,29 +1183,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
         final Resources res = getResources();
-        if (pkgNameIdx > -1) {
-            Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
-            mWallpaper.setImageBitmap(bitmap);
-            mWallpaperCard.setWallpaper(new BitmapDrawable(res, bitmap));
-            String pkgName = c.getString(pkgNameIdx);
-            mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
-        } else {
-            final Context context = getActivity();
-            Drawable wp = context == null ? null :
-                    WallpaperManager.getInstance(context).getDrawable();
-            if (wp == null) {
-                wp = new BitmapDrawable(res, Utils.loadBitmapBlob(c, wpIdx));
-            }
-            mWallpaper.setImageDrawable(wp);
-            mWallpaperCard.setWallpaper(wp);
-        }
+        Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
+        mWallpaper.setImageBitmap(bitmap);
+        mWallpaperCard.setWallpaper(new BitmapDrawable(res, bitmap));
+        String pkgName = c.getString(pkgNameIdx);
+        mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
 
         if (animate) {
             animateContentChange(R.id.wallpaper_card, mWallpaperCard, overlay);
         }
     }
 
-    public void loadLockScreen(Cursor c, boolean animate) {
+    protected void loadLockScreen(Cursor c, boolean animate) {
         Drawable overlay = null;
         if (animate) {
             overlay = getOverlayDrawable(mLockScreenCard, true);
@@ -1267,27 +1203,17 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         int wpIdx = c.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_PREVIEW);
         final Resources res = getResources();
-        if (pkgNameIdx > -1) {
-            Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
-            mLockScreenCard.setWallpaper(new BitmapDrawable(res, bitmap));
-            String pkgName = c.getString(pkgNameIdx);
-            mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN, pkgName);
-        } else {
-            final Context context = getActivity();
-            Drawable wp = context == null ? null :
-                    WallpaperManager.getInstance(context).getFastKeyguardDrawable();
-            if (wp == null) {
-                wp = new BitmapDrawable(res, Utils.loadBitmapBlob(c, wpIdx));
-            }
-            mLockScreenCard.setWallpaper(wp);
-        }
+        Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
+        mLockScreenCard.setWallpaper(new BitmapDrawable(res, bitmap));
+        String pkgName = c.getString(pkgNameIdx);
+        mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN, pkgName);
 
         if (animate) {
             animateContentChange(R.id.lockscreen_card, mLockScreenCard, overlay);
         }
     }
 
-    private void loadStatusBar(Cursor c, boolean animate) {
+    protected void loadStatusBar(Cursor c, boolean animate) {
         int backgroundIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
         int wifiIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_WIFI_ICON);
         int wifiMarginIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END);
@@ -1342,7 +1268,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void loadIcons(Cursor c, boolean animate) {
+    protected void loadIcons(Cursor c, boolean animate) {
         int[] iconIdx = new int[4];
         iconIdx[0] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_1);
         iconIdx[1] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_2);
@@ -1397,7 +1323,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void loadNavBar(Cursor c, boolean animate) {
+    protected void loadNavBar(Cursor c, boolean animate) {
         int backButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_BACK_BUTTON);
         int homeButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_HOME_BUTTON);
         int recentButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_RECENT_BUTTON);
@@ -1431,7 +1357,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void loadFont(Cursor c, boolean animate) {
+    protected void loadFont(Cursor c, boolean animate) {
         Drawable overlay = null;
         if (animate) {
             overlay = getOverlayDrawable(mFontPreview, true);
@@ -1440,19 +1366,17 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         String pkgName = pkgNameIdx >= 0 ? c.getString(pkgNameIdx) : mPkgName;
         TypefaceHelperCache cache = TypefaceHelperCache.getInstance();
-        ThemedTypefaceHelper helper = cache.getHelperForTheme(getActivity(),
-                CURRENTLY_APPLIED_THEME.equals(pkgName) ? getAppliedFontPackageName() : pkgName);
+        ThemedTypefaceHelper helper = cache.getHelperForTheme(getActivity(), pkgName);
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
         mFontPreview.setTypeface(mTypefaceNormal);
-        if (pkgNameIdx > -1) {
-            mSelectedComponentsMap.put(MODIFIES_FONTS, pkgName);
-        }
+        mSelectedComponentsMap.put(MODIFIES_FONTS, pkgName);
+
         if (animate) {
             animateContentChange(R.id.font_preview_container, mFontPreview, overlay);
         }
     }
 
-    private void loadStyle(Cursor c, boolean animate) {
+    protected void loadStyle(Cursor c, boolean animate) {
         Drawable overlay = null;
         if (animate) {
             overlay = getOverlayDrawable(mStylePreview, true);
@@ -1470,7 +1394,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void loadBootAnimation(Cursor c) {
+    protected void loadBootAnimation(Cursor c) {
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         if (mBootAnimation != null) {
             String pkgName;
@@ -1485,7 +1409,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void loadAudible(int type, Cursor c, boolean animate) {
+    protected void loadAudible(int type, Cursor c, boolean animate) {
         View audibleContainer = null;
         ImageView playPause = null;
         String component = null;
@@ -1521,27 +1445,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (mp == null) {
             mp = new MediaPlayer();
         }
-        if (pkgNameIdx > -1) {
-            String pkgName = c.getString(pkgNameIdx);
-            try {
-                AudioUtils.loadThemeAudible(getActivity(), type, pkgName, mp);
-            } catch (PackageManager.NameNotFoundException e) {
-                Log.w(TAG, "Unable to load sound for " + pkgName, e);
-                return;
-            }
-            title.setText(c.getString(titleIdx));
-            mSelectedComponentsMap.put(component, pkgName);
-        } else {
-            final Context context = getActivity();
-            Uri ringtoneUri;
-            try {
-                ringtoneUri = AudioUtils.loadDefaultAudible(context, type, mp);
-            } catch (IOException e) {
-                Log.w(TAG, "Unable to load default sound ", e);
-                return;
-            }
-            title.setText(RingtoneManager.getRingtone(context, ringtoneUri).getTitle(context));
+        String pkgName = c.getString(pkgNameIdx);
+        try {
+            AudioUtils.loadThemeAudible(getActivity(), type, pkgName, mp);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "Unable to load sound for " + pkgName, e);
+            return;
         }
+        title.setText(c.getString(titleIdx));
+        mSelectedComponentsMap.put(component, pkgName);
 
         playPause.setTag(mp);
         mMediaPlayers.put(playPause, mp);
@@ -1549,7 +1461,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mp.setOnCompletionListener(mPlayCompletionListener);
     }
 
-    private Drawable getOverlayDrawable(View v, boolean requiresTransparency) {
+    protected Drawable getOverlayDrawable(View v, boolean requiresTransparency) {
         if (!v.isDrawingCacheEnabled()) v.setDrawingCacheEnabled(true);
         Bitmap cache = v.getDrawingCache(true).copy(
                 requiresTransparency ? Config.ARGB_8888 : Config.RGB_565, false);
@@ -1559,7 +1471,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         return d;
     }
 
-    private String getAudibleLabel(int type) {
+    protected String getAudibleLabel(int type) {
         switch (type) {
             case RingtoneManager.TYPE_RINGTONE:
                 return getString(R.string.ringtone_label);
@@ -1601,7 +1513,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         return sIconComponents;
     }
 
-    private void initCards(View parent) {
+    private void setupCardClickListeners(View parent) {
         for (int i = 0; i < mCardIdsToComponentTypes.size(); i++) {
             parent.findViewById(mCardIdsToComponentTypes.keyAt(i))
                     .setOnClickListener(mCardClickListener);
@@ -1670,7 +1582,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-    private void animateContentChange(int parentId, View viewToAnimate, Drawable overlay) {
+    protected void animateContentChange(int parentId, View viewToAnimate, Drawable overlay) {
         ((ComponentCardView) getView().findViewById(parentId))
                 .animateContentChange(viewToAnimate, overlay, ANIMATE_COMPONENT_CHANGE_DURATION);
     }

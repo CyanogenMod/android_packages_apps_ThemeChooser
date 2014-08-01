@@ -471,15 +471,15 @@ public class ChooserActivity extends FragmentActivity
 
         @Override
         public Fragment getItem(int position) {
-            String pkgName;
+            ThemeFragment f;
             if (position == 0) {
-                pkgName = ThemeFragment.CURRENTLY_APPLIED_THEME;
+                f = MyThemeFragment.newInstance();
             } else {
                 mCursor.moveToPosition(position - 1);
                 int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
-                pkgName = mCursor.getString(pkgIdx);
+                String pkgName = mCursor.getString(pkgIdx);
+                f = ThemeFragment.newInstance(pkgName);
             }
-            ThemeFragment f = ThemeFragment.newInstance(pkgName);
             f.setCurrentTheme(mCurrentTheme);
             return f;
         }
