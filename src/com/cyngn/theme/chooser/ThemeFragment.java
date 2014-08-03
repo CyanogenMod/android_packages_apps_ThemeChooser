@@ -1524,8 +1524,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private View.OnClickListener mCardClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (mActiveCardId > 0) {
-                mActiveCardId = -1;
+            if (mActiveCardId > 0 && mSelector.isEnabled()) {
                 getActivity().onBackPressed();
                 return;
             }
