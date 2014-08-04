@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2014 The Cyanogen, Inc
+ */
 package com.cyngn.theme.chooser;
 
 import android.animation.Animator;
