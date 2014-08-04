@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2012 Wireless Designs, LLC
- * Portions copyright (C) 2014, The CyanogenMod Project
+ * Portions copyright (C) 2014, The Cyanogen, Inc
  *
  *
  * Permission is hereby granted, free of charge, to any person obtaining
