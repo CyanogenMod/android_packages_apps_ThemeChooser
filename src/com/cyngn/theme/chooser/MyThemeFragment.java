@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ThemesContract;
 import android.provider.ThemesContract.PreviewColumns;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -117,6 +118,11 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     protected void loadWallpaper(Cursor c, boolean animate) {
+        int pkgNameIdx = c.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+        if (pkgNameIdx > -1) {
+            super.loadWallpaper(c, animate);
+            return;
+        }
         Drawable overlay = null;
         if (animate) {
             overlay = getOverlayDrawable(mWallpaperCard, true);
@@ -140,6 +146,11 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     protected void loadLockScreen(Cursor c, boolean animate) {
+        int pkgNameIdx = c.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+        if (pkgNameIdx > -1) {
+            super.loadLockScreen(c, animate);
+            return;
+        }
         Drawable overlay = null;
         if (animate) {
             overlay = getOverlayDrawable(mLockScreenCard, true);
@@ -162,6 +173,11 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     protected void loadFont(Cursor c, boolean animate) {
+        int pkgNameIdx = c.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+        if (pkgNameIdx > -1) {
+            super.loadFont(c, animate);
+            return;
+        }
         Drawable overlay = null;
         if (animate) {
             overlay = getOverlayDrawable(mFontPreview, true);
@@ -179,6 +195,11 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     protected void loadAudible(int type, Cursor c, boolean animate) {
+        int pkgNameIdx = c.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+        if (pkgNameIdx > -1) {
+            super.loadAudible(type, c, animate);
+            return;
+        }
         View audibleContainer = null;
         ImageView playPause = null;
         switch (type) {
