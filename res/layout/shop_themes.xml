@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shop_themes_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|left">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/shop_themes_divider_color"/>
+
+    <TextView
+        android:id="@+id/shop_themes"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:textSize="14sp"
+        android:textColor="@color/shop_themes_text_color"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:hapticFeedbackEnabled="true"
+        android:text="@string/shop_themes"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <!-- This view will be set to gone if the device does not have a navigation bar -->
+    <Space
+        android:id="@+id/navbar_padding"
+        android:layout_width="match_parent"
+        android:layout_height="@*android:dimen/system_bar_height"/>
+</LinearLayout>

@@ -15,6 +15,8 @@
  */
 package com.cyngn.theme.chooser;
 
+import android.animation.Animator;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -39,6 +41,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -55,6 +58,8 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
 
 public class ChooserActivity extends FragmentActivity
         implements LoaderManager.LoaderCallbacks<Cursor>, ThemeManager.ThemeChangeListener {
+    private static final String TAG = ChooserActivity.class.getSimpleName();
+
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
     public static final int REQUEST_UNINSTALL = 1; // Request code
     public static final String EXTRA_PKGNAME = "pkgName";
@@ -65,6 +70,9 @@ public class ChooserActivity extends FragmentActivity
 
     private static final int LOADER_ID_INSTALLED_THEMES = 1000;
     private static final int LOADER_ID_APPLIED = 1001;
+
+    private static final String THEME_STORE_PACKAGE = "com.cyngn.theme.store";
+    private static final String THEME_STORE_ACTIVITY = "com.cyngn.theme.store.StoreActivity";
 
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
@@ -78,6 +86,7 @@ public class ChooserActivity extends FragmentActivity
     private TypefaceHelperCache mTypefaceHelperCache;
     private boolean mIsAnimating;
     private Handler mHandler;
+    private View mShopThemesLayout;
 
     private String mSelectedTheme;
 
@@ -124,9 +133,12 @@ public class ChooserActivity extends FragmentActivity
         mService = (ThemeManager) getSystemService(Context.THEME_SERVICE);
         getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
 
+        mShopThemesLayout = findViewById(R.id.shop_themes_layout);
+
         mSaveApplyLayout = findViewById(R.id.save_apply_layout);
         if (!Utils.hasNavigationBar(this)) {
             mSaveApplyLayout.findViewById(R.id.navbar_padding).setVisibility(View.GONE);
+            mShopThemesLayout.findViewById(R.id.navbar_padding).setVisibility(View.GONE);
         }
         mSaveApplyLayout.findViewById(R.id.save_apply_button).setOnClickListener(
                 new View.OnClickListener() {
@@ -146,6 +158,9 @@ public class ChooserActivity extends FragmentActivity
                         setAnimatingStateAndScheduleFinish();
                     }
                 });
+
+        mShopThemesLayout.findViewById(R.id.shop_themes).setOnClickListener(mOnShopThemesClicked);
+
         mTypefaceHelperCache = TypefaceHelperCache.getInstance();
         mHandler = new Handler();
     }
@@ -169,6 +184,33 @@ public class ChooserActivity extends FragmentActivity
         });
     }
 
+    private void hideShopThemesLayout() {
+        final ViewPropertyAnimator anim = mShopThemesLayout.animate();
+        anim.setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {}
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mShopThemesLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
+        anim.alpha(0f).start();
+    }
+
+    private void showShopThemesLayout() {
+        mShopThemesLayout.setVisibility(View.VISIBLE);
+        final ViewPropertyAnimator anim = mShopThemesLayout.animate();
+        anim.setListener(null);
+        anim.alpha(1f).start();
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -190,6 +232,7 @@ public class ChooserActivity extends FragmentActivity
             public void run() {
                 mIsAnimating = false;
                 mContainer.setIsAnimating(false);
+                if (!mExpanded) showShopThemesLayout();
             }
         }, ThemeFragment.ANIMATE_START_DELAY + ThemeFragment.ANIMATE_DURATION);
     }
@@ -340,6 +383,7 @@ public class ChooserActivity extends FragmentActivity
                 ThemeFragment f = getCurrentFragment();
                 f.expand();
                 setAnimatingStateAndScheduleFinish();
+                hideShopThemesLayout();
             }
         }
     };
@@ -377,6 +421,23 @@ public class ChooserActivity extends FragmentActivity
             mCurrentTheme.put(component, pkg);
         }
     }
+
+    private View.OnClickListener mOnShopThemesClicked = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent();
+            intent.setClassName(THEME_STORE_PACKAGE, THEME_STORE_ACTIVITY);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                // Unable to launch the theme store so link the user to it
+                intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.themes_showcase_link)));
+                startActivity(intent);
+            }
+        }
+    };
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
