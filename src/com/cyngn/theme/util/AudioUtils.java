@@ -116,9 +116,11 @@ public class AudioUtils {
     public static Uri loadDefaultAudible(Context context, int type, MediaPlayer mp)
             throws IOException {
         Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(context, type);
-        mp.reset();
-        mp.setDataSource(context, ringtoneUri);
-        mp.prepare();
+        if (ringtoneUri != null) {
+            mp.reset();
+            mp.setDataSource(context, ringtoneUri);
+            mp.prepare();
+        }
 
         return ringtoneUri;
     }

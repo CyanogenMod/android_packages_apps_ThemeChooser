@@ -237,7 +237,12 @@ public class MyThemeFragment extends ThemeFragment {
             Log.w(TAG, "Unable to load default sound ", e);
             return;
         }
-        title.setText(RingtoneManager.getRingtone(context, ringtoneUri).getTitle(context));
+        if (ringtoneUri != null) {
+            title.setText(RingtoneManager.getRingtone(context, ringtoneUri).getTitle(context));
+        } else {
+            title.setText(getString(R.string.audible_title_none));
+            playPause.setVisibility(View.INVISIBLE);
+        }
 
         playPause.setTag(mp);
         mMediaPlayers.put(playPause, mp);

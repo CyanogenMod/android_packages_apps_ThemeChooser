@@ -1426,8 +1426,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         int titleIdx = c.getColumnIndex(ThemesColumns.TITLE);
         if (playPause == null) {
-            playPause =
-                    (ImageView) audibleContainer.findViewById(R.id.play_pause);
+            playPause = (ImageView) audibleContainer.findViewById(R.id.play_pause);
         }
         TextView title = (TextView) audibleContainer.findViewById(R.id.audible_name);
         MediaPlayer mp = mMediaPlayers.get(playPause);
@@ -1444,6 +1443,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         title.setText(c.getString(titleIdx));
         mSelectedComponentsMap.put(component, pkgName);
 
+        playPause.setVisibility(View.VISIBLE);
         playPause.setTag(mp);
         mMediaPlayers.put(playPause, mp);
         playPause.setOnClickListener(mPlayPauseClickListener);

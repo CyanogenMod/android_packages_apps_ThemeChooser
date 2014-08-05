@@ -54,4 +54,6 @@
     <string name="shop_themes">Shop themes</string>
     <string name="themes_showcase_link">https://play.google.com/store/apps/details?id=com.cyngn.theme.store</string>
 
+    <string name="audible_title_none">None</string>
+
 </resources>
