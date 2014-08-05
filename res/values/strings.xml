@@ -56,4 +56,6 @@
 
     <string name="audible_title_none">None</string>
 
+    <string name="apply_theme_layout_title">Apply</string>
+
 </resources>

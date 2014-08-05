@@ -6,7 +6,7 @@
               android:layout_height="match_parent"
               android:paddingStart="@dimen/collapsed_theme_page_padding"
               android:paddingEnd="@dimen/collapsed_theme_page_padding">
-    <ScrollView android:id="@android:id/list"
+    <com.cyngn.theme.widget.LockableScrollView android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="@dimen/collapsed_theme_page_padding_top"
@@ -42,6 +42,7 @@
                     <include layout="@layout/icon_card"/>
                     <include layout="@layout/navbar_card"/>
                 </LinearLayout>
+                <include layout="@layout/apply_theme_layout"/>
                 <ImageView
                     android:id="@+id/loading_view"
                     android:layout_width="match_parent"
@@ -154,5 +155,5 @@
                        android:layout_height="@*android:dimen/system_bar_height" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </com.cyngn.theme.widget.LockableScrollView>
 </LinearLayout>

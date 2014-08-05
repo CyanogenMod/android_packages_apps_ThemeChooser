@@ -52,6 +52,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -62,7 +63,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,6 +75,7 @@ import com.cyngn.theme.util.ThemedTypefaceHelper;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 import com.cyngn.theme.widget.BootAniImageView;
+import com.cyngn.theme.widget.LockableScrollView;
 
 import java.io.File;
 import java.io.IOException;
@@ -111,6 +112,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final int ANIMATE_TITLE_OUT_DURATION = 400;
     public static final int ANIMATE_PROGRESS_OUT_DURATION = 400;
     public static final int ANIMATE_TITLE_IN_DURATION = 500;
+    public static final int ANIMATE_APPLY_LAYOUT_DURATION = 300;
     public static final int REQUEST_UNINSTALL = 1; // Request code
 
     public static final String CURRENTLY_APPLIED_THEME = "currently_applied_theme";
@@ -162,7 +164,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected Typeface mTypefaceNormal;
     protected int mBatteryStyle;
 
-    protected ScrollView mScrollView;
+    protected LockableScrollView mScrollView;
     protected ViewGroup mScrollContent;
     protected ViewGroup mPreviewContent; // Contains icons, font, nav/status etc. Not wallpaper
     protected View mLoadingView;
@@ -227,6 +229,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected Cursor mCurrentCursor;
     protected int mCurrentLoaderId;
 
+    protected View mApplyThemeLayout;
+    protected View mApplyButton;
+    protected View mCancelButton;
+
     static ThemeFragment newInstance(String pkgName) {
         ThemeFragment f = new ThemeFragment();
         Bundle args = new Bundle();
@@ -275,7 +281,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_pager_list, container, false);
 
-        mScrollView = (ScrollView) v.findViewById(android.R.id.list);
+        mScrollView = (LockableScrollView) v.findViewById(android.R.id.list);
         mScrollContent = (ViewGroup) mScrollView.getChildAt(0);
         mPreviewContent = (ViewGroup) v.findViewById(R.id.preview_container);
         mLoadingView = v.findViewById(R.id.loading_view);
@@ -354,7 +360,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mCustomize = (ImageView) v.findViewById(R.id.customize);
         mCustomize.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((ChooserActivity) getActivity()).expand();
+                if (!isShowingApplyThemeLayout()) {
+                    ((ChooserActivity) getActivity()).expand();
+                }
             }
         });
 
@@ -366,6 +374,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mLockScreenCard = (WallpaperCardView) v.findViewById(R.id.lockscreen_card);
         int translationY = getDistanceToMoveBelowScreen(mAdditionalCards);
         mAdditionalCards.setTranslationY(translationY);
+
+        mApplyThemeLayout = v.findViewById(R.id.apply_theme_layout);
+        mApplyButton = mApplyThemeLayout.findViewById(R.id.apply_apply);
+        mApplyButton.setOnClickListener(mApplyCancelClickListener);
+        mCancelButton = mApplyThemeLayout.findViewById(R.id.apply_cancel);
+        mCancelButton.setOnClickListener(mApplyCancelClickListener);
 
         getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
 
@@ -1509,6 +1523,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private View.OnClickListener mCardClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (isShowingApplyThemeLayout()) return;
             if (mActiveCardId > 0) {
                 // need to fade the newly selected card in if another was currently selected.
                 ((ComponentCardView) v).animateCardFadeIn();
@@ -1518,6 +1533,17 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             ((ChooserActivity) getActivity()).showComponentSelector(component, v);
             fadeOutNonSelectedCards(mActiveCardId);
             stopMediaPlayers();
+        }
+    };
+
+    private View.OnClickListener mApplyCancelClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (v == mApplyButton) {
+                hideApplyThemeLayout(true);
+            } else if (v == mCancelButton) {
+                hideApplyThemeLayout();
+            }
         }
     };
 
@@ -1681,6 +1707,55 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
         set.start();
+    }
+
+    public boolean isShowingApplyThemeLayout() {
+        return mApplyThemeLayout.getVisibility() == View.VISIBLE;
+    }
+
+    public void showApplyThemeLayout() {
+        if (mApplyThemeLayout.getVisibility() == View.VISIBLE) return;
+        ((ChooserActivity) getActivity()).lockPager();
+        mScrollView.setScrollingEnabled(false);
+        ViewPropertyAnimator anim = mApplyThemeLayout.animate();
+        mApplyThemeLayout.setVisibility(View.VISIBLE);
+        mApplyThemeLayout.setAlpha(0f);
+        anim.setListener(null);
+        anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
+        anim.alpha(1f).start();
+    }
+    public void hideApplyThemeLayout() {
+        hideApplyThemeLayout(false);
+    }
+
+    /**
+     * Hides the apply theme layout overlay and can apply the selected theme
+     * when the animation is finished.
+     * @param applyThemeWhenFinished If true, the current theme will be applied.
+     */
+    private void hideApplyThemeLayout(final boolean applyThemeWhenFinished) {
+        ((ChooserActivity) getActivity()).unlockPager();
+        mScrollView.setScrollingEnabled(true);
+        ViewPropertyAnimator anim = mApplyThemeLayout.animate();
+        mApplyThemeLayout.setVisibility(View.VISIBLE);
+        anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
+        anim.alpha(0f).start();
+        anim.setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {}
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mApplyThemeLayout.setVisibility(View.GONE);
+                if (applyThemeWhenFinished) applyTheme();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
     }
 
     public void fadeInCards() {

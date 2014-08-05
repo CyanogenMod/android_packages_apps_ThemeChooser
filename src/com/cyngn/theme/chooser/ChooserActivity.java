@@ -269,6 +269,14 @@ public class ChooserActivity extends FragmentActivity
         mPager.setEnabled(true);
     }
 
+    public void lockPager() {
+        mPager.setEnabled(false);
+    }
+
+    public void unlockPager() {
+        mPager.setEnabled(true);
+    }
+
     public ComponentSelector getComponentSelector() {
         return mSelector;
     }
@@ -361,7 +369,12 @@ public class ChooserActivity extends FragmentActivity
             });
             setAnimatingStateAndScheduleFinish();
         } else {
-            super.onBackPressed();
+            final ThemeFragment f = getCurrentFragment();
+            if (f.isShowingApplyThemeLayout()) {
+                f.hideApplyThemeLayout();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -388,7 +401,12 @@ public class ChooserActivity extends FragmentActivity
     private View.OnClickListener mPagerClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            expand();
+            ThemeFragment f = getCurrentFragment();
+            if (f instanceof MyThemeFragment) {
+                expand();
+            } else {
+                f.showApplyThemeLayout();
+            }
         }
     };
 
