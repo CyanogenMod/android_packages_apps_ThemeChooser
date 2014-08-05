@@ -76,16 +76,16 @@
 
                     <ImageView
                         android:id="@+id/customize"
-                        android:layout_width="wrap_content"
+                        android:layout_width="40dp"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="16dp"
+                        android:scaleType="center"
                         android:src="@drawable/ic_theme_customize"/>
 
                     <ImageView
                         android:id="@+id/overflow"
-                        android:layout_width="wrap_content"
+                        android:layout_width="40dp"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="8dp"
+                        android:scaleType="center"
                         android:src="@drawable/ic_overflow_dark"/>
                 </LinearLayout>
                 <ProgressBar
