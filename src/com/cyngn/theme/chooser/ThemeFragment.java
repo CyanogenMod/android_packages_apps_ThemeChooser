@@ -1512,9 +1512,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private View.OnClickListener mCardClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (mActiveCardId > 0 && mSelector.isEnabled()) {
-                getActivity().onBackPressed();
-                return;
+            if (mActiveCardId > 0) {
+                // need to fade the newly selected card in if another was currently selected.
+                ((ComponentCardView) v).animateCardFadeIn();
             }
             mActiveCardId = v.getId();
             String component = mCardIdsToComponentTypes.get(mActiveCardId);
