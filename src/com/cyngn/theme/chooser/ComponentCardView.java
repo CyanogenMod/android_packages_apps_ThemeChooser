@@ -33,6 +33,10 @@ public class ComponentCardView extends LinearLayout {
     int mExpandPadRight;
     int mExpandPadBottom;
 
+    // The background drawable is returning an alpha of 0 regardless of what we set it to
+    // so this will help us keep track of what the drawable's alpha is at.
+    private int mBackgroundAlpha = 255;
+
     public ComponentCardView(Context context) {
         this(context, null);
     }
@@ -115,13 +119,15 @@ public class ComponentCardView extends LinearLayout {
         if (mLabel != null) {
             mLabel.animate().alpha(SEMI_OPAQUE_ALPHA).setDuration(CARD_FADE_DURATION);
         }
-        final ValueAnimator bgAlphaAnimator = ValueAnimator.ofObject(new IntEvaluator(), 255,
-                BACKGROUND_SEMI_OPAQUE_ALPHA);
+        final ValueAnimator bgAlphaAnimator = ValueAnimator.ofObject(new IntEvaluator(),
+                mBackgroundAlpha, BACKGROUND_SEMI_OPAQUE_ALPHA);
         bgAlphaAnimator.setDuration(CARD_FADE_DURATION);
         bgAlphaAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                getBackground().setAlpha((Integer) animation.getAnimatedValue());
+                mBackgroundAlpha = (Integer) animation.getAnimatedValue();
+                getBackground().setAlpha(mBackgroundAlpha);
+                invalidate();
             }
         });
         bgAlphaAnimator.start();
@@ -136,12 +142,14 @@ public class ComponentCardView extends LinearLayout {
             mLabel.animate().alpha(1f).setDuration(CARD_FADE_DURATION);
         }
         final ValueAnimator bgAlphaAnimator = ValueAnimator.ofObject(new IntEvaluator(),
-                BACKGROUND_SEMI_OPAQUE_ALPHA, 255);
+                mBackgroundAlpha, 255);
         bgAlphaAnimator.setDuration(CARD_FADE_DURATION);
         bgAlphaAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                getBackground().setAlpha((Integer) animation.getAnimatedValue());
+                mBackgroundAlpha = (Integer) animation.getAnimatedValue();
+                getBackground().setAlpha(mBackgroundAlpha);
+                invalidate();
             }
         });
         bgAlphaAnimator.start();
