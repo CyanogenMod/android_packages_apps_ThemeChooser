@@ -194,7 +194,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected ViewGroup mTitleCard;
     protected ViewGroup mTitleLayout;
     protected TextView mTitle;
-    protected ImageView mApply;
+    protected ImageView mCustomize;
     protected ImageView mOverflow;
     protected ProgressBar mProgress;
 
@@ -351,15 +351,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 popupmenu.show();
             }
         });
-        mApply = (ImageView) v.findViewById(R.id.apply);
-        mApply.setOnClickListener(new View.OnClickListener() {
+        mCustomize = (ImageView) v.findViewById(R.id.customize);
+        mCustomize.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                applyTheme();
+                ((ChooserActivity) getActivity()).expand();
             }
         });
-        if (CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
-            mApply.setVisibility(View.GONE);
-        }
 
         // Additional cards which should hang out offscreen until expanded
         mAdditionalCards = (LinearLayout) v.findViewById(R.id.additional_cards);

@@ -303,6 +303,18 @@ public class ChooserActivity extends FragmentActivity
         }
     }
 
+    public void expand() {
+        if (!mExpanded && !mIsAnimating) {
+            mExpanded = true;
+            mContainer.setClickable(false);
+            mContainer.expand();
+            ThemeFragment f = getCurrentFragment();
+            f.expand();
+            setAnimatingStateAndScheduleFinish();
+            hideShopThemesLayout();
+        }
+    }
+
     private void slideContentUp(int yDelta, int selectorHeight) {
         yDelta -= getResources().getDimensionPixelSize(R.dimen.content_offset_padding);
         getCurrentFragment().slideContentUp(-yDelta, selectorHeight);
@@ -376,15 +388,7 @@ public class ChooserActivity extends FragmentActivity
     private View.OnClickListener mPagerClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (!mExpanded && !mIsAnimating) {
-                mExpanded = true;
-                mContainer.setClickable(false);
-                mContainer.expand();
-                ThemeFragment f = getCurrentFragment();
-                f.expand();
-                setAnimatingStateAndScheduleFinish();
-                hideShopThemesLayout();
-            }
+            expand();
         }
     };
 

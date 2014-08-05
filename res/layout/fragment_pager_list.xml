@@ -74,11 +74,11 @@
                         android:textColor="#78000000"/>
 
                     <ImageView
-                        android:id="@+id/apply"
+                        android:id="@+id/customize"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginRight="16dp"
-                        android:src="@drawable/ic_theme_apply2"/>
+                        android:src="@drawable/ic_theme_customize"/>
 
                     <ImageView
                         android:id="@+id/overflow"
