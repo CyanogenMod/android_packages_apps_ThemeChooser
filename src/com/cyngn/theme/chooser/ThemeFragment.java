@@ -1783,6 +1783,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         getLoaderManager().restartLoader(LOADER_ID_ALL, null, ThemeFragment.this);
     }
 
+    public String getThemePackageName() {
+        return mPkgName;
+    }
+
     private void uninstallTheme() {
         Uri packageURI = Uri.parse("package:" + mPkgName);
         Intent uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageURI);

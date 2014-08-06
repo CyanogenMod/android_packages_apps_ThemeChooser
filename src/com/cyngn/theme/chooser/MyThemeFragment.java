@@ -34,10 +34,15 @@ import java.io.IOException;
 public class MyThemeFragment extends ThemeFragment {
     private static final String TAG = MyThemeFragment.class.getSimpleName();
 
-    static MyThemeFragment newInstance() {
+    private String mBaseThemePkgName;
+    private String mBaseThemeName;
+
+    static MyThemeFragment newInstance(String baseThemePkgName, String baseThemeName) {
         MyThemeFragment f = new MyThemeFragment();
         Bundle args = new Bundle();
-        args.putString("pkgName", ThemeFragment.CURRENTLY_APPLIED_THEME);
+        args.putString("pkgName", CURRENTLY_APPLIED_THEME);
+        args.putString("baseThemePkgName", baseThemePkgName);
+        args.putString("baseThemeName", baseThemeName);
         f.setArguments(args);
         return f;
     }
@@ -49,6 +54,8 @@ public class MyThemeFragment extends ThemeFragment {
         ThemedTypefaceHelper helper = sTypefaceHelperCache.getHelperForTheme(context,
                 getAppliedFontPackageName());
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
+        mBaseThemePkgName = getArguments().getString("baseThemePkgName");
+        mBaseThemeName = getArguments().getString("baseThemeName");
     }
 
     @Override
@@ -112,7 +119,7 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     protected void loadTitle(Cursor c) {
-        mTitle.setText(R.string.my_theme);
+        mTitle.setText(mBaseThemeName);
     }
 
     @Override
@@ -248,4 +255,10 @@ public class MyThemeFragment extends ThemeFragment {
         playPause.setOnClickListener(mPlayPauseClickListener);
         mp.setOnCompletionListener(mPlayCompletionListener);
     }
+
+    @Override
+    public String getThemePackageName() {
+        return mBaseThemePkgName;
+    }
+
 }

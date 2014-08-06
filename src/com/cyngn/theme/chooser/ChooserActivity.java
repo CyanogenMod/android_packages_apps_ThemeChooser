@@ -19,6 +19,8 @@ import android.animation.Animator;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ThemeUtils;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
@@ -63,8 +65,7 @@ public class ChooserActivity extends FragmentActivity
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
     public static final int REQUEST_UNINSTALL = 1; // Request code
     public static final String EXTRA_PKGNAME = "pkgName";
-
-    private static final long MOVE_TO_MY_THEME_DELAY = 750L;
+    public static final String APPLIED_BASE_THEME = "applied_base_theme";
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
 
@@ -89,6 +90,8 @@ public class ChooserActivity extends FragmentActivity
     private View mShopThemesLayout;
 
     private String mSelectedTheme;
+    private String mAppliedBaseTheme;
+    private boolean mThemeChanging = false;
 
     // Current system theme configuration as component -> pkgName
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
@@ -241,6 +244,7 @@ public class ChooserActivity extends FragmentActivity
      * Disable the ViewPager while a theme change is occuring
      */
     public void themeChangeStarted() {
+        mThemeChanging = true;
         mPager.setEnabled(false);
     }
 
@@ -248,23 +252,21 @@ public class ChooserActivity extends FragmentActivity
      * Re-enable the ViewPager and update the "My theme" fragment if available
      */
     public void themeChangeEnded() {
-        if (mPager.getCurrentItem() != 0) {
-            ThemeFragment f;
-            if (mPager.getCurrentItem() <= OFFSCREEN_PAGE_LIMIT) {
-                // Clear the "My theme" card so it loads the newly applied changes
-                f = (ThemeFragment) mAdapter.instantiateItem(mPager, 0);
-                if (f != null) f.clearChanges();
+        mThemeChanging = false;
+        ThemeFragment f = getCurrentFragment();
+        if (f != null)  {
+            // We currently need to recreate the adapter in order to load
+            // the changes otherwise the adapter returns the original fragments
+            // TODO: We'll need a better way to handle this to provide a good UX
+            if (!(f instanceof MyThemeFragment)) {
+                mAdapter = new ThemesAdapter(this);
+                mPager.setAdapter(mAdapter);
             }
-
-            // clear the current card so it returns to it's previous state
-            f = getCurrentFragment();
-            if (f != null) f.clearChanges();
-            mPager.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mPager.setCurrentItem(0, true);
-                }
-            }, MOVE_TO_MY_THEME_DELAY);
+            mAppliedBaseTheme = f.getThemePackageName();
+            SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+            prefs.edit().putString(APPLIED_BASE_THEME, mAppliedBaseTheme).commit();
+            getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null,
+                    ChooserActivity.this);
         }
         mPager.setEnabled(true);
     }
@@ -463,27 +465,28 @@ public class ChooserActivity extends FragmentActivity
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (mThemeChanging) return;
+
         switch (loader.getId()) {
             case LOADER_ID_INSTALLED_THEMES:
                 // Swap the new cursor in. (The framework will take care of closing the
                 // old cursor once we return.)
-                int selectedThemeIndex = 0;
-                if (!TextUtils.isEmpty(mSelectedTheme)) {
-                    while(data.moveToNext()) {
-                        if (mSelectedTheme.equals(data.getString(
-                                data.getColumnIndex(ThemesColumns.PKG_NAME)))) {
-                            // we need to add one here since the first card is "My theme"
-                            selectedThemeIndex = data.getPosition() + 1;
-                            mSelectedTheme = null;
-                            break;
-                        }
+                int selectedThemeIndex = -1;
+                if (TextUtils.isEmpty(mSelectedTheme)) mSelectedTheme = mAppliedBaseTheme;
+                while(data.moveToNext()) {
+                    if (mSelectedTheme.equals(data.getString(
+                            data.getColumnIndex(ThemesColumns.PKG_NAME)))) {
+                        // we need to add one here since the first card is "My theme"
+                        selectedThemeIndex = data.getPosition();
+                        mSelectedTheme = null;
+                        break;
                     }
-                    data.moveToFirst();
                 }
+                data.moveToFirst();
                 mAdapter.swapCursor(data);
                 mAdapter.notifyDataSetChanged();
-                if (selectedThemeIndex != 0) {
-                    mPager.setCurrentItem(selectedThemeIndex, false);
+                if (selectedThemeIndex >= 0) {
+                    mPager.setCurrentItem(selectedThemeIndex, true);
                 }
                 break;
             case LOADER_ID_APPLIED:
@@ -512,11 +515,15 @@ public class ChooserActivity extends FragmentActivity
 
         switch (id) {
             case LOADER_ID_INSTALLED_THEMES:
+                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+                mAppliedBaseTheme = prefs.getString(APPLIED_BASE_THEME,
+                        ThemeUtils.getDefaultThemePackageName(this));
                 selection = ThemesColumns.PRESENT_AS_THEME + "=?";
                 selectionArgs = new String[] { "1" };
                 // sort in ascending order but make sure the "default" theme is always first
                 sortOrder = "(" + ThemesColumns.IS_DEFAULT_THEME + "=1) DESC, "
-                        + ThemesColumns.TITLE + " ASC";
+                        + "(" + ThemesColumns.PKG_NAME + "='" + mAppliedBaseTheme + "') DESC, "
+                        + ThemesColumns.INSTALL_TIME + " DESC";
                 contentUri = ThemesColumns.CONTENT_URI;
                 break;
             case LOADER_ID_APPLIED:
@@ -554,12 +561,13 @@ public class ChooserActivity extends FragmentActivity
         @Override
         public Fragment getItem(int position) {
             ThemeFragment f;
-            if (position == 0) {
-                f = MyThemeFragment.newInstance();
+            mCursor.moveToPosition(position);
+            int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
+            final String pkgName = mCursor.getString(pkgIdx);
+            if (pkgName.equals(mAppliedBaseTheme)) {
+                String title = mCursor.getString(mCursor.getColumnIndex(ThemesColumns.TITLE));
+                f = MyThemeFragment.newInstance(mAppliedBaseTheme, title);
             } else {
-                mCursor.moveToPosition(position - 1);
-                int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
-                String pkgName = mCursor.getString(pkgIdx);
                 f = ThemeFragment.newInstance(pkgName);
             }
             f.setCurrentTheme(mCurrentTheme);
@@ -581,7 +589,7 @@ public class ChooserActivity extends FragmentActivity
          * @return
          */
         public int getCount() {
-            return mCursor == null ? 1 : mCursor.getCount() + 1;
+            return mCursor == null ? 0 : mCursor.getCount();
         }
 
         public void swapCursor(Cursor c) {
