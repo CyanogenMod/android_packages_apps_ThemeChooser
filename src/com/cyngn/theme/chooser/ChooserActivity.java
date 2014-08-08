@@ -245,7 +245,7 @@ public class ChooserActivity extends FragmentActivity
      */
     public void themeChangeStarted() {
         mThemeChanging = true;
-        mPager.setEnabled(false);
+        lockPager();
     }
 
     /**
@@ -268,15 +268,15 @@ public class ChooserActivity extends FragmentActivity
             getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null,
                     ChooserActivity.this);
         }
-        mPager.setEnabled(true);
+        unlockPager();
     }
 
     public void lockPager() {
-        mPager.setEnabled(false);
+        mPager.setScrollingEnabled(false);
     }
 
     public void unlockPager() {
-        mPager.setEnabled(true);
+        mPager.setScrollingEnabled(true);
     }
 
     public ComponentSelector getComponentSelector() {

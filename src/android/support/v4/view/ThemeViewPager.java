@@ -31,6 +31,7 @@ public class ThemeViewPager extends ViewPager {
     private float mSlop;
     private float mLastX;
     private float mLastY;
+    private boolean mScrollingEnabled = true;
 
     public ThemeViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -114,7 +115,7 @@ public class ThemeViewPager extends ViewPager {
                 break;
         }
 
-        if (mExpanded) {
+        if (mExpanded || !mScrollingEnabled) {
             return false;
         }
 
@@ -138,5 +139,9 @@ public class ThemeViewPager extends ViewPager {
             }
         }
         return view;
+    }
+
+    public void setScrollingEnabled(boolean enabled) {
+        mScrollingEnabled = enabled;
     }
 }
