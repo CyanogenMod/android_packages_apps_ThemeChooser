@@ -223,6 +223,11 @@ public class ChooserActivity extends FragmentActivity
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasExtra(EXTRA_PKGNAME)) {
             mSelectedTheme = intent.getStringExtra(EXTRA_PKGNAME);
+            if (mPager != null) {
+                mAdapter = new ThemesAdapter(this);
+                mPager.setAdapter(mAdapter);
+                getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null, this);
+            }
         } else {
             mSelectedTheme = null;
         }
