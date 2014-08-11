@@ -5,6 +5,7 @@ package com.cyngn.theme.chooser;
 
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.content.pm.ThemeUtils;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Typeface;
@@ -30,6 +31,7 @@ import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class MyThemeFragment extends ThemeFragment {
     private static final String TAG = MyThemeFragment.class.getSimpleName();
@@ -62,6 +64,16 @@ public class MyThemeFragment extends ThemeFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
+        mThemeTagLayout.setAppliedTagEnabled(true);
+        if (mBaseThemePkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()))) {
+            mThemeTagLayout.setDefaultTagEnabled(true);
+        }
+        for (String pkgName : mCurrentTheme.values()) {
+            if (!pkgName.equals(mBaseThemePkgName)) {
+                mThemeTagLayout.setCustomizedTagEnabled(true);
+                break;
+            }
+        }
         return v;
     }
 

@@ -56,7 +56,7 @@
     <dimen name="collapsed_theme_page_padding">24dp</dimen>
 
     <!-- Distance from top of screen to the collapsed theme preview -->
-    <dimen name="collapsed_theme_page_padding_top">119dp</dimen>
+    <dimen name="collapsed_theme_page_padding_top">87dp</dimen>
 
     <dimen name="component_divider_height">32dp</dimen>
     <dimen name="component_divider_height_bootani">48dp</dimen>

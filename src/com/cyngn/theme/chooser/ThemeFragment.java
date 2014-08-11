@@ -76,6 +76,7 @@ import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 import com.cyngn.theme.widget.BootAniImageView;
 import com.cyngn.theme.widget.LockableScrollView;
+import com.cyngn.theme.widget.ThemeTagLayout;
 
 import java.io.File;
 import java.io.IOException;
@@ -233,6 +234,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected View mApplyButton;
     protected View mCancelButton;
 
+    protected ThemeTagLayout mThemeTagLayout;
+
     static ThemeFragment newInstance(String pkgName) {
         ThemeFragment f = new ThemeFragment();
         Bundle args = new Bundle();
@@ -369,7 +372,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         // Additional cards which should hang out offscreen until expanded
         mAdditionalCards = (LinearLayout) v.findViewById(R.id.additional_cards);
 
-
         mWallpaperCard = (WallpaperCardView) v.findViewById(R.id.wallpaper_card);
         mLockScreenCard = (WallpaperCardView) v.findViewById(R.id.lockscreen_card);
         int translationY = getDistanceToMoveBelowScreen(mAdditionalCards);
@@ -380,6 +382,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mApplyButton.setOnClickListener(mApplyCancelClickListener);
         mCancelButton = mApplyThemeLayout.findViewById(R.id.apply_cancel);
         mCancelButton.setOnClickListener(mApplyCancelClickListener);
+
+        mThemeTagLayout = (ThemeTagLayout) v.findViewById(R.id.tag_layout);
+
+        if (mPkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()))) {
+            mThemeTagLayout.setDefaultTagEnabled(true);
+        }
 
         getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
 
@@ -488,6 +496,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mSelector = ((ChooserActivity) getActivity()).getComponentSelector();
         mSelector.setOnItemClickedListener(mOnComponentItemClicked);
         if (mBootAnimation != null) mBootAnimation.start();
+        hideThemeTagLayout();
     }
 
 
@@ -519,6 +528,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Resources r = mScrollView.getContext().getResources();
         int leftRightPadding = (int) r.getDimension(R.dimen.collapsed_theme_page_padding);
         content.setPadding(leftRightPadding, 0, leftRightPadding, 0);
+
+        if (applyTheme && componentsChanged()) {
+            mThemeTagLayout.setCustomizedTagEnabled(true);
+        }
 
         //Move the theme preview so that it is near the center of page per spec
         int paddingTop = (int) r.getDimension(R.dimen.collapsed_theme_page_padding_top);
@@ -594,6 +607,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         animateTitleCard(false, applyTheme);
         if (mBootAnimation != null) mBootAnimation.stop();
         stopMediaPlayers();
+        showThemeTagLayout();
     }
 
     // This will animate the children's vertical positions between the previous bounds and the
@@ -1604,10 +1618,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             final Context context = getActivity();
             if (context != null) {
                 if (mSelectedComponentsMap != null && mSelectedComponentsMap.size() > 0) {
-                    if (!CURRENTLY_APPLIED_THEME.equals(mPkgName)) {
-                        ThemeUtils.completeComponentMap(getActivity(),
-                                mSelectedComponentsMap);
-                    }
                     // Post this on mHandler so the client is added and removed from the same
                     // thread
                     mHandler.post(new Runnable() {
@@ -1615,8 +1625,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         public void run() {
                             ThemeManager tm = getThemeManager();
                             if (tm != null) {
-                                // if this is not the "my theme" card, add missing components
-                                // from defaults
                                 tm.addClient(ThemeFragment.this);
                                 tm.requestThemeChange(mSelectedComponentsMap);
                             }
@@ -1742,7 +1750,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         anim.alpha(0f).start();
         anim.setListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {}
+            public void onAnimationStart(Animator animation) {
+            }
 
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -1751,11 +1760,21 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {}
+            public void onAnimationCancel(Animator animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animator animation) {}
+            public void onAnimationRepeat(Animator animation) {
+            }
         });
+    }
+
+    public void showThemeTagLayout() {
+        mThemeTagLayout.animate().alpha(1f).setStartDelay(ANIMATE_DURATION).start();
+    }
+
+    public void hideThemeTagLayout() {
+        mThemeTagLayout.setAlpha(0f);
     }
 
     public void fadeInCards() {

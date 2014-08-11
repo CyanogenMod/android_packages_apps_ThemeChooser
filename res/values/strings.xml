@@ -58,4 +58,6 @@
 
     <string name="apply_theme_layout_title">Apply</string>
 
+    <string name="default_tag_text">Default</string>
+
 </resources>

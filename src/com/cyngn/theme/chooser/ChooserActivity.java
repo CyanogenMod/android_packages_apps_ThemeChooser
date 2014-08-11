@@ -265,7 +265,7 @@ public class ChooserActivity extends FragmentActivity
             mAppliedBaseTheme = f.getThemePackageName();
             SharedPreferences prefs = getPreferences(MODE_PRIVATE);
             prefs.edit().putString(APPLIED_BASE_THEME, mAppliedBaseTheme).commit();
-            getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null,
+            getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null,
                     ChooserActivity.this);
         }
         mPager.setEnabled(true);

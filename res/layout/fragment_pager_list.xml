@@ -8,7 +8,7 @@
               android:paddingEnd="@dimen/collapsed_theme_page_padding">
     <com.cyngn.theme.widget.LockableScrollView android:id="@android:id/list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:paddingTop="@dimen/collapsed_theme_page_padding_top"
                 android:gravity="center"
                 android:layout_gravity="center_vertical"
@@ -20,6 +20,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <include layout="@layout/theme_tags" />
             <FrameLayout
                 android:id="@+id/shadow_frame"
                 android:layout_width="match_parent"
