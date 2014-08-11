@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/label"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/label_height"
+        android:layout_height="wrap_content"
         android:paddingLeft="@dimen/card_padding_left_right"
         android:textColor="@color/wallpaper_label"
         android:background="@drawable/wallpaper_label_bg"

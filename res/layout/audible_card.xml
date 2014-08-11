@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/label"
         android:layout_width="match_parent"
-        android:layout_height="24dp"
+        android:layout_height="wrap_content"
         style="@style/card_label"/>
     <LinearLayout
         android:id="@+id/ringtone_preview"
