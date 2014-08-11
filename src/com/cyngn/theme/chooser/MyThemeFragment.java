@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ThemesContract;
 import android.provider.ThemesContract.PreviewColumns;
+import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -31,7 +32,6 @@ import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class MyThemeFragment extends ThemeFragment {
     private static final String TAG = MyThemeFragment.class.getSimpleName();
@@ -156,6 +156,8 @@ public class MyThemeFragment extends ThemeFragment {
         }
         mWallpaper.setImageDrawable(wp);
         mWallpaperCard.setWallpaper(wp);
+        setCardTitle(mWallpaperCard, mCurrentTheme.get(ThemesColumns.MODIFIES_LAUNCHER),
+                getString(R.string.wallpaper_label));
 
         if (animate) {
             animateContentChange(R.id.wallpaper_card, mWallpaperCard, overlay);
@@ -200,6 +202,8 @@ public class MyThemeFragment extends ThemeFragment {
         if (animate) {
             overlay = getOverlayDrawable(mFontPreview, true);
         }
+        setCardTitle(mFontCard, mCurrentTheme.get(ThemesColumns.MODIFIES_FONTS),
+                getString(R.string.font_label));
 
         TypefaceHelperCache cache = TypefaceHelperCache.getInstance();
         ThemedTypefaceHelper helper = cache.getHelperForTheme(getActivity(),
@@ -220,23 +224,25 @@ public class MyThemeFragment extends ThemeFragment {
         }
         View audibleContainer = null;
         ImageView playPause = null;
+        String modsComponent = "";
         switch (type) {
             case RingtoneManager.TYPE_RINGTONE:
                 audibleContainer = mRingtoneContainer;
                 playPause = mRingtonePlayPause;
+                modsComponent = ThemesColumns.MODIFIES_RINGTONES;
                 break;
             case RingtoneManager.TYPE_NOTIFICATION:
                 audibleContainer = mNotificationContainer;
                 playPause = mNotificationPlayPause;
+                modsComponent = ThemesColumns.MODIFIES_NOTIFICATIONS;
                 break;
             case RingtoneManager.TYPE_ALARM:
                 audibleContainer = mAlarmContainer;
                 playPause = mAlarmPlayPause;
+                modsComponent = ThemesColumns.MODIFIES_ALARMS;
                 break;
         }
         if (audibleContainer == null) return;
-        TextView label = (TextView) audibleContainer.findViewById(R.id.label);
-        label.setText(getAudibleLabel(type));
 
         if (playPause == null) {
             playPause =
@@ -261,6 +267,8 @@ public class MyThemeFragment extends ThemeFragment {
             title.setText(getString(R.string.audible_title_none));
             playPause.setVisibility(View.INVISIBLE);
         }
+        setCardTitle((ComponentCardView) audibleContainer, mCurrentTheme.get(modsComponent),
+                getAudibleLabel(type));
 
         playPause.setTag(mp);
         mMediaPlayers.put(playPause, mp);
