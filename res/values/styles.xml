@@ -81,4 +81,11 @@
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">marquee</item>
     </style>
+
+    <style name="add_component">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/add_component_text_color</item>
+        <item name="android:text">@string/add_component_text</item>
+    </style>
 </resources>

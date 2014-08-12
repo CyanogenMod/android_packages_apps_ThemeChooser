@@ -26,6 +26,8 @@ public class ComponentCardView extends LinearLayout {
     private static final int BACKGROUND_SEMI_OPAQUE_ALPHA = (int) (256.0f * SEMI_OPAQUE_ALPHA);
 
     protected TextView mLabel;
+    protected View mEmptyView;
+    protected View mContentView;
 
     // Expanded Padding
     int mExpandPadLeft;
@@ -62,6 +64,8 @@ public class ComponentCardView extends LinearLayout {
                 (int) r.getDimension(R.dimen.card_padding_left_right) + getPaddingRight();
         mExpandPadBottom =
                 (int) r.getDimension(R.dimen.card_padding_bottom) + getPaddingBottom();
+        mEmptyView = findViewById(R.id.empty);
+        mContentView = findViewById(R.id.content);
     }
 
     public void expand(boolean showLabel) {
@@ -164,8 +168,8 @@ public class ComponentCardView extends LinearLayout {
     public void animateContentChange(View v, final Drawable overlay, long duration) {
         final ViewOverlay viewOverlay = this.getOverlay();
         viewOverlay.add(overlay);
-        final int x = (int) v.getX();
-        final int y = (int) v.getY();
+        final int x = getRelativeLeft(v);
+        final int y = getRelativeTop(v);
         final int width = v.getWidth();
         final int height = v.getHeight();
         overlay.setBounds(x, y, x + v.getWidth(), y + v.getHeight());
@@ -209,5 +213,34 @@ public class ComponentCardView extends LinearLayout {
 
         set.start();
         overlayAnimator.start();
+    }
+
+    public void setEmptyViewEnabled(boolean enabled) {
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        }
+        if (mContentView != null) {
+            mContentView.setVisibility(enabled ? View.INVISIBLE : View.VISIBLE);
+        }
+    }
+
+    public boolean isShowingEmptyView() {
+        return mEmptyView != null && mEmptyView.getVisibility() == View.VISIBLE;
+    }
+
+    private int getRelativeTop(View v) {
+        if (v.getParent() == this) {
+            return v.getTop();
+        } else {
+            return v.getTop() + ((View) v.getParent()).getTop();
+        }
+    }
+
+    private int getRelativeLeft(View v) {
+        if (v.getParent() == this) {
+            return v.getLeft();
+        } else {
+            return v.getLeft() + ((View) v.getParent()).getLeft();
+        }
     }
 }

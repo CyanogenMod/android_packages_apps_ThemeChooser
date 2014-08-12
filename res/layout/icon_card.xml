@@ -15,33 +15,51 @@
         android:visibility="gone"
         android:text="@string/icon_label"
         style="@style/card_label"/>
-    <LinearLayout
-        android:id="@+id/icon_preview_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/comp_icon1"
-            />
-        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/comp_icon2"
-            />
-        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/comp_icon3"
-            />
-        <Space android:layout_width="30dp" android:layout_height="match_parent"/>
-    </LinearLayout>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/icon_preview_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <Space android:layout_width="30dp" android:layout_height="match_parent"/>
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/comp_icon1"
+                />
+            <Space android:layout_width="30dp" android:layout_height="match_parent"/>
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/comp_icon2"
+                />
+            <Space android:layout_width="30dp" android:layout_height="match_parent"/>
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/comp_icon3"
+                />
+            <Space android:layout_width="30dp" android:layout_height="match_parent"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="45dp"
+            android:visibility="gone">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_addcomponent"/>
+        </LinearLayout>
+    </FrameLayout>
 </com.cyngn.theme.chooser.ComponentCardView>

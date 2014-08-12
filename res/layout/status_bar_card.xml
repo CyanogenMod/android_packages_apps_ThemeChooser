@@ -19,58 +19,76 @@
         android:focusable="false"
         android:text="@string/statusbar_label"
         style="@style/card_label"/>
-    <LinearLayout
-        android:id="@+id/status_bar"
-        android:orientation="horizontal"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@*android:dimen/status_bar_height"
-        android:paddingEnd="6dp"
-        android:background="#000">
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/status_bar"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@*android:dimen/status_bar_height"
+            android:paddingEnd="6dp"
+            android:background="#000">
 
-        <!-- dummy view to push everything to the right. -->
-        <View
-            android:layout_width="0dp"
+            <!-- dummy view to push everything to the right. -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/bluetooth_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="@*android:dimen/status_bar_icon_size"
+                android:layout_gravity="center_vertical"
+                android:paddingEnd="6dp"
+                android:scaleType="fitCenter"/>
+
+            <ImageView
+                android:id="@+id/wifi_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="@*android:dimen/status_bar_icon_size"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitCenter"/>
+
+            <ImageView
+                android:id="@+id/signal_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="@*android:dimen/status_bar_icon_size"
+                android:layout_gravity="center_vertical"
+                android:paddingEnd="6dp"
+                android:scaleType="fitCenter"/>
+
+            <ImageView
+                android:id="@+id/battery"
+                android:layout_width="wrap_content"
+                android:layout_height="@*android:dimen/status_bar_icon_size"
+                android:layout_gravity="center_vertical"
+                android:paddingEnd="6dp"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:id="@+id/clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:text="@string/status_bar_clock_text"
+                style="@style/TextAppearance.StatusBar.Clock"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <ImageView
-            android:id="@+id/bluetooth_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="@*android:dimen/status_bar_icon_size"
-            android:layout_gravity="center_vertical"
-            android:paddingEnd="6dp"
-            android:scaleType="fitCenter"/>
-
-        <ImageView
-            android:id="@+id/wifi_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="@*android:dimen/status_bar_icon_size"
-            android:layout_gravity="center_vertical"
-            android:scaleType="fitCenter"/>
-
-        <ImageView
-            android:id="@+id/signal_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="@*android:dimen/status_bar_icon_size"
-            android:layout_gravity="center_vertical"
-            android:paddingEnd="6dp"
-            android:scaleType="fitCenter"/>
-
-        <ImageView
-            android:id="@+id/battery"
-            android:layout_width="wrap_content"
-            android:layout_height="@*android:dimen/status_bar_icon_size"
-            android:layout_gravity="center_vertical"
-            android:paddingEnd="6dp"
-            android:scaleType="fitCenter"/>
-
-        <TextView
-            android:id="@+id/clock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_gravity="center_vertical"
-            android:text="@string/status_bar_clock_text"
-            style="@style/TextAppearance.StatusBar.Clock"/>
-    </LinearLayout>
+            android:layout_gravity="center"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="31dp"
+            android:visibility="gone">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_addcomponent"/>
+        </LinearLayout>
+    </FrameLayout>
 </com.cyngn.theme.chooser.ComponentCardView>
