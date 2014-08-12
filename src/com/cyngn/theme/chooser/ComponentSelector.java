@@ -94,6 +94,8 @@ public class ComponentSelector extends LinearLayout
     private MediaPlayer mMediaPlayer;
     private ImageView mCurrentPlayPause;
 
+    private int mCurrentLoaderId;
+
     public ComponentSelector(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -364,6 +366,7 @@ public class ComponentSelector extends LinearLayout
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
+        mCurrentLoaderId = loader.getId();
         mAdapter.swapCursor(data);
     }
 
@@ -423,7 +426,8 @@ public class ComponentSelector extends LinearLayout
                 newStyleView(mCursor, v, position);
             }
             if (MODIFIES_LAUNCHER.equals(mComponentType)) {
-                newWallpapersView(mCursor, v, position);
+                newWallpapersView(mCursor, v, position,
+                        mCursor.getColumnIndex(PreviewColumns.WALLPAPER_THUMBNAIL));
             }
             if (MODIFIES_BOOT_ANIM.equals(mComponentType)) {
                 newBootanimationView(mCursor, v, position);
@@ -439,7 +443,8 @@ public class ComponentSelector extends LinearLayout
                 newSoundView(mCursor, v, position, mComponentType);
             }
             if (MODIFIES_LOCKSCREEN.equals(mComponentType)) {
-                newLockScreenView(mCursor, v, position);
+                newWallpapersView(mCursor, v, position,
+                        mCursor.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL));
             }
             container.addView(v);
             return v;
@@ -454,7 +459,14 @@ public class ComponentSelector extends LinearLayout
 
         @Override
         public int getCount() {
-            return mCursor == null ? 0 : (int) Math.ceil((float)mCursor.getCount() / mItemsPerPage);
+            if (mCursor == null) return 0;
+
+            int count = mCursor.getCount();
+            if (mCurrentLoaderId == LOADER_ID_WALLPAPER ||
+                    mCurrentLoaderId == LOADER_ID_LOCKSCREEN) {
+                count++;
+            }
+            return (int) Math.ceil((float)count / mItemsPerPage);
         }
 
         @Override
@@ -607,40 +619,25 @@ public class ComponentSelector extends LinearLayout
             }
         }
 
-        private void newWallpapersView(Cursor cursor, ViewGroup parent, int position) {
+        private void newWallpapersView(Cursor cursor, ViewGroup parent, int position,
+                int wallpaperIndex) {
             for (int i = 0; i < mItemsPerPage; i++) {
                 int index = position * mItemsPerPage + i;
-                if (cursor.getCount() <= index) continue;
-                cursor.moveToPosition(index);
+                if (cursor.getCount() < index) continue;
                 View v = mInflater.inflate(R.layout.wallpaper_component_selection_item, parent,
                         false);
-                int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.WALLPAPER_THUMBNAIL);
-                int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
-
-                ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
-                        Utils.loadBitmapBlob(cursor, wallpaperIndex));
-                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-                v.setTag(cursor.getString(pkgNameIndex));
-                v.setOnClickListener(mItemClickListener);
-                parent.addView(v, mItemParams);
-                addDividerIfNeeded(parent, i, index, cursor);
-            }
-        }
-
-        private void newLockScreenView(Cursor cursor, ViewGroup parent, int position) {
-            for (int i = 0; i < mItemsPerPage; i++) {
-                int index = position * mItemsPerPage + i;
-                if (cursor.getCount() <= index) continue;
-                cursor.moveToPosition(index);
-                View v = mInflater.inflate(R.layout.wallpaper_component_selection_item, parent,
-                        false);
-                int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL);
-                int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
-
-                ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
-                        Utils.loadBitmapBlob(cursor, wallpaperIndex));
-                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-                v.setTag(cursor.getString(pkgNameIndex));
+                ImageView iv = (ImageView) v.findViewById(R.id.icon);
+                if (index == 0) {
+                    iv.setImageResource(R.drawable.img_wallpaper_none);
+                    v.setTag("");
+                } else {
+                    cursor.moveToPosition(index - 1);
+                    int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+                    iv.setImageBitmap(
+                            Utils.loadBitmapBlob(cursor, wallpaperIndex));
+                    setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+                    v.setTag(cursor.getString(pkgNameIndex));
+                }
                 v.setOnClickListener(mItemClickListener);
                 parent.addView(v, mItemParams);
                 addDividerIfNeeded(parent, i, index, cursor);

@@ -43,6 +43,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
@@ -614,6 +615,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (mBootAnimation != null) mBootAnimation.stop();
         stopMediaPlayers();
         showThemeTagLayout();
+
+        // Need to set the wallpaper background to black if the user has selected to apply
+        // the "none" wallpaper
+        if (applyTheme) {
+            String pkgName = mSelectedComponentsMap.get(ThemesColumns.MODIFIES_LAUNCHER);
+            if (pkgName != null && pkgName.length() == 0) {
+                mWallpaper.setImageResource(R.drawable.wallpaper_none_bg);
+            }
+        }
     }
 
     // This will animate the children's vertical positions between the previous bounds and the
@@ -1647,9 +1657,21 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             } else if (MODIFIES_NAVIGATION_BAR.equals(component)) {
                 loaderId = LOADER_ID_NAVIGATION_BAR;
             } else if (MODIFIES_LAUNCHER.equals(component)) {
-                loaderId = LOADER_ID_WALLPAPER;
+                if (pkgName != null && TextUtils.isEmpty(pkgName)) {
+                    mWallpaperCard.setWallpaper(null);
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LAUNCHER, "");
+                    setCardTitle(mWallpaperCard, "", getString(R.string.wallpaper_label));
+                } else {
+                    loaderId = LOADER_ID_WALLPAPER;
+                }
             } else if (MODIFIES_LOCKSCREEN.equals(component)) {
-                loaderId = LOADER_ID_LOCKSCREEN;
+                if (pkgName != null && TextUtils.isEmpty(pkgName)) {
+                    mLockScreenCard.setWallpaper(null);
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, "");
+                    setCardTitle(mWallpaperCard, "", getString(R.string.lockscreen_label));
+                } else {
+                    loaderId = LOADER_ID_LOCKSCREEN;
+                }
             } else if (MODIFIES_OVERLAYS.equals(component)) {
                 loaderId = LOADER_ID_STYLE;
             } else if (MODIFIES_BOOT_ANIM.equals(component)) {
