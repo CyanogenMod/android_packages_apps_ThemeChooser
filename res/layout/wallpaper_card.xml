@@ -7,6 +7,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        style="@style/card_none_text"/>
+
     <TextView
         android:id="@+id/label"
         android:layout_width="match_parent"

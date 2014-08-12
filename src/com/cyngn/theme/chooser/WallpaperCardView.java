@@ -53,6 +53,25 @@ public class WallpaperCardView extends ComponentCardView {
 
     public void setWallpaper(Drawable drawable) {
         mImage.setImageDrawable(drawable);
+        View none = findViewById(R.id.none);
+        if (drawable == null) {
+            setBackgroundResource(R.drawable.card_wallpapertoggled_bg);
+            if (none != null) {
+                none.setVisibility(View.VISIBLE);
+            }
+            if (mLabel != null) {
+                mLabel.setBackgroundResource(0);
+            }
+        } else {
+            setBackgroundResource(0);
+
+            if (none != null) {
+                none.setVisibility(View.GONE);
+            }
+            if (mLabel != null) {
+                mLabel.setBackgroundResource(R.drawable.wallpaper_label_bg);
+            }
+        }
     }
 
     @Override

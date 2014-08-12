@@ -88,4 +88,11 @@
         <item name="android:textColor">@color/add_component_text_color</item>
         <item name="android:text">@string/add_component_text</item>
     </style>
+
+    <style name="card_none_text">
+        <item name="android:textSize">34sp</item>
+        <item name="android:textColor">@color/card_none_text_color</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:text">@string/wallpaper_none</item>
+    </style>
 </resources>

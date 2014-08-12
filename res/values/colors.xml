@@ -59,4 +59,6 @@
     <color name="add_component_text_color">#000000</color>
     <color name="add_component_text_color_boot_anim">#ffffff</color>
 
+    <color name="card_none_text_color">#4fc3f7</color>
+
 </resources>

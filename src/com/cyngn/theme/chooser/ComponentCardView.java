@@ -130,8 +130,10 @@ public class ComponentCardView extends LinearLayout {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 mBackgroundAlpha = (Integer) animation.getAnimatedValue();
-                getBackground().setAlpha(mBackgroundAlpha);
-                invalidate();
+                if (getBackground() != null) {
+                    getBackground().setAlpha(mBackgroundAlpha);
+                    invalidate();
+                }
             }
         });
         bgAlphaAnimator.start();
@@ -141,7 +143,6 @@ public class ComponentCardView extends LinearLayout {
      * Animates the card background and the title back to full opacity.
      */
     public void animateCardFadeIn() {
-        if (getBackground().getAlpha() > 51) return;
         if (mLabel != null) {
             mLabel.animate().alpha(1f).setDuration(CARD_FADE_DURATION);
         }
@@ -152,8 +153,10 @@ public class ComponentCardView extends LinearLayout {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 mBackgroundAlpha = (Integer) animation.getAnimatedValue();
-                getBackground().setAlpha(mBackgroundAlpha);
-                invalidate();
+                if (getBackground() != null) {
+                    getBackground().setAlpha(mBackgroundAlpha);
+                    invalidate();
+                }
             }
         });
         bgAlphaAnimator.start();
