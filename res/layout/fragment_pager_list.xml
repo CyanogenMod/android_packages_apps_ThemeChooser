@@ -77,15 +77,17 @@
 
                     <ImageView
                         android:id="@+id/customize"
-                        android:layout_width="40dp"
+                        android:layout_width="47dp"
                         android:layout_height="match_parent"
                         android:scaleType="center"
                         android:src="@drawable/ic_theme_customize"/>
 
                     <ImageView
                         android:id="@+id/overflow"
-                        android:layout_width="40dp"
+                        android:layout_width="36dp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="1dp"
+                        android:layout_marginEnd="8dp"
                         android:scaleType="center"
                         android:src="@drawable/ic_overflow_dark"/>
                 </LinearLayout>
