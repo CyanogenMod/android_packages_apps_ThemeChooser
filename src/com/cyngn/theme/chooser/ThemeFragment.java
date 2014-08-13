@@ -84,7 +84,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipFile;
@@ -184,10 +183,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected ImageView mWallpaper;
     protected ViewGroup mStatusBar;
     protected TextView mFontPreview;
-    protected ViewGroup mStyleContainer;
+    protected ComponentCardView mStyleCard;
     protected ComponentCardView mFontCard;
-    protected ViewGroup mIconContainer;
-    protected ViewGroup mBootAnimationContainer;
+    protected ComponentCardView mIconCard;
+    protected ComponentCardView mBootAnimationCard;
     protected BootAniImageView mBootAnimation;
 
     // Nav Bar Views
@@ -214,11 +213,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected ImageView mStylePreview;
 
     // Sound cards
-    protected ViewGroup mRingtoneContainer;
+    protected ComponentCardView mRingtoneCard;
     protected ImageView mRingtonePlayPause;
-    protected ViewGroup mNotificationContainer;
+    protected ComponentCardView mNotificationCard;
     protected ImageView mNotificationPlayPause;
-    protected ViewGroup mAlarmContainer;
+    protected ComponentCardView mAlarmCard;
     protected ImageView mAlarmPlayPause;
     protected Map<ImageView, MediaPlayer> mMediaPlayers;
 
@@ -307,19 +306,19 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mFontCard = (ComponentCardView) v.findViewById(R.id.font_preview_container);
         mFontPreview = (TextView) v.findViewById(R.id.font_preview);
         mFontPreview.setTypeface(mTypefaceNormal);
-        mIconContainer = (ViewGroup) v.findViewById(R.id.icon_container);
+        mIconCard = (ComponentCardView) v.findViewById(R.id.icon_container);
         mShadowFrame = (FrameLayout) v.findViewById(R.id.shadow_frame);
-        mStyleContainer = (ViewGroup) v.findViewById(R.id.style_card);
+        mStyleCard = (ComponentCardView) v.findViewById(R.id.style_card);
         mStylePreview = (ImageView) v.findViewById(R.id.style_preview);
-        mBootAnimationContainer = (ViewGroup) v.findViewById(R.id.bootani_preview_container);
+        mBootAnimationCard = (ComponentCardView) v.findViewById(R.id.bootani_preview_container);
         mBootAnimation =
-                (BootAniImageView) mBootAnimationContainer.findViewById(R.id.bootani_preview);
-        mRingtoneContainer = (ViewGroup) v.findViewById(R.id.ringtone_preview_container);
-        mRingtonePlayPause = (ImageView) mRingtoneContainer.findViewById(R.id.play_pause);
-        mNotificationContainer = (ViewGroup) v.findViewById(R.id.notification_preview_container);
-        mNotificationPlayPause = (ImageView) mNotificationContainer.findViewById(R.id.play_pause);
-        mAlarmContainer = (ViewGroup) v.findViewById(R.id.alarm_preview_container);
-        mAlarmPlayPause = (ImageView) mAlarmContainer.findViewById(R.id.play_pause);
+                (BootAniImageView) mBootAnimationCard.findViewById(R.id.bootani_preview);
+        mRingtoneCard = (ComponentCardView) v.findViewById(R.id.ringtone_preview_container);
+        mRingtonePlayPause = (ImageView) mRingtoneCard.findViewById(R.id.play_pause);
+        mNotificationCard = (ComponentCardView) v.findViewById(R.id.notification_preview_container);
+        mNotificationPlayPause = (ImageView) mNotificationCard.findViewById(R.id.play_pause);
+        mAlarmCard = (ComponentCardView) v.findViewById(R.id.alarm_preview_container);
+        mAlarmPlayPause = (ImageView) mAlarmCard.findViewById(R.id.play_pause);
 
         // Nav Bar
         mNavBarCard = (ComponentCardView) v.findViewById(R.id.navigation_bar_container);
@@ -458,7 +457,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Rect padding = new Rect();
         NinePatchDrawable bg = (NinePatchDrawable) mShadowFrame.getBackground();
         bg.getPadding(padding);
-        mIconContainer.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        mIconCard.setPadding(padding.left, padding.top, padding.right, padding.bottom);
         mShadowFrame.setBackground(null);
         mShadowFrame.setPadding(0, 0, 0, 0);
         mAdditionalCards.setPadding(padding.left, padding.top, padding.right, padding.bottom);
@@ -1138,40 +1137,40 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (hasContent) {
                 loadStyle(c, false);
             } else {
-                ((ComponentCardView) mStyleContainer).setEmptyViewEnabled(true);
-                setAddComponentTitle((ComponentCardView) mStyleContainer,
+                mStyleCard.setEmptyViewEnabled(true);
+                setAddComponentTitle(mStyleCard,
                         getString(R.string.style_label));
             }
         } else if (MODIFIES_BOOT_ANIM.equals(component)) {
             if (hasContent) {
                 loadBootAnimation(c);
             } else {
-                ((ComponentCardView) mBootAnimationContainer).setEmptyViewEnabled(true);
-                setAddComponentTitle((ComponentCardView) mStyleContainer,
+                mBootAnimationCard.setEmptyViewEnabled(true);
+                setAddComponentTitle(mBootAnimationCard,
                         getString(R.string.style_label));
             }
         } else if (MODIFIES_RINGTONES.equals(component)) {
             if (hasContent) {
                 loadAudible(RingtoneManager.TYPE_RINGTONE, c, false);
             } else {
-                ((ComponentCardView) mRingtoneContainer).setEmptyViewEnabled(true);
-                setAddComponentTitle((ComponentCardView) mRingtoneContainer,
+                mRingtoneCard.setEmptyViewEnabled(true);
+                setAddComponentTitle(mRingtoneCard,
                         getAudibleLabel(RingtoneManager.TYPE_RINGTONE));
             }
         } else if (MODIFIES_NOTIFICATIONS.equals(component)) {
             if (hasContent) {
                 loadAudible(RingtoneManager.TYPE_NOTIFICATION, c, false);
             } else {
-                ((ComponentCardView) mNotificationContainer).setEmptyViewEnabled(true);
-                setAddComponentTitle((ComponentCardView) mNotificationContainer,
+                mNotificationCard.setEmptyViewEnabled(true);
+                setAddComponentTitle(mNotificationCard,
                         getAudibleLabel(RingtoneManager.TYPE_NOTIFICATION));
             }
         } else if (MODIFIES_ALARMS.equals(component)) {
             if (hasContent) {
                 loadAudible(RingtoneManager.TYPE_ALARM, c, false);
             } else {
-                ((ComponentCardView) mAlarmContainer).setEmptyViewEnabled(true);
-                setAddComponentTitle((ComponentCardView) mAlarmContainer,
+                mAlarmCard.setEmptyViewEnabled(true);
+                setAddComponentTitle(mAlarmCard,
                         getAudibleLabel(RingtoneManager.TYPE_ALARM));
             }
         } else {
@@ -1313,8 +1312,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     protected void loadIcons(Cursor c, boolean animate) {
-        if (((ComponentCardView) mIconContainer).isShowingEmptyView()) {
-            ((ComponentCardView) mIconContainer).setEmptyViewEnabled(false);
+        if (mIconCard.isShowingEmptyView()) {
+            mIconCard.setEmptyViewEnabled(false);
         }
         int[] iconIdx = new int[4];
         iconIdx[0] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_1);
@@ -1327,7 +1326,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         // fall back to the default icon set
         IconPreviewHelper helper = new IconPreviewHelper(getActivity(), "");
         ViewGroup iconContainer =
-                (ViewGroup) mIconContainer.findViewById(R.id.icon_preview_container);
+                (ViewGroup) mIconCard.findViewById(R.id.icon_preview_container);
         int numOfChildren = iconContainer.getChildCount();
 
         List<ImageView> iconViews = new ArrayList<ImageView>(numOfChildren);
@@ -1369,7 +1368,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (pkgNameIdx > -1) {
             String pkgName = c.getString(pkgNameIdx);
             mSelectedComponentsMap.put(MODIFIES_ICONS, pkgName);
-            setCardTitle((ComponentCardView) mIconContainer, pkgName,
+            setCardTitle(mIconCard, pkgName,
                     getString(R.string.icon_label));
         }
     }
@@ -1436,8 +1435,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (animate) {
             overlay = getOverlayDrawable(mStylePreview, true);
         }
-        if (((ComponentCardView)mStyleContainer).isShowingEmptyView()) {
-            ((ComponentCardView)mStyleContainer).setEmptyViewEnabled(false);
+        if (mStyleCard.isShowingEmptyView()) {
+            mStyleCard.setEmptyViewEnabled(false);
         }
 
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
@@ -1446,7 +1445,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (pkgNameIdx > -1) {
             String pkgName = c.getString(pkgNameIdx);
             mSelectedComponentsMap.put(MODIFIES_OVERLAYS, pkgName);
-            setCardTitle((ComponentCardView) mStyleContainer, pkgName,
+            setCardTitle(mStyleCard, pkgName,
                     getString(R.string.style_label));
         }
         if (animate) {
@@ -1455,8 +1454,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     protected void loadBootAnimation(Cursor c) {
-        if (((ComponentCardView) mBootAnimationContainer).isShowingEmptyView()) {
-            ((ComponentCardView) mBootAnimationContainer).setEmptyViewEnabled(false);
+        if (mBootAnimationCard.isShowingEmptyView()) {
+            mBootAnimationCard.setEmptyViewEnabled(false);
         }
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         if (mBootAnimation != null) {
@@ -1464,7 +1463,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (pkgNameIdx > -1) {
                 pkgName = c.getString(pkgNameIdx);
                 mSelectedComponentsMap.put(MODIFIES_BOOT_ANIM, pkgName);
-                setCardTitle((ComponentCardView) mBootAnimationContainer, pkgName,
+                setCardTitle(mBootAnimationCard, pkgName,
                         getString(R.string.boot_animation_label));
             } else {
                 pkgName = mCurrentTheme.get(MODIFIES_BOOT_ANIM);
@@ -1475,25 +1474,25 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     protected void loadAudible(int type, Cursor c, boolean animate) {
-        View audibleContainer = null;
+        ComponentCardView audibleContainer = null;
         ImageView playPause = null;
         String component = null;
         int parentResId = 0;
         switch (type) {
             case RingtoneManager.TYPE_RINGTONE:
-                audibleContainer = mRingtoneContainer;
+                audibleContainer = mRingtoneCard;
                 playPause = mRingtonePlayPause;
                 component = MODIFIES_RINGTONES;
                 parentResId = R.id.ringtone_preview_container;
                 break;
             case RingtoneManager.TYPE_NOTIFICATION:
-                audibleContainer = mNotificationContainer;
+                audibleContainer = mNotificationCard;
                 playPause = mNotificationPlayPause;
                 component = MODIFIES_NOTIFICATIONS;
                 parentResId = R.id.notification_preview_container;
                 break;
             case RingtoneManager.TYPE_ALARM:
-                audibleContainer = mAlarmContainer;
+                audibleContainer = mAlarmCard;
                 playPause = mAlarmPlayPause;
                 component = MODIFIES_ALARMS;
                 parentResId = R.id.alarm_preview_container;
@@ -1506,8 +1505,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (animate) {
             overlay = getOverlayDrawable(content, true);
         }
-        if (((ComponentCardView) audibleContainer).isShowingEmptyView()) {
-            ((ComponentCardView) audibleContainer).setEmptyViewEnabled(false);
+        if (audibleContainer.isShowingEmptyView()) {
+            audibleContainer.setEmptyViewEnabled(false);
         }
 
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
@@ -1521,7 +1520,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             mp = new MediaPlayer();
         }
         String pkgName = c.getString(pkgNameIdx);
-        setCardTitle((ComponentCardView) audibleContainer, pkgName, getAudibleLabel(type));
+        setCardTitle(audibleContainer, pkgName, getAudibleLabel(type));
         try {
             AudioUtils.loadThemeAudible(getActivity(), type, pkgName, mp);
         } catch (PackageManager.NameNotFoundException e) {
