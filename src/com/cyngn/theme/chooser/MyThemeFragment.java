@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.pm.ThemeUtils;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -152,12 +153,18 @@ public class MyThemeFragment extends ThemeFragment {
         Drawable wp = context == null ? null :
                 WallpaperManager.getInstance(context).getDrawable();
         if (wp == null) {
-            wp = new BitmapDrawable(res, Utils.loadBitmapBlob(c, wpIdx));
+            Bitmap bmp = Utils.loadBitmapBlob(c, wpIdx);
+            if (bmp != null) wp = new BitmapDrawable(res, bmp);
         }
-        mWallpaper.setImageDrawable(wp);
-        mWallpaperCard.setWallpaper(wp);
-        setCardTitle(mWallpaperCard, mCurrentTheme.get(ThemesColumns.MODIFIES_LAUNCHER),
-                getString(R.string.wallpaper_label));
+        if (wp != null) {
+            mWallpaper.setImageDrawable(wp);
+            mWallpaperCard.setWallpaper(wp);
+            setCardTitle(mWallpaperCard, mCurrentTheme.get(ThemesColumns.MODIFIES_LAUNCHER),
+                    getString(R.string.wallpaper_label));
+        } else {
+            mWallpaperCard.setEmptyViewEnabled(true);
+            setAddComponentTitle(mWallpaperCard, getString(R.string.wallpaper_label));
+        }
 
         if (animate) {
             animateContentChange(R.id.wallpaper_card, mWallpaperCard, overlay);
@@ -182,9 +189,15 @@ public class MyThemeFragment extends ThemeFragment {
         Drawable wp = context == null ? null :
                 WallpaperManager.getInstance(context).getFastKeyguardDrawable();
         if (wp == null) {
-            wp = new BitmapDrawable(res, Utils.loadBitmapBlob(c, wpIdx));
+            Bitmap bmp = Utils.loadBitmapBlob(c, wpIdx);
+            if (bmp != null) wp = new BitmapDrawable(res, bmp);
         }
-        mLockScreenCard.setWallpaper(wp);
+        if (wp != null) {
+            mLockScreenCard.setWallpaper(wp);
+        } else {
+            mLockScreenCard.setEmptyViewEnabled(true);
+            setAddComponentTitle(mLockScreenCard, getString(R.string.lockscreen_label));
+        }
 
         if (animate) {
             animateContentChange(R.id.lockscreen_card, mLockScreenCard, overlay);

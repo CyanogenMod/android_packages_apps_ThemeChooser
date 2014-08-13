@@ -1222,11 +1222,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
         final Resources res = getResources();
         Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
-        mWallpaper.setImageBitmap(bitmap);
-        mWallpaperCard.setWallpaper(new BitmapDrawable(res, bitmap));
-        String pkgName = c.getString(pkgNameIdx);
-        mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
-        setCardTitle(mWallpaperCard, pkgName, getString(R.string.wallpaper_label));
+        if (bitmap != null) {
+            mWallpaper.setImageBitmap(bitmap);
+            mWallpaperCard.setWallpaper(new BitmapDrawable(res, bitmap));
+            String pkgName = c.getString(pkgNameIdx);
+            mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
+            setCardTitle(mWallpaperCard, pkgName, getString(R.string.wallpaper_label));
+        } else {
+            mWallpaperCard.setEmptyViewEnabled(true);
+            setAddComponentTitle(mWallpaperCard, getString(R.string.wallpaper_label));
+        }
 
         if (animate) {
             animateContentChange(R.id.wallpaper_card, mWallpaperCard, overlay);
@@ -1244,10 +1249,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int wpIdx = c.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_PREVIEW);
         final Resources res = getResources();
         Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
-        mLockScreenCard.setWallpaper(new BitmapDrawable(res, bitmap));
-        String pkgName = c.getString(pkgNameIdx);
-        mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN, pkgName);
-        setCardTitle(mLockScreenCard, pkgName, getString(R.string.lockscreen_label));
+        if (bitmap != null) {
+            mLockScreenCard.setWallpaper(new BitmapDrawable(res, bitmap));
+            String pkgName = c.getString(pkgNameIdx);
+            mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN, pkgName);
+            setCardTitle(mLockScreenCard, pkgName, getString(R.string.lockscreen_label));
+        } else {
+            mLockScreenCard.setEmptyViewEnabled(true);
+            setAddComponentTitle(mLockScreenCard, getString(R.string.lockscreen_label));
+        }
 
         if (animate) {
             animateContentChange(R.id.lockscreen_card, mLockScreenCard, overlay);
