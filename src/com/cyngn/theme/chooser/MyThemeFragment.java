@@ -235,22 +235,22 @@ public class MyThemeFragment extends ThemeFragment {
             super.loadAudible(type, c, animate);
             return;
         }
-        View audibleContainer = null;
+        ComponentCardView audibleContainer = null;
         ImageView playPause = null;
         String modsComponent = "";
         switch (type) {
             case RingtoneManager.TYPE_RINGTONE:
-                audibleContainer = mRingtoneContainer;
+                audibleContainer = mRingtoneCard;
                 playPause = mRingtonePlayPause;
                 modsComponent = ThemesColumns.MODIFIES_RINGTONES;
                 break;
             case RingtoneManager.TYPE_NOTIFICATION:
-                audibleContainer = mNotificationContainer;
+                audibleContainer = mNotificationCard;
                 playPause = mNotificationPlayPause;
                 modsComponent = ThemesColumns.MODIFIES_NOTIFICATIONS;
                 break;
             case RingtoneManager.TYPE_ALARM:
-                audibleContainer = mAlarmContainer;
+                audibleContainer = mAlarmCard;
                 playPause = mAlarmPlayPause;
                 modsComponent = ThemesColumns.MODIFIES_ALARMS;
                 break;
@@ -280,7 +280,7 @@ public class MyThemeFragment extends ThemeFragment {
             title.setText(getString(R.string.audible_title_none));
             playPause.setVisibility(View.INVISIBLE);
         }
-        setCardTitle((ComponentCardView) audibleContainer, mCurrentTheme.get(modsComponent),
+        setCardTitle(audibleContainer, mCurrentTheme.get(modsComponent),
                 getAudibleLabel(type));
 
         playPause.setTag(mp);
