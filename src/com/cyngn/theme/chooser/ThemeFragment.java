@@ -233,6 +233,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected Map<String, String> mCurrentTheme = new HashMap<String, String>();
     protected Cursor mCurrentCursor;
     protected int mCurrentLoaderId;
+    protected boolean mThemeResetting;
 
     protected View mApplyThemeLayout;
     protected View mApplyButton;
@@ -292,6 +293,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mScrollContent = (ViewGroup) mScrollView.getChildAt(0);
         mPreviewContent = (ViewGroup) v.findViewById(R.id.preview_container);
         mLoadingView = v.findViewById(R.id.loading_view);
+        mThemeTagLayout = (ThemeTagLayout) v.findViewById(R.id.tag_layout);
 
         // Status Bar
         mStatusBarCard = (ComponentCardView) v.findViewById(R.id.status_bar_container);
@@ -340,28 +342,20 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 PopupMenu popupmenu = new PopupMenu(getActivity(), mTitleCard, Gravity.END);
                 popupmenu.getMenuInflater().inflate(R.menu.overflow, popupmenu.getMenu());
 
+                Menu menu = popupmenu.getMenu();
                 if (CURRENTLY_APPLIED_THEME.equals(mPkgName) ||
                         mPkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity())) ||
                         mPkgName.equals(ThemeConfig.HOLO_DEFAULT)) {
-                    Menu menu = popupmenu.getMenu();
                     menu.findItem(R.id.menu_delete).setEnabled(false);
+                }
+                if (!mThemeTagLayout.isCustomizedTagEnabled()) {
+                    menu.findItem(R.id.menu_reset).setVisible(false);
                 }
 
                 popupmenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        switch(item.getItemId()) {
-                            case R.id.menu_author:
-                                Toast.makeText(getActivity(),
-                                        "Not supported",
-                                        Toast.LENGTH_LONG).show();
-                                break;
-                            case R.id.menu_delete:
-                                uninstallTheme();
-                                break;
-                        }
-
-                        return true;
+                        return onPopupMenuItemClick(item);
                     }
                 });
                 popupmenu.show();
@@ -389,8 +383,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mApplyButton.setOnClickListener(mApplyCancelClickListener);
         mCancelButton = mApplyThemeLayout.findViewById(R.id.apply_cancel);
         mCancelButton.setOnClickListener(mApplyCancelClickListener);
-
-        mThemeTagLayout = (ThemeTagLayout) v.findViewById(R.id.tag_layout);
 
         if (mPkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()))) {
             mThemeTagLayout.setDefaultTagEnabled(true);
@@ -454,6 +446,21 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 PreferenceUtils.removeUpdatedTheme(getActivity(), mPkgName);
             }
         }
+    }
+
+    protected boolean onPopupMenuItemClick(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.menu_author:
+                Toast.makeText(getActivity(),
+                        "Not supported",
+                        Toast.LENGTH_LONG).show();
+                break;
+            case R.id.menu_delete:
+                uninstallTheme();
+                break;
+        }
+
+        return true;
     }
 
     public void expand() {
@@ -1757,7 +1764,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     };
 
-    private void applyTheme() {
+    protected void applyTheme() {
         if (mSelectedComponentsMap == null || mSelectedComponentsMap.size() <= 0) return;
         ((ChooserActivity) getActivity()).themeChangeStarted();
         animateProgressIn(mApplyThemeRunnable);
@@ -1773,7 +1780,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         scaleAnim.setDuration(ANIMATE_PROGRESS_IN_DURATION);
 
         mTitleLayout.animate()
-                .translationXBy(-(pivotX / 4))
+                .translationXBy(-(pivotX / 3))
                 .alpha(0f)
                 .setDuration(ANIMATE_TITLE_OUT_DURATION)
                 .setInterpolator(new AccelerateInterpolator())
@@ -1797,6 +1804,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             @Override
             public void onAnimationEnd(Animation animation) {
                 mProgress.setVisibility(View.GONE);
+                if (mThemeResetting) {
+                    mThemeResetting = false;
+                    mThemeTagLayout.setCustomizedTagEnabled(false);
+                }
             }
 
             @Override
@@ -1805,7 +1816,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         });
 
         mTitleLayout.animate()
-                .translationXBy((pivotX / 4))
+                .translationXBy((pivotX / 3))
                 .alpha(1f)
                 .setDuration(ANIMATE_TITLE_IN_DURATION)
                 .setInterpolator(new AccelerateInterpolator())

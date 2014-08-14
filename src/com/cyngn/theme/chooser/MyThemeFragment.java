@@ -23,6 +23,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -107,11 +108,36 @@ public class MyThemeFragment extends ThemeFragment {
     }
 
     @Override
+    protected boolean onPopupMenuItemClick(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.menu_reset:
+                resetTheme();
+                return true;
+        }
+
+        return super.onPopupMenuItemClick(item);
+    }
+
+    private void resetTheme() {
+        mSelectedComponentsMap.clear();
+        Bundle args = new Bundle();
+        args.putString("pkgName", mBaseThemePkgName);
+        getLoaderManager().restartLoader(LOADER_ID_ALL, args, this);
+        mThemeResetting = true;
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri;
         String[] projection;
         switch (id) {
             case LOADER_ID_ALL:
+                if (args != null) {
+                    String pkgName = args.getString("pkgName");
+                    if (pkgName != null) {
+                        return super.onCreateLoader(id, args);
+                    }
+                }
                 projection = new String[]{
                         PreviewColumns.WALLPAPER_PREVIEW,
                         PreviewColumns.STATUSBAR_BACKGROUND,
@@ -138,6 +164,16 @@ public class MyThemeFragment extends ThemeFragment {
             default:
                 // Only LOADER_ID_ALL differs for MyThemeFragment
                 return super.onCreateLoader(id, args);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
+        super.onLoadFinished(loader, c);
+        // if the theme is resetting, we need to apply these changes now that the supported
+        // theme components have been properly set.
+        if (mThemeResetting && loader.getId() == LOADER_ID_ALL) {
+            applyTheme();
         }
     }
 

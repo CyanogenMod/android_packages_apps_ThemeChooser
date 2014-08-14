@@ -4,6 +4,8 @@
         <item android:id="@+id/menu_delete"
               android:title="@string/menu_delete"/>
         <item android:id="@+id/menu_author"
-              android:title="@string/menu_author_info"/>
+            android:title="@string/menu_author_info"/>
+        <item android:id="@+id/menu_reset"
+            android:title="@string/menu_reset"/>
     </group>
 </menu>

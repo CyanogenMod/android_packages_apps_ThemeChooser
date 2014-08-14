@@ -50,6 +50,7 @@
 
     <string name="menu_author_info">Author</string>
     <string name="menu_delete">Delete</string>
+    <string name="menu_reset">Reset theme</string>
 
     <string name="shop_themes">Shop themes</string>
     <string name="themes_showcase_link">https://play.google.com/store/apps/details?id=com.cyngn.theme.store</string>
