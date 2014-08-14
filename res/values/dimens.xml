@@ -72,5 +72,6 @@
 
     <dimen name="content_offset_padding">10dp</dimen>
     <dimen name="apply_progress_padding">10dp</dimen>
+    <dimen name="apply_progress_height">24dp</dimen>
 
 </resources>
