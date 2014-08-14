@@ -140,9 +140,7 @@ public class IconPreviewHelper {
             ActivityInfo info = pm.getActivityInfo(component, 0);
             ApplicationInfo appInfo = pm.getApplicationInfo(pkgName, 0);
 
-            AssetManager assets = new AssetManager();
-            assets.addAssetPath(appInfo.publicSourceDir);
-            res = new Resources(assets, mDisplayMetrics, mConfiguration);
+            res = pm.getThemedResourcesForApplication(pkgName, mThemePkgName);
 
             final int iconId = info.icon != 0 ? info.icon : appInfo.icon;
             info.themedIcon = 0;
