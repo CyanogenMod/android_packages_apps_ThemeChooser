@@ -1131,6 +1131,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loadLockScreen(c, false);
             } else {
                 mLockScreenCard.setEmptyViewEnabled(true);
+                setAddComponentTitle(mLockScreenCard, getString(R.string.lockscreen_label));
             }
         } else if (MODIFIES_LAUNCHER.equals(component)) {
             // this was already loaded so no need to do this again.
