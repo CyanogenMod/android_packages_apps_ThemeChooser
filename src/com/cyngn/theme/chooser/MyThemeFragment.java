@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.cyngn.theme.util.AudioUtils;
+import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.ThemedTypefaceHelper;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
@@ -69,6 +70,9 @@ public class MyThemeFragment extends ThemeFragment {
         if (mBaseThemePkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()))) {
             mThemeTagLayout.setDefaultTagEnabled(true);
         }
+        if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mBaseThemePkgName)) {
+            mThemeTagLayout.setUpdatedTagEnabled(true);
+        }
         for (String pkgName : mCurrentTheme.values()) {
             if (!pkgName.equals(mBaseThemePkgName)) {
                 mThemeTagLayout.setCustomizedTagEnabled(true);
@@ -83,6 +87,22 @@ public class MyThemeFragment extends ThemeFragment {
         super.onResume();
         if (getLoaderManager().getLoader(0) != null) {
             getLoaderManager().restartLoader(0, null, this);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (mThemeTagLayout == null) return;
+
+        if (!isVisibleToUser) {
+            if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mBaseThemePkgName)) {
+                mThemeTagLayout.setUpdatedTagEnabled(true);
+            }
+        } else {
+            if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mBaseThemePkgName)) {
+                PreferenceUtils.removeUpdatedTheme(getActivity(), mBaseThemePkgName);
+            }
         }
     }
 

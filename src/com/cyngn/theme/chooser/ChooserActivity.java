@@ -19,8 +19,6 @@ import android.animation.Animator;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.ThemeUtils;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
@@ -47,6 +45,7 @@ import android.view.ViewPropertyAnimator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 
@@ -65,7 +64,6 @@ public class ChooserActivity extends FragmentActivity
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
     public static final int REQUEST_UNINSTALL = 1; // Request code
     public static final String EXTRA_PKGNAME = "pkgName";
-    public static final String APPLIED_BASE_THEME = "applied_base_theme";
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
 
@@ -268,8 +266,7 @@ public class ChooserActivity extends FragmentActivity
                 mPager.setAdapter(mAdapter);
             }
             mAppliedBaseTheme = f.getThemePackageName();
-            SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-            prefs.edit().putString(APPLIED_BASE_THEME, mAppliedBaseTheme).commit();
+            PreferenceUtils.setAppliedBaseTheme(this, mAppliedBaseTheme);
             getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null,
                     ChooserActivity.this);
         }
@@ -520,9 +517,7 @@ public class ChooserActivity extends FragmentActivity
 
         switch (id) {
             case LOADER_ID_INSTALLED_THEMES:
-                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-                mAppliedBaseTheme = prefs.getString(APPLIED_BASE_THEME,
-                        ThemeUtils.getDefaultThemePackageName(this));
+                mAppliedBaseTheme = PreferenceUtils.getAppliedBaseTheme(this);
                 selection = ThemesColumns.PRESENT_AS_THEME + "=?";
                 selectionArgs = new String[] { "1" };
                 // sort in ascending order but make sure the "default" theme is always first

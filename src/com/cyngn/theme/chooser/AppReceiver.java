@@ -22,6 +22,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import com.cyngn.theme.util.NotificationHelper;
+import com.cyngn.theme.util.PreferenceUtils;
 
 public class AppReceiver extends BroadcastReceiver {
 
@@ -40,7 +41,20 @@ public class AppReceiver extends BroadcastReceiver {
             } catch (NameNotFoundException e) {
             }
         } else if (Intent.ACTION_PACKAGE_FULLY_REMOVED.equals(action)) {
+            try {
+                if (isTheme(context, pkgName)) {
+                    PreferenceUtils.removeUpdatedTheme(context, pkgName);
+                }
+            } catch (NameNotFoundException e) {
+            }
             NotificationHelper.cancelNotificationForPackage(context, pkgName);
+        } else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {
+            try {
+                if (isTheme(context, pkgName)) {
+                    PreferenceUtils.addUpdatedTheme(context, pkgName);
+                }
+            } catch (NameNotFoundException e) {
+            }
         }
     }
 

@@ -72,6 +72,7 @@ import com.cyngn.theme.chooser.ComponentSelector.OnItemClickedListener;
 import com.cyngn.theme.util.AudioUtils;
 import com.cyngn.theme.util.BootAnimationHelper;
 import com.cyngn.theme.util.IconPreviewHelper;
+import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.ThemedTypefaceHelper;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
@@ -394,6 +395,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (mPkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()))) {
             mThemeTagLayout.setDefaultTagEnabled(true);
         }
+        if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mPkgName)) {
+            mThemeTagLayout.setUpdatedTagEnabled(true);
+        }
 
         getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
 
@@ -433,6 +437,22 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             mProgress.setProgress(100);
             animateProgressOut();
             ((ChooserActivity) getActivity()).themeChangeEnded();
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (mThemeTagLayout == null) return;
+
+        if (!isVisibleToUser) {
+            if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mPkgName)) {
+                mThemeTagLayout.setUpdatedTagEnabled(true);
+            }
+        } else {
+            if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mPkgName)) {
+                PreferenceUtils.removeUpdatedTheme(getActivity(), mPkgName);
+            }
         }
     }
 
