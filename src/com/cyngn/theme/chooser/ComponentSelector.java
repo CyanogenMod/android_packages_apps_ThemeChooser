@@ -5,6 +5,7 @@ package com.cyngn.theme.chooser;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.pm.ThemeUtils;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
@@ -740,7 +741,12 @@ public class ComponentSelector extends LinearLayout
 
         private void setTitle(TextView titleView, Cursor cursor) {
             String pkgName = cursor.getString(cursor.getColumnIndex(ThemesColumns.PKG_NAME));
-            titleView.setText(cursor.getString(cursor.getColumnIndex(ThemesColumns.TITLE)));
+            if (ThemeUtils.getDefaultThemePackageName(mContext).equals(pkgName)) {
+                titleView.setText(mContext.getString(R.string.default_tag_text));
+                titleView.setTypeface(null, Typeface.BOLD);
+            } else {
+                titleView.setText(cursor.getString(cursor.getColumnIndex(ThemesColumns.TITLE)));
+            }
             if (pkgName.equals(mAppliedComponentPkgName)) {
                 titleView.setTextColor(getResources().getColor(
                         R.color.component_selection_current_text_color));
