@@ -290,6 +290,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         View v = inflater.inflate(R.layout.fragment_pager_list, container, false);
 
         mScrollView = (LockableScrollView) v.findViewById(android.R.id.list);
+        if (!Utils.hasNavigationBar(getActivity())) {
+            adjustScrollViewPaddingTop();
+        }
         mScrollContent = (ViewGroup) mScrollView.getChildAt(0);
         mPreviewContent = (ViewGroup) v.findViewById(R.id.preview_container);
         mLoadingView = v.findViewById(R.id.loading_view);
@@ -448,6 +451,17 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
+    private void adjustScrollViewPaddingTop() {
+        Resources res = getResources();
+        int extraPadding =
+                res.getDimensionPixelSize(R.dimen.system_bar_height) / 2;
+        mScrollView.setPadding(
+                mScrollView.getPaddingLeft(),
+                mScrollView.getPaddingTop() + extraPadding,
+                mScrollView.getPaddingRight(),
+                mScrollView.getPaddingBottom());
+    }
+
     protected boolean onPopupMenuItemClick(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.menu_author:
@@ -568,6 +582,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         //Move the theme preview so that it is near the center of page per spec
         int paddingTop = (int) r.getDimension(R.dimen.collapsed_theme_page_padding_top);
+        if (!Utils.hasNavigationBar(getActivity())) {
+            paddingTop +=
+                    r.getDimensionPixelSize(R.dimen.system_bar_height) / 2;
+        }
         mScrollView.setPadding(0, paddingTop, 0, 0);
 
         // During expand the wallpaper size decreases slightly to makeup for 9patch padding

@@ -74,4 +74,6 @@
     <dimen name="apply_progress_padding">10dp</dimen>
     <dimen name="apply_progress_height">24dp</dimen>
 
+    <dimen name="system_bar_height">@*android:dimen/system_bar_height</dimen>
+
 </resources>
