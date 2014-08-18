@@ -60,6 +60,8 @@
     <string name="apply_theme_layout_title">Apply</string>
 
     <string name="default_tag_text">Default</string>
+    <string name="customized_tag_text">Customized</string>
+    <string name="updated_tag_text">Updated</string>
 
     <string name="add_component_text">Add</string>
 

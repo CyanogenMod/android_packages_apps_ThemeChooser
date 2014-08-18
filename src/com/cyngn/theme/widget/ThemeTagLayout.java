@@ -14,8 +14,8 @@ import com.cyngn.theme.chooser.R;
 
 public class ThemeTagLayout extends LinearLayout {
     private ImageView mAppliedTag;
-    private ImageView mCustomizedTag;
-    private ImageView mUpdatedTag;
+    private TextView mCustomizedTag;
+    private TextView mUpdatedTag;
     private TextView mDefaultTag;
 
     public ThemeTagLayout(Context context) {
@@ -36,8 +36,8 @@ public class ThemeTagLayout extends LinearLayout {
         LayoutInflater inflater =
                 (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mAppliedTag = (ImageView) inflater.inflate(R.layout.tag_applied, this, false);
-        mCustomizedTag = (ImageView) inflater.inflate(R.layout.tag_customized, this, false);
-        mUpdatedTag = (ImageView) inflater.inflate(R.layout.tag_updated, this, false);
+        mCustomizedTag = (TextView) inflater.inflate(R.layout.tag_customized, this, false);
+        mUpdatedTag = (TextView) inflater.inflate(R.layout.tag_updated, this, false);
         mDefaultTag = (TextView) inflater.inflate(R.layout.tag_default, this, false);
     }
 
