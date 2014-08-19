@@ -30,7 +30,7 @@ public class PreferenceUtils {
     public static void setAppliedBaseTheme(Context context, String pkgName) {
         SharedPreferences prefs = getSharedPreferences(context);
         if (prefs != null) {
-            prefs.edit().putString(PREF_APPLIED_BASE_THEME, pkgName).commit();
+            prefs.edit().putString(PREF_APPLIED_BASE_THEME, pkgName).apply();
         }
     }
 
@@ -50,7 +50,7 @@ public class PreferenceUtils {
                 updatedThemes.addAll(current);
             }
             if (updatedThemes.add(pkgName)) {
-                prefs.edit().putStringSet(PREF_UPDATED_THEMES, updatedThemes).commit();
+                prefs.edit().putStringSet(PREF_UPDATED_THEMES, updatedThemes).apply();
             }
         }
     }
@@ -64,7 +64,7 @@ public class PreferenceUtils {
                 updatedThemes.addAll(current);
             }
             if (updatedThemes.remove(pkgName)) {
-                prefs.edit().putStringSet(PREF_UPDATED_THEMES, updatedThemes).commit();
+                prefs.edit().putStringSet(PREF_UPDATED_THEMES, updatedThemes).apply();
             }
         }
     }
