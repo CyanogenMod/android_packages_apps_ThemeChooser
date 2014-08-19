@@ -290,9 +290,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         View v = inflater.inflate(R.layout.fragment_pager_list, container, false);
 
         mScrollView = (LockableScrollView) v.findViewById(android.R.id.list);
-        if (!Utils.hasNavigationBar(getActivity())) {
-            adjustScrollViewPaddingTop();
-        }
         mScrollContent = (ViewGroup) mScrollView.getChildAt(0);
         mPreviewContent = (ViewGroup) v.findViewById(R.id.preview_container);
         mLoadingView = v.findViewById(R.id.loading_view);
@@ -372,6 +369,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 }
             }
         });
+
+        if (!Utils.hasNavigationBar(getActivity())) {
+            adjustScrollViewPaddingTop();
+            mNavBarCard.setVisibility(View.GONE);
+        }
 
         // Additional cards which should hang out offscreen until expanded
         mAdditionalCards = (LinearLayout) v.findViewById(R.id.additional_cards);
