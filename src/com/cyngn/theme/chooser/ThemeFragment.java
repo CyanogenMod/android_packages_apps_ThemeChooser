@@ -617,6 +617,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Resources resources = mPreviewContent.getResources();
         layoutParams.height = (int) resources.getDimension(R.dimen.theme_preview_height);
 
+        mScrollView.requestLayout();
+        List<Rect> bounds = getChildrensGlobalBounds(mPreviewContent);
         for (int i = 0; i < mPreviewContent.getChildCount(); i++) {
             ComponentCardView child = (ComponentCardView) mPreviewContent.getChildAt(i);
             LinearLayout.LayoutParams lparams =
@@ -651,8 +653,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         }
 
-        mScrollView.requestLayout();
-        animateChildren(false, getChildrensGlobalBounds(mPreviewContent));
+        animateChildren(false, bounds);
         animateExtras(false);
         animateWallpaperIn();
         animateTitleCard(false, applyTheme);
@@ -676,6 +677,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         final ViewGroup root = (ViewGroup) getActivity().getWindow()
                 .getDecorView().findViewById(android.R.id.content);
 
+        final Resources res = getResources();
+        final float yOffset =
+                res.getDimensionPixelSize(R.dimen.expand_collapse_child_offset)
+                        * (isExpanding ? -1 : 1);
         // Grab the child's new location and animate from prev to current loc.
         final ViewTreeObserver observer = mScrollContent.getViewTreeObserver();
         observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -707,7 +712,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     }
 
                     int paddingTop = v.getPaddingTop() / 2;
-                    v.setTranslationY((prevY - endY - paddingTop) + (prevHeight - endHeight) / 2);
+                    float dy = (prevY - endY - paddingTop) + (prevHeight - endHeight) / 2;
+                    dy += yOffset;
+                    v.setTranslationY(dy);
                     root.getOverlay().add(v);
 
                     // Expanding has a delay while the wallpaper begins to fade out

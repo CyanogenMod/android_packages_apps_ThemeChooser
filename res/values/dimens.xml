@@ -75,5 +75,6 @@
     <dimen name="apply_progress_height">24dp</dimen>
 
     <dimen name="system_bar_height">@*android:dimen/system_bar_height</dimen>
+    <dimen name="expand_collapse_child_offset">12dp</dimen>
 
 </resources>
