@@ -4,6 +4,7 @@
     android:id="@+id/tag_customized"
     android:layout_width="100dp"
     android:layout_height="24dp"
+    android:layout_marginEnd="8dp"
     android:gravity="center"
     android:textSize="14sp"
     android:textColor="@color/tag_text_color"
