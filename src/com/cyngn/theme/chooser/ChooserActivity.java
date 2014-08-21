@@ -16,19 +16,31 @@
 package com.cyngn.theme.chooser;
 
 import android.animation.Animator;
+import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ThemesContract;
 import android.provider.ThemesContract.ThemesColumns;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -45,6 +57,7 @@ import android.view.ViewPropertyAnimator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import android.widget.ImageView;
 import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
@@ -90,6 +103,8 @@ public class ChooserActivity extends FragmentActivity
     private String mSelectedTheme;
     private String mAppliedBaseTheme;
     private boolean mThemeChanging = false;
+
+    ImageView mCustomBackground;
 
     // Current system theme configuration as component -> pkgName
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
@@ -164,6 +179,7 @@ public class ChooserActivity extends FragmentActivity
 
         mTypefaceHelperCache = TypefaceHelperCache.getInstance();
         mHandler = new Handler();
+        mCustomBackground = (ImageView) findViewById(R.id.custom_bg);
     }
 
     public void hideSaveApplyButton() {
@@ -241,6 +257,44 @@ public class ChooserActivity extends FragmentActivity
                 if (!mExpanded) showShopThemesLayout();
             }
         }, ThemeFragment.ANIMATE_START_DELAY + ThemeFragment.ANIMATE_DURATION);
+    }
+
+    private void setCustomBackground(final ImageView iv) {
+        final Context context = ChooserActivity.this;
+        iv.post(new Runnable() {
+            @Override
+            public void run() {
+                WallpaperManager wm = WallpaperManager.getInstance(context);
+                Bitmap tmpBmp = wm.getBitmap();
+
+                // Since we are applying a blur, we can afford to scale the bitmap down and use a
+                // smaller blur radius.
+                Bitmap inBmp = Bitmap.createScaledBitmap(tmpBmp, tmpBmp.getWidth() / 4,
+                        tmpBmp.getHeight() / 4, false);
+                Bitmap outBmp = Bitmap.createBitmap(inBmp.getWidth(), inBmp.getHeight(),
+                        Bitmap.Config.ARGB_8888);
+
+                // Blur the original bitmap
+                RenderScript rs = RenderScript.create(context);
+                ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+                Allocation tmpIn = Allocation.createFromBitmap(rs, inBmp);
+                Allocation tmpOut = Allocation.createFromBitmap(rs, outBmp);
+                theIntrinsic.setRadius(5.0f);
+                theIntrinsic.setInput(tmpIn);
+                theIntrinsic.forEach(tmpOut);
+                tmpOut.copyTo(outBmp);
+
+                // Create a bitmap drawable and use a color matrix to de-saturate the image
+                BitmapDrawable drawable = new BitmapDrawable(getResources(), outBmp);
+                Paint p = drawable.getPaint();
+                ColorMatrix cm = new ColorMatrix();
+                cm.setSaturation(0);
+                p.setColorFilter(new ColorMatrixColorFilter(cm));
+
+                // All done
+                iv.setImageDrawable(drawable);
+            }
+        });
     }
 
     /**
@@ -342,6 +396,9 @@ public class ChooserActivity extends FragmentActivity
         super.onResume();
         mService.onClientResumed(this);
         getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
+        setCustomBackground(mCustomBackground);
+        IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
+        registerReceiver(mWallpaperChangeReceiver, filter);
     }
 
     @Override
@@ -386,6 +443,7 @@ public class ChooserActivity extends FragmentActivity
     public void onPause() {
         super.onPause();
         mService.onClientPaused(this);
+        unregisterReceiver(mWallpaperChangeReceiver);
     }
 
     @Override
@@ -411,6 +469,13 @@ public class ChooserActivity extends FragmentActivity
             } else {
                 f.showApplyThemeLayout();
             }
+        }
+    };
+
+    private BroadcastReceiver mWallpaperChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mCustomBackground != null) setCustomBackground(mCustomBackground);
         }
     };
 
