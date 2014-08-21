@@ -290,6 +290,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         View v = inflater.inflate(R.layout.fragment_pager_list, container, false);
 
         mScrollView = (LockableScrollView) v.findViewById(android.R.id.list);
+        mScrollView.setScrollingEnabled(false);
         mScrollContent = (ViewGroup) mScrollView.getChildAt(0);
         mPreviewContent = (ViewGroup) v.findViewById(R.id.preview_container);
         mLoadingView = v.findViewById(R.id.loading_view);
@@ -486,6 +487,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             // we don't want to re-load these cards if the we expand again.
             mCurrentCursor = null;
         }
+        mScrollView.setScrollingEnabled(true);
         // Full width and height!
         ViewGroup content = (ViewGroup) mScrollView.getParent();
         content.setPadding(0, 0, 0, 0);
@@ -572,6 +574,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void collapse(final boolean applyTheme) {
+        mScrollView.setScrollingEnabled(false);
+
         // Pad the  view so it appears thinner
         ViewGroup content = (ViewGroup) mScrollView.getParent();
         Resources r = mScrollView.getContext().getResources();
