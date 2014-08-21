@@ -27,9 +27,11 @@ import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapRegionDecoder;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -51,6 +53,7 @@ import android.support.v4.view.ThemeViewPager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
@@ -269,6 +272,16 @@ public class ChooserActivity extends FragmentActivity
             public void run() {
                 WallpaperManager wm = WallpaperManager.getInstance(context);
                 Bitmap tmpBmp = wm.getBitmap();
+                // Find out the x location of the wallpaper and use that
+                // to offset the image
+                Point size = new Point();
+                getWindowManager().getDefaultDisplay().getRealSize(size);
+                int screenHeight = size.y;
+                int screenWidth = size.x;
+                float aspectRatio = (float) screenWidth / screenHeight;
+                int lastX = wm.getLastWallpaperX();
+                tmpBmp = Bitmap.createBitmap(tmpBmp, -lastX, 0,
+                        (int) (tmpBmp.getHeight() * aspectRatio), tmpBmp.getHeight());
 
                 // Since we are applying a blur, we can afford to scale the bitmap down and use a
                 // smaller blur radius.
