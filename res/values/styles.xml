@@ -23,6 +23,7 @@
         <item name="android:popupMenuStyle">@style/popupMenuStyle</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowActionBarOverlay">false</item>
+        <item name="android:windowShowWallpaper">true</item>
     </style>
 
     <!-- For the overflow popup window -->

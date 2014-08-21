@@ -94,6 +94,7 @@ public class ChooserActivity extends FragmentActivity
     private static final long ANIMATE_CONTENT_IN_SCALE_DURATION = 500;
     private static final long ANIMATE_CONTENT_IN_ALPHA_DURATION = 750;
     private static final long ANIMATE_CONTENT_IN_BLUR_DURATION = 250;
+    private static final long ANIMATE_CONTENT_DELAY = 250;
 
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
@@ -113,6 +114,7 @@ public class ChooserActivity extends FragmentActivity
     private String mAppliedBaseTheme;
     private boolean mThemeChanging = false;
     private boolean mAnimateContentIn = false;
+    private long mAnimateContentInDelay;
 
     ImageView mCustomBackground;
 
@@ -122,6 +124,7 @@ public class ChooserActivity extends FragmentActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         NotificationHijackingService.ensureEnabled(this);
 
         if (savedInstanceState == null) {
@@ -190,6 +193,7 @@ public class ChooserActivity extends FragmentActivity
         mHandler = new Handler();
         mCustomBackground = (ImageView) findViewById(R.id.custom_bg);
         mAnimateContentIn = true;
+        mAnimateContentInDelay = 0;
     }
 
     public void hideSaveApplyButton() {
@@ -241,6 +245,9 @@ public class ChooserActivity extends FragmentActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        // when resuming the animation seems to get cut off.  Delaying it a bit fixes this behavior.
+        mAnimateContentInDelay = ANIMATE_CONTENT_DELAY;
         handleIntent(intent);
     }
 
@@ -500,6 +507,7 @@ public class ChooserActivity extends FragmentActivity
                 .setDuration(ANIMATE_CONTENT_IN_SCALE_DURATION))
                 .with(ObjectAnimator.ofFloat(mContainer, "scaleY", 2f, 1f)
                 .setDuration(ANIMATE_CONTENT_IN_SCALE_DURATION));
+        set.setStartDelay(mAnimateContentInDelay);
         set.start();
         mAnimateContentIn = false;
     }
