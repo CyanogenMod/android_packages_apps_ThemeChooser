@@ -86,6 +86,8 @@ public class ChooserActivity extends FragmentActivity
     private static final String THEME_STORE_PACKAGE = "com.cyngn.theme.store";
     private static final String THEME_STORE_ACTIVITY = "com.cyngn.theme.store.StoreActivity";
 
+    private static final long ANIMATE_CONTENT_IN_DURATION = 500;
+
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
 
@@ -103,6 +105,7 @@ public class ChooserActivity extends FragmentActivity
     private String mSelectedTheme;
     private String mAppliedBaseTheme;
     private boolean mThemeChanging = false;
+    private boolean mAnimateContentIn = false;
 
     ImageView mCustomBackground;
 
@@ -180,6 +183,7 @@ public class ChooserActivity extends FragmentActivity
         mTypefaceHelperCache = TypefaceHelperCache.getInstance();
         mHandler = new Handler();
         mCustomBackground = (ImageView) findViewById(R.id.custom_bg);
+        mAnimateContentIn = true;
     }
 
     public void hideSaveApplyButton() {
@@ -460,6 +464,15 @@ public class ChooserActivity extends FragmentActivity
         }
     }
 
+    private void animateContentIn() {
+        mContainer.setScaleX(1.5f);
+        mContainer.setScaleY(1.5f);
+        mContainer.setAlpha(0f);
+        mContainer.animate().alpha(1f).scaleX(1f).scaleY(1f)
+                .setDuration(ANIMATE_CONTENT_IN_DURATION).start();
+        mAnimateContentIn = false;
+    }
+
     private View.OnClickListener mPagerClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -553,8 +566,9 @@ public class ChooserActivity extends FragmentActivity
                 mAdapter.swapCursor(data);
                 mAdapter.notifyDataSetChanged();
                 if (selectedThemeIndex >= 0) {
-                    mPager.setCurrentItem(selectedThemeIndex, true);
+                    mPager.setCurrentItem(selectedThemeIndex, false);
                 }
+                if (mAnimateContentIn) animateContentIn();
                 break;
             case LOADER_ID_APPLIED:
                 getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null, this);

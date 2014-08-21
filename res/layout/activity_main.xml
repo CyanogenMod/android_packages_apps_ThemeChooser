@@ -2,8 +2,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_grid">
+    android:layout_height="match_parent">
     <ImageView
         android:id="@+id/custom_bg"
         android:layout_width="match_parent"
@@ -18,7 +17,8 @@
             android:id="@+id/pager_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical"
+            android:alpha="0">
             <android.support.v4.view.ThemeViewPager
                 android:id="@+id/viewpager"
                 android:layout_width="@dimen/theme_fragment_width"
