@@ -1285,6 +1285,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         } else {
             mWallpaperCard.setEmptyViewEnabled(true);
             setAddComponentTitle(mWallpaperCard, getString(R.string.wallpaper_label));
+            mWallpaper.setImageResource(R.drawable.wallpaper_none_bg);
         }
 
         if (animate) {
