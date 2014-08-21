@@ -482,7 +482,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public void expand() {
         if (mCurrentLoaderId == LOADER_ID_ALL && mCurrentCursor != null) {
-            loadAndRemoveAdditionalCards(mCurrentCursor);
+            loadAdditionalCards(mCurrentCursor);
             // we don't need this now that the additional cards are loaded, and
             // we don't want to re-load these cards if the we expand again.
             mCurrentCursor = null;
@@ -1172,7 +1172,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {}
 
-    private void loadAndRemoveAdditionalCards(Cursor c) {
+    private void loadAdditionalCards(Cursor c) {
         for(int i=0; i < mAdditionalCards.getChildCount(); i++) {
             View v = mAdditionalCards.getChildAt(i);
             if (v instanceof ComponentCardView) {
@@ -1206,7 +1206,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             } else {
                 mBootAnimationCard.setEmptyViewEnabled(true);
                 setAddComponentTitle(mBootAnimationCard,
-                        getString(R.string.style_label));
+                        getString(R.string.boot_animation_label));
             }
         } else if (MODIFIES_RINGTONES.equals(component)) {
             if (hasContent) {
