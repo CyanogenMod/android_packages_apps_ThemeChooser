@@ -153,6 +153,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected static final int LOADER_ID_NOTIFICATION = 10;
     protected static final int LOADER_ID_ALARM = 11;
 
+    protected static final String ARG_PACKAGE_NAME = "pkgName";
+    protected static final String ARG_SKIP_LOADING_ANIM = "skipLoadingAnim";
+
     protected static ComponentName[] sIconComponents;
 
     protected static TypefaceHelperCache sTypefaceHelperCache;
@@ -234,6 +237,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected Cursor mCurrentCursor;
     protected int mCurrentLoaderId;
     protected boolean mThemeResetting;
+    protected boolean mSkipLoadingAnim;
 
     protected View mApplyThemeLayout;
     protected View mApplyButton;
@@ -241,10 +245,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected ThemeTagLayout mThemeTagLayout;
 
-    static ThemeFragment newInstance(String pkgName) {
+    static ThemeFragment newInstance(String pkgName, boolean skipLoadingAnim) {
         ThemeFragment f = new ThemeFragment();
         Bundle args = new Bundle();
-        args.putString("pkgName", pkgName);
+        args.putString(ARG_PACKAGE_NAME, pkgName);
+        args.putBoolean(ARG_SKIP_LOADING_ANIM, skipLoadingAnim);
         f.setArguments(args);
         return f;
     }
@@ -256,7 +261,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Context context = getActivity();
-        mPkgName = getArguments().getString("pkgName");
+        mPkgName = getArguments().getString(ARG_PACKAGE_NAME);
+        mSkipLoadingAnim = getArguments().getBoolean(ARG_SKIP_LOADING_ANIM);
         mBatteryStyle = Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_BATTERY, 0);
 
@@ -395,6 +401,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
         if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mPkgName)) {
             mThemeTagLayout.setUpdatedTagEnabled(true);
+        }
+
+        if (mSkipLoadingAnim) {
+            mLoadingView.setVisibility(View.GONE);
+            mTitleLayout.setAlpha(1f);
         }
 
         getLoaderManager().initLoader(LOADER_ID_ALL, null, this);
@@ -985,7 +996,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String pkgName = mPkgName;
         if (args != null) {
-            pkgName = args.getString("pkgName");
+            pkgName = args.getString(ARG_PACKAGE_NAME);
         }
         Uri uri = ThemesContract.PreviewColumns.CONTENT_URI;
         String selection = ThemesContract.ThemesColumns.PKG_NAME + "= ?";
@@ -1714,7 +1725,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         @Override
         public void onItemClicked(String pkgName) {
             Bundle args = new Bundle();
-            args.putString("pkgName", pkgName);
+            args.putString(ARG_PACKAGE_NAME, pkgName);
             int loaderId = -1;
             String component = mSelector.getComponentType();
             if (MODIFIES_STATUS_BAR.equals(component)) {
@@ -1857,6 +1868,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void animateContentIn() {
+        if (mSkipLoadingAnim) {
+            return;
+        }
         AnimatorSet set = new AnimatorSet();
         set.setDuration(ANIMATE_TITLE_IN_DURATION);
         set.play(ObjectAnimator.ofFloat(mLoadingView, "alpha", 1f, 0f))

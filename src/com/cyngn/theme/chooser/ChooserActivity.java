@@ -16,6 +16,8 @@
 package com.cyngn.theme.chooser;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -27,12 +29,13 @@ import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapRegionDecoder;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -53,7 +56,6 @@ import android.support.v4.view.ThemeViewPager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
@@ -89,7 +91,9 @@ public class ChooserActivity extends FragmentActivity
     private static final String THEME_STORE_PACKAGE = "com.cyngn.theme.store";
     private static final String THEME_STORE_ACTIVITY = "com.cyngn.theme.store.StoreActivity";
 
-    private static final long ANIMATE_CONTENT_IN_DURATION = 500;
+    private static final long ANIMATE_CONTENT_IN_SCALE_DURATION = 500;
+    private static final long ANIMATE_CONTENT_IN_ALPHA_DURATION = 750;
+    private static final long ANIMATE_CONTENT_IN_BLUR_DURATION = 250;
 
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
@@ -301,14 +305,19 @@ public class ChooserActivity extends FragmentActivity
                 tmpOut.copyTo(outBmp);
 
                 // Create a bitmap drawable and use a color matrix to de-saturate the image
-                BitmapDrawable drawable = new BitmapDrawable(getResources(), outBmp);
-                Paint p = drawable.getPaint();
+                BitmapDrawable[] layers = new BitmapDrawable[2];
+                layers[0] = new BitmapDrawable(getResources(), tmpBmp);
+                layers[1] = new BitmapDrawable(getResources(), outBmp);
                 ColorMatrix cm = new ColorMatrix();
                 cm.setSaturation(0);
+                Paint p = layers[0].getPaint();
                 p.setColorFilter(new ColorMatrixColorFilter(cm));
+                p = layers[1].getPaint();
+                p.setColorFilter(new ColorMatrixColorFilter(cm));
+                TransitionDrawable d = new TransitionDrawable(layers);
 
                 // All done
-                iv.setImageDrawable(drawable);
+                iv.setImageDrawable(d);
             }
         });
     }
@@ -411,8 +420,11 @@ public class ChooserActivity extends FragmentActivity
     protected void onResume() {
         super.onResume();
         mService.onClientResumed(this);
-        getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
         setCustomBackground(mCustomBackground);
+        mAnimateContentIn = true;
+        mContainer.setAlpha(0f);
+        getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
+
         IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
         registerReceiver(mWallpaperChangeReceiver, filter);
     }
@@ -477,11 +489,19 @@ public class ChooserActivity extends FragmentActivity
     }
 
     private void animateContentIn() {
-        mContainer.setScaleX(1.5f);
-        mContainer.setScaleY(1.5f);
-        mContainer.setAlpha(0f);
-        mContainer.animate().alpha(1f).scaleX(1f).scaleY(1f)
-                .setDuration(ANIMATE_CONTENT_IN_DURATION).start();
+        Drawable d = mCustomBackground.getDrawable();
+        if (d instanceof TransitionDrawable) {
+            ((TransitionDrawable) d).startTransition((int) ANIMATE_CONTENT_IN_BLUR_DURATION);
+        }
+
+        AnimatorSet set = new AnimatorSet();
+        set.play(ObjectAnimator.ofFloat(mContainer, "alpha", 0f, 1f)
+                .setDuration(ANIMATE_CONTENT_IN_ALPHA_DURATION))
+                .with(ObjectAnimator.ofFloat(mContainer, "scaleX", 2f, 1f)
+                .setDuration(ANIMATE_CONTENT_IN_SCALE_DURATION))
+                .with(ObjectAnimator.ofFloat(mContainer, "scaleY", 2f, 1f)
+                .setDuration(ANIMATE_CONTENT_IN_SCALE_DURATION));
+        set.start();
         mAnimateContentIn = false;
     }
 
@@ -659,9 +679,9 @@ public class ChooserActivity extends FragmentActivity
             final String pkgName = mCursor.getString(pkgIdx);
             if (pkgName.equals(mAppliedBaseTheme)) {
                 String title = mCursor.getString(mCursor.getColumnIndex(ThemesColumns.TITLE));
-                f = MyThemeFragment.newInstance(mAppliedBaseTheme, title);
+                f = MyThemeFragment.newInstance(mAppliedBaseTheme, title, mAnimateContentIn);
             } else {
-                f = ThemeFragment.newInstance(pkgName);
+                f = ThemeFragment.newInstance(pkgName, mAnimateContentIn);
             }
             f.setCurrentTheme(mCurrentTheme);
             return f;

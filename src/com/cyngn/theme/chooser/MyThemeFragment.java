@@ -39,15 +39,20 @@ import java.io.IOException;
 public class MyThemeFragment extends ThemeFragment {
     private static final String TAG = MyThemeFragment.class.getSimpleName();
 
+    private static final String ARG_BASE_THEME_PACKAGE_NAME = "baseThemePkgName";
+    private static final String ARG_BASE_THEME_NAME = "baseThemeName";
+
     private String mBaseThemePkgName;
     private String mBaseThemeName;
 
-    static MyThemeFragment newInstance(String baseThemePkgName, String baseThemeName) {
+    static MyThemeFragment newInstance(String baseThemePkgName, String baseThemeName,
+                                       boolean skipLoadingAnim) {
         MyThemeFragment f = new MyThemeFragment();
         Bundle args = new Bundle();
-        args.putString("pkgName", CURRENTLY_APPLIED_THEME);
-        args.putString("baseThemePkgName", baseThemePkgName);
-        args.putString("baseThemeName", baseThemeName);
+        args.putString(ARG_PACKAGE_NAME, CURRENTLY_APPLIED_THEME);
+        args.putString(ARG_BASE_THEME_PACKAGE_NAME, baseThemePkgName);
+        args.putString(ARG_BASE_THEME_NAME, baseThemeName);
+        args.putBoolean(ARG_SKIP_LOADING_ANIM, skipLoadingAnim);
         f.setArguments(args);
         return f;
     }
@@ -59,8 +64,8 @@ public class MyThemeFragment extends ThemeFragment {
         ThemedTypefaceHelper helper = sTypefaceHelperCache.getHelperForTheme(context,
                 getAppliedFontPackageName());
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
-        mBaseThemePkgName = getArguments().getString("baseThemePkgName");
-        mBaseThemeName = getArguments().getString("baseThemeName");
+        mBaseThemePkgName = getArguments().getString(ARG_BASE_THEME_PACKAGE_NAME);
+        mBaseThemeName = getArguments().getString(ARG_BASE_THEME_NAME);
     }
 
     @Override
@@ -121,7 +126,7 @@ public class MyThemeFragment extends ThemeFragment {
     private void resetTheme() {
         mSelectedComponentsMap.clear();
         Bundle args = new Bundle();
-        args.putString("pkgName", mBaseThemePkgName);
+        args.putString(ARG_BASE_THEME_PACKAGE_NAME, mBaseThemePkgName);
         getLoaderManager().restartLoader(LOADER_ID_ALL, args, this);
         mThemeResetting = true;
     }
@@ -133,7 +138,7 @@ public class MyThemeFragment extends ThemeFragment {
         switch (id) {
             case LOADER_ID_ALL:
                 if (args != null) {
-                    String pkgName = args.getString("pkgName");
+                    String pkgName = args.getString(ARG_PACKAGE_NAME);
                     if (pkgName != null) {
                         return super.onCreateLoader(id, args);
                     }
