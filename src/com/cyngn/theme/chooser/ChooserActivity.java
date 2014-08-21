@@ -252,8 +252,6 @@ public class ChooserActivity extends FragmentActivity
                 mPager.setAdapter(mAdapter);
                 getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null, this);
             }
-        } else {
-            mSelectedTheme = null;
         }
     }
 
@@ -472,6 +470,7 @@ public class ChooserActivity extends FragmentActivity
         super.onPause();
         mService.onClientPaused(this);
         unregisterReceiver(mWallpaperChangeReceiver);
+        mSelectedTheme = getCurrentFragment().getThemePackageName();
     }
 
     @Override
