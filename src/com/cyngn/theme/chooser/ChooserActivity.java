@@ -150,7 +150,6 @@ public class ChooserActivity extends FragmentActivity
         mSelector.setOnOpenCloseListener(mOpenCloseListener);
 
         mService = (ThemeManager) getSystemService(Context.THEME_SERVICE);
-        getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
 
         mShopThemesLayout = findViewById(R.id.shop_themes_layout);
 
@@ -592,6 +591,7 @@ public class ChooserActivity extends FragmentActivity
         String selection = null;
         String selectionArgs[] = null;
         String sortOrder = null;
+        String[] projection = null;
         Uri contentUri = null;
 
         switch (id) {
@@ -604,6 +604,7 @@ public class ChooserActivity extends FragmentActivity
                         + "(" + ThemesColumns.PKG_NAME + "='" + mAppliedBaseTheme + "') DESC, "
                         + ThemesColumns.INSTALL_TIME + " DESC";
                 contentUri = ThemesColumns.CONTENT_URI;
+                projection = new String[] {ThemesColumns.PKG_NAME, ThemesColumns.TITLE};
                 break;
             case LOADER_ID_APPLIED:
                 //TODO: Mix n match query should only be done once
@@ -614,7 +615,7 @@ public class ChooserActivity extends FragmentActivity
         }
 
 
-        return new CursorLoader(this, contentUri, null, selection,
+        return new CursorLoader(this, contentUri, projection, selection,
                 selectionArgs, sortOrder);
     }
 
