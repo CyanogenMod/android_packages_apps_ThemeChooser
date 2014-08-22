@@ -47,8 +47,7 @@
     <color name="wallpaper_label">#ffffff</color>
     <color name="audible_name_color">#999999</color>
 
-    <color name="shop_themes_text_color">#01579b</color>
-    <color name="shop_themes_divider_color">#b8b8b8</color>
+    <color name="shop_themes_text_color">#ffffff</color>
 
     <color name="apply_layout_background">#cd000000</color>
     <color name="apply_layout_text_color">#ffffff</color>

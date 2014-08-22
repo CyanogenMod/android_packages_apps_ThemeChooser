@@ -5,17 +5,15 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="bottom|left">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/shop_themes_divider_color"/>
+    android:layout_gravity="bottom|center_horizontal"
+    android:alpha="0">
 
     <TextView
         android:id="@+id/shop_themes"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_width="140dp"
+        android:layout_height="44dp"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center_horizontal"
         android:textSize="14sp"
         android:textColor="@color/shop_themes_text_color"
         android:textAllCaps="true"
@@ -23,7 +21,8 @@
         android:hapticFeedbackEnabled="true"
         android:text="@string/shop_themes"
         android:clickable="true"
-        android:focusable="true"/>
+        android:focusable="true"
+        android:background="@drawable/shop_themes_bg"/>
 
     <!-- This view will be set to gone if the device does not have a navigation bar -->
     <Space

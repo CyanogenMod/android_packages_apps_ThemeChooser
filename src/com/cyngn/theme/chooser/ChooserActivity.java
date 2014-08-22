@@ -509,6 +509,9 @@ public class ChooserActivity extends FragmentActivity
                 .setDuration(ANIMATE_CONTENT_IN_SCALE_DURATION));
         set.setStartDelay(mAnimateContentInDelay);
         set.start();
+        mShopThemesLayout.setAlpha(0f);
+        mShopThemesLayout.animate().alpha(1f).setStartDelay(mAnimateContentInDelay)
+                .setDuration(ANIMATE_CONTENT_IN_ALPHA_DURATION);
         mAnimateContentIn = false;
     }
 
