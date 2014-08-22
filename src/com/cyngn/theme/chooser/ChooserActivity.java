@@ -177,12 +177,14 @@ public class ChooserActivity extends FragmentActivity
                         mExpanded = false;
                         mContainer.setClickable(false);
                         final ThemeFragment f = getCurrentFragment();
-                        f.fadeOutCards(new Runnable() {
-                            public void run() {
-                                mContainer.collapse();
-                                f.collapse(true);
-                            }
-                        });
+                        if (f != null) {
+                            f.fadeOutCards(new Runnable() {
+                                public void run() {
+                                    mContainer.collapse();
+                                    f.collapse(true);
+                                }
+                            });
+                        }
                         setAnimatingStateAndScheduleFinish();
                     }
                 });
@@ -405,20 +407,28 @@ public class ChooserActivity extends FragmentActivity
             mContainer.setClickable(false);
             mContainer.expand();
             ThemeFragment f = getCurrentFragment();
-            f.expand();
+            if (f != null) {
+                f.expand();
+            }
             setAnimatingStateAndScheduleFinish();
             hideShopThemesLayout();
         }
     }
 
     private void slideContentUp(int yDelta, int selectorHeight) {
-        yDelta -= getResources().getDimensionPixelSize(R.dimen.content_offset_padding);
-        getCurrentFragment().slideContentUp(-yDelta, selectorHeight);
-        mContainerYOffset = yDelta;
+        ThemeFragment f = getCurrentFragment();
+        if (f != null) {
+            yDelta -= getResources().getDimensionPixelSize(R.dimen.content_offset_padding);
+            f.slideContentUp(-yDelta, selectorHeight);
+            mContainerYOffset = yDelta;
+        }
     }
 
     private void slideContentDown(final int yDelta) {
-        getCurrentFragment().slideContentDown(yDelta);
+        ThemeFragment f = getCurrentFragment();
+        if (f != null) {
+            f.slideContentDown(yDelta);
+        }
     }
 
     @Override
@@ -436,14 +446,14 @@ public class ChooserActivity extends FragmentActivity
 
     @Override
     public void onBackPressed() {
+        final ThemeFragment f = getCurrentFragment();
         if (mSelector.isEnabled()) {
             mSelector.hide();
             if (mContainerYOffset != 0) {
                 slideContentDown(mContainerYOffset);
                 mContainerYOffset = 0;
             }
-            final ThemeFragment f = getCurrentFragment();
-            f.fadeInCards();
+            if (f != null) f.fadeInCards();
         } else if (mExpanded) {
             if (mIsAnimating) {
                 return;
@@ -451,20 +461,20 @@ public class ChooserActivity extends FragmentActivity
 
             if (mSaveApplyLayout.getVisibility() == View.VISIBLE) {
                 hideSaveApplyButton();
-                getCurrentFragment().clearChanges();
+                if (f != null) f.clearChanges();
             }
             mExpanded = false;
-            final ThemeFragment f = getCurrentFragment();
-            f.fadeOutCards(new Runnable() {
-                public void run() {
-                    mContainer.collapse();
-                    f.collapse(false);
-                }
-            });
+            if (f != null) {
+                f.fadeOutCards(new Runnable() {
+                    public void run() {
+                        mContainer.collapse();
+                        f.collapse(false);
+                    }
+                });
+            }
             setAnimatingStateAndScheduleFinish();
         } else {
-            final ThemeFragment f = getCurrentFragment();
-            if (f.isShowingApplyThemeLayout()) {
+            if (f != null && f.isShowingApplyThemeLayout()) {
                 f.hideApplyThemeLayout();
             } else {
                 super.onBackPressed();
@@ -477,7 +487,10 @@ public class ChooserActivity extends FragmentActivity
         super.onPause();
         mService.onClientPaused(this);
         unregisterReceiver(mWallpaperChangeReceiver);
-        mSelectedTheme = getCurrentFragment().getThemePackageName();
+        ThemeFragment f = getCurrentFragment();
+        if (f != null) {
+            mSelectedTheme = f.getThemePackageName();
+        }
     }
 
     @Override
@@ -519,10 +532,12 @@ public class ChooserActivity extends FragmentActivity
         @Override
         public void onClick(View v) {
             ThemeFragment f = getCurrentFragment();
-            if (f instanceof MyThemeFragment) {
-                expand();
-            } else {
-                f.showApplyThemeLayout();
+            if (f != null) {
+                if (f instanceof MyThemeFragment) {
+                    expand();
+                } else {
+                    f.showApplyThemeLayout();
+                }
             }
         }
     };
@@ -542,7 +557,7 @@ public class ChooserActivity extends FragmentActivity
         @Override
         public void onSelectorClosed() {
             ThemeFragment f = getCurrentFragment();
-            if (f.componentsChanged()) {
+            if (f != null && f.componentsChanged()) {
                 mSaveApplyLayout.setVisibility(View.VISIBLE);
                 mSaveApplyLayout.startAnimation(AnimationUtils.loadAnimation(ChooserActivity.this,
                         R.anim.component_selection_animate_in));
@@ -553,7 +568,8 @@ public class ChooserActivity extends FragmentActivity
     private ThemeFragment getCurrentFragment() {
         // instantiateItem will return the fragment if it already exists and not instantiate it,
         // which should be the case for the current fragment.
-        return (ThemeFragment) mAdapter.instantiateItem(mPager, mPager.getCurrentItem());
+        return (mAdapter == null || mPager == null) ? null :
+                (ThemeFragment) mAdapter.instantiateItem(mPager, mPager.getCurrentItem());
     }
 
     private void populateCurrentTheme(Cursor c) {
@@ -683,17 +699,19 @@ public class ChooserActivity extends FragmentActivity
 
         @Override
         public Fragment getItem(int position) {
-            ThemeFragment f;
-            mCursor.moveToPosition(position);
-            int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
-            final String pkgName = mCursor.getString(pkgIdx);
-            if (pkgName.equals(mAppliedBaseTheme)) {
-                String title = mCursor.getString(mCursor.getColumnIndex(ThemesColumns.TITLE));
-                f = MyThemeFragment.newInstance(mAppliedBaseTheme, title, mAnimateContentIn);
-            } else {
-                f = ThemeFragment.newInstance(pkgName, mAnimateContentIn);
+            ThemeFragment f = null;
+            if (mCursor != null) {
+                mCursor.moveToPosition(position);
+                int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
+                final String pkgName = mCursor.getString(pkgIdx);
+                if (pkgName.equals(mAppliedBaseTheme)) {
+                    String title = mCursor.getString(mCursor.getColumnIndex(ThemesColumns.TITLE));
+                    f = MyThemeFragment.newInstance(mAppliedBaseTheme, title, mAnimateContentIn);
+                } else {
+                    f = ThemeFragment.newInstance(pkgName, mAnimateContentIn);
+                }
+                f.setCurrentTheme(mCurrentTheme);
             }
-            f.setCurrentTheme(mCurrentTheme);
             return f;
         }
 
