@@ -95,6 +95,10 @@ public class ChooserActivity extends FragmentActivity
     private static final long ANIMATE_CONTENT_IN_ALPHA_DURATION = 750;
     private static final long ANIMATE_CONTENT_IN_BLUR_DURATION = 250;
     private static final long ANIMATE_CONTENT_DELAY = 250;
+    private static final long ANIMATE_SHOP_THEMES_HIDE_DURATION = 250;
+    private static final long ANIMATE_SHOP_THEMES_SHOW_DURATION = 500;
+    private static final long FINISH_ANIMATION_DELAY = ThemeFragment.ANIMATE_DURATION
+            + ThemeFragment.ANIMATE_START_DELAY + 250;
 
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
@@ -219,6 +223,7 @@ public class ChooserActivity extends FragmentActivity
 
     private void hideShopThemesLayout() {
         final ViewPropertyAnimator anim = mShopThemesLayout.animate();
+        anim.alpha(0f).setDuration(ANIMATE_SHOP_THEMES_HIDE_DURATION);
         anim.setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {}
@@ -234,14 +239,14 @@ public class ChooserActivity extends FragmentActivity
             @Override
             public void onAnimationRepeat(Animator animation) {}
         });
-        anim.alpha(0f).start();
     }
 
     private void showShopThemesLayout() {
         mShopThemesLayout.setVisibility(View.VISIBLE);
         final ViewPropertyAnimator anim = mShopThemesLayout.animate();
         anim.setListener(null);
-        anim.alpha(1f).start();
+        anim.alpha(1f).setStartDelay(ThemeFragment.ANIMATE_DURATION)
+                .setDuration(ANIMATE_SHOP_THEMES_SHOW_DURATION);
     }
 
     @Override
@@ -271,9 +276,8 @@ public class ChooserActivity extends FragmentActivity
             public void run() {
                 mIsAnimating = false;
                 mContainer.setIsAnimating(false);
-                if (!mExpanded) showShopThemesLayout();
             }
-        }, ThemeFragment.ANIMATE_START_DELAY + ThemeFragment.ANIMATE_DURATION);
+        }, FINISH_ANIMATION_DELAY);
     }
 
     private void setCustomBackground(final ImageView iv) {
@@ -472,6 +476,7 @@ public class ChooserActivity extends FragmentActivity
                     }
                 });
             }
+            showShopThemesLayout();
             setAnimatingStateAndScheduleFinish();
         } else {
             if (f != null && f.isShowingApplyThemeLayout()) {

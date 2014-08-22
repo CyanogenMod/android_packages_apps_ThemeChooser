@@ -1949,11 +1949,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void showThemeTagLayout() {
-        mThemeTagLayout.animate().alpha(1f).setStartDelay(ANIMATE_DURATION).start();
+        mThemeTagLayout.setVisibility(View.VISIBLE);
+        mThemeTagLayout.animate().alpha(1f).setStartDelay(ANIMATE_START_DELAY).start();
     }
 
     public void hideThemeTagLayout() {
         mThemeTagLayout.setAlpha(0f);
+        mThemeTagLayout.setVisibility(View.GONE);
     }
 
     public void fadeInCards() {
