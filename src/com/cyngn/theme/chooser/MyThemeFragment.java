@@ -22,10 +22,13 @@ import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.cyngn.theme.util.AudioUtils;
@@ -44,6 +47,8 @@ public class MyThemeFragment extends ThemeFragment {
 
     private String mBaseThemePkgName;
     private String mBaseThemeName;
+
+    private SurfaceView mSurfaceView;
 
     static MyThemeFragment newInstance(String baseThemePkgName, String baseThemeName,
                                        boolean skipLoadingAnim) {
@@ -66,6 +71,7 @@ public class MyThemeFragment extends ThemeFragment {
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
         mBaseThemePkgName = getArguments().getString(ARG_BASE_THEME_PACKAGE_NAME);
         mBaseThemeName = getArguments().getString(ARG_BASE_THEME_NAME);
+        mSurfaceView = createSurfaceView();
     }
 
     @Override
@@ -121,6 +127,21 @@ public class MyThemeFragment extends ThemeFragment {
         }
 
         return super.onPopupMenuItemClick(item);
+    }
+
+    @Override
+    public void collapse(boolean applyTheme) {
+        super.collapse(applyTheme);
+        if (mSurfaceView != null) mSurfaceView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void expand() {
+        super.expand();
+        if (mSurfaceView != null && mShadowFrame.indexOfChild(mSurfaceView) >= 0) {
+            mSurfaceView.setVisibility(View.GONE);
+            mWallpaper.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void resetTheme() {
@@ -211,8 +232,14 @@ public class MyThemeFragment extends ThemeFragment {
         int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
         final Resources res = getResources();
         final Context context = getActivity();
-        Drawable wp = context == null ? null :
-                WallpaperManager.getInstance(context).getDrawable();
+        final WallpaperManager wm = WallpaperManager.getInstance(context);
+        if (wm.getWallpaperInfo() != null) {
+            addSurfaceView(mSurfaceView);
+        } else {
+            removeSurfaceView(mSurfaceView);
+        }
+
+        Drawable wp = context == null ? null : wm.getDrawable();
         if (wp == null) {
             Bitmap bmp = Utils.loadBitmapBlob(c, wpIdx);
             if (bmp != null) wp = new BitmapDrawable(res, bmp);
@@ -355,4 +382,31 @@ public class MyThemeFragment extends ThemeFragment {
         return mBaseThemePkgName;
     }
 
+    private SurfaceView createSurfaceView() {
+        final Context context = getActivity();
+        if (context == null) return null;
+
+        SurfaceView sv = new SurfaceView(context);
+        final Resources res = context.getResources();
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                res.getDimensionPixelSize(R.dimen.wallpaper_preview_width),
+                res.getDimensionPixelSize(R.dimen.theme_preview_height),
+                Gravity.CENTER_HORIZONTAL);
+        sv.setLayoutParams(params);
+
+        return sv;
+    }
+
+    private void addSurfaceView(SurfaceView sv) {
+        if (mShadowFrame.indexOfChild(mSurfaceView) < 0) {
+            int idx = mShadowFrame.indexOfChild(mWallpaper);
+            mShadowFrame.addView(sv, idx + 1);
+        }
+    }
+
+    private void removeSurfaceView(SurfaceView sv) {
+        if (mShadowFrame.indexOfChild(mSurfaceView) >= 0) {
+            mShadowFrame.removeView(sv);
+        }
+    }
 }
