@@ -15,6 +15,7 @@
  */
 package com.cyngn.theme.util;
 
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -22,11 +23,13 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.provider.ThemesContract;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ViewConfiguration;
+import android.view.WindowManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +38,7 @@ import java.io.OutputStream;
 
 public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
+    private static final boolean DEBUG = false;
 
     public static Bitmap decodeFile(String path, int reqWidth, int reqHeight) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -264,4 +268,114 @@ public class Utils {
         }
     }
 
+    public static Bitmap getRegularWallpaperBitmap(Context context) {
+        WallpaperManager wm = WallpaperManager.getInstance(context);
+
+        Bitmap bitmap = null;
+        // desktop wallpaper here
+        Bitmap wallpaper = wm.getBitmap();
+        Point size = new Point();
+        WindowManager windowManager =
+                (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getRealSize(size);
+
+        final int dw = size.x;
+        final int dh = size.y;
+
+        // Center the scaled image
+        float scale = Math.max(1f, Math.max(dw / (float) wallpaper.getWidth(),
+                dh / (float) wallpaper.getHeight()));
+
+        final int scaledWidth = Math.round((wallpaper.getWidth() * scale));
+        final int scaledHeight = Math.round((wallpaper.getHeight() * scale));
+
+        int xOffset = wm.getLastWallpaperX();
+        // x offset
+        if (xOffset == -1) {
+            xOffset = 0;
+        } else {
+            xOffset *= -1;
+        }
+
+        // y offsets
+        int yOffset = wm.getLastWallpaperY();
+        if (yOffset == -1) {
+            yOffset = 0;
+        } else {
+            yOffset *= -1;
+        }
+
+        if (DEBUG) {
+            Log.d(TAG, "scale: " + scale);
+            Log.d(TAG, "scaledWidth: " + scaledWidth);
+            Log.d(TAG, "scaledHeight: " + scaledHeight);
+            Log.d(TAG, "wallpaper size: width: " + wallpaper.getWidth() +
+                    ", height: " + wallpaper.getHeight());
+            Log.d(TAG, "xOffset: " + xOffset);
+            Log.d(TAG, "yOffset: " + yOffset);
+        }
+
+        if (wallpaper.getHeight() < dh) {
+            // need to scale it up vertically
+
+            if (wallpaper.getHeight() > wallpaper.getWidth()) {
+                // handle portrait wallpaper
+                float diff = scaledWidth - dw;
+                int diffhalf = Math.round(diff / 2);
+
+                bitmap = Bitmap.createScaledBitmap(wallpaper, scaledWidth, scaledHeight, true);
+                bitmap = Bitmap.createBitmap(bitmap, diffhalf, 0, dw, dh);
+                bitmap = Bitmap.createBitmap(bitmap, xOffset, 0, dw, dh);
+            } else {
+                int goldenWidth = Math.round(wallpaper.getHeight() * 1.125f);
+                int spaceA = (wallpaper.getWidth() - goldenWidth) / 2;
+                int spaceB = (goldenWidth - Math.round(dh/scale)) / 2;
+
+                bitmap = Bitmap.createBitmap(wallpaper, spaceA, 0, goldenWidth,
+                        wallpaper.getHeight());
+                int left = spaceB + Math.round(xOffset/scale);
+                bitmap = Bitmap.createBitmap(bitmap, left, 0, Math.round(dw / scale),
+                        Math.round(dh / scale));
+            }
+
+        } else if (wallpaper.getWidth() < dw) {
+            // need to scale it up horizontally
+
+            if (wallpaper.getHeight() > wallpaper.getWidth()) {
+                // handle portrait wallpaper
+                return wallpaper;
+
+            } else {
+                // handle landscape wallpaper
+                float diff = wallpaper.getHeight() - wallpaper.getWidth();
+                int diffhalf = Math.round(diff / 2);
+
+                if (diffhalf < 0) {
+                    return wallpaper;
+                }
+
+                bitmap = Bitmap.createBitmap(
+                        wallpaper, diffhalf, 0,
+                        wallpaper.getWidth(), wallpaper.getWidth());
+
+                // blow it up
+                bitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledWidth, true);
+
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, dw, dh);
+            }
+
+        } else {
+            // sometimes the wallpaper manager gives incorrect offsets,
+            // and adds like 200 pixels randomly. If it's bigger than we can handle, calculate
+            // our own :)
+            if (yOffset + dh > wallpaper.getHeight()) {
+                yOffset = (wallpaper.getHeight() - dh) / 2;
+            }
+            if (xOffset + dw > wallpaper.getWidth()) {
+                yOffset = (wallpaper.getWidth() - dw) / 2;
+            }
+            bitmap = Bitmap.createBitmap(wallpaper, xOffset, yOffset, dw, dh);
+        }
+        return bitmap;
+    }
 }

@@ -18,7 +18,6 @@ package com.cyngn.theme.chooser;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,7 +31,6 @@ import android.graphics.Bitmap;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -285,18 +283,7 @@ public class ChooserActivity extends FragmentActivity
         iv.post(new Runnable() {
             @Override
             public void run() {
-                WallpaperManager wm = WallpaperManager.getInstance(context);
-                Bitmap tmpBmp = wm.getBitmap();
-                // Find out the x location of the wallpaper and use that
-                // to offset the image
-                Point size = new Point();
-                getWindowManager().getDefaultDisplay().getRealSize(size);
-                int screenHeight = size.y;
-                int screenWidth = size.x;
-                float aspectRatio = (float) screenWidth / screenHeight;
-                int lastX = wm.getLastWallpaperX();
-                tmpBmp = Bitmap.createBitmap(tmpBmp, -lastX, 0,
-                        (int) (tmpBmp.getHeight() * aspectRatio), tmpBmp.getHeight());
+                Bitmap tmpBmp = Utils.getRegularWallpaperBitmap(context);
 
                 // Since we are applying a blur, we can afford to scale the bitmap down and use a
                 // smaller blur radius.
