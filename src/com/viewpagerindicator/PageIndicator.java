@@ -17,19 +17,19 @@
 
 package com.viewpagerindicator;
 
-import android.support.v4.view.ViewPager;
+import au.com.glassechidna.velocityviewpager.VelocityViewPager;
 
 /**
  * A PageIndicator is responsible to show an visual indicator on the total views
  * number and the current visible view.
  */
-public interface PageIndicator extends ViewPager.OnPageChangeListener {
+public interface PageIndicator extends VelocityViewPager.OnPageChangeListener {
     /**
      * Bind the indicator to a ViewPager.
      *
      * @param view
      */
-    void setViewPager(ViewPager view);
+    void setViewPager(VelocityViewPager view);
 
     /**
      * Bind the indicator to a ViewPager.
@@ -37,7 +37,7 @@ public interface PageIndicator extends ViewPager.OnPageChangeListener {
      * @param view
      * @param initialPosition
      */
-    void setViewPager(ViewPager view, int initialPosition);
+    void setViewPager(VelocityViewPager view, int initialPosition);
 
     /**
      * <p>Set the current page of both the ViewPager and indicator.</p>
@@ -54,7 +54,7 @@ public interface PageIndicator extends ViewPager.OnPageChangeListener {
      *
      * @param listener
      */
-    void setOnPageChangeListener(ViewPager.OnPageChangeListener listener);
+    void setOnPageChangeListener(VelocityViewPager.OnPageChangeListener listener);
 
     /**
      * Notify the indicator that the fragment list has changed.

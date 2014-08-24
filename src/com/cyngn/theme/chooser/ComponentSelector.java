@@ -24,7 +24,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import au.com.glassechidna.velocityviewpager.VelocityViewPager;
 import com.viewpagerindicator.PageIndicator;
 import com.cyngn.theme.util.AudioUtils;
 import com.cyngn.theme.util.ThemedTypefaceHelper;
@@ -76,7 +76,7 @@ public class ComponentSelector extends LinearLayout
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private ViewPager mPager;
+    private VelocityViewPager mPager;
 
     private String mComponentType;
     private CursorPagerAdapter mAdapter;
@@ -158,7 +158,7 @@ public class ComponentSelector extends LinearLayout
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager = (VelocityViewPager) findViewById(R.id.pager);
         mAdapter = new CursorPagerAdapter<View>(null, mItemsPerPage);
         mPager.setAdapter(mAdapter);
         PageIndicator indicator = (PageIndicator) findViewById(R.id.page_indicator);
