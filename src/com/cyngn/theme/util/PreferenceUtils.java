@@ -6,6 +6,9 @@ package com.cyngn.theme.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ThemeUtils;
+import android.content.res.Resources;
+import android.content.res.ThemeConfig;
+import android.text.TextUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +26,11 @@ public class PreferenceUtils {
         SharedPreferences prefs = getSharedPreferences(context);
         if (prefs == null) return null;
 
+        final Resources res = context.getResources();
+        final ThemeConfig config = res.getConfiguration().themeConfig;
+        String appliedTheme = config != null ? config.getOverlayPkgName() : null;
         return prefs.getString(PREF_APPLIED_BASE_THEME,
+                (!TextUtils.isEmpty(appliedTheme)) ? appliedTheme :
                 ThemeUtils.getDefaultThemePackageName(context));
     }
 
