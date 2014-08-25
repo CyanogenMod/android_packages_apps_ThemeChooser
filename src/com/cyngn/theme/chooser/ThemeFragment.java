@@ -1903,7 +1903,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public void showApplyThemeLayout() {
         if (mApplyThemeLayout.getVisibility() == View.VISIBLE) return;
         ((ChooserActivity) getActivity()).lockPager();
-        mScrollView.setScrollingEnabled(false);
         ViewPropertyAnimator anim = mApplyThemeLayout.animate();
         mApplyThemeLayout.setVisibility(View.VISIBLE);
         mApplyThemeLayout.setAlpha(0f);
@@ -1922,7 +1921,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
      */
     private void hideApplyThemeLayout(final boolean applyThemeWhenFinished) {
         ((ChooserActivity) getActivity()).unlockPager();
-        mScrollView.setScrollingEnabled(true);
         ViewPropertyAnimator anim = mApplyThemeLayout.animate();
         mApplyThemeLayout.setVisibility(View.VISIBLE);
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
