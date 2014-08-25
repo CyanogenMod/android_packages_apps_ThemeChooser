@@ -25,6 +25,13 @@
     <string name="theme_installed_notification_title">%s installed</string>
     <string name="theme_installed_notification_text">Theme successfully installed.</string>
 
+    <!-- Note: These two are for "themes", meaning multiple themes -->
+    <string name="themes_installed_notification_title">%d themes installed</string>
+    <plurals name="themes_installed_notification_text">
+        <item quantity="one">%1$s and %2$d other installed.</item>
+        <item quantity="other">%1$s and %2$d others installed.</item>
+    </plurals>
+
     <string name="status_bar_clock_text" translatable="false">5:30</string>
     <string name="status_bar">Status bar</string>
     <string name="navigation_bar">Navigation bar</string>
