@@ -12,7 +12,7 @@
         android:id="@+id/shop_themes"
         android:layout_width="140dp"
         android:layout_height="44dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="@dimen/shop_themes_margin_bottom"
         android:layout_gravity="center_horizontal"
         android:textSize="14sp"
         android:textColor="@color/shop_themes_text_color"
