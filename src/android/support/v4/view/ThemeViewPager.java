@@ -133,7 +133,7 @@ public class ThemeViewPager extends ViewPager {
         for(int i=0; i < getChildCount(); i++) {
             View v = getChildAt(i);
             ItemInfo info = infoForChild(v);
-            if (position == info.position) {
+            if (info != null && position == info.position) {
                 view = v;
                 break;
             }
