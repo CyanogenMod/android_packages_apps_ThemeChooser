@@ -152,7 +152,7 @@ public class MyThemeFragment extends ThemeFragment {
     private void resetTheme() {
         mSelectedComponentsMap.clear();
         Bundle args = new Bundle();
-        args.putString(ARG_BASE_THEME_PACKAGE_NAME, mBaseThemePkgName);
+        args.putString(ARG_PACKAGE_NAME, mBaseThemePkgName);
         getLoaderManager().restartLoader(LOADER_ID_ALL, args, this);
         mThemeResetting = true;
     }
