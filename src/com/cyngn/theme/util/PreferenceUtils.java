@@ -16,6 +16,7 @@ import java.util.Set;
 public class PreferenceUtils {
     public static final String PREF_APPLIED_BASE_THEME = "applied_base_theme";
     public static final String PREF_UPDATED_THEMES = "updated_themes";
+    public static final String PREF_NEWLY_INSTALLED_THEME_COUNT = "newly_installed_theme_count";
 
     public static SharedPreferences getSharedPreferences(Context context) {
         if (context == null) return null;
@@ -79,5 +80,19 @@ public class PreferenceUtils {
     public static boolean hasThemeBeenUpdated(Context context, String pkgName) {
         Set<String> updatedThemes = getUpdatedThemes(context);
         return updatedThemes != null && updatedThemes.contains(pkgName);
+    }
+
+    public static int getNewlyInstalledThemeCount(Context context) {
+        SharedPreferences prefs = getSharedPreferences(context);
+        if (prefs == null) return 0;
+
+        return prefs.getInt(PREF_NEWLY_INSTALLED_THEME_COUNT, 0);
+    }
+
+    public static void setNewlyInstalledThemeCount(Context context, int count) {
+        SharedPreferences prefs = getSharedPreferences(context);
+        if (prefs != null) {
+            prefs.edit().putInt(PREF_NEWLY_INSTALLED_THEME_COUNT, count).apply();
+        }
     }
 }

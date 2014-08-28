@@ -433,6 +433,9 @@ public class ChooserActivity extends FragmentActivity
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
         registerReceiver(mWallpaperChangeReceiver, filter);
+
+        // clear out the newly installed themes count
+        PreferenceUtils.setNewlyInstalledThemeCount(this, 0);
     }
 
     @Override
