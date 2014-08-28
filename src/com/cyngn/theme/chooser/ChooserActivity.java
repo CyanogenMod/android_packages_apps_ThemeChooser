@@ -514,11 +514,7 @@ public class ChooserActivity extends FragmentActivity
         public void onClick(View v) {
             ThemeFragment f = getCurrentFragment();
             if (f != null) {
-                if (f instanceof MyThemeFragment) {
-                    expand();
-                } else {
-                    f.showApplyThemeLayout();
-                }
+                f.performClick(mPager.isClickedOnContent());
             }
         }
     };

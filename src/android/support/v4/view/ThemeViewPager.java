@@ -20,6 +20,7 @@ public class ThemeViewPager extends ViewPager {
     private float mLastX;
     private float mLastY;
     private boolean mScrollingEnabled = true;
+    private boolean mClickedContent = false;
 
     public ThemeViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -36,6 +37,10 @@ public class ThemeViewPager extends ViewPager {
 
     public void setAnimating(boolean isAnimating) {
         mIsAnimating = isAnimating;
+    }
+
+    public boolean isClickedOnContent() {
+        return mClickedContent;
     }
 
     @Override
@@ -97,7 +102,10 @@ public class ThemeViewPager extends ViewPager {
                 mIsDragging = false;
                 break;
             case MotionEvent.ACTION_UP:
-                if (!mIsDragging && isTouching(R.id.clickable_view, ev)) {
+                if (!mIsDragging) {
+                    mClickedContent = isTouching(R.id.clickable_view, ev);
+                    // only play the click sound when we click on the content :)
+                    setSoundEffectsEnabled(mClickedContent);
                     performClick();
                 }
                 mIsDragging = false;

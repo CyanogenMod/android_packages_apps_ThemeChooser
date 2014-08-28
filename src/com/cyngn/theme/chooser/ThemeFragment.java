@@ -374,7 +374,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mCustomize.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (!isShowingApplyThemeLayout()) {
-                    ((ChooserActivity) getActivity()).expand();
+                    getChooserActivity().expand();
                 }
             }
         });
@@ -448,7 +448,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (isSuccess) {
             mProgress.setProgress(100);
             animateProgressOut();
-            ((ChooserActivity) getActivity()).themeChangeEnded();
+            getChooserActivity().themeChangeEnded();
         }
     }
 
@@ -466,6 +466,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 PreferenceUtils.removeUpdatedTheme(getActivity(), mPkgName);
             }
         }
+    }
+
+    protected ChooserActivity getChooserActivity() {
+        return (ChooserActivity) getActivity();
     }
 
     private void adjustScrollViewPaddingTop() {
@@ -559,7 +563,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         animateTitleCard(true, false);
         animateChildren(true, getChildrensGlobalBounds(mPreviewContent));
         animateExtras(true);
-        mSelector = ((ChooserActivity) getActivity()).getComponentSelector();
+        mSelector = getChooserActivity().getComponentSelector();
         mSelector.setOnItemClickedListener(mOnComponentItemClicked);
         if (mBootAnimation != null) mBootAnimation.start();
         hideThemeTagLayout();
@@ -578,6 +582,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             bounds.add(boundary);
         }
         return bounds;
+    }
+
+    public void performClick(boolean clickedOnContent) {
+        if (clickedOnContent) {
+            showApplyThemeLayout();
+        } else {
+            if (isShowingApplyThemeLayout()) {
+                hideApplyThemeLayout();
+            }
+        }
     }
 
     public void fadeOutCards(Runnable endAction) {
@@ -1709,7 +1723,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
             mActiveCardId = v.getId();
             String component = mCardIdsToComponentTypes.get(mActiveCardId);
-            ((ChooserActivity) getActivity()).showComponentSelector(component, v);
+            getChooserActivity().showComponentSelector(component, v);
             fadeOutNonSelectedCards(mActiveCardId);
             stopMediaPlayers();
         }
@@ -1814,7 +1828,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected void applyTheme() {
         if (mSelectedComponentsMap == null || mSelectedComponentsMap.size() <= 0) return;
-        ((ChooserActivity) getActivity()).themeChangeStarted();
+        getChooserActivity().themeChangeStarted();
         animateProgressIn(mApplyThemeRunnable);
     }
 
@@ -1907,7 +1921,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public void showApplyThemeLayout() {
         if (mApplyThemeLayout.getVisibility() == View.VISIBLE) return;
-        ((ChooserActivity) getActivity()).lockPager();
+        getChooserActivity().lockPager();
         ViewPropertyAnimator anim = mApplyThemeLayout.animate();
         mApplyThemeLayout.setVisibility(View.VISIBLE);
         mApplyThemeLayout.setAlpha(0f);
@@ -1925,7 +1939,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
      * @param applyThemeWhenFinished If true, the current theme will be applied.
      */
     private void hideApplyThemeLayout(final boolean applyThemeWhenFinished) {
-        ((ChooserActivity) getActivity()).unlockPager();
+        getChooserActivity().unlockPager();
         ViewPropertyAnimator anim = mApplyThemeLayout.animate();
         mApplyThemeLayout.setVisibility(View.VISIBLE);
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);

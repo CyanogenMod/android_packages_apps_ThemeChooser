@@ -144,6 +144,11 @@ public class MyThemeFragment extends ThemeFragment {
         }
     }
 
+    @Override
+    public void performClick(boolean clickedOnContent) {
+        getChooserActivity().expand();
+    }
+
     private void resetTheme() {
         mSelectedComponentsMap.clear();
         Bundle args = new Bundle();
