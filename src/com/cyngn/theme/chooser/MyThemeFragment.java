@@ -38,6 +38,7 @@ import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class MyThemeFragment extends ThemeFragment {
     private static final String TAG = MyThemeFragment.class.getSimpleName();
@@ -85,12 +86,7 @@ public class MyThemeFragment extends ThemeFragment {
         if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mBaseThemePkgName)) {
             mThemeTagLayout.setUpdatedTagEnabled(true);
         }
-        for (String pkgName : mCurrentTheme.values()) {
-            if (!pkgName.equals(mBaseThemePkgName)) {
-                mThemeTagLayout.setCustomizedTagEnabled(true);
-                break;
-            }
-        }
+        setCustomizedTagIfCustomized();
         return v;
     }
 
@@ -155,6 +151,35 @@ public class MyThemeFragment extends ThemeFragment {
         args.putString(ARG_PACKAGE_NAME, mBaseThemePkgName);
         getLoaderManager().restartLoader(LOADER_ID_ALL, args, this);
         mThemeResetting = true;
+    }
+
+    private void setCustomizedTagIfCustomized() {
+        boolean isDefault =
+                mBaseThemePkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()));
+        if (isDefault) {
+            // The default theme could be a mix of the system default theme and holo so lets check
+            // that.  i.e. Hexo with holo for the components not found in Hexo
+            Map<String, String> defaultComponents = ThemeUtils.getDefaultComponents(getActivity());
+            for (String component : mCurrentTheme.keySet()) {
+                String componentPkgName = mCurrentTheme.get(component);
+                if (defaultComponents.containsKey(component)) {
+                    if (!componentPkgName.equals(defaultComponents.get(component))) {
+                        mThemeTagLayout.setCustomizedTagEnabled(true);
+                        break;
+                    }
+                } else {
+                    mThemeTagLayout.setCustomizedTagEnabled(true);
+                    break;
+                }
+            }
+        } else {
+            for (String pkgName : mCurrentTheme.values()) {
+                if (!pkgName.equals(mBaseThemePkgName)) {
+                    mThemeTagLayout.setCustomizedTagEnabled(true);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
