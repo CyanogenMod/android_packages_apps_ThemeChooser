@@ -271,7 +271,7 @@ public class ChooserActivity extends FragmentActivity
         }
     }
 
-    private void setCustomBackground(final ImageView iv) {
+    private void setCustomBackground(final ImageView iv, final boolean animate) {
         final Context context = ChooserActivity.this;
         iv.post(new Runnable() {
             @Override
@@ -324,7 +324,11 @@ public class ChooserActivity extends FragmentActivity
 
                 // All done
                 iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                iv.setImageDrawable(d);
+                if (!animate) {
+                    iv.setImageDrawable(layers[1]);
+                } else {
+                    iv.setImageDrawable(d);
+                }
             }
         });
     }
@@ -442,7 +446,7 @@ public class ChooserActivity extends FragmentActivity
     protected void onResume() {
         super.onResume();
         mService.onClientResumed(this);
-        setCustomBackground(mCustomBackground);
+        setCustomBackground(mCustomBackground, mAnimateContentIn);
         getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
@@ -561,7 +565,7 @@ public class ChooserActivity extends FragmentActivity
     private BroadcastReceiver mWallpaperChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (mCustomBackground != null) setCustomBackground(mCustomBackground);
+            if (mCustomBackground != null) setCustomBackground(mCustomBackground, false);
         }
     };
 
