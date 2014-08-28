@@ -227,7 +227,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected Handler mHandler;
 
-    protected boolean mIsUninstalled;
     protected int mActiveCardId = -1;
     protected ComponentSelector mSelector;
     // Supported components for the theme this fragment represents
@@ -2008,23 +2007,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Uri packageURI = Uri.parse("package:" + mPkgName);
         Intent uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageURI);
         uninstallIntent.putExtra(Intent.EXTRA_UNINSTALL_ALL_USERS, true);
-        startActivityForResult(uninstallIntent,
-                ChooserActivity.REQUEST_UNINSTALL);
-    }
-
-    public void onActivityResult (int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_UNINSTALL) {
-            try {
-                ApplicationInfo ainfo = getActivity()
-                        .getPackageManager().getApplicationInfo(mPkgName, 0);
-            } catch (PackageManager.NameNotFoundException e) {
-                mIsUninstalled = true;
-            }
-        }
-    }
-
-    public boolean isUninstalled() {
-        return mIsUninstalled;
+        startActivity(uninstallIntent);
     }
 
     public void setCurrentTheme(Map<String, String> currentTheme) {

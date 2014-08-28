@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.ColorMatrix;
@@ -66,7 +67,6 @@ public class ChooserActivity extends FragmentActivity
     private static final String TAG = ChooserActivity.class.getSimpleName();
 
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
-    public static final int REQUEST_UNINSTALL = 1; // Request code
     public static final String EXTRA_PKGNAME = "pkgName";
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
@@ -107,6 +107,8 @@ public class ChooserActivity extends FragmentActivity
     private long mAnimateContentInDelay;
 
     ImageView mCustomBackground;
+
+    private ThemesObserver mThemesObserver;
 
     // Current system theme configuration as component -> pkgName
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
@@ -431,6 +433,11 @@ public class ChooserActivity extends FragmentActivity
 
         // clear out the newly installed themes count
         PreferenceUtils.setNewlyInstalledThemeCount(this, 0);
+
+        // register content observer for changes in installed themes
+        mThemesObserver = new ThemesObserver(new Handler());
+        getContentResolver().registerContentObserver(ThemesColumns.CONTENT_URI, true,
+                mThemesObserver);
     }
 
     @Override
@@ -479,6 +486,12 @@ public class ChooserActivity extends FragmentActivity
         ThemeFragment f = getCurrentFragment();
         if (f != null) {
             mSelectedTheme = f.getThemePackageName();
+        }
+
+        // unregister our installed themes content observer
+        if (mThemesObserver != null) {
+            getContentResolver().unregisterContentObserver(mThemesObserver);
+            mThemesObserver = null;
         }
     }
 
@@ -674,6 +687,26 @@ public class ChooserActivity extends FragmentActivity
 
     }
 
+    class ThemesObserver extends ContentObserver {
+
+        /**
+         * Creates a content observer.
+         *
+         * @param handler The handler to run {@link #onChange} on, or null if none.
+         */
+        public ThemesObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            mAdapter = new ThemesAdapter(ChooserActivity.this);
+            mPager.setAdapter(mAdapter);
+            getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null,
+                    ChooserActivity.this);
+        }
+    }
+
     public class ThemesAdapter extends FragmentStatePagerAdapter {
         private Cursor mCursor;
         private Context mContext;
@@ -704,9 +737,6 @@ public class ChooserActivity extends FragmentActivity
         @Override
         public int getItemPosition(Object object) {
             ThemeFragment fragment = (ThemeFragment) object;
-            if (fragment.isUninstalled()) {
-                return POSITION_NONE;
-            }
             return super.getItemPosition(object);
         }
 
