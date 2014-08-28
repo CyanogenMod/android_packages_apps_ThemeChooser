@@ -276,6 +276,11 @@ public class ChooserActivity extends FragmentActivity
                 mContainer.setIsAnimating(false);
             }
         }, FINISH_ANIMATION_DELAY);
+        if (mExpanded) {
+            hideShopThemesLayout();
+        } else {
+            showShopThemesLayout();
+        }
     }
 
     private void setCustomBackground(final ImageView iv) {
@@ -402,7 +407,6 @@ public class ChooserActivity extends FragmentActivity
                 f.expand();
             }
             setAnimatingStateAndScheduleFinish();
-            hideShopThemesLayout();
         }
     }
 
@@ -466,7 +470,6 @@ public class ChooserActivity extends FragmentActivity
                     }
                 });
             }
-            showShopThemesLayout();
             setAnimatingStateAndScheduleFinish();
         } else {
             if (f != null && f.isShowingApplyThemeLayout()) {
