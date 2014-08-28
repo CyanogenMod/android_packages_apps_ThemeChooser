@@ -31,7 +31,7 @@
     </LinearLayout>
 
     <include layout="@layout/component_selector"/>
-    <include layout="@layout/save_apply_button_2"/>
+    <include layout="@layout/save_apply_button"/>
     <include layout="@layout/shop_themes"/>
 
 </FrameLayout>

@@ -3,7 +3,6 @@
      Copyright (C) 2014 Cyanogen, Inc.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true" android:drawable="@drawable/save_apply_button_focused"/>
-    <item android:state_pressed="true" android:drawable="@drawable/save_apply_button_pressed"/>
-    <item android:drawable="@drawable/save_apply_button_normal"/>
+    <item android:state_pressed="true" android:drawable="@drawable/btn_apply_pressed"/>
+    <item android:drawable="@drawable/btn_apply_normal"/>
 </selector>
