@@ -262,6 +262,10 @@ public class Utils {
         Bitmap bitmap = null;
         // desktop wallpaper here
         Bitmap wallpaper = wm.getBitmap();
+        if (wallpaper == null) {
+            return null;
+        }
+
         Point size = new Point();
         WindowManager windowManager =
                 (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

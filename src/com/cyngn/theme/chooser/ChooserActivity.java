@@ -43,6 +43,7 @@ import android.support.v4.view.ThemeViewPager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
@@ -275,7 +276,22 @@ public class ChooserActivity extends FragmentActivity
         iv.post(new Runnable() {
             @Override
             public void run() {
-                Bitmap tmpBmp = Utils.getRegularWallpaperBitmap(context);
+                Bitmap tmpBmp;
+                try {
+                    tmpBmp = Utils.getRegularWallpaperBitmap(context);
+                } catch (Throwable e) {
+                    Log.w(TAG, "Failed to retrieve wallpaper", e);
+                    tmpBmp = null;
+                }
+                // Show the grid background if no wallpaper is set.
+                // Note: no wallpaper is actually a 1x1 pixel black bitmap
+                if (tmpBmp == null || tmpBmp.getWidth() <= 1 || tmpBmp.getHeight() <= 1) {
+                    iv.setImageResource(R.drawable.bg_grid);
+                    // We need to change the ScaleType to FIT_XY otherwise the background is cut
+                    // off a bit at the bottom.
+                    iv.setScaleType(ImageView.ScaleType.FIT_XY);
+                    return;
+                }
 
                 // Since we are applying a blur, we can afford to scale the bitmap down and use a
                 // smaller blur radius.
@@ -307,6 +323,7 @@ public class ChooserActivity extends FragmentActivity
                 TransitionDrawable d = new TransitionDrawable(layers);
 
                 // All done
+                iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 iv.setImageDrawable(d);
             }
         });
