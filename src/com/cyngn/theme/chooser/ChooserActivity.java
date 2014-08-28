@@ -250,9 +250,6 @@ public class ChooserActivity extends FragmentActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        // when resuming the animation seems to get cut off.  Delaying it a bit fixes this behavior.
-        mAnimateContentInDelay = ANIMATE_CONTENT_DELAY;
         handleIntent(intent);
     }
 
@@ -427,8 +424,6 @@ public class ChooserActivity extends FragmentActivity
         super.onResume();
         mService.onClientResumed(this);
         setCustomBackground(mCustomBackground);
-        mAnimateContentIn = true;
-        mContainer.setAlpha(0f);
         getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
