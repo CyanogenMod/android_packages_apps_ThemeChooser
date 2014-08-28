@@ -494,6 +494,7 @@ public class ChooserActivity extends FragmentActivity
         if (mTypefaceHelperCache.getTypefaceCount() <= 0) {
             new TypefacePreloadTask().execute();
         }
+        mAnimateContentInDelay = ANIMATE_CONTENT_DELAY;
     }
 
     private void animateContentIn() {
