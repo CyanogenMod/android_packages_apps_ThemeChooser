@@ -245,6 +245,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected ThemeTagLayout mThemeTagLayout;
 
+    protected View mClickableView;
+
     static ThemeFragment newInstance(String pkgName, boolean skipLoadingAnim) {
         ThemeFragment f = new ThemeFragment();
         Bundle args = new Bundle();
@@ -395,6 +397,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mApplyButton.setOnClickListener(mApplyCancelClickListener);
         mCancelButton = mApplyThemeLayout.findViewById(R.id.apply_cancel);
         mCancelButton.setOnClickListener(mApplyCancelClickListener);
+        mClickableView = v.findViewById(R.id.clickable_view);
 
         if (mPkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()))) {
             mThemeTagLayout.setDefaultTagEnabled(true);
@@ -498,6 +501,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             // we don't want to re-load these cards if the we expand again.
             mCurrentCursor = null;
         }
+        mClickableView.setVisibility(View.GONE);
         mScrollView.setScrollingEnabled(true);
         // Full width and height!
         ViewGroup content = (ViewGroup) mScrollView.getParent();
@@ -865,6 +869,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                                     mTitleCard.setVisibility(View.INVISIBLE);
                                 } else {
                                     mTitleCard.setVisibility(View.VISIBLE);
+                                    mClickableView.setVisibility(View.VISIBLE);
                                     if (applyTheme) {
                                         // The title card is the last animation when collapsing so
                                         // we will handle applying the theme, if applicable, here
