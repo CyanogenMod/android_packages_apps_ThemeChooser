@@ -2040,7 +2040,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
      * @param yDelta
      * @param selectorHeight
      */
-    public void slideContentUp(final int yDelta, int selectorHeight) {
+    public void slideContentIntoView(final int yDelta, int selectorHeight) {
         Space space = new Space(getActivity());
         space.setId(ADDITIONAL_CONTENT_SPACE_ID);
         mAdditionalCards.addView(space, new LinearLayout.LayoutParams(
@@ -2067,7 +2067,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
      * mScrollView.smoothScrollBy() since the speed of that animation cannot be customized.
      * @param yDelta
      */
-    public void slideContentDown(int yDelta) {
+    public void slideContentBack(int yDelta) {
         final int startY = mScrollView.getScrollY();
         final ValueAnimator scrollAnimator =
                 ValueAnimator.ofInt(startY, startY + yDelta);

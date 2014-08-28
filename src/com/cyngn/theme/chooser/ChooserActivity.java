@@ -374,10 +374,13 @@ public class ChooserActivity extends FragmentActivity
             // determine if we need to shift the cards up
             int[] coordinates = new int[2];
             v.getLocationOnScreen(coordinates);
-            coordinates[1] += v.getHeight();
-            int top = getWindowManager().getDefaultDisplay().getHeight() - height;
-            if (coordinates[1] > top) {
-                slideContentUp(top - coordinates[1], height);
+            final int top = coordinates[1];
+            final int bottom = coordinates[1] + v.getHeight();
+            int selectorTop = getWindowManager().getDefaultDisplay().getHeight() - height;
+            if (bottom > selectorTop) {
+                slideContentIntoView(bottom - selectorTop, height);
+            } else if (top < 0) {
+                slideContentIntoView(top, height);
             }
         }
     }
@@ -395,19 +398,24 @@ public class ChooserActivity extends FragmentActivity
         }
     }
 
-    private void slideContentUp(int yDelta, int selectorHeight) {
+    private void slideContentIntoView(int yDelta, int selectorHeight) {
         ThemeFragment f = getCurrentFragment();
         if (f != null) {
-            yDelta -= getResources().getDimensionPixelSize(R.dimen.content_offset_padding);
-            f.slideContentUp(-yDelta, selectorHeight);
+            final int offset = getResources().getDimensionPixelSize(R.dimen.content_offset_padding);
+            if (yDelta > 0) {
+                yDelta += offset;
+            } else {
+                yDelta -= offset;
+            }
+            f.slideContentIntoView(yDelta, selectorHeight);
             mContainerYOffset = yDelta;
         }
     }
 
-    private void slideContentDown(final int yDelta) {
+    private void slideContentBack(final int yDelta) {
         ThemeFragment f = getCurrentFragment();
         if (f != null) {
-            f.slideContentDown(yDelta);
+            f.slideContentBack(yDelta);
         }
     }
 
@@ -431,7 +439,7 @@ public class ChooserActivity extends FragmentActivity
         if (mSelector.isEnabled()) {
             mSelector.hide();
             if (mContainerYOffset != 0) {
-                slideContentDown(mContainerYOffset);
+                slideContentBack(-mContainerYOffset);
                 mContainerYOffset = 0;
             }
             if (f != null) f.fadeInCards();
