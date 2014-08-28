@@ -86,10 +86,13 @@ public class ChooserBrowseFragment extends Fragment
     private static final String GET_THEMES_URL =
             "http://wiki.cyanogenmod.org/w/Get_Themes?action=render";
     private static final String THEME_STORE_ACTIVITY = "com.cyngn.theme.store.StoreActivity";
+    private static final String KEY_WEB_VIEW_SHOWING
+            = "org.cyanogenmod.themes.chooser.ChooserBrowserFragment.KEY_WEB_VIEW_SHOWING";
 
     public ListView mListView;
     public LocalPagerAdapter mAdapter;
     public ArrayList<String> mComponentFilters;
+    private Dialog mWebViewDialog;
 
     private Point mMaxImageSize = new Point(); //Size of preview image in listview
 
@@ -126,6 +129,10 @@ public class ChooserBrowseFragment extends Fragment
         display.getSize(mMaxImageSize);
         mMaxImageSize.y  = (int) getActivity().getResources().getDimension(R.dimen.item_browse_height);
 
+        if (savedInstanceState != null && savedInstanceState.getBoolean(KEY_WEB_VIEW_SHOWING, false)) {
+            launchGetThemesWebView();
+        }
+
         return v;
     }
 
@@ -133,6 +140,13 @@ public class ChooserBrowseFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(KEY_WEB_VIEW_SHOWING,
+                mWebViewDialog != null && mWebViewDialog.isShowing());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -177,18 +191,18 @@ public class ChooserBrowseFragment extends Fragment
     }
 
     private void launchGetThemesWebView() {
-        Context context = getActivity();
+        final Context context = getActivity();
         if (context == null) return;
 
         final WebView webView = new WebView(context);
-        String html = createGetThemesHtml(context);
-        webView.loadData(html.toString(), "text/html; charset=UTF-8", null);
+        final String html = createGetThemesHtml(context);
+        webView.loadData(html, "text/html; charset=UTF-8", null);
 
         // Setup the dialog
-        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         alert.setView(webView);
-        Dialog dialog = alert.create();
-        dialog.show();
+        mWebViewDialog = alert.create();
+        mWebViewDialog.show();
     }
 
     private String createGetThemesHtml(Context context) {
@@ -583,3 +597,4 @@ public class ChooserBrowseFragment extends Fragment
         }
     }
 }
+
