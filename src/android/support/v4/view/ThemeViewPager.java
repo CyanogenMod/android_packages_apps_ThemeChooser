@@ -57,7 +57,8 @@ public class ThemeViewPager extends ViewPager {
         if (!mExpanded && isEnabled()  && !mIsAnimating)  {
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    intercept = getChildCount() > 0 && !isTouching(R.id.customize, ev) && !isTouching(R.id.overflow, ev)
+                    intercept = getChildCount() > 0 && !isTouching(R.id.customize, ev)
+                            && !isTouching(R.id.overflow, ev)
                             && !isTouching(R.id.apply_theme_layout, ev);
                     break;
             }
@@ -108,14 +109,14 @@ public class ThemeViewPager extends ViewPager {
                 mIsDragging = false;
                 break;
             case MotionEvent.ACTION_UP:
-                if (!mIsDragging) {
+                if (!mIsDragging && isTouching(R.id.clickable_view, ev)) {
                     performClick();
                 }
                 mIsDragging = false;
                 break;
         }
 
-        if (mExpanded || !mScrollingEnabled) {
+        if (mExpanded || (!mScrollingEnabled && mIsDragging)) {
             return false;
         }
 
