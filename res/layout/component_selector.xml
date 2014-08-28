@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!--
+     Copyright (C) 2014 Cyanogen, Inc.
+-->
 <com.cyngn.theme.chooser.ComponentSelector
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:themes="http://schemas.android.com/apk/res-auto"
