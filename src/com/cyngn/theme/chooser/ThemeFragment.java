@@ -522,7 +522,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mIconCard.setPadding(padding.left, padding.top, padding.right, padding.bottom);
         mShadowFrame.setBackground(null);
         mShadowFrame.setPadding(0, 0, 0, 0);
-        mAdditionalCards.setPadding(padding.left, padding.top, padding.right, padding.bottom);
 
         // Off screen cards will become visible and then be animated in
         mWallpaperCard.setVisibility(View.VISIBLE);
