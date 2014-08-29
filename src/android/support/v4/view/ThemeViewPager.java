@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The CyanogenMod, Inc.
+ * Copyright (C) 2014 Cyanogen, Inc.
  */
 package android.support.v4.view;
 
