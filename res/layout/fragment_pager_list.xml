@@ -162,9 +162,9 @@
                 <Space android:layout_width="match_parent"
                     android:layout_height="@dimen/expanded_card_margin_top" />
 
-                <Space android:id="@+id/nav_bar_spacer"
-                       android:layout_width="match_parent"
-                       android:layout_height="@*android:dimen/system_bar_height" />
+                <com.cyngn.theme.widget.NavBarSpace
+                    android:layout_width="match_parent"
+                    android:layout_height="@*android:dimen/system_bar_height" />
             </LinearLayout>
         </LinearLayout>
     </com.cyngn.theme.widget.LockableScrollView>

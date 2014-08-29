@@ -157,10 +157,6 @@ public class ChooserActivity extends FragmentActivity
         mShopThemesLayout = findViewById(R.id.shop_themes_layout);
 
         mSaveApplyLayout = findViewById(R.id.save_apply_layout);
-        if (!Utils.hasNavigationBar(this)) {
-            mSaveApplyLayout.findViewById(R.id.navbar_padding).setVisibility(View.GONE);
-            mShopThemesLayout.findViewById(R.id.navbar_padding).setVisibility(View.GONE);
-        }
         mSaveApplyLayout.findViewById(R.id.save_apply_button).setOnClickListener(
                 new View.OnClickListener() {
                     @Override

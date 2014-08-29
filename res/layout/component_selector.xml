@@ -35,10 +35,7 @@
             themes:fillColor="@android:color/white"/>
 
     </FrameLayout>
-
-    <!-- This view will be set to gone if the device does not have a navigation bar -->
-    <Space
-        android:id="@+id/navbar_padding"
+    <com.cyngn.theme.widget.NavBarSpace
         android:layout_width="match_parent"
         android:layout_height="@*android:dimen/system_bar_height"/>
 </com.cyngn.theme.chooser.ComponentSelector>

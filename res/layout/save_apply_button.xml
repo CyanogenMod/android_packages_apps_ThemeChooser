@@ -29,8 +29,8 @@
             android:background="@drawable/save_apply_button_selector"/>
 
     </LinearLayout>
-    <Space
-        android:id="@+id/navbar_padding"
+
+    <com.cyngn.theme.widget.NavBarSpace
         android:layout_width="match_parent"
         android:layout_height="@*android:dimen/system_bar_height"/>
 

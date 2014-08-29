@@ -164,10 +164,6 @@ public class ComponentSelector extends LinearLayout
         PageIndicator indicator = (PageIndicator) findViewById(R.id.page_indicator);
         indicator.setViewPager(mPager);
 
-        // set navbar_padding to GONE if no on screen navigation bar is available
-        if (!Utils.hasNavigationBar(mContext)) {
-            findViewById(R.id.navbar_padding).setVisibility(View.GONE);
-        }
         setEnabled(false);
     }
 
