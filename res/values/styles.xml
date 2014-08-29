@@ -9,6 +9,12 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:popupMenuStyle">@style/popupMenuStyle</item>
+        <item name="android:textAppearanceLargePopupMenu">
+            @style/TextAppearance.Widget.PopupMenu.Large
+        </item>
+        <item name="android:textAppearanceSmallPopupMenu">
+            @style/TextAppearance.Widget.PopupMenu.Small
+        </item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowActionBarOverlay">false</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -19,6 +25,16 @@
         <item name="android:popupBackground">
             @*android:drawable/menu_dropdown_panel_holo_light
         </item>
+    </style>
+
+    <style name="TextAppearance.Widget.PopupMenu.Large"
+        parent="android:TextAppearance.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/popup_menu_text_color</item>
+    </style>
+
+    <style name="TextAppearance.Widget.PopupMenu.Small"
+        parent="android:TextAppearance.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/popup_menu_text_color</item>
     </style>
 
     <style name="TextAppearance.StatusBar.Clock" parent="@*android:style/TextAppearance.StatusBar.Icon">

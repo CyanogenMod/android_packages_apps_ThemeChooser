@@ -44,4 +44,7 @@
 
     <color name="card_none_text_color">#4fc3f7</color>
 
+    <color name="popup_menu_text_color_enabled">#ff000000</color>
+    <color name="popup_menu_text_color_disabled">#80000000</color>
+
 </resources>
