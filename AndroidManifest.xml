@@ -16,6 +16,9 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
 
+    <!-- Used to see if we are resuming from the launcher -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="19" />

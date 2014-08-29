@@ -238,6 +238,12 @@ public class ChooserActivity extends FragmentActivity
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        if (Utils.isRecentTaskHome(this)) {
+            mContainer.setAlpha(0f);
+            mShopThemesLayout.setAlpha(0f);
+            mAnimateContentIn = true;
+            mAnimateContentInDelay = ANIMATE_CONTENT_DELAY;
+        }
         handleIntent(intent);
     }
 

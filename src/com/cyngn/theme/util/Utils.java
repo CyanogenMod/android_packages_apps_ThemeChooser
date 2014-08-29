@@ -3,8 +3,13 @@
  */
 package com.cyngn.theme.util;
 
+import android.app.ActivityManager;
 import android.app.WallpaperManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -23,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
@@ -369,5 +375,38 @@ public class Utils {
             bitmap = Bitmap.createBitmap(wallpaper, xOffset, yOffset, dw, dh);
         }
         return bitmap;
+    }
+
+    public static boolean isRecentTaskHome(Context context) {
+        final ActivityManager am =
+                (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        final List<ActivityManager.RecentTaskInfo> recentTasks = am.getRecentTasks(
+                2, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
+        if (recentTasks.size() > 1) {
+            ActivityManager.RecentTaskInfo recentInfo = recentTasks.get(1);
+
+            Intent intent = new Intent(recentInfo.baseIntent);
+            if (recentInfo.origActivity != null) {
+                intent.setComponent(recentInfo.origActivity);
+            }
+
+            // Now check if this recent task is a launcher
+            if (isCurrentHomeActivity(context, intent.getComponent())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isCurrentHomeActivity(Context context,
+            ComponentName component) {
+        final PackageManager pm = context.getPackageManager();
+        ActivityInfo homeInfo = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+                .resolveActivityInfo(pm, 0);
+
+        return homeInfo != null
+                && homeInfo.packageName.equals(component.getPackageName())
+                && homeInfo.name.equals(component.getClassName());
     }
 }
