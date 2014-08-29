@@ -241,6 +241,7 @@ public class ChooserActivity extends FragmentActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         handleIntent(intent);
     }
 
