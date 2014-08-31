@@ -17,7 +17,7 @@
 -->
 <resources>
   <string name="app_name">Témy</string>
-  <string name="lock_screen">Tapety uzamykacej obrazovky</string>
+  <string name="lock_screen">Tapety obrazovky uzamknutia</string>
   <string name="icons">Ikony</string>
   <string name="fonts">Písma</string>
   <string name="wallpapers">Tapety</string>
