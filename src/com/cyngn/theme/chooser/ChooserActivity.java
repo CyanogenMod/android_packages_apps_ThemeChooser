@@ -450,6 +450,15 @@ public class ChooserActivity extends FragmentActivity
         super.onResume();
         mService.onClientResumed(this);
         setCustomBackground(mCustomBackground, mAnimateContentIn);
+
+        // Check if any new themes were installed and if so recreate the adapter
+        // otherwise we can end up with duplicates
+        final int newThemeCount = PreferenceUtils.getNewlyInstalledThemeCount(this);
+        if (newThemeCount > 0) {
+            // the # of themes has changed so recreate the adapter
+            mAdapter = new ThemesAdapter(this);
+            mPager.setAdapter(mAdapter);
+        }
         getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
