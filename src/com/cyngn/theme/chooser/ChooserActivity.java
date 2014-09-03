@@ -91,7 +91,6 @@ public class ChooserActivity extends FragmentActivity
     private ThemeViewPager mPager;
 
     private ThemesAdapter mAdapter;
-    private ThemeManager mService;
     private boolean mExpanded = false;
     private ComponentSelector mSelector;
     private View mSaveApplyLayout;
@@ -152,8 +151,6 @@ public class ChooserActivity extends FragmentActivity
         mSelector = (ComponentSelector) findViewById(R.id.component_selector);
         mSelector.setOnOpenCloseListener(mOpenCloseListener);
 
-        mService = (ThemeManager) getSystemService(Context.THEME_SERVICE);
-
         mShopThemesLayout = findViewById(R.id.shop_themes_layout);
 
         mSaveApplyLayout = findViewById(R.id.save_apply_layout);
@@ -211,7 +208,8 @@ public class ChooserActivity extends FragmentActivity
         anim.alpha(0f).setDuration(ANIMATE_SHOP_THEMES_HIDE_DURATION);
         anim.setListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {}
+            public void onAnimationStart(Animator animation) {
+            }
 
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -219,10 +217,12 @@ public class ChooserActivity extends FragmentActivity
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {}
+            public void onAnimationCancel(Animator animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animator animation) {}
+            public void onAnimationRepeat(Animator animation) {
+            }
         });
     }
 
@@ -339,15 +339,20 @@ public class ChooserActivity extends FragmentActivity
     /**
      * Disable the ViewPager while a theme change is occuring
      */
-    public void themeChangeStarted() {
-        mThemeChanging = true;
+    public void themeChangeStart() {
         lockPager();
+        mThemeChanging = true;
+        ThemeFragment f = getCurrentFragment();
+        if (f != null) {
+            mAppliedBaseTheme = f.getThemePackageName();
+            PreferenceUtils.setAppliedBaseTheme(this, mAppliedBaseTheme);
+        }
     }
 
     /**
      * Re-enable the ViewPager and update the "My theme" fragment if available
      */
-    public void themeChangeEnded() {
+    public void themeChangeEnd(boolean isSuccess) {
         mThemeChanging = false;
         ThemeFragment f = getCurrentFragment();
         if (f != null)  {
@@ -358,8 +363,9 @@ public class ChooserActivity extends FragmentActivity
                 mAdapter = new ThemesAdapter(this);
                 mPager.setAdapter(mAdapter);
             }
-            mAppliedBaseTheme = f.getThemePackageName();
-            PreferenceUtils.setAppliedBaseTheme(this, mAppliedBaseTheme);
+            if (!isSuccess) {
+                mAppliedBaseTheme = null;
+            }
             getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null,
                     ChooserActivity.this);
         }
@@ -448,16 +454,16 @@ public class ChooserActivity extends FragmentActivity
     @Override
     protected void onResume() {
         super.onResume();
-        mService.onClientResumed(this);
         setCustomBackground(mCustomBackground, mAnimateContentIn);
 
         // Check if any new themes were installed and if so recreate the adapter
         // otherwise we can end up with duplicates
         final int newThemeCount = PreferenceUtils.getNewlyInstalledThemeCount(this);
-        if (newThemeCount > 0) {
+        if (newThemeCount > 0 || mThemeChanging) {
             // the # of themes has changed so recreate the adapter
             mAdapter = new ThemesAdapter(this);
             mPager.setAdapter(mAdapter);
+            mThemeChanging = false;
         }
         getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
 
@@ -514,7 +520,6 @@ public class ChooserActivity extends FragmentActivity
     @Override
     public void onPause() {
         super.onPause();
-        mService.onClientPaused(this);
         unregisterReceiver(mWallpaperChangeReceiver);
         ThemeFragment f = getCurrentFragment();
         if (f != null) {
@@ -531,7 +536,6 @@ public class ChooserActivity extends FragmentActivity
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mService.onClientDestroyed(this);
     }
 
     @Override

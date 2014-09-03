@@ -426,6 +426,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onDestroy() {
         super.onDestroy();
         freeMediaPlayers();
+        ThemeManager tm = getThemeManager();
+        if (tm != null) tm.removeClient(this);
     }
 
     @Override
@@ -446,8 +448,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (isSuccess) {
             mProgress.setProgress(100);
             animateProgressOut();
-            getChooserActivity().themeChangeEnded();
         }
+        getChooserActivity().themeChangeEnd(isSuccess);
     }
 
     @Override
@@ -1825,7 +1827,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected void applyTheme() {
         if (mSelectedComponentsMap == null || mSelectedComponentsMap.size() <= 0) return;
-        getChooserActivity().themeChangeStarted();
+        getChooserActivity().themeChangeStart();
         animateProgressIn(mApplyThemeRunnable);
     }
 
