@@ -606,8 +606,15 @@ public class ChooserActivity extends FragmentActivity
     private ThemeFragment getCurrentFragment() {
         // instantiateItem will return the fragment if it already exists and not instantiate it,
         // which should be the case for the current fragment.
-        return (mAdapter == null || mPager == null) ? null :
-                (ThemeFragment) mAdapter.instantiateItem(mPager, mPager.getCurrentItem());
+        ThemeFragment f;
+        try {
+            f = (mAdapter == null || mPager == null) ? null :
+                    (ThemeFragment) mAdapter.instantiateItem(mPager, mPager.getCurrentItem());
+        } catch (Exception e) {
+            f = null;
+            Log.e(TAG, "Unable to get current fragment", e);
+        }
+        return f;
     }
 
     private void populateCurrentTheme(Cursor c) {
