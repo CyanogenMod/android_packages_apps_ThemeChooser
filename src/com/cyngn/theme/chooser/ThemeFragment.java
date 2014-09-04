@@ -1680,12 +1680,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
         String pkgName = c.getString(pkgNameIdx);
         setCardTitle(audibleContainer, pkgName, getAudibleLabel(type));
-        try {
-            AudioUtils.loadThemeAudible(getActivity(), type, pkgName, mp);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.w(TAG, "Unable to load sound for " + pkgName, e);
-            return;
-        }
+        AudibleLoadingThread thread = new AudibleLoadingThread(getActivity(), type, pkgName, mp);
         title.setText(c.getString(titleIdx));
         if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
                 && mBaseThemeSupportedComponents.contains(component))) {
@@ -1700,6 +1695,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (animate) {
             animateContentChange(parentResId, content, overlay);
         }
+        thread.start();
     }
 
     protected Drawable getOverlayDrawable(View v, boolean requiresTransparency) {
@@ -2285,6 +2281,30 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             super.onPostExecute(isSuccess);
             if (isSuccess) {
                 mBootAnim.start();
+            }
+        }
+    }
+
+    class AudibleLoadingThread extends Thread {
+        private Context mContext;
+        private int mType;
+        private String mPkgName;
+        private MediaPlayer mPlayer;
+
+        public AudibleLoadingThread(Context context, int type, String pkgName, MediaPlayer mp) {
+            super();
+            mContext = context;
+            mType = type;
+            mPkgName = pkgName;
+            mPlayer = mp;
+        }
+
+        @Override
+        public void run() {
+            try {
+                AudioUtils.loadThemeAudible(mContext, mType, mPkgName, mPlayer);
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.w(TAG, "Unable to load sound for " + mPkgName, e);
             }
         }
     }
