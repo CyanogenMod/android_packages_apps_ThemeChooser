@@ -14,10 +14,7 @@
         android:layout_height="132dp"
         android:layout_gravity="top|center_horizontal"
         android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textColor="@color/apply_layout_text_color"
-        android:textAllCaps="true"
+        style="@style/apply_layout_text_style"
         android:text="@string/apply_theme_layout_title"/>
 
     <LinearLayout

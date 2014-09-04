@@ -511,6 +511,8 @@ public class ChooserActivity extends FragmentActivity
         } else {
             if (f != null && f.isShowingApplyThemeLayout()) {
                 f.hideApplyThemeLayout();
+            } else if (f != null && f.isShowingCustomizeResetLayout()) {
+                f.hideCustomizeResetLayout();
             } else {
                 super.onBackPressed();
             }

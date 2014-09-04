@@ -102,4 +102,17 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:text">@string/wallpaper_none</item>
     </style>
+
+    <style name="apply_layout_text_style">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/apply_layout_text_color</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="customize_layout_text_style">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/customize_layout_text_color</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
 </resources>

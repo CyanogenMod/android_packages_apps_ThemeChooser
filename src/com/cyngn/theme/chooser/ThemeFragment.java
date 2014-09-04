@@ -240,13 +240,27 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected boolean mThemeResetting;
     protected boolean mSkipLoadingAnim;
 
+    // Apply theme layout
     protected View mApplyThemeLayout;
     protected View mApplyButton;
     protected View mCancelButton;
 
+    // Customize/Reset theme layout
+    protected View mCustomizeResetLayout;
+    protected View mResetButton;
+    protected View mCustomizeButton;
+    protected View mDismissButton;
+
     protected ThemeTagLayout mThemeTagLayout;
 
     protected View mClickableView;
+    protected String mBaseThemePkgName;
+
+    protected enum CustomizeResetAction {
+        Customize,
+        Reset,
+        Dismiss
+    }
 
     static ThemeFragment newInstance(String pkgName, boolean skipLoadingAnim) {
         ThemeFragment f = new ThemeFragment();
@@ -374,7 +388,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mCustomize = (ImageView) v.findViewById(R.id.customize);
         mCustomize.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (!isShowingApplyThemeLayout()) {
+                if (!isShowingApplyThemeLayout() && !isShowingCustomizeResetLayout()) {
                     getChooserActivity().expand();
                 }
             }
@@ -399,6 +413,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mCancelButton = mApplyThemeLayout.findViewById(R.id.apply_cancel);
         mCancelButton.setOnClickListener(mApplyCancelClickListener);
         mClickableView = v.findViewById(R.id.clickable_view);
+
+        mCustomizeResetLayout = v.findViewById(R.id.customize_reset_theme_layout);
+        mDismissButton = mCustomizeResetLayout.findViewById(R.id.btn_dismiss);
+        mDismissButton.setOnClickListener(mCustomizeResetClickListener);
+        mResetButton = mCustomizeResetLayout.findViewById(R.id.btn_reset);
+        mResetButton.setOnClickListener(mCustomizeResetClickListener);
+        mCustomizeButton = mCustomizeResetLayout.findViewById(R.id.btn_customize);
+        mCustomizeButton.setOnClickListener(mCustomizeResetClickListener);
 
         if (mPkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()))) {
             mThemeTagLayout.setDefaultTagEnabled(true);
@@ -1011,6 +1033,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 mp.seekTo(0);
             }
         }
+    }
+
+    protected void resetTheme() {
+        mSelectedComponentsMap.clear();
+        Bundle args = new Bundle();
+        args.putString(ARG_PACKAGE_NAME, mBaseThemePkgName);
+        getLoaderManager().restartLoader(LOADER_ID_ALL, args, this);
+        mThemeResetting = true;
     }
 
     @Override
@@ -1746,7 +1776,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private View.OnClickListener mCardClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (isShowingApplyThemeLayout()) return;
+            if (isShowingApplyThemeLayout() || isShowingCustomizeResetLayout()) return;
             if (mActiveCardId > 0) {
                 // need to fade the newly selected card in if another was currently selected.
                 ((ComponentCardView) v).animateCardFadeIn();
@@ -1766,6 +1796,19 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 hideApplyThemeLayout(true);
             } else if (v == mCancelButton) {
                 hideApplyThemeLayout();
+            }
+        }
+    };
+
+    private View.OnClickListener mCustomizeResetClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (v == mDismissButton) {
+                hideCustomizeResetLayout(CustomizeResetAction.Dismiss);
+            } else if (v == mResetButton) {
+                hideCustomizeResetLayout(CustomizeResetAction.Reset);
+            } else if (v == mCustomizeButton) {
+                hideCustomizeResetLayout(CustomizeResetAction.Customize);
             }
         }
     };
@@ -1983,6 +2026,64 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             public void onAnimationEnd(Animator animation) {
                 mApplyThemeLayout.setVisibility(View.GONE);
                 if (applyThemeWhenFinished) applyTheme();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+    }
+
+    public boolean isShowingCustomizeResetLayout() {
+        return mCustomizeResetLayout.getVisibility() == View.VISIBLE;
+    }
+
+    public void showCustomizeResetLayout() {
+        if (mCustomizeResetLayout.getVisibility() == View.VISIBLE) return;
+        if (!mThemeTagLayout.isCustomizedTagEnabled()) {
+            mResetButton.setEnabled(false);
+        } else {
+            mResetButton.setEnabled(true);
+        }
+        getChooserActivity().lockPager();
+        ViewPropertyAnimator anim = mCustomizeResetLayout.animate();
+        mCustomizeResetLayout.setVisibility(View.VISIBLE);
+        mCustomizeResetLayout.setAlpha(0f);
+        anim.setListener(null);
+        anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
+        anim.alpha(1f).start();
+    }
+
+    public void hideCustomizeResetLayout() {
+        hideCustomizeResetLayout(CustomizeResetAction.Dismiss);
+    }
+
+    private void hideCustomizeResetLayout(final CustomizeResetAction action) {
+        getChooserActivity().unlockPager();
+        ViewPropertyAnimator anim = mCustomizeResetLayout.animate();
+        mCustomizeResetLayout.setVisibility(View.VISIBLE);
+        anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
+        anim.alpha(0f).start();
+        anim.setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCustomizeResetLayout.setVisibility(View.GONE);
+                switch (action) {
+                    case Customize:
+                        getChooserActivity().expand();
+                        break;
+                    case Reset:
+                        resetTheme();
+                        break;
+                }
             }
 
             @Override

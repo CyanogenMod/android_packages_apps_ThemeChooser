@@ -35,8 +35,10 @@
 
     <color name="apply_layout_background">#cd000000</color>
     <color name="apply_layout_text_color">#ffffff</color>
-    <color name="apply_layout_separator_color">#ffffff</color>
+    <color name="apply_layout_separator_color">#bdbdbd</color>
     <color name="apply_layout_button_bg_color">#66ffffff</color>
+
+    <color name="customize_layout_text_color">#bdbdbd</color>
 
     <color name="tag_text_color">#ffffff</color>
     <color name="add_component_text_color">#000000</color>

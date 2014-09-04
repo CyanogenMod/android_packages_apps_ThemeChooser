@@ -62,4 +62,8 @@
 
     <string name="wallpaper_none">None</string>
 
+    <!-- Labels for the customize/reset theme layout -->
+    <string name="reset_theme">Reset</string>
+    <string name="customize_theme">Customize</string>
+
 </resources>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014 Cyanogen, Inc.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/customize_reset_theme_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"
+    android:background="@color/apply_layout_background">
+
+    <ImageView
+        android:id="@+id/btn_dismiss"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_action_close"
+        android:scaleType="center"
+        android:background="@drawable/apply_cancel_bg"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btn_reset"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:src="@drawable/ic_action_reset"
+                android:scaleType="center"
+                android:background="@drawable/apply_cancel_bg"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                style="@style/customize_layout_text_style"
+                android:text="@string/reset_theme"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/apply_layout_separator_color"
+            android:layout_marginTop="-12dp"
+            android:layout_marginStart="31dp"
+            android:layout_marginEnd="31dp"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btn_customize"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:src="@drawable/ic_action_customize"
+                android:scaleType="center"
+                android:background="@drawable/apply_cancel_bg"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                style="@style/customize_layout_text_style"
+                android:text="@string/customize_theme"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

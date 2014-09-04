@@ -52,7 +52,8 @@ public class ThemeViewPager extends ViewPager {
                 case MotionEvent.ACTION_DOWN:
                     intercept = getChildCount() > 0 && !isTouching(R.id.customize, ev)
                             && !isTouching(R.id.overflow, ev)
-                            && !isTouching(R.id.apply_theme_layout, ev);
+                            && !isTouching(R.id.apply_theme_layout, ev)
+                            && !isTouching(R.id.customize_reset_theme_layout, ev);
                     break;
             }
         }

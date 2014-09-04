@@ -46,7 +46,6 @@ public class MyThemeFragment extends ThemeFragment {
     private static final String ARG_BASE_THEME_PACKAGE_NAME = "baseThemePkgName";
     private static final String ARG_BASE_THEME_NAME = "baseThemeName";
 
-    private String mBaseThemePkgName;
     private String mBaseThemeName;
 
     private SurfaceView mSurfaceView;
@@ -142,15 +141,13 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     public void performClick(boolean clickedOnContent) {
-        getChooserActivity().expand();
-    }
-
-    private void resetTheme() {
-        mSelectedComponentsMap.clear();
-        Bundle args = new Bundle();
-        args.putString(ARG_PACKAGE_NAME, mBaseThemePkgName);
-        getLoaderManager().restartLoader(LOADER_ID_ALL, args, this);
-        mThemeResetting = true;
+        if (clickedOnContent) {
+            showCustomizeResetLayout();
+        } else {
+            if (isShowingCustomizeResetLayout()) {
+                hideCustomizeResetLayout();
+            }
+        }
     }
 
     private void setCustomizedTagIfCustomized() {
