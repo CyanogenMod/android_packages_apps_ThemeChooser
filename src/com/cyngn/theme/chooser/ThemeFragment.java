@@ -510,11 +510,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected boolean onPopupMenuItemClick(MenuItem item) {
         switch(item.getItemId()) {
+            /* TODO: Add back in once there is UX available for this feature
             case R.id.menu_author:
                 Toast.makeText(getActivity(),
                         "Not supported",
                         Toast.LENGTH_LONG).show();
                 break;
+            */
             case R.id.menu_delete:
                 uninstallTheme();
                 break;
