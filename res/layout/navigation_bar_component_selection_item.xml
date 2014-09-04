@@ -25,7 +25,7 @@
 
     </LinearLayout>
 
-    <TextView
+    <com.cyngn.theme.widget.LatoTextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

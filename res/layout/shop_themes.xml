@@ -10,7 +10,7 @@
     android:layout_gravity="bottom|center_horizontal"
     android:alpha="0">
 
-    <TextView
+    <com.cyngn.theme.widget.LatoTextView
         android:id="@+id/shop_themes"
         android:layout_width="140dp"
         android:layout_height="44dp"

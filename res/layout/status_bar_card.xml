@@ -12,7 +12,7 @@
     android:clickable="true"
     android:focusable="true"
     android:background="@drawable/theme_component_bg_transition">
-    <TextView
+    <com.cyngn.theme.widget.LatoTextView
         android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

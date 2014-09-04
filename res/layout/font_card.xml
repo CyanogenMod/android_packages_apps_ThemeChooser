@@ -11,7 +11,7 @@
     android:orientation="vertical"
     android:padding="0dp"
     android:background="@drawable/theme_component_bg_transition">
-    <TextView
+    <com.cyngn.theme.widget.LatoTextView
         android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
+        <com.cyngn.theme.widget.LatoTextView
             android:id="@+id/font_preview"
             android:layout_width="match_parent"
             android:layout_height="48dp"

@@ -9,7 +9,7 @@
     android:visibility="gone"
     android:background="@color/apply_layout_background">
 
-    <TextView
+    <com.cyngn.theme.widget.LatoTextView
         android:layout_width="wrap_content"
         android:layout_height="132dp"
         android:layout_gravity="top|center_horizontal"

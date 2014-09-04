@@ -73,7 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/title_card_height"
                     android:alpha="0">
-                    <TextView
+                    <com.cyngn.theme.widget.LatoTextView
                         android:id="@+id/title"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"

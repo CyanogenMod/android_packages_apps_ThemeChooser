@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/component_margin_top"
         android:layout_gravity="center_horizontal"/>
 
-    <TextView
+    <com.cyngn.theme.widget.LatoTextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
