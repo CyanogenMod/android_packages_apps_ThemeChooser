@@ -5,6 +5,7 @@ package android.support.v4.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -12,6 +13,7 @@ import android.view.ViewConfiguration;
 import com.cyngn.theme.chooser.R;
 
 public class ThemeViewPager extends ViewPager {
+    private static final String TAG = ThemeViewPager.class.getSimpleName();
     private boolean mExpanded;
     private boolean mIsAnimating;
 
@@ -117,7 +119,16 @@ public class ThemeViewPager extends ViewPager {
             return false;
         }
 
-        return super.onTouchEvent(ev);
+        /**
+         * Work around AOSP issue #18990
+         * https://code.google.com/p/android/issues/detail?id=18990
+         */
+        try {
+            return super.onTouchEvent(ev);
+        } catch (IllegalArgumentException e) {
+            Log.w(TAG, "Failed while calling super.onTouchEvent()", e);
+        }
+        return false;
     }
 
     /**
