@@ -363,6 +363,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mOverflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isShowingApplyThemeLayout()) {
+                    hideApplyThemeLayout();
+                } else if (isShowingCustomizeResetLayout()) {
+                    hideCustomizeResetLayout();
+                }
+
                 PopupMenu popupmenu = new PopupMenu(getActivity(), mTitleCard, Gravity.END);
                 popupmenu.getMenuInflater().inflate(R.menu.overflow, popupmenu.getMenu());
 
