@@ -40,4 +40,5 @@
   <string name="theme_installed_notification_title">%s 已安裝</string>
   <string name="theme_installed_notification_text">主題已成功安裝。</string>
   <string name="menu_item_get_more_themes">獲取更多</string>
+  <string name="get_more_description">你可以從下面的連結取得更多主題：</string>
 </resources>
