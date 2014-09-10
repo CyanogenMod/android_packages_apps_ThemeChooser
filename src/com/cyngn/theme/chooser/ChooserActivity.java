@@ -78,6 +78,17 @@ public class ChooserActivity extends FragmentActivity
     private static final String THEME_STORE_PACKAGE = "com.cyngn.theme.store";
     private static final String THEME_STORE_ACTIVITY = "com.cyngn.theme.store.StoreActivity";
 
+    private static final String TYPE_IMAGE = "image/*";
+
+    /**
+     * Request code for picking an external wallpaper
+     */
+    public static final int REQUEST_PICK_WALLPAPER_IMAGE = 2;
+    /**
+     * Request code for picking an external lockscreen wallpaper
+     */
+    public static final int REQUEST_PICK_LOCKSCREEN_IMAGE = 3;
+
     private static final long ANIMATE_CONTENT_IN_SCALE_DURATION = 500;
     private static final long ANIMATE_CONTENT_IN_ALPHA_DURATION = 750;
     private static final long ANIMATE_CONTENT_IN_BLUR_DURATION = 250;
@@ -112,6 +123,8 @@ public class ChooserActivity extends FragmentActivity
 
     // Current system theme configuration as component -> pkgName
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
+
+    protected boolean mIsPickingImage = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -355,7 +368,7 @@ public class ChooserActivity extends FragmentActivity
     public void themeChangeEnd(boolean isSuccess) {
         mThemeChanging = false;
         ThemeFragment f = getCurrentFragment();
-        if (f != null)  {
+        if (f != null) {
             // We currently need to recreate the adapter in order to load
             // the changes otherwise the adapter returns the original fragments
             // TODO: We'll need a better way to handle this to provide a good UX
@@ -430,6 +443,20 @@ public class ChooserActivity extends FragmentActivity
         }
     }
 
+    public void pickExternalWallpaper() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType(TYPE_IMAGE);
+        startActivityForResult(intent, REQUEST_PICK_WALLPAPER_IMAGE);
+        mIsPickingImage = true;
+    }
+
+    public void pickExternalLockscreen() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType(TYPE_IMAGE);
+        startActivityForResult(intent, REQUEST_PICK_LOCKSCREEN_IMAGE);
+        mIsPickingImage = true;
+    }
+
     private void slideContentIntoView(int yDelta, int selectorHeight) {
         ThemeFragment f = getCurrentFragment();
         if (f != null) {
@@ -465,7 +492,11 @@ public class ChooserActivity extends FragmentActivity
             mPager.setAdapter(mAdapter);
             mThemeChanging = false;
         }
-        getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
+        if (!mIsPickingImage) {
+            getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
+        } else {
+            mIsPickingImage = false;
+        }
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
         registerReceiver(mWallpaperChangeReceiver, filter);
@@ -547,6 +578,29 @@ public class ChooserActivity extends FragmentActivity
             new TypefacePreloadTask().execute();
         }
         mAnimateContentInDelay = ANIMATE_CONTENT_DELAY;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_PICK_WALLPAPER_IMAGE) {
+            if (data != null && data.getData() != null) {
+                Uri uri = data.getData();
+                ThemeFragment f = getCurrentFragment();
+                if (f != null) {
+                    f.setWallpaperImageUri(uri);
+                }
+            }
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_PICK_LOCKSCREEN_IMAGE) {
+            if (data != null && data.getData() != null) {
+                Uri uri = data.getData();
+                ThemeFragment f = getCurrentFragment();
+                if (f != null) {
+                    f.setLockscreenImageUri(uri);
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void animateContentIn() {

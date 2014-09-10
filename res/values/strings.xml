@@ -66,4 +66,6 @@
     <string name="reset_theme">Reset</string>
     <string name="customize_theme">Customize</string>
 
+    <string name="wallpaper_external_title">Pick image</string>
+
 </resources>

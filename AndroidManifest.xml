@@ -19,6 +19,11 @@
     <!-- Used to see if we are resuming from the launcher -->
     <uses-permission android:name="android.permission.GET_TASKS" />
 
+    <!-- Used to support wallpapers from external sources -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SET_KEYGUARD_WALLPAPER" />
+
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="19" />

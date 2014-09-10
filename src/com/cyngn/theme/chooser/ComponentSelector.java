@@ -62,6 +62,8 @@ public class ComponentSelector extends LinearLayout
 
     public static final boolean DEBUG_SELECTOR = false;
 
+    public static final String EXTERNAL_WALLPAPER = "external";
+
     private static final int LOADER_ID_STATUS_BAR = 100;
     private static final int LOADER_ID_NAVIGATION_BAR = 101;
     private static final int LOADER_ID_FONT = 102;
@@ -461,7 +463,8 @@ public class ComponentSelector extends LinearLayout
             int count = mCursor.getCount();
             if (mCurrentLoaderId == LOADER_ID_WALLPAPER ||
                     mCurrentLoaderId == LOADER_ID_LOCKSCREEN) {
-                count++;
+                // Wallpaper and lockscreen have 2 additional options (none, and pick image).
+                count += 2;
             }
             return (int) Math.ceil((float)count / mItemsPerPage);
         }
@@ -627,8 +630,13 @@ public class ComponentSelector extends LinearLayout
                 if (index == 0) {
                     iv.setImageResource(R.drawable.img_wallpaper_none);
                     v.setTag("");
+                } else if (index == 1) {
+                    iv.setImageResource(R.drawable.img_wallpaper_external);
+                    v.setTag(EXTERNAL_WALLPAPER);
+                    ((TextView) v.findViewById(R.id.title)).setText(
+                            mContext.getString(R.string.wallpaper_external_title));
                 } else {
-                    cursor.moveToPosition(index - 1);
+                    cursor.moveToPosition(index - 2);
                     int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
                     iv.setImageBitmap(
                             Utils.loadBitmapBlob(cursor, wallpaperIndex));

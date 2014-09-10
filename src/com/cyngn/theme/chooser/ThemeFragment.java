@@ -8,6 +8,9 @@ import android.animation.AnimatorSet;
 import android.animation.IntEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.app.WallpaperManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -65,7 +68,6 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Space;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cyngn.theme.chooser.ComponentSelector.OnItemClickedListener;
 import com.cyngn.theme.util.AudioUtils;
@@ -75,6 +77,7 @@ import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.ThemedTypefaceHelper;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
+import com.cyngn.theme.util.WallpaperUtils;
 import com.cyngn.theme.widget.BootAniImageView;
 import com.cyngn.theme.widget.LockableScrollView;
 import com.cyngn.theme.widget.ThemeTagLayout;
@@ -115,7 +118,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final int ANIMATE_PROGRESS_OUT_DURATION = 400;
     public static final int ANIMATE_TITLE_IN_DURATION = 500;
     public static final int ANIMATE_APPLY_LAYOUT_DURATION = 300;
-    public static final int REQUEST_UNINSTALL = 1; // Request code
 
     public static final String CURRENTLY_APPLIED_THEME = "currently_applied_theme";
 
@@ -255,6 +257,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected View mClickableView;
     protected String mBaseThemePkgName;
+
+    protected Uri mExternalWallpaperUri;
+    protected Uri mExternalLockscreenUri;
 
     protected enum CustomizeResetAction {
         Customize,
@@ -499,6 +504,36 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
+    public void setWallpaperImageUri(Uri uri) {
+        mExternalWallpaperUri = uri;
+        final Point size = new Point(mWallpaper.getWidth(), mWallpaper.getHeight());
+        final Drawable wp = getWallpaperDrawableFromUri(uri, size);
+        mWallpaperCard.setWallpaper(wp);
+        mWallpaper.setImageDrawable(wp);
+        // remove the entry from mSelectedComponentsMap
+        mSelectedComponentsMap.remove(ThemesColumns.MODIFIES_LAUNCHER);
+    }
+
+    public void setLockscreenImageUri(Uri uri) {
+        mExternalLockscreenUri = uri;
+        final Point size = new Point(mLockScreenCard.getWidth(), mLockScreenCard.getHeight());
+        final Drawable wp = getWallpaperDrawableFromUri(uri, size);
+        mLockScreenCard.setWallpaper(wp);
+        // remove the entry from mSelectedComponentsMap
+        mSelectedComponentsMap.remove(ThemesColumns.MODIFIES_LOCKSCREEN);
+    }
+
+    protected Drawable getWallpaperDrawableFromUri(Uri uri, Point size) {
+        final Context context = getActivity();
+        final Resources res = context.getResources();
+        Bitmap bmp = WallpaperUtils.createPreview(size, context, uri, null, res,
+                0, 0, false);
+        if (bmp != null) {
+            return new BitmapDrawable(res, bmp);
+        }
+        return null;
+    }
+
     protected ChooserActivity getChooserActivity() {
         return (ChooserActivity) getActivity();
     }
@@ -734,6 +769,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             String pkgName = mSelectedComponentsMap.get(ThemesColumns.MODIFIES_LAUNCHER);
             if (pkgName != null && pkgName.length() == 0) {
                 mWallpaper.setImageResource(R.drawable.wallpaper_none_bg);
+            }
+            // we do this here instead of in applyTheme() because this can take a bit longer
+            // to propagate the change from WallpaperManager back to us
+            if (mExternalWallpaperUri != null) {
+                // Handle setting an external wallpaper in a separate thread
+                new Thread(mApplyExternalWallpaperRunnable).start();
+            }
+            if (mExternalLockscreenUri != null) {
+                // Handle setting an external wallpaper in a separate thread
+                new Thread(mApplyExternalLockscreenRunnable).start();
             }
         }
     }
@@ -1341,6 +1386,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     protected void loadWallpaper(Cursor c, boolean animate) {
+        mExternalWallpaperUri = null;
         Drawable overlay = null;
         if (animate) {
             overlay = getOverlayDrawable(mWallpaperCard, true);
@@ -1372,6 +1418,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     protected void loadLockScreen(Cursor c, boolean animate) {
+        mExternalLockscreenUri = null;
         Drawable overlay = null;
         if (animate) {
             overlay = getOverlayDrawable(mLockScreenCard, true);
@@ -1833,18 +1880,26 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             } else if (MODIFIES_NAVIGATION_BAR.equals(component)) {
                 loaderId = LOADER_ID_NAVIGATION_BAR;
             } else if (MODIFIES_LAUNCHER.equals(component)) {
-                if (pkgName != null && TextUtils.isEmpty(pkgName)) {
-                    mWallpaperCard.setWallpaper(null);
-                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LAUNCHER, "");
-                    setCardTitle(mWallpaperCard, "", getString(R.string.wallpaper_label));
-                } else {
-                    loaderId = LOADER_ID_WALLPAPER;
+                if (pkgName != null) {
+                    if (TextUtils.isEmpty(pkgName)) {
+                        mWallpaperCard.setWallpaper(null);
+                        mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LAUNCHER, "");
+                        setCardTitle(mWallpaperCard, "", getString(R.string.wallpaper_label));
+                    } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
+                        getChooserActivity().pickExternalWallpaper();
+                        setCardTitle(mWallpaperCard, "", getString(R.string.wallpaper_label));
+                    } else {
+                        loaderId = LOADER_ID_WALLPAPER;
+                    }
                 }
             } else if (MODIFIES_LOCKSCREEN.equals(component)) {
                 if (pkgName != null && TextUtils.isEmpty(pkgName)) {
                     mLockScreenCard.setWallpaper(null);
                     mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, "");
-                    setCardTitle(mWallpaperCard, "", getString(R.string.lockscreen_label));
+                    setCardTitle(mLockScreenCard, "", getString(R.string.lockscreen_label));
+                } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
+                    getChooserActivity().pickExternalLockscreen();
+                    setCardTitle(mLockScreenCard, "", getString(R.string.lockscreen_label));
                 } else {
                     loaderId = LOADER_ID_LOCKSCREEN;
                 }
@@ -1885,26 +1940,77 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         public void run() {
             final Context context = getActivity();
             if (context != null) {
-                if (mSelectedComponentsMap != null && mSelectedComponentsMap.size() > 0) {
-                    // Post this on mHandler so the client is added and removed from the same
-                    // thread
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
+                // Post this on mHandler so the client is added and removed from the same
+                // thread
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mSelectedComponentsMap != null && mSelectedComponentsMap.size() > 0) {
                             ThemeManager tm = getThemeManager();
                             if (tm != null) {
                                 tm.addClient(ThemeFragment.this);
                                 tm.requestThemeChange(mSelectedComponentsMap);
                             }
+                        } else {
+                            onFinish(true);
                         }
-                    });
+                    }
+                });
+            }
+        }
+    };
+
+    private Runnable mApplyExternalWallpaperRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // If an external image was selected for the wallpaper, we need to
+            // set that manually.
+            if (mExternalWallpaperUri != null) {
+                WallpaperManager wm =
+                        WallpaperManager.getInstance(getActivity());
+                final Context context = getActivity();
+                final Resources res = context.getResources();
+                final Point size = new Point(wm.getDesiredMinimumWidth(),
+                        wm.getDesiredMinimumHeight());
+                Bitmap bmp = WallpaperUtils.createPreview(size, context, mExternalWallpaperUri,
+                        null, res, 0, 0, false);
+                try {
+                    wm.setBitmap(bmp);
+                } catch (Exception e) {
+                    Log.e(TAG, "Unable to set external wallpaper", e);
+                }
+            }
+        }
+    };
+
+    private Runnable mApplyExternalLockscreenRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // If an external image was selected for the wallpaper, we need to
+            // set that manually.
+            if (mExternalLockscreenUri != null) {
+                WallpaperManager wm =
+                        WallpaperManager.getInstance(getActivity());
+                final Context context = getActivity();
+                final Resources res = context.getResources();
+                final Point size = new Point();
+                ((Activity) context).getWindowManager().getDefaultDisplay().getRealSize(size);
+                Bitmap bmp = WallpaperUtils.createPreview(size, context, mExternalLockscreenUri,
+                        null, res, 0, 0, false);
+                try {
+                    wm.setKeyguardBitmap(bmp);
+                } catch (Exception e) {
+                    Log.e(TAG, "Unable to set external lockscreen wallpaper", e);
                 }
             }
         }
     };
 
     protected void applyTheme() {
-        if (mSelectedComponentsMap == null || mSelectedComponentsMap.size() <= 0) return;
+        if (mExternalWallpaperUri == null && mExternalLockscreenUri == null &&
+                (mSelectedComponentsMap == null || mSelectedComponentsMap.size() <= 0)) {
+            return;
+        }
         getChooserActivity().themeChangeStart();
         animateProgressIn(mApplyThemeRunnable);
     }
@@ -2122,6 +2228,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public boolean componentsChanged() {
+        // If an external wallpaper/ls are set then something changed!
+        if (mExternalWallpaperUri != null || mExternalLockscreenUri != null) return true;
+
         for (String key : mSelectedComponentsMap.keySet()) {
             if (!mPkgName.equals(mSelectedComponentsMap.get(key))) {
                 return true;
@@ -2132,6 +2241,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public void clearChanges() {
         mSelectedComponentsMap.clear();
+        mExternalWallpaperUri = null;
+        mExternalLockscreenUri = null;
         getLoaderManager().restartLoader(LOADER_ID_ALL, null, ThemeFragment.this);
     }
 

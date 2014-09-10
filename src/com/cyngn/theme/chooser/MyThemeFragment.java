@@ -4,7 +4,10 @@
 package com.cyngn.theme.chooser;
 
 import android.app.WallpaperManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ThemeUtils;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -92,9 +95,19 @@ public class MyThemeFragment extends ThemeFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (getLoaderManager().getLoader(0) != null) {
+        if (mExternalWallpaperUri == null && mExternalLockscreenUri == null
+                    && getLoaderManager().getLoader(0) != null) {
             getLoaderManager().restartLoader(0, null, this);
         }
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
+        getActivity().registerReceiver(mWallpaperChangeReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        getActivity().unregisterReceiver(mWallpaperChangeReceiver);
+        super.onPause();
     }
 
     @Override
@@ -149,6 +162,24 @@ public class MyThemeFragment extends ThemeFragment {
             }
         }
     }
+
+    private BroadcastReceiver mWallpaperChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final WallpaperManager wm = WallpaperManager.getInstance(context);
+            if (wm.getWallpaperInfo() != null) {
+                addSurfaceView(mSurfaceView);
+            } else {
+                removeSurfaceView(mSurfaceView);
+            }
+
+            Drawable wp = context == null ? null : wm.getDrawable();
+            if (wp != null) {
+                mWallpaper.setImageDrawable(wp);
+                mWallpaperCard.setWallpaper(wp);
+            }
+        }
+    };
 
     private void setCustomizedTagIfCustomized() {
         boolean isDefault =
@@ -246,6 +277,7 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     protected void loadWallpaper(Cursor c, boolean animate) {
+        mExternalWallpaperUri = null;
         int pkgNameIdx = c.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
         if (pkgNameIdx > -1) {
             super.loadWallpaper(c, animate);
@@ -288,6 +320,7 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     protected void loadLockScreen(Cursor c, boolean animate) {
+        mExternalLockscreenUri = null;
         int pkgNameIdx = c.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
         if (pkgNameIdx > -1) {
             super.loadLockScreen(c, animate);

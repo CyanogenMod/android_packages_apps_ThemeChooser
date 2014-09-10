@@ -74,6 +74,10 @@ public class WallpaperCardView extends ComponentCardView {
         }
     }
 
+    public Drawable getWallpaperDrawable() {
+        return mImage.getDrawable();
+    }
+
     @Override
     public void expand(boolean showLabel) {
         // Do nothing
