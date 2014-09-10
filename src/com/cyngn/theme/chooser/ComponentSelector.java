@@ -630,11 +630,12 @@ public class ComponentSelector extends LinearLayout
                 if (index == 0) {
                     iv.setImageResource(R.drawable.img_wallpaper_none);
                     v.setTag("");
+                    ((TextView) v.findViewById(R.id.title)).setText(R.string.wallpaper_none_title);
                 } else if (index == 1) {
                     iv.setImageResource(R.drawable.img_wallpaper_external);
                     v.setTag(EXTERNAL_WALLPAPER);
-                    ((TextView) v.findViewById(R.id.title)).setText(
-                            mContext.getString(R.string.wallpaper_external_title));
+                    ((TextView) v.findViewById(R.id.title))
+                            .setText(R.string.wallpaper_external_title);
                 } else {
                     cursor.moveToPosition(index - 2);
                     int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);

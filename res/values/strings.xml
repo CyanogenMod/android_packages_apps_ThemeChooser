@@ -67,5 +67,6 @@
     <string name="customize_theme">Customize</string>
 
     <string name="wallpaper_external_title">Pick image</string>
+    <string name="wallpaper_none_title">None</string>
 
 </resources>
