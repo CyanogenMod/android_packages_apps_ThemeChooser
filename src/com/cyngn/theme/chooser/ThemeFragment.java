@@ -10,10 +10,8 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.WallpaperManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ThemeUtils;
 import android.content.res.AssetManager;
@@ -2251,10 +2249,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void uninstallTheme() {
-        Uri packageURI = Uri.parse("package:" + mPkgName);
-        Intent uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageURI);
-        uninstallIntent.putExtra(Intent.EXTRA_UNINSTALL_ALL_USERS, true);
-        startActivity(uninstallIntent);
+        getChooserActivity().uninstallTheme(mPkgName);
     }
 
     public void setCurrentTheme(Map<String, String> currentTheme) {

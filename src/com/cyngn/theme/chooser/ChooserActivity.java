@@ -11,6 +11,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.IPackageDeleteObserver;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
@@ -27,6 +29,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.provider.ThemesContract;
 import android.provider.ThemesContract.ThemesColumns;
 import android.renderscript.Allocation;
@@ -124,7 +127,8 @@ public class ChooserActivity extends FragmentActivity
     // Current system theme configuration as component -> pkgName
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
 
-    protected boolean mIsPickingImage = false;
+    private boolean mIsPickingImage = false;
+    private String mDeletedPackageName;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -457,6 +461,11 @@ public class ChooserActivity extends FragmentActivity
         mIsPickingImage = true;
     }
 
+    public void uninstallTheme(String pkgName) {
+        PackageManager pm = getPackageManager();
+        pm.deletePackage(pkgName, new PackageDeleteObserver(), PackageManager.DELETE_ALL_USERS);
+    }
+
     private void slideContentIntoView(int yDelta, int selectorHeight) {
         ThemeFragment f = getCurrentFragment();
         if (f != null) {
@@ -756,7 +765,12 @@ public class ChooserActivity extends FragmentActivity
             case LOADER_ID_INSTALLED_THEMES:
                 mAppliedBaseTheme = PreferenceUtils.getAppliedBaseTheme(this);
                 selection = ThemesColumns.PRESENT_AS_THEME + "=?";
-                selectionArgs = new String[] { "1" };
+                if (mDeletedPackageName != null) {
+                    selection += " AND " + ThemesColumns.PKG_NAME + "!=?";
+                    selectionArgs = new String[] { "1", mDeletedPackageName };
+                } else {
+                    selectionArgs = new String[] { "1" };
+                }
                 // sort in ascending order but make sure the "default" theme is always first
                 sortOrder = "(" + ThemesColumns.IS_DEFAULT_THEME + "=1) DESC, "
                         + "(" + ThemesColumns.PKG_NAME + "='" + mAppliedBaseTheme + "') DESC, "
@@ -777,16 +791,6 @@ public class ChooserActivity extends FragmentActivity
                 selectionArgs, sortOrder);
     }
 
-    @Override
-    public void onProgress(int progress) {
-
-    }
-
-    @Override
-    public void onFinish(boolean isSuccess) {
-
-    }
-
     class ThemesObserver extends ContentObserver {
 
         /**
@@ -805,6 +809,16 @@ public class ChooserActivity extends FragmentActivity
             getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null,
                     ChooserActivity.this);
         }
+    }
+
+    @Override
+    public void onProgress(int progress) {
+
+    }
+
+    @Override
+    public void onFinish(boolean isSuccess) {
+
     }
 
     public class ThemesAdapter extends FragmentStatePagerAdapter {
@@ -836,7 +850,6 @@ public class ChooserActivity extends FragmentActivity
 
         @Override
         public int getItemPosition(Object object) {
-            ThemeFragment fragment = (ThemeFragment) object;
             return super.getItemPosition(object);
         }
 
@@ -870,6 +883,29 @@ public class ChooserActivity extends FragmentActivity
                 c.close();
             }
             return null;
+        }
+    }
+
+    /**
+     * Internal delete callback from the system
+     */
+    class PackageDeleteObserver extends IPackageDeleteObserver.Stub {
+        public void packageDeleted(String packageName, int returnCode) throws RemoteException {
+            if (returnCode == PackageManager.DELETE_SUCCEEDED) {
+                Log.d(TAG, "Delete succeeded");
+                mDeletedPackageName = packageName;
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter = new ThemesAdapter(ChooserActivity.this);
+                        mPager.setAdapter(mAdapter);
+                        getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null,
+                                ChooserActivity.this);
+                    }
+                });
+            } else {
+                Log.e(TAG, "Delete failed with returnCode " + returnCode);
+            }
         }
     }
 }

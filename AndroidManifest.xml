@@ -24,6 +24,9 @@
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_KEYGUARD_WALLPAPER" />
 
+    <!-- Used to cleanly uninstall themes without relying on the PackageInstaller apk -->
+    <uses-permission android:name="android.permission.DELETE_PACKAGES" />
+
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="19" />
