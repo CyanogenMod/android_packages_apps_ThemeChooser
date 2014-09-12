@@ -35,7 +35,7 @@ public class AppReceiver extends BroadcastReceiver {
                 }
             } catch (NameNotFoundException e) {
             }
-            NotificationHelper.cancelNotificationForPackage(context, pkgName);
+            NotificationHelper.cancelNotifications(context);
         } else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {
             try {
                 if (isTheme(context, pkgName)) {

@@ -52,6 +52,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import android.widget.ImageView;
+import com.cyngn.theme.util.NotificationHelper;
 import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
@@ -486,6 +487,8 @@ public class ChooserActivity extends FragmentActivity
     protected void onResume() {
         super.onResume();
         setCustomBackground(mCustomBackground, mAnimateContentIn);
+        // clear out any notifications that are being displayed.
+        NotificationHelper.cancelNotifications(this);
 
         mThemeChanging = false;
 
@@ -497,9 +500,6 @@ public class ChooserActivity extends FragmentActivity
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
         registerReceiver(mWallpaperChangeReceiver, filter);
-
-        // clear out the newly installed themes count
-        PreferenceUtils.setNewlyInstalledThemeCount(this, 0);
 
         // register content observer for changes in installed themes
         mThemesObserver = new ThemesObserver(new Handler());

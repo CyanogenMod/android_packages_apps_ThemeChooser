@@ -77,9 +77,10 @@ public class NotificationHelper {
         PreferenceUtils.setNewlyInstalledThemeCount(context, themeCount);
     }
 
-    public static void cancelNotificationForPackage(Context context, String pkgName) {
+    public static void cancelNotifications(Context context) {
         NotificationManager nm = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancel(pkgName.hashCode());
+        nm.cancel(NOTIFICATION_ID);
+        PreferenceUtils.setNewlyInstalledThemeCount(context, 0);
     }
 }
