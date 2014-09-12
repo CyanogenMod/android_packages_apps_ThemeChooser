@@ -15,7 +15,6 @@ import android.content.pm.IPackageDeleteObserver;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
-import android.content.res.ThemeManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -67,7 +66,7 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIO
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
 
 public class ChooserActivity extends FragmentActivity
-        implements LoaderManager.LoaderCallbacks<Cursor>, ThemeManager.ThemeChangeListener {
+        implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = ChooserActivity.class.getSimpleName();
 
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
@@ -809,16 +808,6 @@ public class ChooserActivity extends FragmentActivity
             getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null,
                     ChooserActivity.this);
         }
-    }
-
-    @Override
-    public void onProgress(int progress) {
-
-    }
-
-    @Override
-    public void onFinish(boolean isSuccess) {
-
     }
 
     public class ThemesAdapter extends FragmentStatePagerAdapter {
