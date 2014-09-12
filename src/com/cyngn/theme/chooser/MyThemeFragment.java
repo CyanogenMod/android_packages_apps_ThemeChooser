@@ -439,6 +439,13 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     public String getThemePackageName() {
+        if (mBaseThemePkgName == null) {
+            // check if the package name is defined in the arguments bundle
+            Bundle bundle = getArguments();
+            if (bundle != null) {
+                mBaseThemePkgName = bundle.getString(ARG_BASE_THEME_PACKAGE_NAME);
+            }
+        }
         return mBaseThemePkgName;
     }
 

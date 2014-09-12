@@ -2245,6 +2245,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public String getThemePackageName() {
+        if (mPkgName == null) {
+            // check if the package name is defined in the arguments bundle
+            Bundle bundle = getArguments();
+            if (bundle != null) {
+                mPkgName = bundle.getString(ARG_PACKAGE_NAME);
+            }
+        }
         return mPkgName;
     }
 

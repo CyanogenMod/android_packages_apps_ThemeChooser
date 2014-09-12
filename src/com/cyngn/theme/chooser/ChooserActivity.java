@@ -37,7 +37,6 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -57,6 +56,7 @@ import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -127,7 +127,6 @@ public class ChooserActivity extends FragmentActivity
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
 
     private boolean mIsPickingImage = false;
-    private String mDeletedPackageName;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,7 +142,7 @@ public class ChooserActivity extends FragmentActivity
         mPager = (ThemeViewPager) findViewById(R.id.viewpager);
 
         mPager.setOnClickListener(mPagerClickListener);
-        mAdapter = new ThemesAdapter(this);
+        mAdapter = new ThemesAdapter();
         mPager.setAdapter(mAdapter);
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
@@ -267,8 +266,6 @@ public class ChooserActivity extends FragmentActivity
         if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasExtra(EXTRA_PKGNAME)) {
             mSelectedTheme = intent.getStringExtra(EXTRA_PKGNAME);
             if (mPager != null) {
-                mAdapter = new ThemesAdapter(this);
-                mPager.setAdapter(mAdapter);
                 getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null, this);
             }
         }
@@ -376,14 +373,13 @@ public class ChooserActivity extends FragmentActivity
             // the changes otherwise the adapter returns the original fragments
             // TODO: We'll need a better way to handle this to provide a good UX
             if (!(f instanceof MyThemeFragment)) {
-                mAdapter = new ThemesAdapter(this);
+                mAdapter = new ThemesAdapter();
                 mPager.setAdapter(mAdapter);
             }
             if (!isSuccess) {
                 mAppliedBaseTheme = null;
             }
-            getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null,
-                    ChooserActivity.this);
+            getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
         }
         unlockPager();
     }
@@ -491,15 +487,8 @@ public class ChooserActivity extends FragmentActivity
         super.onResume();
         setCustomBackground(mCustomBackground, mAnimateContentIn);
 
-        // Check if any new themes were installed and if so recreate the adapter
-        // otherwise we can end up with duplicates
-        final int newThemeCount = PreferenceUtils.getNewlyInstalledThemeCount(this);
-        if (newThemeCount > 0 || mThemeChanging) {
-            // the # of themes has changed so recreate the adapter
-            mAdapter = new ThemesAdapter(this);
-            mPager.setAdapter(mAdapter);
-            mThemeChanging = false;
-        }
+        mThemeChanging = false;
+
         if (!mIsPickingImage) {
             getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
         } else {
@@ -764,12 +753,7 @@ public class ChooserActivity extends FragmentActivity
             case LOADER_ID_INSTALLED_THEMES:
                 mAppliedBaseTheme = PreferenceUtils.getAppliedBaseTheme(this);
                 selection = ThemesColumns.PRESENT_AS_THEME + "=?";
-                if (mDeletedPackageName != null) {
-                    selection += " AND " + ThemesColumns.PKG_NAME + "!=?";
-                    selectionArgs = new String[] { "1", mDeletedPackageName };
-                } else {
-                    selectionArgs = new String[] { "1" };
-                }
+                selectionArgs = new String[] { "1" };
                 // sort in ascending order but make sure the "default" theme is always first
                 sortOrder = "(" + ThemesColumns.IS_DEFAULT_THEME + "=1) DESC, "
                         + "(" + ThemesColumns.PKG_NAME + "='" + mAppliedBaseTheme + "') DESC, "
@@ -791,7 +775,6 @@ public class ChooserActivity extends FragmentActivity
     }
 
     class ThemesObserver extends ContentObserver {
-
         /**
          * Creates a content observer.
          *
@@ -803,32 +786,35 @@ public class ChooserActivity extends FragmentActivity
 
         @Override
         public void onChange(boolean selfChange) {
-            mAdapter = new ThemesAdapter(ChooserActivity.this);
-            mPager.setAdapter(mAdapter);
+            ThemeFragment f = getCurrentFragment();
+            if (f != null) {
+                // remember what theme we were on in case the position changes, this way
+                // we can keep the user on this them instead of jumping around.
+                mSelectedTheme = f.getThemePackageName();
+            }
             getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null,
                     ChooserActivity.this);
         }
     }
 
-    public class ThemesAdapter extends FragmentStatePagerAdapter {
-        private Cursor mCursor;
-        private Context mContext;
+    public class ThemesAdapter extends NewFragmentStatePagerAdapter {
+        private ArrayList<String> mInstalledThemes;
+        private String mAppliedThemeTitle;
+        private HashMap<String, Integer> mRepositionedFragments;
 
-        public ThemesAdapter(Context context) {
+        public ThemesAdapter() {
             super(getSupportFragmentManager());
-            mContext = context;
+            mRepositionedFragments = new HashMap<String, Integer>();
         }
 
         @Override
         public Fragment getItem(int position) {
             ThemeFragment f = null;
-            if (mCursor != null) {
-                mCursor.moveToPosition(position);
-                int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
-                final String pkgName = mCursor.getString(pkgIdx);
+            if (mInstalledThemes != null) {
+                final String pkgName = mInstalledThemes.get(position);
                 if (pkgName.equals(mAppliedBaseTheme)) {
-                    String title = mCursor.getString(mCursor.getColumnIndex(ThemesColumns.TITLE));
-                    f = MyThemeFragment.newInstance(mAppliedBaseTheme, title, mAnimateContentIn);
+                    f = MyThemeFragment.newInstance(mAppliedBaseTheme, mAppliedThemeTitle,
+                            mAnimateContentIn);
                 } else {
                     f = ThemeFragment.newInstance(pkgName, mAnimateContentIn);
                 }
@@ -838,7 +824,23 @@ public class ChooserActivity extends FragmentActivity
         }
 
         @Override
+        public long getItemId(int position) {
+            if (mInstalledThemes != null) {
+                final String pkgName = mInstalledThemes.get(position);
+                return pkgName.hashCode();
+            }
+            return 0;
+        }
+
+        @Override
         public int getItemPosition(Object object) {
+            final ThemeFragment f = (ThemeFragment) object;
+            final String pkgName = f != null ? f.getThemePackageName() : null;
+            if (pkgName != null && mRepositionedFragments.containsKey(pkgName)) {
+                final int position = mRepositionedFragments.get(pkgName);
+                mRepositionedFragments.remove(pkgName);
+                return position;
+            }
             return super.getItemPosition(object);
         }
 
@@ -848,11 +850,64 @@ public class ChooserActivity extends FragmentActivity
          * @return
          */
         public int getCount() {
-            return mCursor == null ? 0 : mCursor.getCount();
+            return mInstalledThemes == null ? 0 : mInstalledThemes.size();
         }
 
         public void swapCursor(Cursor c) {
-            mCursor = c;
+            if (c != null && c.getCount() != 0) {
+                ArrayList<String> previousOrder = mInstalledThemes == null ? null
+                        : new ArrayList<String>(mInstalledThemes);
+                mInstalledThemes = new ArrayList<String>(c.getCount());
+                mRepositionedFragments.clear();
+                c.moveToPosition(-1);
+                while (c.moveToNext()) {
+                    final int pkgIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
+                    final String pkgName = c.getString(pkgIdx);
+                    if (pkgName.equals(mAppliedBaseTheme)) {
+                        final int titleIdx = c.getColumnIndex(ThemesColumns.TITLE);
+                        mAppliedThemeTitle = c.getString(titleIdx);
+                    }
+                    mInstalledThemes.add(pkgName);
+
+                    // track any themes that may have changed position
+                    if (previousOrder != null && previousOrder.contains(pkgName)) {
+                        int index = previousOrder.indexOf(pkgName);
+                        if (index != c.getPosition()) {
+                            mRepositionedFragments.put(pkgName, c.getPosition());
+                        }
+                    } else {
+                        mRepositionedFragments.put(pkgName, c.getPosition());
+                    }
+                }
+                // check if any themes are no longer in the new list
+                if (previousOrder != null) {
+                    for (String pkgName : previousOrder) {
+                        if (!mInstalledThemes.contains(pkgName)) {
+                            mRepositionedFragments.put(pkgName, POSITION_NONE);
+                        }
+                    }
+                }
+            } else {
+                mInstalledThemes = null;
+            }
+        }
+
+        public void removeTheme(String pkgName) {
+            if (mInstalledThemes == null) return;
+
+            if (mInstalledThemes.contains(pkgName)) {
+                final int count = mInstalledThemes.size();
+                final int index = mInstalledThemes.indexOf(pkgName);
+                // reposition all the fragments after the one being removed
+                for (int i = index + 1; i < count; i++) {
+                    mRepositionedFragments.put(mInstalledThemes.get(i), i - 1);
+                }
+                // Now remove this theme and add it to mRepositionedFragments with POSITION_NONE
+                mInstalledThemes.remove(pkgName);
+                mRepositionedFragments.put(pkgName, POSITION_NONE);
+                // now we can call notifyDataSetChanged()
+                notifyDataSetChanged();
+            }
         }
     }
 
@@ -879,17 +934,13 @@ public class ChooserActivity extends FragmentActivity
      * Internal delete callback from the system
      */
     class PackageDeleteObserver extends IPackageDeleteObserver.Stub {
-        public void packageDeleted(String packageName, int returnCode) throws RemoteException {
+        public void packageDeleted(final String packageName, int returnCode) throws RemoteException {
             if (returnCode == PackageManager.DELETE_SUCCEEDED) {
                 Log.d(TAG, "Delete succeeded");
-                mDeletedPackageName = packageName;
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mAdapter = new ThemesAdapter(ChooserActivity.this);
-                        mPager.setAdapter(mAdapter);
-                        getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null,
-                                ChooserActivity.this);
+                        mAdapter.removeTheme(packageName);
                     }
                 });
             } else {
