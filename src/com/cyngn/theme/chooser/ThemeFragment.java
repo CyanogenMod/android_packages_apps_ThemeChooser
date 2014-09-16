@@ -602,7 +602,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
             LinearLayout.LayoutParams lparams =
                     (LinearLayout.LayoutParams) child.getLayoutParams();
-            lparams.setMargins(0, top, 0, 0);
+            if (child == mStatusBarCard) {
+                int statusBarHeight = getResources()
+                        .getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
+                lparams.setMargins(0, top + statusBarHeight, 0, 0);
+            } else {
+                lparams.setMargins(0, top, 0, 0);
+            }
 
             child.setLayoutParams(lparams);
             child.expand(false);
