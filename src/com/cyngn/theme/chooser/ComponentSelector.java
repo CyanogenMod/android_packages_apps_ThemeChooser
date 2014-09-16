@@ -76,6 +76,8 @@ public class ComponentSelector extends LinearLayout
     private static final int LOADER_ID_ALARM = 109;
     private static final int LOADER_ID_LOCKSCREEN = 110;
 
+    private static final int EXTRA_WALLPAPER_COMPONENTS = 2;
+
     private Context mContext;
     private LayoutInflater mInflater;
     private VelocityViewPager mPager;
@@ -463,8 +465,8 @@ public class ComponentSelector extends LinearLayout
             int count = mCursor.getCount();
             if (mCurrentLoaderId == LOADER_ID_WALLPAPER ||
                     mCurrentLoaderId == LOADER_ID_LOCKSCREEN) {
-                // Wallpaper and lockscreen have 2 additional options (none, and pick image).
-                count += 2;
+                // Wallpaper and lockscreen have additional options (none, and pick image).
+                count += EXTRA_WALLPAPER_COMPONENTS;
             }
             return (int) Math.ceil((float)count / mItemsPerPage);
         }
@@ -623,7 +625,7 @@ public class ComponentSelector extends LinearLayout
                 int wallpaperIndex) {
             for (int i = 0; i < mItemsPerPage; i++) {
                 int index = position * mItemsPerPage + i;
-                if (cursor.getCount() < index) continue;
+                if (cursor.getCount() < (index - EXTRA_WALLPAPER_COMPONENTS)) continue;
                 View v = mInflater.inflate(R.layout.wallpaper_component_selection_item, parent,
                         false);
                 ImageView iv = (ImageView) v.findViewById(R.id.icon);
@@ -637,7 +639,7 @@ public class ComponentSelector extends LinearLayout
                     ((TextView) v.findViewById(R.id.title))
                             .setText(R.string.wallpaper_external_title);
                 } else {
-                    cursor.moveToPosition(index - 2);
+                    cursor.moveToPosition(index - EXTRA_WALLPAPER_COMPONENTS);
                     int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
                     iv.setImageBitmap(
                             Utils.loadBitmapBlob(cursor, wallpaperIndex));
