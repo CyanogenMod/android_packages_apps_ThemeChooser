@@ -4,7 +4,6 @@
 -->
 <com.cyngn.theme.chooser.ComponentSelector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:themes="http://schemas.android.com/apk/res-auto"
     android:id="@+id/component_selector"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -13,28 +12,22 @@
     android:visibility="gone"
     android:background="@color/component_selection_background">
 
-    <FrameLayout
-        android:id="@+id/selection_layout"
+    <com.cyngn.theme.widget.AutoSnapHorizontalScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
 
-        <au.com.glassechidna.velocityviewpager.VelocityViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/component_selection_cell_height"
-            themes:itemsPerPage="4"/>
-
-        <com.viewpagerindicator.CirclePageIndicator
-            android:id="@+id/page_indicator"
+        <android.widget.ComponentSelectorLinearLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            themes:radius="4dp"
-            themes:spacing="16dp"
-            themes:pageColor="@android:color/transparent"
-            themes:fillColor="@android:color/white"/>
+            android:layout_gravity="center_vertical"
+            android:divider="@drawable/component_selector_divider"
+            android:showDividers="middle" />
 
-    </FrameLayout>
+    </com.cyngn.theme.widget.AutoSnapHorizontalScrollView>
+
     <com.cyngn.theme.widget.NavBarSpace
         android:layout_width="match_parent"
         android:layout_height="@*android:dimen/system_bar_height"/>

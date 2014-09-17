@@ -13,6 +13,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.ThemesContract;
@@ -23,7 +24,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.view.PagerAdapter;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,13 +32,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.ComponentSelectorLinearLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import au.com.glassechidna.velocityviewpager.VelocityViewPager;
-import com.viewpagerindicator.PageIndicator;
 import com.cyngn.theme.util.AudioUtils;
 import com.cyngn.theme.util.ThemedTypefaceHelper;
 import com.cyngn.theme.util.TypefaceHelperCache;
@@ -80,10 +79,12 @@ public class ComponentSelector extends LinearLayout
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private VelocityViewPager mPager;
+    private ComponentSelectorLinearLayout mContent;
+    private LinearLayout.LayoutParams mItemParams;
+    private LinearLayout.LayoutParams mSoundItemParams =
+            new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0, 1.0f);
 
     private String mComponentType;
-    private CursorPagerAdapter mAdapter;
     private int mBatteryStyle;
     private int mItemsPerPage;
     private String mAppliedComponentPkgName;
@@ -100,6 +101,8 @@ public class ComponentSelector extends LinearLayout
     private ImageView mCurrentPlayPause;
 
     private int mCurrentLoaderId;
+
+    private TypefaceHelperCache mTypefaceCache;
 
     public ComponentSelector(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -157,17 +160,13 @@ public class ComponentSelector extends LinearLayout
                 }
             }
         });
+        mTypefaceCache = TypefaceHelperCache.getInstance();
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mPager = (VelocityViewPager) findViewById(R.id.pager);
-        mAdapter = new CursorPagerAdapter<View>(null, mItemsPerPage);
-        mPager.setAdapter(mAdapter);
-        PageIndicator indicator = (PageIndicator) findViewById(R.id.page_indicator);
-        indicator.setViewPager(mPager);
-
+        mContent = (ComponentSelectorLinearLayout) findViewById(R.id.content);
         setEnabled(false);
     }
 
@@ -186,8 +185,8 @@ public class ComponentSelector extends LinearLayout
         } else {
             mAppliedComponentPkgName = null;
         }
-        if (mComponentType == null || !mComponentType.equals(component)){
-            mAdapter.swapCursor(null);
+        if (mComponentType == null || !mComponentType.equals(component)) {
+            mContent.removeAllViews();
         }
         mComponentType = component;
         ((FragmentActivity) mContext).getSupportLoaderManager().restartLoader(
@@ -201,15 +200,14 @@ public class ComponentSelector extends LinearLayout
     public void setNumItemsPerPage(int itemsPerPage) {
         if (mItemsPerPage != itemsPerPage) {
             mItemsPerPage = itemsPerPage;
-            mAdapter.setNumItemsPerPage(mItemsPerPage);
         }
     }
 
     public void setHeight(int height) {
-        ViewGroup.LayoutParams params = mPager.getLayoutParams();
+        ViewGroup.LayoutParams params = mContent.getLayoutParams();
         if (params.height != height) {
             params.height = height;
-            mPager.setLayoutParams(params);
+            mContent.setLayoutParams(params);
             requestLayout();
         }
     }
@@ -368,12 +366,49 @@ public class ComponentSelector extends LinearLayout
     @Override
     public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
         mCurrentLoaderId = loader.getId();
-        mAdapter.swapCursor(data);
+        int count = data.getCount();
+        int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+        final Resources res = getResources();
+        int dividerPadding = res.getDimensionPixelSize(R.dimen.component_divider_padding_top);
+        int dividerHeight = res.getDimensionPixelSize(R.dimen.component_divider_height);
+        switch (mCurrentLoaderId) {
+            case LOADER_ID_ALARM:
+            case LOADER_ID_NOTIFICATION:
+            case LOADER_ID_RINGTONE:
+                mItemParams = new LayoutParams(screenWidth,
+                                               ViewGroup.LayoutParams.MATCH_PARENT);
+                // Sounds are a special case where there are two items laid out
+                // vertically.  This layout is added as a single item so we need to
+                // adjust the count by dividing by the number of items per page and
+                // rounding up so we include all items.
+                count = (int) Math.ceil((double)count / mItemsPerPage);
+                mContent.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
+                break;
+            case LOADER_ID_BOOTANIMATIONS:
+                dividerPadding = res.getDimensionPixelSize(
+                        R.dimen.component_divider_padding_top_bootani);
+                dividerHeight = res.getDimensionPixelSize(R.dimen.component_divider_height_bootani);
+                // fall through to default
+            default:
+                mItemParams = new LayoutParams(screenWidth / mItemsPerPage,
+                                               ViewGroup.LayoutParams.MATCH_PARENT);
+                if (mCurrentLoaderId == LOADER_ID_WALLPAPER ||
+                        mCurrentLoaderId == LOADER_ID_LOCKSCREEN) {
+                    count += EXTRA_WALLPAPER_COMPONENTS;
+                }
+                mContent.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+                break;
+        }
+
+        mContent.setDividerPadding(dividerPadding);
+        mContent.setDividerHeight(dividerHeight);
+
+        new LoadItemsTask().execute(data ,count);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
+        mContent.removeAllViews();
     }
 
     public void setOnItemClickedListener(OnItemClickedListener listener) {
@@ -384,382 +419,278 @@ public class ComponentSelector extends LinearLayout
         mOpenCloseListener = listener;
     }
 
-    public class CursorPagerAdapter<T extends View> extends PagerAdapter {
-        LinearLayout.LayoutParams mItemParams =
-                new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
-        LinearLayout.LayoutParams mSoundItemParams =
-                new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0, 1.0f);
-        private Cursor mCursor;
-        private int mItemsPerPage;
-        private TypefaceHelperCache mTypefaceCache;
-
-        public CursorPagerAdapter(Cursor cursor, int itemsPerPage) {
-            super();
-            mCursor = cursor;
-            mItemsPerPage = itemsPerPage;
-            mTypefaceCache = TypefaceHelperCache.getInstance();
+    private View newView(Cursor cursor, int position, ViewGroup container) {
+        if (MODIFIES_STATUS_BAR.equals(mComponentType)) {
+            return newStatusBarView(cursor, container, position);
         }
-
-        public void setNumItemsPerPage(int itemsPerPage) {
-            mItemsPerPage = itemsPerPage;
+        if (MODIFIES_NAVIGATION_BAR.equals(mComponentType)) {
+            return newNavBarView(cursor, container, position);
         }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            ViewGroup v = (ViewGroup) mInflater.inflate(R.layout.component_selection_pager_item,
-                    container, false);
-            if (v instanceof LinearLayout) {
-                ((LinearLayout) v).setWeightSum(mItemsPerPage);
-            }
-            if (MODIFIES_STATUS_BAR.equals(mComponentType)) {
-                newStatusBarView(mCursor, v, position);
-            }
-            if (MODIFIES_NAVIGATION_BAR.equals(mComponentType)) {
-                newNavBarView(mCursor, v, position);
-            }
-            if (MODIFIES_FONTS.equals(mComponentType)) {
-                newFontView(mCursor, v, position);
-            }
-            if (MODIFIES_ICONS.equals(mComponentType)) {
-                newIconView(mCursor, v, position);
-            }
-            if (MODIFIES_OVERLAYS.equals(mComponentType)) {
-                newStyleView(mCursor, v, position);
-            }
-            if (MODIFIES_LAUNCHER.equals(mComponentType)) {
-                newWallpapersView(mCursor, v, position,
-                        mCursor.getColumnIndex(PreviewColumns.WALLPAPER_THUMBNAIL));
-            }
-            if (MODIFIES_BOOT_ANIM.equals(mComponentType)) {
-                newBootanimationView(mCursor, v, position);
-            }
-            if (MODIFIES_RINGTONES.equals(mComponentType) ||
-                    MODIFIES_NOTIFICATIONS.equals(mComponentType) ||
-                    MODIFIES_ALARMS.equals(mComponentType)) {
-                v = (ViewGroup) mInflater.inflate(R.layout.component_selection_sounds_pager_item,
-                        container, false);
-                if (v instanceof LinearLayout) {
-                    ((LinearLayout) v).setWeightSum(mItemsPerPage);
-                }
-                newSoundView(mCursor, v, position, mComponentType);
-            }
-            if (MODIFIES_LOCKSCREEN.equals(mComponentType)) {
-                newWallpapersView(mCursor, v, position,
-                        mCursor.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL));
-            }
-            container.addView(v);
-            return v;
+        if (MODIFIES_FONTS.equals(mComponentType)) {
+            return newFontView(cursor, container, position);
         }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            if (object instanceof View) {
-                container.removeView((View) object);
-            }
+        if (MODIFIES_ICONS.equals(mComponentType)) {
+            return newIconView(cursor, container, position);
         }
-
-        @Override
-        public int getCount() {
-            if (mCursor == null) return 0;
-
-            int count = mCursor.getCount();
-            if (mCurrentLoaderId == LOADER_ID_WALLPAPER ||
-                    mCurrentLoaderId == LOADER_ID_LOCKSCREEN) {
-                // Wallpaper and lockscreen have additional options (none, and pick image).
-                count += EXTRA_WALLPAPER_COMPONENTS;
-            }
-            return (int) Math.ceil((float)count / mItemsPerPage);
+        if (MODIFIES_OVERLAYS.equals(mComponentType)) {
+            return newStyleView(cursor, container, position);
         }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
+        if (MODIFIES_LAUNCHER.equals(mComponentType)) {
+            return newWallpapersView(cursor, container, position,
+                    cursor.getColumnIndex(PreviewColumns.WALLPAPER_THUMBNAIL));
         }
-
-        @Override
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
+        if (MODIFIES_BOOT_ANIM.equals(mComponentType)) {
+            return newBootanimationView(cursor, container, position);
         }
-
-        public void swapCursor(Cursor c) {
-            mCursor = c;
-            notifyDataSetChanged();
-            mPager.setCurrentItem(0, false);
+        if (MODIFIES_RINGTONES.equals(mComponentType) ||
+                MODIFIES_NOTIFICATIONS.equals(mComponentType) ||
+                MODIFIES_ALARMS.equals(mComponentType)) {
+            return newSoundView(cursor, container, position, mComponentType);
         }
-
-        public Cursor getCursor() {
-            return mCursor;
+        if (MODIFIES_LOCKSCREEN.equals(mComponentType)) {
+            return newWallpapersView(cursor, container, position,
+                    cursor.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL));
         }
+        return null;
+    }
 
-        private OnClickListener mItemClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String pkgName = (String) v.getTag();
-                if (DEBUG_SELECTOR) Toast.makeText(mContext, pkgName, Toast.LENGTH_SHORT).show();
-                if (mListener != null) {
-                    mListener.onItemClicked(pkgName);
-                }
-            }
-        };
+    private View newStatusBarView(Cursor cursor, ViewGroup parent, int position) {
+        cursor.moveToPosition(position);
+        View v = mInflater.inflate(R.layout.status_bar_component_selection_item,
+                                   parent, false);
+        int wifiIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_WIFI_ICON);
+        int signalIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_SIGNAL_ICON);
+        int bluetoothIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BLUETOOTH_ICON);
+        int batteryIndex = cursor.getColumnIndex(Utils.getBatteryIndex(mBatteryStyle));
+        int backgroundIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
+        int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
-        private void newStatusBarView(Cursor cursor, ViewGroup parent, int position) {
-            for (int i = 0; i < mItemsPerPage; i++) {
-                int index = position * mItemsPerPage + i;
-                if (cursor.getCount() <= index) continue;
-                cursor.moveToPosition(index);
-                View v = mInflater.inflate(R.layout.status_bar_component_selection_item,
-                        parent, false);
-                int wifiIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_WIFI_ICON);
-                int signalIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_SIGNAL_ICON);
-                int bluetoothIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BLUETOOTH_ICON);
-                int batteryIndex = cursor.getColumnIndex(Utils.getBatteryIndex(mBatteryStyle));
-                int backgroundIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
-                int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+        ((ImageView) v.findViewById(R.id.slot1)).setImageBitmap(
+                Utils.loadBitmapBlob(cursor, wifiIndex));
+        ((ImageView) v.findViewById(R.id.slot2)).setImageBitmap(
+                Utils.loadBitmapBlob(cursor, signalIndex));
+        ((ImageView) v.findViewById(R.id.slot3)).setImageBitmap(
+                Utils.loadBitmapBlob(cursor, bluetoothIndex));
+        ((ImageView) v.findViewById(R.id.slot4)).setImageBitmap(
+                Utils.loadBitmapBlob(cursor, batteryIndex));
+        setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+        v.findViewById(R.id.container).setBackground(
+                new BitmapDrawable(Utils.loadBitmapBlob(cursor, backgroundIndex)));
+        v.setTag(cursor.getString(pkgNameIndex));
+        v.setOnClickListener(mItemClickListener);
+        return v;
+    }
 
-                ((ImageView) v.findViewById(R.id.slot1)).setImageBitmap(
-                        Utils.loadBitmapBlob(cursor, wifiIndex));
-                ((ImageView) v.findViewById(R.id.slot2)).setImageBitmap(
-                        Utils.loadBitmapBlob(cursor, signalIndex));
-                ((ImageView) v.findViewById(R.id.slot3)).setImageBitmap(
-                        Utils.loadBitmapBlob(cursor, bluetoothIndex));
-                ((ImageView) v.findViewById(R.id.slot4)).setImageBitmap(
-                        Utils.loadBitmapBlob(cursor, batteryIndex));
-                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-                v.findViewById(R.id.container).setBackground(
-                        new BitmapDrawable(Utils.loadBitmapBlob(cursor, backgroundIndex)));
-                v.setTag(cursor.getString(pkgNameIndex));
-                v.setOnClickListener(mItemClickListener);
-                parent.addView(v, mItemParams);
-                addDividerIfNeeded(parent, i, index, cursor);
-            }
+    private View newNavBarView(Cursor cursor, ViewGroup parent, int position) {
+        cursor.moveToPosition(position);
+        View v = mInflater.inflate(R.layout.navigation_bar_component_selection_item, parent,
+                false);
+        int backIndex = cursor.getColumnIndex(PreviewColumns.NAVBAR_BACK_BUTTON);
+        int backgroundIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
+        int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+
+        ((ImageView) v.findViewById(R.id.back)).setImageBitmap(
+                Utils.loadBitmapBlob(cursor, backIndex));
+        setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+        v.findViewById(R.id.container).setBackground(
+                new BitmapDrawable(Utils.loadBitmapBlob(cursor, backgroundIndex)));
+        v.setTag(cursor.getString(pkgNameIndex));
+        v.setOnClickListener(mItemClickListener);
+        return v;
+    }
+
+    private View newFontView(Cursor cursor, ViewGroup parent, int position) {
+        cursor.moveToPosition(position);
+        View v = mInflater.inflate(R.layout.font_component_selection_item, parent,
+                false);
+        int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+
+        TextView preview = (TextView) v.findViewById(R.id.text_preview);
+        String pkgName = cursor.getString(pkgNameIndex);
+
+        ThemedTypefaceHelper helper = mTypefaceCache.getHelperForTheme(mContext, pkgName);
+        Typeface typefaceNormal = helper.getTypeface(Typeface.NORMAL);
+        preview.setTypeface(typefaceNormal);
+
+        setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+        v.setTag(cursor.getString(pkgNameIndex));
+        v.setOnClickListener(mItemClickListener);
+        return v;
+    }
+
+    private View newIconView(Cursor cursor, ViewGroup parent, int position) {
+        cursor.moveToPosition(position);
+        View v = mInflater.inflate(R.layout.icon_component_selection_item, parent,
+                false);
+        int iconIndex = cursor.getColumnIndex(PreviewColumns.ICON_PREVIEW_1);
+        int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+
+        ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
+                Utils.loadBitmapBlob(cursor, iconIndex));
+        setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+        v.setTag(cursor.getString(pkgNameIndex));
+        v.setOnClickListener(mItemClickListener);
+        return v;
+    }
+
+    private View newStyleView(Cursor cursor, ViewGroup parent, int position) {
+        cursor.moveToPosition(position);
+        View v = mInflater.inflate(R.layout.icon_component_selection_item, parent,
+                false);
+        int styleIndex = cursor.getColumnIndex(PreviewColumns.STYLE_THUMBNAIL);
+        int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+
+        ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
+                Utils.loadBitmapBlob(cursor, styleIndex));
+        setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+        v.setTag(cursor.getString(pkgNameIndex));
+        v.setOnClickListener(mItemClickListener);
+        return v;
+    }
+
+    private View newWallpapersView(Cursor cursor, ViewGroup parent, int position,
+                                   int wallpaperIndex) {
+        View v = mInflater.inflate(R.layout.wallpaper_component_selection_item, parent,
+                false);
+        ImageView iv = (ImageView) v.findViewById(R.id.icon);
+        if (position == 0) {
+            iv.setImageResource(R.drawable.img_wallpaper_none);
+            v.setTag("");
+            ((TextView) v.findViewById(R.id.title)).setText(R.string.wallpaper_none_title);
+        } else if (position == 1) {
+            iv.setImageResource(R.drawable.img_wallpaper_external);
+            v.setTag(EXTERNAL_WALLPAPER);
+            ((TextView) v.findViewById(R.id.title))
+                    .setText(R.string.wallpaper_external_title);
+        } else {
+            cursor.moveToPosition(position - EXTRA_WALLPAPER_COMPONENTS);
+            int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+            iv.setImageBitmap(
+                    Utils.loadBitmapBlob(cursor, wallpaperIndex));
+            setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+            v.setTag(cursor.getString(pkgNameIndex));
         }
+        v.setOnClickListener(mItemClickListener);
+        return v;
+    }
 
-        private void newNavBarView(Cursor cursor, ViewGroup parent, int position) {
-            for (int i = 0; i < mItemsPerPage; i++) {
-                int index = position * mItemsPerPage + i;
-                if (cursor.getCount() <= index) continue;
-                cursor.moveToPosition(index);
-                View v = mInflater.inflate(R.layout.navigation_bar_component_selection_item, parent,
-                        false);
-                int backIndex = cursor.getColumnIndex(PreviewColumns.NAVBAR_BACK_BUTTON);
-                int backgroundIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
-                int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+    private View newBootanimationView(Cursor cursor, ViewGroup parent, int position) {
+        cursor.moveToPosition(position);
+        View v = mInflater.inflate(R.layout.bootani_component_selection_item, parent,
+                false);
+        int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.BOOTANIMATION_THUMBNAIL);
+        int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
-                ((ImageView) v.findViewById(R.id.back)).setImageBitmap(
-                        Utils.loadBitmapBlob(cursor, backIndex));
-                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-                v.findViewById(R.id.container).setBackground(
-                        new BitmapDrawable(Utils.loadBitmapBlob(cursor, backgroundIndex)));
-                v.setTag(cursor.getString(pkgNameIndex));
-                v.setOnClickListener(mItemClickListener);
-                parent.addView(v, mItemParams);
-                addDividerIfNeeded(parent, i, index, cursor);
-            }
-        }
+        ((ImageView) v.findViewById(R.id.preview)).setImageBitmap(
+                Utils.loadBitmapBlob(cursor, wallpaperIndex));
+        setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+        v.setTag(cursor.getString(pkgNameIndex));
+        v.setOnClickListener(mItemClickListener);
+        return v;
+    }
 
-        private void newFontView(Cursor cursor, ViewGroup parent, int position) {
-            for (int i = 0; i < mItemsPerPage; i++) {
-                int index = position * mItemsPerPage + i;
-                if (cursor.getCount() <= index) continue;
-                cursor.moveToPosition(index);
-                View v = mInflater.inflate(R.layout.font_component_selection_item, parent,
-                        false);
-                int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+    private View newSoundView(Cursor cursor, ViewGroup parent, int position,
+                              final String component) {
+        LinearLayout container = (LinearLayout) mInflater.inflate(
+                R.layout.component_selection_sounds_pager_item, parent, false);
+        container.setWeightSum(mItemsPerPage);
+        for (int i = 0; i < mItemsPerPage; i++) {
+            int index = position * mItemsPerPage + i;
+            if (cursor.getCount() <= index) continue;
+            cursor.moveToPosition(index);
+            View v = mInflater.inflate(R.layout.sound_component_selection_item, parent,
+                    false);
+            final int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
-                TextView preview = (TextView) v.findViewById(R.id.text_preview);
-                String pkgName = cursor.getString(pkgNameIndex);
-
-                ThemedTypefaceHelper helper = mTypefaceCache.getHelperForTheme(mContext, pkgName);
-                Typeface typefaceNormal = helper.getTypeface(Typeface.NORMAL);
-                preview.setTypeface(typefaceNormal);
-
-                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-                v.setTag(cursor.getString(pkgNameIndex));
-                v.setOnClickListener(mItemClickListener);
-                parent.addView(v, mItemParams);
-                addDividerIfNeeded(parent, i, index, cursor);
-            }
-        }
-
-        private void newIconView(Cursor cursor, ViewGroup parent, int position) {
-            for (int i = 0; i < mItemsPerPage; i++) {
-                int index = position * mItemsPerPage + i;
-                if (cursor.getCount() <= index) continue;
-                cursor.moveToPosition(index);
-                View v = mInflater.inflate(R.layout.icon_component_selection_item, parent,
-                        false);
-                int iconIndex = cursor.getColumnIndex(PreviewColumns.ICON_PREVIEW_1);
-                int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
-
-                ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
-                        Utils.loadBitmapBlob(cursor, iconIndex));
-                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-                v.setTag(cursor.getString(pkgNameIndex));
-                v.setOnClickListener(mItemClickListener);
-                parent.addView(v, mItemParams);
-                addDividerIfNeeded(parent, i, index, cursor);
-            }
-        }
-
-        private void newStyleView(Cursor cursor, ViewGroup parent, int position) {
-            for (int i = 0; i < mItemsPerPage; i++) {
-                int index = position * mItemsPerPage + i;
-                if (cursor.getCount() <= index) continue;
-                cursor.moveToPosition(index);
-                View v = mInflater.inflate(R.layout.icon_component_selection_item, parent,
-                        false);
-                int styleIndex = cursor.getColumnIndex(PreviewColumns.STYLE_THUMBNAIL);
-                int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
-
-                ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
-                        Utils.loadBitmapBlob(cursor, styleIndex));
-                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-                v.setTag(cursor.getString(pkgNameIndex));
-                v.setOnClickListener(mItemClickListener);
-                parent.addView(v, mItemParams);
-                addDividerIfNeeded(parent, i, index, cursor);
-            }
-        }
-
-        private void newWallpapersView(Cursor cursor, ViewGroup parent, int position,
-                int wallpaperIndex) {
-            for (int i = 0; i < mItemsPerPage; i++) {
-                int index = position * mItemsPerPage + i;
-                if (cursor.getCount() < (index - EXTRA_WALLPAPER_COMPONENTS)) continue;
-                View v = mInflater.inflate(R.layout.wallpaper_component_selection_item, parent,
-                        false);
-                ImageView iv = (ImageView) v.findViewById(R.id.icon);
-                if (index == 0) {
-                    iv.setImageResource(R.drawable.img_wallpaper_none);
-                    v.setTag("");
-                    ((TextView) v.findViewById(R.id.title)).setText(R.string.wallpaper_none_title);
-                } else if (index == 1) {
-                    iv.setImageResource(R.drawable.img_wallpaper_external);
-                    v.setTag(EXTERNAL_WALLPAPER);
-                    ((TextView) v.findViewById(R.id.title))
-                            .setText(R.string.wallpaper_external_title);
-                } else {
-                    cursor.moveToPosition(index - EXTRA_WALLPAPER_COMPONENTS);
-                    int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
-                    iv.setImageBitmap(
-                            Utils.loadBitmapBlob(cursor, wallpaperIndex));
-                    setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-                    v.setTag(cursor.getString(pkgNameIndex));
-                }
-                v.setOnClickListener(mItemClickListener);
-                parent.addView(v, mItemParams);
-                addDividerIfNeeded(parent, i, index, cursor);
-            }
-        }
-
-        private void newBootanimationView(Cursor cursor, ViewGroup parent, int position) {
-            for (int i = 0; i < mItemsPerPage; i++) {
-                int index = position * mItemsPerPage + i;
-                if (cursor.getCount() <= index) continue;
-                cursor.moveToPosition(index);
-                View v = mInflater.inflate(R.layout.bootani_component_selection_item, parent,
-                        false);
-                int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.BOOTANIMATION_THUMBNAIL);
-                int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
-
-                ((ImageView) v.findViewById(R.id.preview)).setImageBitmap(
-                        Utils.loadBitmapBlob(cursor, wallpaperIndex));
-                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-                v.setTag(cursor.getString(pkgNameIndex));
-                v.setOnClickListener(mItemClickListener);
-                parent.addView(v, mItemParams);
-                addDividerIfNeeded(parent, i, index, cursor);
-            }
-        }
-
-        private void newSoundView(Cursor cursor, ViewGroup parent, int position, String component) {
-            for (int i = 0; i < mItemsPerPage; i++) {
-                int index = position * mItemsPerPage + i;
-                if (cursor.getCount() <= index) continue;
-                cursor.moveToPosition(index);
-                View v = mInflater.inflate(R.layout.sound_component_selection_item, parent,
-                        false);
-                final int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
-
-                setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-                v.setTag(cursor.getString(pkgNameIndex));
-                v.setOnClickListener(mItemClickListener);
-                parent.addView(v, mSoundItemParams);
-                final View playButton = v.findViewById(R.id.play_button);
-                playButton.setTag(cursor.getString(pkgNameIndex));
-                playButton.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int type;
-                        String pkgName = (String) v.getTag();
-                        if (mComponentType.equals(MODIFIES_RINGTONES)) {
-                            type = RingtoneManager.TYPE_RINGTONE;
-                        } else if (mComponentType.equals(MODIFIES_NOTIFICATIONS)) {
-                            type = RingtoneManager.TYPE_NOTIFICATION;
-                        } else {
-                            type = RingtoneManager.TYPE_ALARM;
-                        }
-                        boolean shouldStop = playButton == mCurrentPlayPause;
-                        try {
-                            if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-                                mMediaPlayer.stop();
-                                if (mCurrentPlayPause != null) {
-                                    mCurrentPlayPause.setImageResource(
-                                            R.drawable.media_sound__selector_preview);
-                                }
-                                mCurrentPlayPause = null;
-                            }
-                            if (mCurrentPlayPause != playButton && !shouldStop) {
-                                AudioUtils.loadThemeAudible(mContext, type, pkgName,
-                                        mMediaPlayer);
-                                mMediaPlayer.start();
-                                mCurrentPlayPause = (ImageView) playButton;
+            setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+            v.setTag(cursor.getString(pkgNameIndex));
+            v.setOnClickListener(mItemClickListener);
+            container.addView(v, mSoundItemParams);
+            final View playButton = v.findViewById(R.id.play_button);
+            playButton.setTag(cursor.getString(pkgNameIndex));
+            playButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int type;
+                    String pkgName = (String) v.getTag();
+                    if (component.equals(MODIFIES_RINGTONES)) {
+                        type = RingtoneManager.TYPE_RINGTONE;
+                    } else if (component.equals(MODIFIES_NOTIFICATIONS)) {
+                        type = RingtoneManager.TYPE_NOTIFICATION;
+                    } else {
+                        type = RingtoneManager.TYPE_ALARM;
+                    }
+                    boolean shouldStop = playButton == mCurrentPlayPause;
+                    try {
+                        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                            mMediaPlayer.stop();
+                            if (mCurrentPlayPause != null) {
                                 mCurrentPlayPause.setImageResource(
-                                        R.drawable.media_sound__selector_stop);
+                                        R.drawable.media_sound__selector_preview);
                             }
-                        } catch (PackageManager.NameNotFoundException e) {
-                            Log.w(TAG, "Unable to play preview sound", e);
+                            mCurrentPlayPause = null;
                         }
+                        if (mCurrentPlayPause != playButton && !shouldStop) {
+                            AudioUtils.loadThemeAudible(mContext, type, pkgName,
+                                    mMediaPlayer);
+                            mMediaPlayer.start();
+                            mCurrentPlayPause = (ImageView) playButton;
+                            mCurrentPlayPause.setImageResource(
+                                    R.drawable.media_sound__selector_stop);
+                        }
+                    } catch (PackageManager.NameNotFoundException e) {
+                        Log.w(TAG, "Unable to play preview sound", e);
+                    }
+                }
+            });
+        }
+
+        return container;
+    }
+
+    private class LoadItemsTask extends AsyncTask<Object, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Object... params) {
+            Cursor c = (Cursor) params[0];
+            int count = (Integer) params[1];
+            for (int i = 0; i < count && !isCancelled(); i++) {
+                final View v = newView(c, i, mContent);
+                mContent.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mContent.addView(v, mItemParams);
                     }
                 });
             }
-        }
-
-        private void addDivider(ViewGroup parent) {
-            final Resources res = getResources();
-            View v = mInflater.inflate(R.layout.component_divider, parent, false);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) v.getLayoutParams();
-            // Boot animations require a taller divider so adjust accordingly
-            if (ThemesColumns.MODIFIES_BOOT_ANIM.equals(mComponentType)) {
-                params.topMargin = res.getDimensionPixelSize(
-                        R.dimen.component_divider_margin_top_bootani);
-                params.height = res.getDimensionPixelSize(R.dimen.component_divider_height_bootani);
-            }
-            v.setLayoutParams(params);
-            parent.addView(v);
-        }
-
-        private void addDividerIfNeeded(ViewGroup parent, int position, int cursorIndex,
-                Cursor cursor) {
-            if (position < mItemsPerPage - 1 && cursorIndex < cursor.getCount() - 1) {
-                addDivider(parent);
-            }
-        }
-
-        private void setTitle(TextView titleView, Cursor cursor) {
-            String pkgName = cursor.getString(cursor.getColumnIndex(ThemesColumns.PKG_NAME));
-            if (ThemeUtils.getDefaultThemePackageName(mContext).equals(pkgName)) {
-                titleView.setText(mContext.getString(R.string.default_tag_text));
-                titleView.setTypeface(null, Typeface.BOLD);
-            } else {
-                titleView.setText(cursor.getString(cursor.getColumnIndex(ThemesColumns.TITLE)));
-            }
-            if (pkgName.equals(mAppliedComponentPkgName)) {
-                titleView.setTextColor(getResources().getColor(
-                        R.color.component_selection_current_text_color));
-            }
+            return null;
         }
     }
+
+    private void setTitle(TextView titleView, Cursor cursor) {
+        String pkgName = cursor.getString(cursor.getColumnIndex(ThemesColumns.PKG_NAME));
+        if (ThemeUtils.getDefaultThemePackageName(mContext).equals(pkgName)) {
+            titleView.setText(mContext.getString(R.string.default_tag_text));
+            titleView.setTypeface(null, Typeface.BOLD);
+        } else {
+            titleView.setText(cursor.getString(cursor.getColumnIndex(ThemesColumns.TITLE)));
+        }
+        if (pkgName.equals(mAppliedComponentPkgName)) {
+            titleView.setTextColor(getResources().getColor(
+                    R.color.component_selection_current_text_color));
+        }
+    }
+
+    private OnClickListener mItemClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String pkgName = (String) v.getTag();
+            if (DEBUG_SELECTOR) Toast.makeText(mContext, pkgName, Toast.LENGTH_SHORT).show();
+            if (mListener != null) {
+                mListener.onItemClicked(pkgName);
+            }
+        }
+    };
 
     public interface OnItemClickedListener {
         public void onItemClicked(String pkgName);
