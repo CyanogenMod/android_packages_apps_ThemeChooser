@@ -421,11 +421,13 @@ public class ChooserActivity extends FragmentActivity
             v.getLocationOnScreen(coordinates);
             final int top = coordinates[1];
             final int bottom = coordinates[1] + v.getHeight();
+            final int statusBarHeight = res.getDimensionPixelSize(
+                    com.android.internal.R.dimen.status_bar_height);
             int selectorTop = getWindowManager().getDefaultDisplay().getHeight() - height;
             if (bottom > selectorTop) {
                 slideContentIntoView(bottom - selectorTop, height);
-            } else if (top < 0) {
-                slideContentIntoView(top, height);
+            } else if (top < statusBarHeight) {
+                slideContentIntoView(top - statusBarHeight, height);
             }
         }
     }
