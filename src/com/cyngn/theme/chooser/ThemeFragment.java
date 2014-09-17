@@ -204,6 +204,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected ViewGroup mTitleCard;
     protected ViewGroup mTitleLayout;
     protected TextView mTitle;
+    protected TextView mAuthor;
     protected ImageView mCustomize;
     protected ImageView mOverflow;
     protected ProgressBar mProgress;
@@ -361,6 +362,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mTitleCard = (ViewGroup)v.findViewById(R.id.title_card);
         mTitleLayout = (ViewGroup) v.findViewById(R.id.title_layout);
         mTitle = (TextView) v.findViewById(R.id.title);
+        mAuthor = (TextView) v.findViewById(R.id.author);
         mProgress = (ProgressBar) v.findViewById(R.id.apply_progress);
         mOverflow = (ImageView) v.findViewById(R.id.overflow);
         mOverflow.setOnClickListener(new View.OnClickListener() {
@@ -1115,6 +1117,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 projection = new String[] {
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE,
+                        ThemesColumns.AUTHOR,
                         ThemesColumns.WALLPAPER_URI,
                         ThemesColumns.HOMESCREEN_URI,
                         // Theme abilities
@@ -1385,8 +1388,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected void loadTitle(Cursor c) {
         int titleIdx = c.getColumnIndex(ThemesColumns.TITLE);
-        String title = c.getString(titleIdx);
-        mTitle.setText(title);
+        int authorIdx = c.getColumnIndex(ThemesColumns.AUTHOR);
+        mTitle.setText(c.getString(titleIdx));
+        mAuthor.setText(c.getString(authorIdx));
     }
 
     protected void loadWallpaper(Cursor c, boolean animate) {

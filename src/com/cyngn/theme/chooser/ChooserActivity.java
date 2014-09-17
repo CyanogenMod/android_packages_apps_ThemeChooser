@@ -761,7 +761,8 @@ public class ChooserActivity extends FragmentActivity
                         + "(" + ThemesColumns.PKG_NAME + "='" + mAppliedBaseTheme + "') DESC, "
                         + ThemesColumns.INSTALL_TIME + " DESC";
                 contentUri = ThemesColumns.CONTENT_URI;
-                projection = new String[] {ThemesColumns.PKG_NAME, ThemesColumns.TITLE};
+                projection = new String[] {ThemesColumns.PKG_NAME, ThemesColumns.TITLE,
+                        ThemesColumns.AUTHOR};
                 break;
             case LOADER_ID_APPLIED:
                 //TODO: Mix n match query should only be done once
@@ -802,6 +803,7 @@ public class ChooserActivity extends FragmentActivity
     public class ThemesAdapter extends NewFragmentStatePagerAdapter {
         private ArrayList<String> mInstalledThemes;
         private String mAppliedThemeTitle;
+        private String mAppliedThemeAuthor;
         private HashMap<String, Integer> mRepositionedFragments;
 
         public ThemesAdapter() {
@@ -816,7 +818,7 @@ public class ChooserActivity extends FragmentActivity
                 final String pkgName = mInstalledThemes.get(position);
                 if (pkgName.equals(mAppliedBaseTheme)) {
                     f = MyThemeFragment.newInstance(mAppliedBaseTheme, mAppliedThemeTitle,
-                            mAnimateContentIn);
+                            mAppliedThemeAuthor, mAnimateContentIn);
                 } else {
                     f = ThemeFragment.newInstance(pkgName, mAnimateContentIn);
                 }
@@ -867,7 +869,9 @@ public class ChooserActivity extends FragmentActivity
                     final String pkgName = c.getString(pkgIdx);
                     if (pkgName.equals(mAppliedBaseTheme)) {
                         final int titleIdx = c.getColumnIndex(ThemesColumns.TITLE);
+                        final int authorIdx = c.getColumnIndex(ThemesColumns.AUTHOR);
                         mAppliedThemeTitle = c.getString(titleIdx);
+                        mAppliedThemeAuthor = c.getString(authorIdx);
                     }
                     mInstalledThemes.add(pkgName);
 

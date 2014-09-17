@@ -73,17 +73,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/title_card_height"
                     android:alpha="0">
-                    <com.cyngn.theme.widget.LatoTextView
-                        android:id="@+id/title"
+                    <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginStart="16dp"
-                        android:gravity="center_vertical"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:textColor="#78000000"/>
-
+                        android:orientation="vertical">
+                        <com.cyngn.theme.widget.LatoTextView
+                            android:id="@+id/title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:singleLine="true"
+                            android:textColor="@color/theme_title_text_color"/>
+                        <com.cyngn.theme.widget.LatoTextView
+                            android:id="@+id/author"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:singleLine="true"
+                            android:textColor="@color/theme_author_text_color"
+                            android:textSize="14sp" />
+                    </LinearLayout>
                     <ImageView
                         android:id="@+id/customize"
                         android:layout_width="47dp"

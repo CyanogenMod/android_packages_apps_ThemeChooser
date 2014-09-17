@@ -48,18 +48,21 @@ public class MyThemeFragment extends ThemeFragment {
 
     private static final String ARG_BASE_THEME_PACKAGE_NAME = "baseThemePkgName";
     private static final String ARG_BASE_THEME_NAME = "baseThemeName";
+    private static final String ARG_BASE_THEME_AUTHOR = "baseThemeAuthor";
 
     private String mBaseThemeName;
+    private String mBaseThemeAuthor;
 
     private SurfaceView mSurfaceView;
 
     static MyThemeFragment newInstance(String baseThemePkgName, String baseThemeName,
-                                       boolean skipLoadingAnim) {
+                                       String baseThemeAuthor, boolean skipLoadingAnim) {
         MyThemeFragment f = new MyThemeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PACKAGE_NAME, CURRENTLY_APPLIED_THEME);
         args.putString(ARG_BASE_THEME_PACKAGE_NAME, baseThemePkgName);
         args.putString(ARG_BASE_THEME_NAME, baseThemeName);
+        args.putString(ARG_BASE_THEME_AUTHOR, baseThemeAuthor);
         args.putBoolean(ARG_SKIP_LOADING_ANIM, skipLoadingAnim);
         f.setArguments(args);
         return f;
@@ -74,6 +77,7 @@ public class MyThemeFragment extends ThemeFragment {
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
         mBaseThemePkgName = getArguments().getString(ARG_BASE_THEME_PACKAGE_NAME);
         mBaseThemeName = getArguments().getString(ARG_BASE_THEME_NAME);
+        mBaseThemeAuthor = getArguments().getString(ARG_BASE_THEME_AUTHOR);
         mSurfaceView = createSurfaceView();
     }
 
@@ -273,6 +277,7 @@ public class MyThemeFragment extends ThemeFragment {
     @Override
     protected void loadTitle(Cursor c) {
         mTitle.setText(mBaseThemeName);
+        mAuthor.setText(mBaseThemeAuthor);
     }
 
     @Override
