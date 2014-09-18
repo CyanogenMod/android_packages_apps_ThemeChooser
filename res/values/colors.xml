@@ -53,4 +53,6 @@
     <color name="theme_title_text_color">#78000000</color>
     <color name="theme_author_text_color">#40000000</color>
 
+    <color name="processing_text_color">#ffffff</color>
+
 </resources>

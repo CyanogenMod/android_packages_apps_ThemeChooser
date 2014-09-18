@@ -9,14 +9,18 @@ import android.content.pm.ThemeUtils;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class PreferenceUtils {
+    private static final String TAG = PreferenceUtils.class.getSimpleName();
+
     public static final String PREF_APPLIED_BASE_THEME = "applied_base_theme";
     public static final String PREF_UPDATED_THEMES = "updated_themes";
     public static final String PREF_NEWLY_INSTALLED_THEME_COUNT = "newly_installed_theme_count";
+    public static final String PREF_INSTALLED_THEMES_PROCESSING = "installed_themes_processing";
 
     public static SharedPreferences getSharedPreferences(Context context) {
         if (context == null) return null;
@@ -74,6 +78,41 @@ public class PreferenceUtils {
             if (updatedThemes.remove(pkgName)) {
                 prefs.edit().putStringSet(PREF_UPDATED_THEMES, updatedThemes).apply();
             }
+        }
+    }
+
+    public static Set<String> getInstalledThemesBeingProcessed(Context context) {
+        SharedPreferences prefs = getSharedPreferences(context);
+        if (prefs == null) return null;
+
+        return prefs.getStringSet(PREF_INSTALLED_THEMES_PROCESSING, null);
+    }
+
+    public static void addThemeBeingProcessed(Context context, String pkgName) {
+        SharedPreferences prefs = getSharedPreferences(context);
+        if (prefs != null) {
+            Set<String> current = prefs.getStringSet(PREF_INSTALLED_THEMES_PROCESSING, null);
+            if (current != null && current.add(pkgName)) {
+                prefs.edit().putStringSet(PREF_INSTALLED_THEMES_PROCESSING, current).apply();
+            }
+        } else {
+            Log.w(TAG, "addThemeBeingProcessed: Unable to get shared preferences");
+        }
+    }
+
+    public static void removeThemeBeingProcessed(Context context, String pkgName) {
+        SharedPreferences prefs = getSharedPreferences(context);
+        if (prefs != null) {
+            Set<String> updatedThemes = new HashSet<String>();
+            Set<String> current = prefs.getStringSet(PREF_INSTALLED_THEMES_PROCESSING, null);
+            if (current != null) {
+                updatedThemes.addAll(current);
+            }
+            if (updatedThemes.remove(pkgName)) {
+                prefs.edit().putStringSet(PREF_INSTALLED_THEMES_PROCESSING, updatedThemes).apply();
+            }
+        } else {
+            Log.w(TAG, "removeThemeBeingProcessed: Unable to get shared preferences");
         }
     }
 

@@ -71,4 +71,6 @@
     <string name="wallpaper_external_title">Pick image</string>
     <string name="wallpaper_none_title">None</string>
 
+    <string name="processing_theme">Processing</string>
+
 </resources>

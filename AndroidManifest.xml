@@ -67,6 +67,9 @@
                     android:name="com.tmobile.intent.category.THEME_PACKAGE_INSTALL_STATE_CHANGE" />
                 <data android:scheme="package" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.THEME_RESOURCES_CACHED" />
+            </intent-filter>
         </receiver>
 
         <service android:name="com.cyngn.theme.chooser.NotificationHijackingService"

@@ -104,7 +104,7 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
 public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        ThemeManager.ThemeChangeListener {
+        ThemeManager.ThemeChangeListener, ThemeManager.ThemeProcessingListener {
     private static final String TAG = ThemeFragment.class.getSimpleName();
 
     public static final int ANIMATE_START_DELAY = 200;
@@ -252,6 +252,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected View mResetButton;
     protected View mCustomizeButton;
     protected View mDismissButton;
+
+    // Processing theme layout
+    protected View mProcessingThemeLayout;
 
     protected ThemeTagLayout mThemeTagLayout;
 
@@ -449,6 +452,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mCustomizeButton = mCustomizeResetLayout.findViewById(R.id.btn_customize);
         mCustomizeButton.setOnClickListener(mCustomizeResetClickListener);
 
+        mProcessingThemeLayout = v.findViewById(R.id.processing_theme_layout);
+
         if (mPkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()))) {
             mThemeTagLayout.setDefaultTagEnabled(true);
         }
@@ -475,11 +480,40 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ThemeManager tm = getThemeManager();
+        if (tm != null) {
+            final String pkgName = mBaseThemePkgName != null ? mBaseThemePkgName : mPkgName;
+            if (tm.isThemeBeingProcessed(pkgName)) {
+                tm.registerProcessingListener(this);
+                mProcessingThemeLayout.setVisibility(View.VISIBLE);
+                mCustomize.setVisibility(View.INVISIBLE);
+                mCustomize.setAlpha(0f);
+                if (mDelete.getVisibility() != View.GONE) {
+                    mDelete.setVisibility(View.INVISIBLE);
+                    mDelete.setAlpha(0f);
+                }
+            } else {
+                mCustomize.setVisibility(View.VISIBLE);
+                mCustomize.setAlpha(1f);
+                if (mDelete.getVisibility() != View.GONE) {
+                    mDelete.setVisibility(View.VISIBLE);
+                    mDelete.setAlpha(1f);
+                }
+            }
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         freeMediaPlayers();
         ThemeManager tm = getThemeManager();
-        if (tm != null) tm.removeClient(this);
+        if (tm != null) {
+            tm.removeClient(this);
+            tm.unregisterProcessingListener(this);
+        }
     }
 
     @Override
@@ -502,6 +536,28 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             animateProgressOut();
         }
         getChooserActivity().themeChangeEnd(isSuccess);
+    }
+
+    @Override
+    public void onFinishedProcessing(String pkgName) {
+        if (pkgName.equals(mPkgName) || pkgName.equals(mBaseThemePkgName)) {
+            if (mProcessingThemeLayout.getVisibility() == View.VISIBLE) {
+                mProcessingThemeLayout.animate().alpha(0).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProcessingThemeLayout.setVisibility(View.GONE);
+                    }
+                }).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
+                mCustomize.setVisibility(View.VISIBLE);
+                mCustomize.animate().alpha(1f).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
+                mOverflow.setVisibility(View.VISIBLE);
+                mOverflow.animate().alpha(1f).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
+            }
+            ThemeManager tm = getThemeManager();
+            if (tm != null) {
+                tm.unregisterProcessingListener(this);
+            }
+        }
     }
 
     @Override
@@ -675,6 +731,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void performClick(boolean clickedOnContent) {
+        // Don't do anything if the theme is being processed
+        if (mProcessingThemeLayout.getVisibility() == View.VISIBLE) return;
+
         if (clickedOnContent) {
             showApplyThemeOverlay();
         } else {
