@@ -66,7 +66,7 @@ import java.util.Arrays;
  *      complete}
  */
 public abstract class NewFragmentStatePagerAdapter extends PagerAdapter {
-    private static final String TAG = "SortableFragmentStatePagerAdapter";
+    private static final String TAG = NewFragmentStatePagerAdapter.class.getSimpleName();
     private static final boolean DEBUG = false;
 
     private final FragmentManager mFragmentManager;
@@ -219,8 +219,13 @@ public abstract class NewFragmentStatePagerAdapter extends PagerAdapter {
             mSavedState.add(null);
         }
         mSavedState.set(position, mFragmentManager.saveFragmentInstanceState(fragment));
-        mFragments.set(position, null);
 
+        // Only set the position to null if the fragment being removed is at "position"
+        // We do this because checkForIdChanges updates the mFragments list and if a fragment
+        // was removed then the fragment at "position" is not the fragment that was removed.
+        if (fragment == mFragments.get(position)) {
+            mFragments.set(position, null);
+        }
         mCurTransaction.remove(fragment);
     }
 
