@@ -260,6 +260,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected Uri mExternalWallpaperUri;
     protected Uri mExternalLockscreenUri;
 
+    protected boolean mExpanded;
+
     protected enum CustomizeResetAction {
         Customize,
         Reset,
@@ -640,6 +642,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mSelector.setOnItemClickedListener(mOnComponentItemClicked);
         if (mBootAnimation != null) mBootAnimation.start();
         hideThemeTagLayout();
+        mExpanded = true;
     }
 
 
@@ -787,6 +790,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 new Thread(mApplyExternalLockscreenRunnable).start();
             }
         }
+        mExpanded = false;
     }
 
     // This will animate the children's vertical positions between the previous bounds and the

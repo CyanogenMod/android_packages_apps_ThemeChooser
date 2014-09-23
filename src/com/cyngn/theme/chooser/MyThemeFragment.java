@@ -99,8 +99,7 @@ public class MyThemeFragment extends ThemeFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mExternalWallpaperUri == null && mExternalLockscreenUri == null
-                    && getLoaderManager().getLoader(0) != null) {
+        if (!mExpanded && getLoaderManager().getLoader(0) != null) {
             getLoaderManager().restartLoader(0, null, this);
         }
 
