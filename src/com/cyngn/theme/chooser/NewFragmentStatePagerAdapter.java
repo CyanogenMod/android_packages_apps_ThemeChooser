@@ -223,7 +223,7 @@ public abstract class NewFragmentStatePagerAdapter extends PagerAdapter {
         // Only set the position to null if the fragment being removed is at "position"
         // We do this because checkForIdChanges updates the mFragments list and if a fragment
         // was removed then the fragment at "position" is not the fragment that was removed.
-        if (fragment == mFragments.get(position)) {
+        if (position < mFragments.size() && fragment == mFragments.get(position)) {
             mFragments.set(position, null);
         }
         mCurTransaction.remove(fragment);
