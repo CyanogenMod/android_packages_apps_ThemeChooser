@@ -110,7 +110,27 @@
                         android:layout_marginStart="1dp"
                         android:layout_marginEnd="8dp"
                         android:scaleType="center"
-                        android:src="@drawable/ic_overflow_dark"/>
+                        android:src="@drawable/ic_overflow_dark"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:id="@+id/delete"
+                        android:layout_width="36dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="1dp"
+                        android:layout_marginEnd="8dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_theme_delete"/>
+
+                    <ImageView
+                        android:id="@+id/reset"
+                        android:layout_width="36dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="1dp"
+                        android:layout_marginEnd="8dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_theme_reset"
+                        android:visibility="gone"/>
                 </LinearLayout>
                 <ProgressBar
                     android:id="@+id/apply_progress"

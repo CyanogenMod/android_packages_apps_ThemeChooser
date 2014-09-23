@@ -208,6 +208,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected TextView mAuthor;
     protected ImageView mCustomize;
     protected ImageView mOverflow;
+    protected ImageView mDelete;
+    protected ImageView mReset;
     protected ProgressBar mProgress;
 
     // Additional Card Views
@@ -405,6 +407,23 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 }
             }
         });
+
+        mDelete = (ImageView) v.findViewById(R.id.delete);
+        mDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDeleteThemeOverlay();
+            }
+        });
+
+        mReset = (ImageView) v.findViewById(R.id.reset);
+        mReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showResetThemeOverlay();
+            }
+        });
+        mReset.setVisibility(View.GONE);
 
         if (!Utils.hasNavigationBar(getActivity())) {
             adjustScrollViewPaddingTop();
@@ -682,8 +701,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int leftRightPadding = (int) r.getDimension(R.dimen.collapsed_theme_page_padding);
         content.setPadding(leftRightPadding, 0, leftRightPadding, 0);
 
-        if (applyTheme && componentsChanged()) {
-            mThemeTagLayout.setCustomizedTagEnabled(true);
+        if (applyTheme) {
+            final boolean changed = componentsChanged();
+            mThemeTagLayout.setCustomizedTagEnabled(changed);
+            mReset.setVisibility(changed ? View.VISIBLE : View.GONE);
         }
 
         //Move the theme preview so that it is near the center of page per spec
@@ -1867,6 +1888,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 }
             };
 
+    private ConfirmCancelOverlay.OnOverlayDismissedListener mResetConfirmationListener =
+            new ConfirmCancelOverlay.OnOverlayDismissedListener() {
+                @Override
+                public void onDismissed(boolean accepted) {
+                    if (accepted) resetTheme();
+                    hideConfirmCancelOverlay();
+                }
+            };
+
     private View.OnClickListener mCustomizeResetClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -2083,6 +2113,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 .setInterpolator(new AccelerateInterpolator())
                 .start();
         mProgress.startAnimation(scaleAnim);
+        if (mThemeResetting) mReset.setVisibility(View.GONE);
     }
 
     private void animateContentIn() {
@@ -2139,6 +2170,21 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mConfirmCancelOverlay.setBackgroundColor(getActivity().getResources()
                 .getColor(R.color.delete_overlay_background));
         mConfirmCancelOverlay.setOnOverlayDismissedListener(mDeleteConfirmationListener);
+        getChooserActivity().lockPager();
+        ViewPropertyAnimator anim = mConfirmCancelOverlay.animate();
+        mConfirmCancelOverlay.setVisibility(View.VISIBLE);
+        mConfirmCancelOverlay.setAlpha(0f);
+        anim.setListener(null);
+        anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
+        anim.alpha(1f).start();
+    }
+
+    public void showResetThemeOverlay() {
+        if (mConfirmCancelOverlay.getVisibility() == View.VISIBLE) return;
+        mConfirmCancelOverlay.setTitle(R.string.reset_theme_overlay_title);
+        mConfirmCancelOverlay.setBackgroundColor(getActivity().getResources()
+                .getColor(R.color.apply_overlay_background));
+        mConfirmCancelOverlay.setOnOverlayDismissedListener(mResetConfirmationListener);
         getChooserActivity().lockPager();
         ViewPropertyAnimator anim = mConfirmCancelOverlay.animate();
         mConfirmCancelOverlay.setVisibility(View.VISIBLE);

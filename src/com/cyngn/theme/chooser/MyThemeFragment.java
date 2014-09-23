@@ -93,6 +93,8 @@ public class MyThemeFragment extends ThemeFragment {
             mThemeTagLayout.setUpdatedTagEnabled(true);
         }
         setCustomizedTagIfCustomized();
+        mDelete.setVisibility(View.GONE);
+        mReset.setVisibility(View.VISIBLE);
         return v;
     }
 
