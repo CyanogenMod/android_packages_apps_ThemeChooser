@@ -1313,6 +1313,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (hasContent) {
                 loadLockScreen(c, false);
             } else {
+                mLockScreenCard.clearWallpaper();
                 mLockScreenCard.setEmptyViewEnabled(true);
                 setAddComponentTitle(mLockScreenCard, getString(R.string.lockscreen_label));
             }
@@ -1419,6 +1420,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 setCardTitle(mWallpaperCard, pkgName, getString(R.string.wallpaper_label));
             }
         } else {
+            mWallpaperCard.clearWallpaper();
             mWallpaperCard.setEmptyViewEnabled(true);
             setAddComponentTitle(mWallpaperCard, getString(R.string.wallpaper_label));
             mWallpaper.setImageResource(R.drawable.wallpaper_none_bg);
@@ -1450,6 +1452,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 setCardTitle(mLockScreenCard, pkgName, getString(R.string.lockscreen_label));
             }
         } else {
+            mLockScreenCard.clearWallpaper();
             mLockScreenCard.setEmptyViewEnabled(true);
             setAddComponentTitle(mLockScreenCard, getString(R.string.lockscreen_label));
         }

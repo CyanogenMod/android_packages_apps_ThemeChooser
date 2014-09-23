@@ -313,6 +313,7 @@ public class MyThemeFragment extends ThemeFragment {
             setCardTitle(mWallpaperCard, mCurrentTheme.get(ThemesColumns.MODIFIES_LAUNCHER),
                     getString(R.string.wallpaper_label));
         } else {
+            mWallpaperCard.clearWallpaper();
             mWallpaperCard.setEmptyViewEnabled(true);
             setAddComponentTitle(mWallpaperCard, getString(R.string.wallpaper_label));
         }
@@ -347,6 +348,7 @@ public class MyThemeFragment extends ThemeFragment {
         if (wp != null) {
             mLockScreenCard.setWallpaper(wp);
         } else {
+            mLockScreenCard.clearWallpaper();
             mLockScreenCard.setEmptyViewEnabled(true);
             setAddComponentTitle(mLockScreenCard, getString(R.string.lockscreen_label));
         }

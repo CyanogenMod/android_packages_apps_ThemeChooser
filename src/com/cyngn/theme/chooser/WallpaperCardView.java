@@ -74,6 +74,11 @@ public class WallpaperCardView extends ComponentCardView {
         }
     }
 
+    public void clearWallpaper() {
+        mImage.setImageDrawable(null);
+        setBackgroundResource(R.drawable.card_bg);
+    }
+
     public Drawable getWallpaperDrawable() {
         return mImage.getDrawable();
     }
