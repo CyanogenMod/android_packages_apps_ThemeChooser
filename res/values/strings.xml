@@ -52,7 +52,8 @@
 
     <string name="audible_title_none">None</string>
 
-    <string name="apply_theme_layout_title">Apply</string>
+    <string name="apply_theme_overlay_title">Apply</string>
+    <string name="delete_theme_overlay_title">Delete</string>
 
     <string name="default_tag_text">Default</string>
     <string name="customized_tag_text">Customized</string>

@@ -33,10 +33,11 @@
 
     <color name="shop_themes_text_color">#ffffff</color>
 
-    <color name="apply_layout_background">#cd000000</color>
-    <color name="apply_layout_text_color">#ffffff</color>
-    <color name="apply_layout_separator_color">#bdbdbd</color>
-    <color name="apply_layout_button_bg_color">#66ffffff</color>
+    <color name="apply_overlay_background">#cd000000</color>
+    <color name="apply_overlay_text_color">#ffffff</color>
+    <color name="apply_overlay_separator_color">#bdbdbd</color>
+    <color name="apply_overlay_button_bg_color">#66ffffff</color>
+    <color name="delete_overlay_background">#cd600000</color>
 
     <color name="customize_layout_text_color">#bdbdbd</color>
 

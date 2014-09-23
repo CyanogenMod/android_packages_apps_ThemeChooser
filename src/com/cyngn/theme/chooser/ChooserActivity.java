@@ -539,8 +539,8 @@ public class ChooserActivity extends FragmentActivity
             }
             setAnimatingStateAndScheduleFinish();
         } else {
-            if (f != null && f.isShowingApplyThemeLayout()) {
-                f.hideApplyThemeLayout();
+            if (f != null && f.isShowingConfirmCancelOverlay()) {
+                f.hideConfirmCancelOverlay();
             } else if (f != null && f.isShowingCustomizeResetLayout()) {
                 f.hideCustomizeResetLayout();
             } else {

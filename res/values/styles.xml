@@ -103,10 +103,10 @@
         <item name="android:text">@string/wallpaper_none</item>
     </style>
 
-    <style name="apply_layout_text_style">
+    <style name="apply_overlay_text_style">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/apply_layout_text_color</item>
+        <item name="android:textColor">@color/apply_overlay_text_color</item>
         <item name="android:textAllCaps">true</item>
     </style>
 

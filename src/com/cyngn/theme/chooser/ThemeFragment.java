@@ -77,6 +77,7 @@ import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 import com.cyngn.theme.util.WallpaperUtils;
 import com.cyngn.theme.widget.BootAniImageView;
+import com.cyngn.theme.widget.ConfirmCancelOverlay;
 import com.cyngn.theme.widget.LockableScrollView;
 import com.cyngn.theme.widget.ThemeTagLayout;
 
@@ -241,10 +242,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected boolean mThemeResetting;
     protected boolean mSkipLoadingAnim;
 
-    // Apply theme layout
-    protected View mApplyThemeLayout;
-    protected View mApplyButton;
-    protected View mCancelButton;
+    // Accept/Cancel overlay
+    protected ConfirmCancelOverlay mConfirmCancelOverlay;
 
     // Customize/Reset theme layout
     protected View mCustomizeResetLayout;
@@ -370,8 +369,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mOverflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isShowingApplyThemeLayout()) {
-                    hideApplyThemeLayout();
+                if (isShowingConfirmCancelOverlay()) {
+                    hideConfirmCancelOverlay();
                 } else if (isShowingCustomizeResetLayout()) {
                     hideCustomizeResetLayout();
                 }
@@ -401,7 +400,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mCustomize = (ImageView) v.findViewById(R.id.customize);
         mCustomize.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (!isShowingApplyThemeLayout() && !isShowingCustomizeResetLayout()) {
+                if (!isShowingConfirmCancelOverlay() && !isShowingCustomizeResetLayout()) {
                     getChooserActivity().expand();
                 }
             }
@@ -420,11 +419,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int translationY = getDistanceToMoveBelowScreen(mAdditionalCards);
         mAdditionalCards.setTranslationY(translationY);
 
-        mApplyThemeLayout = v.findViewById(R.id.apply_theme_layout);
-        mApplyButton = mApplyThemeLayout.findViewById(R.id.apply_apply);
-        mApplyButton.setOnClickListener(mApplyCancelClickListener);
-        mCancelButton = mApplyThemeLayout.findViewById(R.id.apply_cancel);
-        mCancelButton.setOnClickListener(mApplyCancelClickListener);
+        mConfirmCancelOverlay = (ConfirmCancelOverlay) v.findViewById(R.id.confirm_cancel_overlay);
         mClickableView = v.findViewById(R.id.clickable_view);
 
         mCustomizeResetLayout = v.findViewById(R.id.customize_reset_theme_layout);
@@ -561,7 +556,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 break;
             */
             case R.id.menu_delete:
-                uninstallTheme();
+                showDeleteThemeOverlay();
                 break;
         }
 
@@ -662,10 +657,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public void performClick(boolean clickedOnContent) {
         if (clickedOnContent) {
-            showApplyThemeLayout();
+            showApplyThemeOverlay();
         } else {
-            if (isShowingApplyThemeLayout()) {
-                hideApplyThemeLayout();
+            if (isShowingConfirmCancelOverlay()) {
+                hideConfirmCancelOverlay();
             }
         }
     }
@@ -1842,7 +1837,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private View.OnClickListener mCardClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (isShowingApplyThemeLayout() || isShowingCustomizeResetLayout()) return;
+            if (isShowingConfirmCancelOverlay() || isShowingCustomizeResetLayout()) return;
             if (mActiveCardId > 0) {
                 // need to fade the newly selected card in if another was currently selected.
                 ((ComponentCardView) v).animateCardFadeIn();
@@ -1855,16 +1850,22 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     };
 
-    private View.OnClickListener mApplyCancelClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v == mApplyButton) {
-                hideApplyThemeLayout(true);
-            } else if (v == mCancelButton) {
-                hideApplyThemeLayout();
-            }
-        }
-    };
+    private ConfirmCancelOverlay.OnOverlayDismissedListener mApplyCancelListener =
+            new ConfirmCancelOverlay.OnOverlayDismissedListener() {
+                @Override
+                public void onDismissed(boolean accepted) {
+                    hideConfirmCancelOverlay(accepted);
+                }
+            };
+
+    private ConfirmCancelOverlay.OnOverlayDismissedListener mDeleteConfirmationListener =
+            new ConfirmCancelOverlay.OnOverlayDismissedListener() {
+                @Override
+                public void onDismissed(boolean accepted) {
+                    if (accepted) uninstallTheme();
+                    hideConfirmCancelOverlay();
+                }
+            };
 
     private View.OnClickListener mCustomizeResetClickListener = new View.OnClickListener() {
         @Override
@@ -2113,22 +2114,42 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         set.start();
     }
 
-    public boolean isShowingApplyThemeLayout() {
-        return mApplyThemeLayout.getVisibility() == View.VISIBLE;
+    public boolean isShowingConfirmCancelOverlay() {
+        return mConfirmCancelOverlay.getVisibility() == View.VISIBLE;
     }
 
-    public void showApplyThemeLayout() {
-        if (mApplyThemeLayout.getVisibility() == View.VISIBLE) return;
+    public void showApplyThemeOverlay() {
+        if (mConfirmCancelOverlay.getVisibility() == View.VISIBLE) return;
+        mConfirmCancelOverlay.setTitle(R.string.apply_theme_overlay_title);
+        mConfirmCancelOverlay.setBackgroundColor(getActivity().getResources()
+                .getColor(R.color.apply_overlay_background));
+        mConfirmCancelOverlay.setOnOverlayDismissedListener(mApplyCancelListener);
         getChooserActivity().lockPager();
-        ViewPropertyAnimator anim = mApplyThemeLayout.animate();
-        mApplyThemeLayout.setVisibility(View.VISIBLE);
-        mApplyThemeLayout.setAlpha(0f);
+        ViewPropertyAnimator anim = mConfirmCancelOverlay.animate();
+        mConfirmCancelOverlay.setVisibility(View.VISIBLE);
+        mConfirmCancelOverlay.setAlpha(0f);
         anim.setListener(null);
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
         anim.alpha(1f).start();
     }
-    public void hideApplyThemeLayout() {
-        hideApplyThemeLayout(false);
+
+    public void showDeleteThemeOverlay() {
+        if (mConfirmCancelOverlay.getVisibility() == View.VISIBLE) return;
+        mConfirmCancelOverlay.setTitle(R.string.delete_theme_overlay_title);
+        mConfirmCancelOverlay.setBackgroundColor(getActivity().getResources()
+                .getColor(R.color.delete_overlay_background));
+        mConfirmCancelOverlay.setOnOverlayDismissedListener(mDeleteConfirmationListener);
+        getChooserActivity().lockPager();
+        ViewPropertyAnimator anim = mConfirmCancelOverlay.animate();
+        mConfirmCancelOverlay.setVisibility(View.VISIBLE);
+        mConfirmCancelOverlay.setAlpha(0f);
+        anim.setListener(null);
+        anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
+        anim.alpha(1f).start();
+    }
+
+    public void hideConfirmCancelOverlay() {
+        hideConfirmCancelOverlay(false);
     }
 
     /**
@@ -2136,10 +2157,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
      * when the animation is finished.
      * @param applyThemeWhenFinished If true, the current theme will be applied.
      */
-    private void hideApplyThemeLayout(final boolean applyThemeWhenFinished) {
+    private void hideConfirmCancelOverlay(final boolean applyThemeWhenFinished) {
         getChooserActivity().unlockPager();
-        ViewPropertyAnimator anim = mApplyThemeLayout.animate();
-        mApplyThemeLayout.setVisibility(View.VISIBLE);
+        ViewPropertyAnimator anim = mConfirmCancelOverlay.animate();
+        mConfirmCancelOverlay.setVisibility(View.VISIBLE);
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
         anim.alpha(0f).start();
         anim.setListener(new Animator.AnimatorListener() {
@@ -2149,7 +2170,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mApplyThemeLayout.setVisibility(View.GONE);
+                mConfirmCancelOverlay.setVisibility(View.GONE);
                 if (applyThemeWhenFinished) applyTheme();
             }
 

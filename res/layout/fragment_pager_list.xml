@@ -46,7 +46,7 @@
                     <include layout="@layout/icon_card"/>
                     <include layout="@layout/navbar_card"/>
                 </LinearLayout>
-                <include layout="@layout/apply_theme_layout"/>
+                <include layout="@layout/confirm_cancel_overlay"/>
                 <include layout="@layout/customize_reset_theme_layout"/>
                 <View
                     android:id="@+id/clickable_view"

@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="gone"
-    android:background="@color/apply_layout_background">
+    android:background="@color/apply_overlay_background">
 
     <ImageView
         android:id="@+id/btn_dismiss"
@@ -53,7 +53,7 @@
             android:layout_width="2dp"
             android:layout_height="56dp"
             android:layout_gravity="center_vertical"
-            android:background="@color/apply_layout_separator_color"
+            android:background="@color/apply_overlay_separator_color"
             android:layout_marginTop="-12dp"
             android:layout_marginStart="31dp"
             android:layout_marginEnd="31dp"/>

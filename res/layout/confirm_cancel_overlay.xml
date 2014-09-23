@@ -2,20 +2,22 @@
 <!--
      Copyright (C) 2014 Cyanogen, Inc.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/apply_theme_layout"
+<com.cyngn.theme.widget.ConfirmCancelOverlay
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/confirm_cancel_overlay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="gone"
-    android:background="@color/apply_layout_background">
+    android:background="@color/apply_overlay_background">
 
     <com.cyngn.theme.widget.LatoTextView
+        android:id="@+id/overlay_title"
         android:layout_width="wrap_content"
         android:layout_height="132dp"
         android:layout_gravity="top|center_horizontal"
         android:gravity="center"
-        style="@style/apply_layout_text_style"
-        android:text="@string/apply_theme_layout_title"/>
+        style="@style/apply_overlay_text_style"
+        android:text="@string/apply_theme_overlay_title"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -23,7 +25,7 @@
         android:layout_gravity="center">
 
         <ImageView
-            android:id="@+id/apply_cancel"
+            android:id="@+id/cancel"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center_vertical"
@@ -36,12 +38,12 @@
             android:layout_width="2dp"
             android:layout_height="56dp"
             android:layout_gravity="center_vertical"
-            android:background="@color/apply_layout_separator_color"
+            android:background="@color/apply_overlay_separator_color"
             android:layout_marginStart="31dp"
             android:layout_marginEnd="31dp"/>
 
         <ImageView
-            android:id="@+id/apply_apply"
+            android:id="@+id/accept"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center_vertical"
@@ -52,4 +54,4 @@
 
     </LinearLayout>
 
-</FrameLayout>
+</com.cyngn.theme.widget.ConfirmCancelOverlay>

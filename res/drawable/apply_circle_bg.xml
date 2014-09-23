@@ -5,6 +5,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
 
-    <solid android:color="@color/apply_layout_button_bg_color"/>
+    <solid android:color="@color/apply_overlay_button_bg_color"/>
 
 </shape>
