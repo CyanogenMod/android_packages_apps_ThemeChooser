@@ -661,7 +661,7 @@ public class ChooserActivity extends FragmentActivity
         // which should be the case for the current fragment.
         ThemeFragment f;
         try {
-            f = (mAdapter == null || mPager == null) ? null :
+            f = (mAdapter == null || mPager == null || mAdapter.getCount() <= 0) ? null :
                     (ThemeFragment) mAdapter.instantiateItem(mPager, mPager.getCurrentItem());
         } catch (Exception e) {
             f = null;
