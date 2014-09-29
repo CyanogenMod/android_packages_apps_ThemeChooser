@@ -29,7 +29,6 @@
   <string name="default_tag">(默认)</string>
   <string name="apply">应用</string>
   <string name="applying">正在应用\u2026</string>
-  <string name="remove">移除</string>
   <string name="update">更新</string>
   <string name="no_preview_available">无可用预览</string>
   <string name="alarm_label">闹钟</string>

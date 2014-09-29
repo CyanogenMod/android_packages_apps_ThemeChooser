@@ -29,7 +29,6 @@
   <string name="default_tag">(Standard)</string>
   <string name="apply">Bruk</string>
   <string name="applying">Aktiverer\u2026</string>
-  <string name="remove">Fjern</string>
   <string name="update">Oppdater</string>
   <string name="no_preview_available">Ingen forhåndsvisning tilgjengelig</string>
   <string name="alarm_label">Alarm</string>

@@ -29,7 +29,6 @@
   <string name="default_tag">(Standard)</string>
   <string name="apply">Anwenden</string>
   <string name="applying">Wird angewendet\u2026</string>
-  <string name="remove">Entfernen</string>
   <string name="update">Aktualisieren</string>
   <string name="no_preview_available">Keine Vorschau verfügbar</string>
   <string name="alarm_label">Wecker</string>
