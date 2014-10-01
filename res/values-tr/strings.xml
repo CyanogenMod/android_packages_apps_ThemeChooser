@@ -29,7 +29,6 @@
   <string name="default_tag">(Varsayılan)</string>
   <string name="apply">Uygula</string>
   <string name="applying">Uygulanıyor\u2026</string>
-  <string name="remove">Kaldır</string>
   <string name="update">Güncelle</string>
   <string name="no_preview_available">Mevcut önizleme yok</string>
   <string name="alarm_label">Alarm</string>

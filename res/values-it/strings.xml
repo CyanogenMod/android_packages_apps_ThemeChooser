@@ -29,7 +29,6 @@
   <string name="default_tag">(predefinito)</string>
   <string name="apply">Applica</string>
   <string name="applying">Applicando\u2026</string>
-  <string name="remove">Rimuovi</string>
   <string name="update">Aggiorna</string>
   <string name="no_preview_available">Anteprima non disponibile</string>
   <string name="alarm_label">Allarme</string>

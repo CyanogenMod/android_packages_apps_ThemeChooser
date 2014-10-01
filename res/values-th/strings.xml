@@ -29,7 +29,6 @@
   <string name="default_tag">(เริ่มต้น)</string>
   <string name="apply">นำไปใช้</string>
   <string name="applying">กำลังนำไปใช้\u2026</string>
-  <string name="remove">นำออก</string>
   <string name="update">อัพเดต</string>
   <string name="no_preview_available">ไม่มีภาพตัวอย่าง</string>
   <string name="alarm_label">นาฬิกาปลุก</string>

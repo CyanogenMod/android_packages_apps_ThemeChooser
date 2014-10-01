@@ -29,7 +29,6 @@
   <string name="default_tag">(Predeterminat)</string>
   <string name="apply">Aplica</string>
   <string name="applying">S\'està aplicant\u2026</string>
-  <string name="remove">Treu</string>
   <string name="update">Actualitza</string>
   <string name="no_preview_available">No hi ha previsualització disponible</string>
   <string name="alarm_label">Alarma</string>
