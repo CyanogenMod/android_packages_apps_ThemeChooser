@@ -418,6 +418,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 showDeleteThemeOverlay();
             }
         });
+        if (ThemeUtils.getDefaultThemePackageName(getActivity()).equals(mPkgName) ||
+                ThemeConfig.HOLO_DEFAULT.equals(mPkgName)) {
+            mDelete.setVisibility(View.GONE);
+        }
 
         mReset = (ImageView) v.findViewById(R.id.reset);
         mReset.setOnClickListener(new View.OnClickListener() {
