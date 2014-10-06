@@ -79,7 +79,7 @@ public class ChooserActivity extends FragmentActivity
     private static final int LOADER_ID_APPLIED = 1001;
 
     private static final String THEME_STORE_PACKAGE = "com.cyngn.theme.store";
-    private static final String THEME_STORE_ACTIVITY = "com.cyngn.theme.store.StoreActivity";
+    private static final String THEME_STORE_ACTIVITY = "com.cyngn.theme.store.ui.StoreActivity";
 
     private static final String TYPE_IMAGE = "image/*";
 
