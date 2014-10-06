@@ -187,10 +187,10 @@ public class ComponentSelector extends LinearLayout
         }
         if (mComponentType == null || !mComponentType.equals(component)) {
             mContent.removeAllViews();
+            mComponentType = component;
+            ((FragmentActivity) mContext).getSupportLoaderManager().restartLoader(
+                    getLoaderIdFromComponent(component), null, this);
         }
-        mComponentType = component;
-        ((FragmentActivity) mContext).getSupportLoaderManager().restartLoader(
-                getLoaderIdFromComponent(component), null, this);
     }
 
     public String getComponentType() {
