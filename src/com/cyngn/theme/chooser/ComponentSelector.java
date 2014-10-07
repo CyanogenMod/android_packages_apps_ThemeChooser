@@ -693,7 +693,8 @@ public class ComponentSelector extends LinearLayout
         public void onClick(View v) {
             String pkgName = (String) v.getTag();
             if (DEBUG_SELECTOR) Toast.makeText(mContext, pkgName, Toast.LENGTH_SHORT).show();
-            if (mListener != null) {
+            if (mListener != null && !pkgName.equals(mSelectedComponentPkgName)) {
+                mSelectedComponentPkgName = pkgName;
                 mListener.onItemClicked(pkgName);
                 final int count = mContent.getChildCount();
                 final Resources res = getResources();
