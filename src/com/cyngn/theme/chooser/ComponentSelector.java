@@ -17,7 +17,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.ThemesContract;
-import android.provider.ThemesContract.MixnMatchColumns;
 import android.provider.ThemesContract.PreviewColumns;
 import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.FragmentActivity;
@@ -88,6 +87,7 @@ public class ComponentSelector extends LinearLayout
     private int mBatteryStyle;
     private int mItemsPerPage;
     private String mAppliedComponentPkgName;
+    private String mSelectedComponentPkgName;
 
     // animations for bringing selector in and out of view
     private Animation mAnimateIn;
@@ -171,25 +171,29 @@ public class ComponentSelector extends LinearLayout
     }
 
     public void setComponentType(String component) {
-        // Find out which theme is currently applied for this component
-        String selection = MixnMatchColumns.COL_KEY + "=?";
-        String[] selectionArgs = {MixnMatchColumns.componentToMixNMatchKey(component)};
-        Cursor c = mContext.getContentResolver().query(MixnMatchColumns.CONTENT_URI,
-                null, selection, selectionArgs, null);
-        if (c != null) {
-            if (c.moveToFirst()) {
-                mAppliedComponentPkgName = c.getString(
-                        c.getColumnIndex(MixnMatchColumns.COL_VALUE));
-            }
-            c.close();
-        } else {
-            mAppliedComponentPkgName = null;
-        }
+        setComponentType(component, null);
+    }
+
+    public void setComponentType(String component, String selectedPkgName) {
+        mSelectedComponentPkgName = selectedPkgName;
         if (mComponentType == null || !mComponentType.equals(component)) {
             mContent.removeAllViews();
             mComponentType = component;
             ((FragmentActivity) mContext).getSupportLoaderManager().restartLoader(
                     getLoaderIdFromComponent(component), null, this);
+        } else if (mComponentType != null) {
+            int count = mContent.getChildCount();
+            final Resources res = getResources();
+            for (int i = 0; i < count; i++) {
+                final View child = mContent.getChildAt(i);
+                final TextView tv = (TextView) child.findViewById(R.id.title);
+                final String pkgName = (String) child.getTag();
+                if (pkgName.equals(selectedPkgName)) {
+                    tv.setTextColor(res.getColor(R.color.component_selection_current_text_color));
+                } else {
+                    tv.setTextColor(res.getColor(android.R.color.white));
+                }
+            }
         }
     }
 
@@ -213,9 +217,13 @@ public class ComponentSelector extends LinearLayout
     }
 
     public void show(String componentType, int itemsPerPage, int height) {
+        show(componentType, null, itemsPerPage, height);
+    }
+
+    public void show(String componentType, String selectedPkgName, int itemsPerPage, int height) {
         setNumItemsPerPage(itemsPerPage);
         setHeight(height);
-        setComponentType(componentType);
+        setComponentType(componentType, selectedPkgName);
         show();
     }
 
@@ -501,8 +509,7 @@ public class ComponentSelector extends LinearLayout
 
     private View newFontView(Cursor cursor, ViewGroup parent, int position) {
         cursor.moveToPosition(position);
-        View v = mInflater.inflate(R.layout.font_component_selection_item, parent,
-                false);
+        View v = mInflater.inflate(R.layout.font_component_selection_item, parent, false);
         int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
         TextView preview = (TextView) v.findViewById(R.id.text_preview);
@@ -675,7 +682,7 @@ public class ComponentSelector extends LinearLayout
         } else {
             titleView.setText(cursor.getString(cursor.getColumnIndex(ThemesColumns.TITLE)));
         }
-        if (pkgName.equals(mAppliedComponentPkgName)) {
+        if (pkgName.equals(mSelectedComponentPkgName)) {
             titleView.setTextColor(getResources().getColor(
                     R.color.component_selection_current_text_color));
         }
@@ -688,6 +695,20 @@ public class ComponentSelector extends LinearLayout
             if (DEBUG_SELECTOR) Toast.makeText(mContext, pkgName, Toast.LENGTH_SHORT).show();
             if (mListener != null) {
                 mListener.onItemClicked(pkgName);
+                final int count = mContent.getChildCount();
+                final Resources res = getResources();
+                for (int i = 0; i < count; i++) {
+                    final View child = mContent.getChildAt(i);
+                    final TextView tv = (TextView) child.findViewById(R.id.title);
+                    if (tv != null) {
+                        if (child == v) {
+                            tv.setTextColor(
+                                    res.getColor(R.color.component_selection_current_text_color));
+                        } else {
+                            tv.setTextColor(res.getColor(android.R.color.white));
+                        }
+                    }
+                }
             }
         }
     };

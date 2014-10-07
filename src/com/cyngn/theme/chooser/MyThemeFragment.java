@@ -168,6 +168,29 @@ public class MyThemeFragment extends ThemeFragment {
         }
     }
 
+    @Override
+    public void setCurrentTheme(Map<String, String> currentTheme) {
+        super.setCurrentTheme(currentTheme);
+        mSelectedComponentsMap.clear();
+        for (String key : currentTheme.keySet()) {
+            mSelectedComponentsMap.put(key, currentTheme.get(key));
+        }
+    }
+
+    @Override
+    public boolean componentsChanged() {
+        // If an external wallpaper/ls are set then something changed!
+        if (mExternalWallpaperUri != null || mExternalLockscreenUri != null) return true;
+
+        for (String key : mSelectedComponentsMap.keySet()) {
+            String current = mCurrentTheme.get(key);
+            if (current == null || !current.equals(mSelectedComponentsMap.get(key))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private BroadcastReceiver mWallpaperChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

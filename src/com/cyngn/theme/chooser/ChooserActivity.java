@@ -398,6 +398,10 @@ public class ChooserActivity extends FragmentActivity
     }
 
     public void showComponentSelector(String component, View v) {
+        showComponentSelector(component, null, v);
+    }
+
+    public void showComponentSelector(String component, String selectedPkgName, View v) {
         if (component != null) {
             final Resources res = getResources();
             int itemsPerPage = res.getInteger(R.integer.default_items_per_page);
@@ -414,7 +418,7 @@ public class ChooserActivity extends FragmentActivity
                         R.dimen.component_selection_cell_height_sounds);
             }
             if (mSaveApplyLayout.getVisibility() == View.VISIBLE) hideSaveApplyButton();
-            mSelector.show(component, itemsPerPage, height);
+            mSelector.show(component, selectedPkgName, itemsPerPage, height);
 
             // determine if we need to shift the cards up
             int[] coordinates = new int[2];

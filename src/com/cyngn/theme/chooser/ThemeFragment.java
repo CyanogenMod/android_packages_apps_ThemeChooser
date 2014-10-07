@@ -1928,7 +1928,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
             mActiveCardId = v.getId();
             String component = mCardIdsToComponentTypes.get(mActiveCardId);
-            getChooserActivity().showComponentSelector(component, v);
+            getChooserActivity().showComponentSelector(component,
+                    mSelectedComponentsMap.get(component), v);
             fadeOutNonSelectedCards(mActiveCardId);
             stopMediaPlayers();
         }
