@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ThemeUtils;
 import android.content.res.Resources;
+import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -194,17 +195,22 @@ public class MyThemeFragment extends ThemeFragment {
     private BroadcastReceiver mWallpaperChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final WallpaperManager wm = WallpaperManager.getInstance(context);
-            if (wm.getWallpaperInfo() != null) {
-                addSurfaceView(mSurfaceView);
-            } else {
-                removeSurfaceView(mSurfaceView);
-            }
+            // only update if we are the current visible fragment or if there is no theme
+            // being applied.
+            ThemeManager tm = (ThemeManager) context.getSystemService(Context.THEME_SERVICE);
+            if (!tm.isThemeApplying() || getUserVisibleHint()) {
+                final WallpaperManager wm = WallpaperManager.getInstance(context);
+                if (wm.getWallpaperInfo() != null) {
+                    addSurfaceView(mSurfaceView);
+                } else {
+                    removeSurfaceView(mSurfaceView);
+                }
 
-            Drawable wp = context == null ? null : wm.getDrawable();
-            if (wp != null) {
-                mWallpaper.setImageDrawable(wp);
-                mWallpaperCard.setWallpaper(wp);
+                Drawable wp = context == null ? null : wm.getDrawable();
+                if (wp != null) {
+                    mWallpaper.setImageDrawable(wp);
+                    mWallpaperCard.setWallpaper(wp);
+                }
             }
         }
     };
