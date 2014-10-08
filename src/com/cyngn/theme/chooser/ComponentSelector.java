@@ -416,7 +416,6 @@ public class ComponentSelector extends LinearLayout
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mContent.removeAllViews();
     }
 
     public void setOnItemClickedListener(OnItemClickedListener listener) {
@@ -670,6 +669,14 @@ public class ComponentSelector extends LinearLayout
                     }
                 });
             }
+            // destroy the loader now that we are done with it
+            ComponentSelector.this.post(new Runnable() {
+                @Override
+                public void run() {
+                    ((FragmentActivity)mContext).getSupportLoaderManager().destroyLoader(
+                            getLoaderIdFromComponent(mComponentType));
+                }
+            });
             return null;
         }
     }
