@@ -122,12 +122,11 @@ public class ChooserActivity extends FragmentActivity
 
     ImageView mCustomBackground;
 
-    private ThemesObserver mThemesObserver;
-
     // Current system theme configuration as component -> pkgName
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
 
     private boolean mIsPickingImage = false;
+    private boolean mRestartLoaderOnCollapse = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,18 +175,8 @@ public class ChooserActivity extends FragmentActivity
                     public void onClick(View v) {
                         if (mIsAnimating) return;
                         hideSaveApplyButton();
-                        mExpanded = false;
                         mContainer.setClickable(false);
-                        final ThemeFragment f = getCurrentFragment();
-                        if (f != null) {
-                            f.fadeOutCards(new Runnable() {
-                                public void run() {
-                                    mContainer.collapse();
-                                    f.collapse(true);
-                                }
-                            });
-                        }
-                        setAnimatingStateAndScheduleFinish();
+                        collapse(true);
                     }
                 });
 
@@ -267,7 +256,22 @@ public class ChooserActivity extends FragmentActivity
         if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasExtra(EXTRA_PKGNAME)) {
             mSelectedTheme = intent.getStringExtra(EXTRA_PKGNAME);
             if (mPager != null) {
-                getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null, this);
+                startLoader(LOADER_ID_INSTALLED_THEMES);
+                if (mExpanded) {
+                    int collapseDelay = ThemeFragment.ANIMATE_START_DELAY;
+                    if (mSelector.isEnabled()) {
+                        // onBackPressed() has all the necessary logic for collapsing the
+                        // component selector, so we call it here.
+                        onBackPressed();
+                        collapseDelay += ThemeFragment.ANIMATE_DURATION;
+                    }
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            collapse(false);
+                        }
+                    }, collapseDelay);
+                }
             }
         }
     }
@@ -279,6 +283,10 @@ public class ChooserActivity extends FragmentActivity
             public void run() {
                 mIsAnimating = false;
                 mContainer.setIsAnimating(false);
+                if (mRestartLoaderOnCollapse) {
+                    mRestartLoaderOnCollapse = false;
+                    startLoader(LOADER_ID_INSTALLED_THEMES);
+                }
             }
         }, FINISH_ANIMATION_DELAY);
         if (mExpanded) {
@@ -380,7 +388,7 @@ public class ChooserActivity extends FragmentActivity
             if (!isSuccess) {
                 mAppliedBaseTheme = null;
             }
-            getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
+            startLoader(LOADER_ID_APPLIED);
         }
         unlockPager();
     }
@@ -449,6 +457,20 @@ public class ChooserActivity extends FragmentActivity
         }
     }
 
+    public void collapse(final boolean applyTheme) {
+        mExpanded = false;
+        final ThemeFragment f = getCurrentFragment();
+        if (f != null) {
+            f.fadeOutCards(new Runnable() {
+                public void run() {
+                    mContainer.collapse();
+                    f.collapse(applyTheme);
+                }
+            });
+        }
+        setAnimatingStateAndScheduleFinish();
+    }
+
     public void pickExternalWallpaper() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType(TYPE_IMAGE);
@@ -499,18 +521,13 @@ public class ChooserActivity extends FragmentActivity
         mThemeChanging = false;
 
         if (!mIsPickingImage) {
-            getSupportLoaderManager().restartLoader(LOADER_ID_APPLIED, null, this);
+            startLoader(LOADER_ID_APPLIED);
         } else {
             mIsPickingImage = false;
         }
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
         registerReceiver(mWallpaperChangeReceiver, filter);
-
-        // register content observer for changes in installed themes
-        mThemesObserver = new ThemesObserver(new Handler());
-        getContentResolver().registerContentObserver(ThemesColumns.CONTENT_URI, true,
-                mThemesObserver);
     }
 
     @Override
@@ -532,16 +549,7 @@ public class ChooserActivity extends FragmentActivity
                 hideSaveApplyButton();
                 if (f != null) f.clearChanges();
             }
-            mExpanded = false;
-            if (f != null) {
-                f.fadeOutCards(new Runnable() {
-                    public void run() {
-                        mContainer.collapse();
-                        f.collapse(false);
-                    }
-                });
-            }
-            setAnimatingStateAndScheduleFinish();
+            collapse(false);
         } else {
             if (f != null && f.isShowingConfirmCancelOverlay()) {
                 f.hideConfirmCancelOverlay();
@@ -560,12 +568,6 @@ public class ChooserActivity extends FragmentActivity
         ThemeFragment f = getCurrentFragment();
         if (f != null) {
             mSelectedTheme = f.getThemePackageName();
-        }
-
-        // unregister our installed themes content observer
-        if (mThemesObserver != null) {
-            getContentResolver().unregisterContentObserver(mThemesObserver);
-            mThemesObserver = null;
         }
     }
 
@@ -703,9 +705,24 @@ public class ChooserActivity extends FragmentActivity
         }
     };
 
+    private <T> void startLoader(int loaderId) {
+        final LoaderManager manager = getSupportLoaderManager();
+        final Loader<T> loader = manager.getLoader(loaderId);
+        if (loader != null) {
+            manager.restartLoader(loaderId, null, this);
+        } else {
+            manager.initLoader(loaderId, null, this);
+        }
+    }
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (mThemeChanging) return;
+
+        if (mExpanded) {
+            mRestartLoaderOnCollapse = true;
+            return;
+        }
 
         switch (loader.getId()) {
             case LOADER_ID_INSTALLED_THEMES:
@@ -731,7 +748,7 @@ public class ChooserActivity extends FragmentActivity
                 if (mAnimateContentIn) animateContentIn();
                 break;
             case LOADER_ID_APPLIED:
-                getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null, this);
+                startLoader(LOADER_ID_INSTALLED_THEMES);
                 populateCurrentTheme(data);
                 break;
         }
@@ -779,29 +796,6 @@ public class ChooserActivity extends FragmentActivity
 
         return new CursorLoader(this, contentUri, projection, selection,
                 selectionArgs, sortOrder);
-    }
-
-    class ThemesObserver extends ContentObserver {
-        /**
-         * Creates a content observer.
-         *
-         * @param handler The handler to run {@link #onChange} on, or null if none.
-         */
-        public ThemesObserver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            ThemeFragment f = getCurrentFragment();
-            if (f != null) {
-                // remember what theme we were on in case the position changes, this way
-                // we can keep the user on this them instead of jumping around.
-                mSelectedTheme = f.getThemePackageName();
-            }
-            getSupportLoaderManager().restartLoader(LOADER_ID_INSTALLED_THEMES, null,
-                    ChooserActivity.this);
-        }
     }
 
     public class ThemesAdapter extends NewFragmentStatePagerAdapter {
