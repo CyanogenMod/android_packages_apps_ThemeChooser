@@ -23,6 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginTop="@dimen/component_margin_top"
-        android:src="@drawable/media_sound__selector_preview"/>
+        android:src="@drawable/media_sound_selector_preview"/>
 
 </LinearLayout>

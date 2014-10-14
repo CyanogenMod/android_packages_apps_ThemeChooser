@@ -67,7 +67,7 @@ public class NotificationHelper {
                 .setContentTitle(title)
                 .setContentText(content)
                 .setContentIntent(pi)
-                .setSmallIcon(R.drawable.ic_notifiy)
+                .setSmallIcon(R.drawable.ic_notify)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
                         R.drawable.ic_app_themes))
                 .setWhen(System.currentTimeMillis())

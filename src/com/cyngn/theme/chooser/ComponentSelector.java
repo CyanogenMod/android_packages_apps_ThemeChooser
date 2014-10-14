@@ -155,7 +155,7 @@ public class ComponentSelector extends LinearLayout
             @Override
             public void onCompletion(MediaPlayer mp) {
                 if (mCurrentPlayPause != null) {
-                    mCurrentPlayPause.setImageResource(R.drawable.media_sound__selector_preview);
+                    mCurrentPlayPause.setImageResource(R.drawable.media_sound_selector_preview);
                     mCurrentPlayPause = null;
                 }
             }
@@ -632,7 +632,7 @@ public class ComponentSelector extends LinearLayout
                             mMediaPlayer.stop();
                             if (mCurrentPlayPause != null) {
                                 mCurrentPlayPause.setImageResource(
-                                        R.drawable.media_sound__selector_preview);
+                                        R.drawable.media_sound_selector_preview);
                             }
                             mCurrentPlayPause = null;
                         }
@@ -642,7 +642,7 @@ public class ComponentSelector extends LinearLayout
                             mMediaPlayer.start();
                             mCurrentPlayPause = (ImageView) playButton;
                             mCurrentPlayPause.setImageResource(
-                                    R.drawable.media_sound__selector_stop);
+                                    R.drawable.media_sound_selector_stop);
                         }
                     } catch (PackageManager.NameNotFoundException e) {
                         Log.w(TAG, "Unable to play preview sound", e);
