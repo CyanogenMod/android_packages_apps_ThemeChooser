@@ -265,6 +265,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected Uri mExternalLockscreenUri;
 
     protected boolean mExpanded;
+    protected boolean mProcessingResources;
 
     protected enum CustomizeResetAction {
         Customize,
@@ -488,8 +489,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onResume();
         ThemeManager tm = getThemeManager();
         if (tm != null) {
-            final String pkgName = mBaseThemePkgName != null ? mBaseThemePkgName : mPkgName;
-            if (tm.isThemeBeingProcessed(pkgName)) {
+            if (isThemeProcessing()) {
                 tm.registerProcessingListener(this);
                 mProcessingThemeLayout.setVisibility(View.VISIBLE);
                 mCustomize.setVisibility(View.INVISIBLE);
@@ -498,6 +498,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     mDelete.setVisibility(View.INVISIBLE);
                     mDelete.setAlpha(0f);
                 }
+                mProcessingResources = true;
             } else {
                 mCustomize.setVisibility(View.VISIBLE);
                 mCustomize.setAlpha(1f);
@@ -505,6 +506,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     mDelete.setVisibility(View.VISIBLE);
                     mDelete.setAlpha(1f);
                 }
+                mProcessingResources = false;
             }
         }
     }
@@ -545,18 +547,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onFinishedProcessing(String pkgName) {
         if (pkgName.equals(mPkgName) || pkgName.equals(mBaseThemePkgName)) {
-            if (mProcessingThemeLayout.getVisibility() == View.VISIBLE) {
-                mProcessingThemeLayout.animate().alpha(0).withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProcessingThemeLayout.setVisibility(View.GONE);
-                    }
-                }).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
-                mCustomize.setVisibility(View.VISIBLE);
-                mCustomize.animate().alpha(1f).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
-                mOverflow.setVisibility(View.VISIBLE);
-                mOverflow.animate().alpha(1f).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
-            }
             ThemeManager tm = getThemeManager();
             if (tm != null) {
                 tm.unregisterProcessingListener(this);
@@ -602,8 +592,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected Drawable getWallpaperDrawableFromUri(Uri uri, Point size) {
         final Context context = getActivity();
         final Resources res = context.getResources();
-        Bitmap bmp = WallpaperUtils.createPreview(size, context, uri, null, res,
-                0, 0, false);
+        Bitmap bmp = WallpaperUtils.createPreview(size, context, uri, null, res, 0, 0, false);
         if (bmp != null) {
             return new BitmapDrawable(res, bmp);
         }
@@ -618,11 +607,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Resources res = getResources();
         int extraPadding =
                 res.getDimensionPixelSize(R.dimen.system_bar_height) / 2;
-        mScrollView.setPadding(
-                mScrollView.getPaddingLeft(),
-                mScrollView.getPaddingTop() + extraPadding,
-                mScrollView.getPaddingRight(),
+        mScrollView.setPadding(mScrollView.getPaddingLeft(),
+                mScrollView.getPaddingTop() + extraPadding, mScrollView.getPaddingRight(),
                 mScrollView.getPaddingBottom());
+    }
+
+    protected boolean isThemeProcessing() {
+        ThemeManager tm = getThemeManager();
+        if (tm != null) {
+            final String pkgName = mBaseThemePkgName != null ? mBaseThemePkgName : mPkgName;
+            return tm.isThemeBeingProcessed(pkgName);
+        }
+        return false;
     }
 
     protected boolean onPopupMenuItemClick(MenuItem item) {
@@ -1324,6 +1320,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         c.moveToFirst();
         switch (mCurrentLoaderId) {
             case LOADER_ID_ALL:
+                if (mProcessingResources && !isThemeProcessing()) {
+                    mProcessingResources = false;
+                    hideProcessingOverlay();
+                }
                 populateSupportedComponents(c);
                 loadWallpaper(c, false);
                 loadStatusBar(c, false);
@@ -2362,6 +2362,23 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mThemeTagLayout.setVisibility(View.GONE);
     }
 
+    public void hideProcessingOverlay() {
+        mProcessingThemeLayout.animate().alpha(0).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                mProcessingThemeLayout.setVisibility(View.GONE);
+            }
+        }).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
+        mCustomize.setVisibility(View.VISIBLE);
+        mCustomize.setAlpha(0f);
+        mCustomize.animate().alpha(1f).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
+        if (mDelete.getVisibility() != View.GONE) {
+            mDelete.setVisibility(View.VISIBLE);
+            mDelete.setAlpha(0f);
+            mDelete.animate().alpha(1f).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
+        }
+    }
+
     public void fadeInCards() {
         for (int i = 0; i < mCardIdsToComponentTypes.size(); i++) {
             final int key = mCardIdsToComponentTypes.keyAt(i);
@@ -2423,8 +2440,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public void slideContentIntoView(final int yDelta, int selectorHeight) {
         Space space = new Space(getActivity());
         space.setId(ADDITIONAL_CONTENT_SPACE_ID);
-        mAdditionalCards.addView(space, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, selectorHeight));
+        mAdditionalCards.addView(space,
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                        selectorHeight));
         final int startY = mScrollView.getScrollY();
         final ValueAnimator scrollAnimator =
                 ValueAnimator.ofInt(startY, startY + yDelta);
