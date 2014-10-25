@@ -91,6 +91,10 @@ public class BootAniImageView extends ImageView {
             return false;
         }
 
+        if (mAnimationParts == null || mAnimationParts.size() == 0) {
+            return false;
+        }
+
         final BootAnimationHelper.AnimationPart part = mAnimationParts.get(0);
         mCurrentPart = 0;
         mCurrentPartPlayCount = part.playCount;
