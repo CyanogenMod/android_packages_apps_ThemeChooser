@@ -69,6 +69,10 @@ public class BootAniImageView extends ImageView {
     }
 
     public synchronized boolean setBootAnimation(ZipFile bootAni) {
+        if (bootAni == null) {
+            Log.w(TAG, "Boot animation ZipFile is null.");
+            return false;
+        }
         // make sure we are stopped first
         stop();
 
@@ -85,9 +89,14 @@ public class BootAniImageView extends ImageView {
             }
         }
         mBootAniZip = bootAni;
+
         try {
-            mAnimationParts = BootAnimationHelper.parseAnimation(mContext, mBootAniZip);
-        } catch (IOException e) {
+            mAnimationParts = BootAnimationHelper.parseAnimation(mBootAniZip);
+        } catch (Exception e) {
+            // "Gotta catch 'em all"
+            Log.e(TAG, "Unable to set boot animation", e);
+            mAnimationParts = null;
+            mBootAniZip = null;
             return false;
         }
 
@@ -140,6 +149,8 @@ public class BootAniImageView extends ImageView {
     }
 
     public void start() {
+        if (mAnimationParts == null) return;
+
         mActive = true;
         post(mUpdateAnimationRunnable);
     }

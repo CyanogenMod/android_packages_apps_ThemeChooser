@@ -9,6 +9,7 @@ import android.content.res.ThemeConfig;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -22,18 +23,23 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class BootAnimationHelper {
+    private static final String TAG = BootAnimationHelper.class.getSimpleName();
     private static final int MAX_REPEAT_COUNT = 3;
 
     public static final String THEME_INTERNAL_BOOT_ANI_PATH =
             "assets/bootanimation/bootanimation.zip";
     public static final String SYSTEM_BOOT_ANI_PATH = "/system/media/bootanimation.zip";
     public static final String CACHED_SUFFIX = "_bootanimation.zip";
+
+    public static final int NUM_FIRST_LINE_PARAMETERS = 3;
+    public static final int NUM_PART_LINE_PARAMETERS = 4;
 
     public static class AnimationPart {
         /**
@@ -83,30 +89,53 @@ public class BootAnimationHelper {
 
     /**
      * Gather up all the details for the given boot animation
-     * @param context
      * @param zip The bootanimation.zip
      * @return A list of AnimationPart if successful, null if not.
      * @throws IOException
      */
-    public static List<AnimationPart> parseAnimation(Context context, ZipFile zip)
-            throws IOException {
+    public static List<AnimationPart> parseAnimation(ZipFile zip)
+            throws IOException, BootAnimationException {
+        if (zip == null) {
+            // To make tracking down boot animation problems we'll throw a BootAnimationException
+            // instead of an IllegalArgumentException.
+            throw new BootAnimationException("Boot animation ZipFile cannot be null");
+        }
         List<AnimationPart> animationParts = null;
 
         ZipEntry ze = zip.getEntry("desc.txt");
         if (ze != null) {
             animationParts = parseDescription(zip.getInputStream(ze));
+        } else {
+            throw new BootAnimationException("Missing desc.txt in root of bootanimation.zip");
         }
 
-        if (animationParts == null) return null;
+        if (animationParts == null) {
+            // We really should not end up here but in case we do here's an exception for ya!
+            throw new BootAnimationException("Unable to load boot animation.");
+        }
 
-        for (AnimationPart a : animationParts) {
+        Iterator<AnimationPart> iterator = animationParts.iterator();
+        while(iterator.hasNext()) {
+            AnimationPart a = iterator.next();
             for (Enumeration<? extends ZipEntry> e = zip.entries();e.hasMoreElements();) {
                 ze = e.nextElement();
                 if (!ze.isDirectory() && ze.getName().contains(a.partName)) {
                     a.addFrame(ze.getName());
                 }
             }
-            Collections.sort(a.frames);
+            if (a.frames.size() > 0) {
+                Collections.sort(a.frames);
+            } else {
+                // This boot animation may be salvageable if there are still some other parts
+                // that are good.  We'll remove this part and if there are no parts left by
+                // the time we have iterated over all the parts then we can throw an exception.
+                Log.w(TAG, String.format("No frames in part %s, removing from animation",
+                        a.partName));
+                iterator.remove();
+            }
+        }
+        if (animationParts.size() == 0) {
+            throw new BootAnimationException("Boot animation must have at least one part.");
         }
 
         return animationParts;
@@ -118,10 +147,21 @@ public class BootAnimationHelper {
      * @return A list of the parts as given in desc.txt
      * @throws IOException
      */
-    private static List<AnimationPart> parseDescription(InputStream in) throws IOException {
+    private static List<AnimationPart> parseDescription(InputStream in)
+            throws IOException, BootAnimationException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+        // read in suggested width, height, and frame rate from first line
         String line = reader.readLine();
         String[] details = line.split(" ");
+        if (details.length != NUM_FIRST_LINE_PARAMETERS) {
+            throw new BootAnimationException(String.format(
+                    "Invalid # of parameters on first line of desc.txt; exptected %d, read %d  " +
+                            "(\"%s\")",
+                    NUM_FIRST_LINE_PARAMETERS, details.length, line));
+        }
+
+        // The items should be in the following order: width, height, frame rate
         final int width = Integer.parseInt(details[0]);
         final int height = Integer.parseInt(details[1]);
         final int frameRateMillis = 1000 / Integer.parseInt(details[2]);
@@ -129,14 +169,21 @@ public class BootAnimationHelper {
         List<AnimationPart> animationParts = new ArrayList<AnimationPart>();
         while ((line = reader.readLine()) != null) {
             String[] info = line.split(" ");
-            if (info.length == 4 && (info[0].equals("p") || info[0].equals("c"))) {
-                int playCount = Integer.parseInt(info[1]);
-                int pause = Integer.parseInt(info[2]);
-                String name = info[3];
-                AnimationPart ap = new AnimationPart(playCount, pause, name, frameRateMillis,
-                        width, height);
-                animationParts.add(ap);
+            if (info.length != NUM_PART_LINE_PARAMETERS) {
+                throw new BootAnimationException(String.format(
+                        "Invalid # of part parameters; exptected %d, read %d  (\"%s\")",
+                        NUM_PART_LINE_PARAMETERS, info.length, line));
             }
+            if (!info[0].equals("p") && !info[0].equals("c")) {
+                throw new BootAnimationException(String.format(
+                   "Unknown part type; expected 'p' or 'c', read %s  (\"%s\")", info[0], line));
+            }
+            int playCount = Integer.parseInt(info[1]);
+            int pause = Integer.parseInt(info[2]);
+            String name = info[3];
+            AnimationPart ap = new AnimationPart(playCount, pause, name, frameRateMillis,
+                    width, height);
+            animationParts.add(ap);
         }
 
         return animationParts;
@@ -236,6 +283,12 @@ public class BootAnimationHelper {
                 imv.setVisibility(View.VISIBLE);
                 imv.setImageBitmap(result);
             }
+        }
+    }
+
+    public static class BootAnimationException extends Exception {
+        public BootAnimationException(String detailMessage) {
+            super(detailMessage);
         }
     }
 }
