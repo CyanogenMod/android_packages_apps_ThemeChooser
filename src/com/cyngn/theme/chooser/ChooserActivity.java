@@ -15,7 +15,6 @@ import android.content.pm.IPackageDeleteObserver;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.ThemeConfig;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.ColorMatrix;
@@ -78,8 +77,8 @@ public class ChooserActivity extends FragmentActivity
     private static final int LOADER_ID_INSTALLED_THEMES = 1000;
     private static final int LOADER_ID_APPLIED = 1001;
 
-    private static final String THEME_STORE_PACKAGE = "com.cyngn.theme.store";
-    private static final String THEME_STORE_ACTIVITY = "com.cyngn.theme.store.ui.StoreActivity";
+    private static final String THEME_STORE_PACKAGE = "com.cyngn.themestore";
+    private static final String THEME_STORE_ACTIVITY = THEME_STORE_PACKAGE + ".ui.StoreActivity";
 
     private static final String TYPE_IMAGE = "image/*";
 

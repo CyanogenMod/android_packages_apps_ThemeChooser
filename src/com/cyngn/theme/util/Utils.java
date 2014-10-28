@@ -18,8 +18,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.provider.ThemesContract;
 import android.util.Log;
 import android.util.TypedValue;
