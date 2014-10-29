@@ -9,8 +9,10 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ThemeUtils;
 import android.content.res.ThemeManager;
 import android.net.Uri;
+import android.text.TextUtils;
 import com.cyngn.theme.util.NotificationHelper;
 import com.cyngn.theme.util.PreferenceUtils;
 
@@ -38,11 +40,15 @@ public class AppReceiver extends BroadcastReceiver {
             } catch (NameNotFoundException e) {
             }
         } else if (Intent.ACTION_PACKAGE_FULLY_REMOVED.equals(action)) {
-            try {
-                if (isTheme(context, pkgName)) {
-                    PreferenceUtils.removeUpdatedTheme(context, pkgName);
-                }
-            } catch (NameNotFoundException e) {
+            // remove updated status for this theme (if one exists)
+            PreferenceUtils.removeUpdatedTheme(context, pkgName);
+
+            // If the theme being removed was the currently applied theme we need
+            // to update the applied base theme in preferences to the default theme.
+            String appliedBaseTheme = PreferenceUtils.getAppliedBaseTheme(context);
+            if (!TextUtils.isEmpty(appliedBaseTheme) && appliedBaseTheme.equals(pkgName)) {
+                PreferenceUtils.setAppliedBaseTheme(context,
+                        ThemeUtils.getDefaultThemePackageName(context));
             }
             NotificationHelper.cancelNotifications(context);
         } else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {
