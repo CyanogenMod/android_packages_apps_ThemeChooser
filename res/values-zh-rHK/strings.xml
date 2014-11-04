@@ -17,10 +17,10 @@
 -->
 <resources>
   <string name="app_name">主題</string>
-  <string name="lock_screen">鎖定桌布</string>
+  <string name="lock_screen">鎖定畫面牆紙</string>
   <string name="icons">圖示</string>
   <string name="fonts">字體</string>
-  <string name="wallpapers">桌布</string>
+  <string name="wallpapers">牆紙</string>
   <string name="boot_anims">開機動畫</string>
   <string name="ringtones">鈴聲</string>
   <string name="notifications">通知</string>
