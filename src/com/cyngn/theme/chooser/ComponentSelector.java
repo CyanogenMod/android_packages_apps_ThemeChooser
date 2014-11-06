@@ -187,7 +187,10 @@ public class ComponentSelector extends LinearLayout
             for (int i = 0; i < count; i++) {
                 final View child = mContent.getChildAt(i);
                 final TextView tv = (TextView) child.findViewById(R.id.title);
-                final String pkgName = (String) child.getTag();
+                // The child itself may have the tag, or in the case of sounds its the grandchild,
+                // either way the parent of the textview will have the pkgName in its tag
+                final View viewWithTag = (View) tv.getParent();
+                final String pkgName = (String) viewWithTag.getTag();
                 if (pkgName.equals(selectedPkgName)) {
                     tv.setTextColor(res.getColor(R.color.component_selection_current_text_color));
                 } else {
