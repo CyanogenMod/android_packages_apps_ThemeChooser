@@ -55,6 +55,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="cyngn.intent.category.APP_THEMES" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.APPLY_THEME"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <receiver android:name="com.cyngn.theme.chooser.AppReceiver" >

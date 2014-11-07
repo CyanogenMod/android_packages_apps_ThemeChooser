@@ -266,6 +266,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected boolean mExpanded;
     protected boolean mProcessingResources;
+    private boolean mApplyThemeOnPopulated;
 
     protected enum CustomizeResetAction {
         Customize,
@@ -1456,6 +1457,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 mSelectedComponentsMap.put(component, pkg);
             }
         }
+
+        if (mApplyThemeOnPopulated) {
+            mApplyThemeOnPopulated = false;
+            applyTheme();
+        }
     }
 
     /**
@@ -2140,6 +2146,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
         getChooserActivity().themeChangeStart();
         animateProgressIn(mApplyThemeRunnable);
+    }
+
+    // Use when applyTheme() might be too early. ie mSelectedComponentsMap is not pop. yet
+    protected void applyThemeWhenPopulated() {
+        mApplyThemeOnPopulated = true;
     }
 
     private void animateProgressIn(Runnable endAction) {

@@ -79,6 +79,8 @@ public class ChooserActivity extends FragmentActivity
 
     private static final String THEME_STORE_PACKAGE = "com.cyngn.themestore";
     private static final String THEME_STORE_ACTIVITY = THEME_STORE_PACKAGE + ".ui.StoreActivity";
+    private static final String ACTION_APPLY_THEME = "android.intent.action.APPLY_THEME";
+    private static final String PERMISSION_WRITE_THEME = "android.permission.WRITE_THEMES";
 
     private static final String TYPE_IMAGE = "image/*";
 
@@ -118,6 +120,7 @@ public class ChooserActivity extends FragmentActivity
     private boolean mThemeChanging = false;
     private boolean mAnimateContentIn = false;
     private long mAnimateContentInDelay;
+    private boolean mApplyOnThemeLoaded;
 
     ImageView mCustomBackground;
 
@@ -252,7 +255,9 @@ public class ChooserActivity extends FragmentActivity
     }
 
     private void handleIntent(Intent intent) {
-        if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasExtra(EXTRA_PKGNAME)) {
+        String action = intent.getAction();
+        if ((Intent.ACTION_MAIN.equals(action) || ACTION_APPLY_THEME.equals(action))
+                && intent.hasExtra(EXTRA_PKGNAME)) {
             mSelectedTheme = intent.getStringExtra(EXTRA_PKGNAME);
             if (mPager != null) {
                 startLoader(LOADER_ID_INSTALLED_THEMES);
@@ -271,6 +276,15 @@ public class ChooserActivity extends FragmentActivity
                         }
                     }, collapseDelay);
                 }
+            }
+
+            if (ACTION_APPLY_THEME.equals(action) &&
+                    getCallingPackage() != null &&
+                    PackageManager.PERMISSION_GRANTED ==
+                            getPackageManager()
+                                    .checkPermission(PERMISSION_WRITE_THEME,
+                                            getCallingPackage())) {
+                mApplyOnThemeLoaded = true;
             }
         }
     }
@@ -743,6 +757,12 @@ public class ChooserActivity extends FragmentActivity
                 mAdapter.notifyDataSetChanged();
                 if (selectedThemeIndex >= 0) {
                     mPager.setCurrentItem(selectedThemeIndex, false);
+
+                    if (mApplyOnThemeLoaded) {
+                        ThemeFragment f = getCurrentFragment();
+                        f.applyThemeWhenPopulated();
+                        mApplyOnThemeLoaded = false;
+                    }
                 }
                 if (mAnimateContentIn) animateContentIn();
                 break;
