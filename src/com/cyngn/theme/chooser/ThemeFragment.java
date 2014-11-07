@@ -2056,10 +2056,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     @Override
                     public void run() {
                         if (mSelectedComponentsMap != null && mSelectedComponentsMap.size() > 0) {
+                            final HashMap<String, String> fullMap
+                                    = fillMissingComponentsWithDefault(mSelectedComponentsMap);
                             ThemeManager tm = getThemeManager();
                             if (tm != null) {
                                 tm.addClient(ThemeFragment.this);
-                                tm.requestThemeChange(mSelectedComponentsMap);
+                                tm.requestThemeChange(fullMap);
                             }
                         } else {
                             onFinish(true);
@@ -2069,6 +2071,21 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         }
     };
+
+    private HashMap<String, String> fillMissingComponentsWithDefault(
+            Map<String, String> originalMap) {
+        HashMap newMap = new HashMap<String, String>();
+        newMap.putAll(originalMap);
+        Map<String, String> defaultMap = ThemeUtils.getDefaultComponents(getActivity());
+        for(Map.Entry<String, String> entry : defaultMap.entrySet()) {
+            String component = entry.getKey();
+            String defaultPkg = entry.getValue();
+            if (!newMap.containsKey(component)) {
+                newMap.put(component, defaultPkg);
+            }
+        }
+        return newMap;
+    }
 
     private Runnable mApplyExternalWallpaperRunnable = new Runnable() {
         @Override
