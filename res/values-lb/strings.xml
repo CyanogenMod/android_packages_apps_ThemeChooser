@@ -20,6 +20,23 @@
   <string name="icons">Symboler</string>
   <string name="fonts">Schrëftaarten</string>
   <string name="wallpapers">Hannergrondbiller</string>
+  <string name="ringtones">Schelltéin</string>
+  <string name="notifications">Notifikatiounen</string>
+  <string name="style">Stil</string>
+  <string name="default_tag">(Standard)</string>
   <string name="apply">Applizéieren</string>
+  <string name="applying">Gëtt applizéiert\u2026</string>
   <string name="update">Aktualiséieren</string>
+  <string name="notification_label">Notifikatioun</string>
+  <string name="ringtone_label">Schelltoun</string>
+  <string name="unknown_author">Auteur net bekannt</string>
+  <string name="font_preview_letters">AaBbCcDd123</string>
+  <string name="theme_installed_notification_title">%s installéiert</string>
+  <string name="menu_item_get_more_themes">Méi eroflueden</string>
+  <string name="get_more_description">Du kanns méi Designen iwwer ee vun dëse Linken eroflueden:</string>
+  <string-array name="get_more_entry_names">
+    <item>CyanogenMod Themes Showcase</item>
+    <item>Play Store</item>
+    <item>More info on the CM Wiki</item>
+  </string-array>
 </resources>
