@@ -4,7 +4,7 @@
 -->
 <resources>
 
-    <string name="app_name">Themes</string>
+    <string name="app_name">Theme Chooser</string>
 
     <string name="unknown_author">Author unknown</string>
 
