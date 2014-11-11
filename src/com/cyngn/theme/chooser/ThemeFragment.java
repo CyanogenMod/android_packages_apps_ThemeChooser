@@ -2237,6 +2237,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         set.start();
     }
 
+    private void disableActionButtons() {
+        mCustomize.setEnabled(false);
+        mDelete.setEnabled(false);
+        mReset.setEnabled(false);
+    }
+
+    private void enableActionButtons() {
+        mCustomize.setEnabled(true);
+        mDelete.setEnabled(true);
+        mReset.setEnabled(true);
+    }
+
     public boolean isShowingConfirmCancelOverlay() {
         return mConfirmCancelOverlay.getVisibility() == View.VISIBLE;
     }
@@ -2254,6 +2266,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         anim.setListener(null);
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
         anim.alpha(1f).start();
+
+        disableActionButtons();
     }
 
     public void showDeleteThemeOverlay() {
@@ -2269,6 +2283,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         anim.setListener(null);
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
         anim.alpha(1f).start();
+
+        disableActionButtons();
     }
 
     public void showResetThemeOverlay() {
@@ -2284,6 +2300,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         anim.setListener(null);
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
         anim.alpha(1f).start();
+
+        disableActionButtons();
     }
 
     public void hideConfirmCancelOverlay() {
@@ -2320,6 +2338,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             public void onAnimationRepeat(Animator animation) {
             }
         });
+
+        enableActionButtons();
     }
 
     public boolean isShowingCustomizeResetLayout() {
@@ -2340,6 +2360,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         anim.setListener(null);
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
         anim.alpha(1f).start();
+
+        disableActionButtons();
     }
 
     public void hideCustomizeResetLayout() {
@@ -2378,6 +2400,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             public void onAnimationRepeat(Animator animation) {
             }
         });
+
+        enableActionButtons();
     }
 
     public void showThemeTagLayout() {
@@ -2405,6 +2429,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             mDelete.setAlpha(0f);
             mDelete.animate().alpha(1f).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
         }
+
+        enableActionButtons();
     }
 
     public void fadeInCards() {

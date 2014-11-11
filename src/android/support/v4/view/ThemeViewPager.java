@@ -72,7 +72,8 @@ public class ThemeViewPager extends ViewPager {
         if (v == null) return false;
         View touchedView = v.findViewById(viewId);
         if (touchedView == null ||
-                touchedView.getVisibility() != View.VISIBLE) {
+                touchedView.getVisibility() != View.VISIBLE ||
+                !touchedView.isEnabled()) {
             return false;
         }
 

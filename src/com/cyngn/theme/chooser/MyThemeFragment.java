@@ -165,6 +165,8 @@ public class MyThemeFragment extends ThemeFragment {
         } else {
             if (isShowingCustomizeResetLayout()) {
                 hideCustomizeResetLayout();
+            } else {
+                super.performClick(clickedOnContent);
             }
         }
     }
