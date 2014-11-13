@@ -141,6 +141,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final int ADDITIONAL_CONTENT_SPACE_ID = 123456;
     private static final long SLIDE_CONTENT_ANIM_DURATION = 300L;
 
+    protected static final String WALLPAPER_NONE = "";
+
     protected static final int LOADER_ID_ALL = 0;
     protected static final int LOADER_ID_STATUS_BAR = 1;
     protected static final int LOADER_ID_FONT = 2;
@@ -1458,6 +1460,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         }
 
+        // if the theme has no lockscreen, set an empty string to indicate "none";
+        if (!mSelectedComponentsMap.containsKey(ThemesColumns.MODIFIES_LOCKSCREEN)) {
+            mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, WALLPAPER_NONE);
+        }
+
         if (mApplyThemeOnPopulated) {
             mApplyThemeOnPopulated = false;
             applyTheme();
@@ -1505,10 +1512,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 setCardTitle(mWallpaperCard, pkgName, getString(R.string.wallpaper_label));
             }
         } else {
-            mWallpaperCard.clearWallpaper();
-            mWallpaperCard.setEmptyViewEnabled(true);
-            setAddComponentTitle(mWallpaperCard, getString(R.string.wallpaper_label));
-            mWallpaper.setImageResource(R.drawable.wallpaper_none_bg);
+            // Set the wallpaper to "None"
+            mWallpaperCard.setWallpaper(null);
+            setCardTitle(mWallpaperCard, WALLPAPER_NONE, getString(R.string.wallpaper_label));
+            mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LAUNCHER, WALLPAPER_NONE);
         }
 
         if (animate) {
@@ -1537,9 +1544,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 setCardTitle(mLockScreenCard, pkgName, getString(R.string.lockscreen_label));
             }
         } else {
-            mLockScreenCard.clearWallpaper();
-            mLockScreenCard.setEmptyViewEnabled(true);
-            setAddComponentTitle(mLockScreenCard, getString(R.string.lockscreen_label));
+            // Set the lockscreen wallpaper to "None"
+            mLockScreenCard.setWallpaper(null);
+            setCardTitle(mLockScreenCard, WALLPAPER_NONE, getString(R.string.lockscreen_label));
         }
 
         if (animate) {
@@ -1999,11 +2006,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 if (pkgName != null) {
                     if (TextUtils.isEmpty(pkgName)) {
                         mWallpaperCard.setWallpaper(null);
-                        mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LAUNCHER, "");
-                        setCardTitle(mWallpaperCard, "", getString(R.string.wallpaper_label));
+                        mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LAUNCHER, WALLPAPER_NONE);
+                        setCardTitle(mWallpaperCard, WALLPAPER_NONE,
+                                getString(R.string.wallpaper_label));
                     } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
                         getChooserActivity().pickExternalWallpaper();
-                        setCardTitle(mWallpaperCard, "", getString(R.string.wallpaper_label));
+                        setCardTitle(mWallpaperCard, WALLPAPER_NONE,
+                                getString(R.string.wallpaper_label));
                     } else {
                         loaderId = LOADER_ID_WALLPAPER;
                     }
@@ -2011,11 +2020,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             } else if (MODIFIES_LOCKSCREEN.equals(component)) {
                 if (pkgName != null && TextUtils.isEmpty(pkgName)) {
                     mLockScreenCard.setWallpaper(null);
-                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, "");
-                    setCardTitle(mLockScreenCard, "", getString(R.string.lockscreen_label));
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, WALLPAPER_NONE);
+                    setCardTitle(mLockScreenCard, WALLPAPER_NONE,
+                            getString(R.string.lockscreen_label));
                 } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
                     getChooserActivity().pickExternalLockscreen();
-                    setCardTitle(mLockScreenCard, "", getString(R.string.lockscreen_label));
+                    setCardTitle(mLockScreenCard, WALLPAPER_NONE,
+                            getString(R.string.lockscreen_label));
                 } else {
                     loaderId = LOADER_ID_LOCKSCREEN;
                 }
