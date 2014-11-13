@@ -67,6 +67,7 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
 
 public class ChooserActivity extends FragmentActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
+    public static final String THEME_STORE_PACKAGE = "com.cyngn.themestore";
     private static final String TAG = ChooserActivity.class.getSimpleName();
 
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
@@ -77,7 +78,7 @@ public class ChooserActivity extends FragmentActivity
     private static final int LOADER_ID_INSTALLED_THEMES = 1000;
     private static final int LOADER_ID_APPLIED = 1001;
 
-    private static final String THEME_STORE_PACKAGE = "com.cyngn.themestore";
+
     private static final String THEME_STORE_ACTIVITY = THEME_STORE_PACKAGE + ".ui.StoreActivity";
     private static final String ACTION_APPLY_THEME = "android.intent.action.APPLY_THEME";
     private static final String PERMISSION_WRITE_THEME = "android.permission.WRITE_THEMES";
@@ -121,6 +122,7 @@ public class ChooserActivity extends FragmentActivity
     private boolean mAnimateContentIn = false;
     private long mAnimateContentInDelay;
     private boolean mApplyOnThemeLoaded;
+    private boolean mAlwaysHideShopThemes;
 
     ImageView mCustomBackground;
 
@@ -189,6 +191,11 @@ public class ChooserActivity extends FragmentActivity
         mCustomBackground = (ImageView) findViewById(R.id.custom_bg);
         mAnimateContentIn = true;
         mAnimateContentInDelay = 0;
+
+        if (Utils.isRecentTaskThemeStore(this)) {
+            mAlwaysHideShopThemes = true;
+            mShopThemesLayout.setVisibility(View.GONE);
+        }
     }
 
     public void hideSaveApplyButton() {
@@ -302,9 +309,9 @@ public class ChooserActivity extends FragmentActivity
                 }
             }
         }, FINISH_ANIMATION_DELAY);
-        if (mExpanded) {
+        if (mExpanded && !mAlwaysHideShopThemes) {
             hideShopThemesLayout();
-        } else {
+        } else if (!mAlwaysHideShopThemes) {
             showShopThemesLayout();
         }
     }

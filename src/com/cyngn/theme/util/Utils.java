@@ -24,6 +24,8 @@ import android.util.TypedValue;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import com.cyngn.theme.chooser.ChooserActivity;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -398,6 +400,29 @@ public class Utils {
         }
         return false;
     }
+
+    public static boolean isRecentTaskThemeStore(Context context) {
+        final ActivityManager am =
+                (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        final List<ActivityManager.RecentTaskInfo> recentTasks = am.getRecentTasks(
+                2, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
+        if (recentTasks.size() > 0) {
+            ActivityManager.RecentTaskInfo recentInfo = recentTasks.get(0);
+
+            Intent intent = new Intent(recentInfo.baseIntent);
+            if (recentInfo.origActivity != null) {
+                intent.setComponent(recentInfo.origActivity);
+            }
+
+            if (intent.getComponent()
+                    .getPackageName().equals(ChooserActivity.THEME_STORE_PACKAGE)) {
+              return true;
+            }
+        }
+        return false;
+    }
+
 
     private static boolean isCurrentHomeActivity(Context context,
             ComponentName component) {
