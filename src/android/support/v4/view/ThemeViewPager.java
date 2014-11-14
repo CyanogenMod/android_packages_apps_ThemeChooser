@@ -110,8 +110,13 @@ public class ThemeViewPager extends ViewPager {
             case MotionEvent.ACTION_UP:
                 if (!mIsDragging) {
                     mClickedContent = isTouching(R.id.clickable_view, ev);
-                    // only play the click sound when we click on the content :)
-                    setSoundEffectsEnabled(mClickedContent);
+
+                    View clickableView = getViewForPosition(getCurrentItem(), R.id.clickable_view);
+                    if (clickableView != null) {
+                        // only play the click sound when we click on the content :)
+                        setSoundEffectsEnabled(mClickedContent &&
+                                clickableView.isSoundEffectsEnabled());
+                    }
                     performClick();
                 }
                 mIsDragging = false;
@@ -151,6 +156,18 @@ public class ThemeViewPager extends ViewPager {
             }
         }
         return view;
+    }
+
+    /**
+     * Like getViewForPosition(int position), but will return a specific child view with
+     * id viewId.
+     */
+    public View getViewForPosition(int position, int id) {
+        View parent = getViewForPosition(position);
+        if (parent != null) {
+            return parent.findViewById(id);
+        }
+        return null;
     }
 
     public void setScrollingEnabled(boolean enabled) {

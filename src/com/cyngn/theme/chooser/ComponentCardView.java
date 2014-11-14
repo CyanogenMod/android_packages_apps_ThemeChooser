@@ -48,6 +48,7 @@ public class ComponentCardView extends LinearLayout {
 
     public ComponentCardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        setEnabled(false);
     }
 
     @Override
@@ -68,6 +69,7 @@ public class ComponentCardView extends LinearLayout {
     }
 
     public void expand(boolean showLabel) {
+        setEnabled(true);
         TransitionDrawable bg = null;
         if (getBackground() instanceof TransitionDrawable) {
             bg = (TransitionDrawable) getBackground();
@@ -98,6 +100,7 @@ public class ComponentCardView extends LinearLayout {
     }
 
     public void collapse() {
+        setEnabled(false);
         if (mLabel != null) {
             mLabel.setVisibility(View.GONE);
         }
