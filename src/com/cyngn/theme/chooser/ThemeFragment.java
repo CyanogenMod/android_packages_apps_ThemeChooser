@@ -2100,10 +2100,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (!newMap.containsKey(component)) {
                 // Don't use default wallpaper or lockscreen wallpaper if an external image
                 // is suppose to be used.
-                if ((ThemesColumns.MODIFIES_LAUNCHER.equals(component) &&
-                        mExternalWallpaperUri != null) ||
-                        (ThemesColumns.MODIFIES_LOCKSCREEN.equals(component) &&
-                        mExternalLockscreenUri != null)) {
+                if (ThemesColumns.MODIFIES_LAUNCHER.equals(component) ||
+                        ThemesColumns.MODIFIES_LOCKSCREEN.equals(component)) {
                     continue;
                 }
                 newMap.put(component, defaultPkg);
