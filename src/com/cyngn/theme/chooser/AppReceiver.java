@@ -16,8 +16,6 @@ import android.text.TextUtils;
 import com.cyngn.theme.util.NotificationHelper;
 import com.cyngn.theme.util.PreferenceUtils;
 
-import java.util.Set;
-
 public class AppReceiver extends BroadcastReceiver {
 
     @Override
@@ -30,11 +28,11 @@ public class AppReceiver extends BroadcastReceiver {
         if (Intent.ACTION_PACKAGE_ADDED.equals(action) && !isReplacing) {
             try {
                 if (isTheme(context, pkgName)) {
+                    // If the theme is not being processed, show the notification.  If the
+                    // theme is being processed we will handle that once the
+                    // Intent.ACTION_THEME_RESOURCES_CACHED is received.
                     if (!isThemeBeingProcessed(context, pkgName)) {
                         NotificationHelper.postThemeInstalledNotification(context, pkgName);
-                    } else {
-                        // store this package name so we know it's being processed
-                        PreferenceUtils.addThemeBeingProcessed(context, pkgName);
                     }
                 }
             } catch (NameNotFoundException e) {
@@ -62,12 +60,11 @@ public class AppReceiver extends BroadcastReceiver {
             final String themePkgName = intent.getStringExtra(Intent.EXTRA_THEME_PACKAGE_NAME);
             final int result = intent.getIntExtra(Intent.EXTRA_THEME_RESULT,
                     PackageManager.INSTALL_FAILED_THEME_UNKNOWN_ERROR);
-            Set<String> processingThemes =
-                    PreferenceUtils.getInstalledThemesBeingProcessed(context);
-            if (processingThemes != null &&
-                    processingThemes.contains(themePkgName) && result >= 0) {
-                NotificationHelper.postThemeInstalledNotification(context, themePkgName);
-                PreferenceUtils.removeThemeBeingProcessed(context, themePkgName);
+            try {
+                if (result >= 0 && isTheme(context, themePkgName)) {
+                    NotificationHelper.postThemeInstalledNotification(context, themePkgName);
+                }
+            } catch (NameNotFoundException e) {
             }
         }
     }
