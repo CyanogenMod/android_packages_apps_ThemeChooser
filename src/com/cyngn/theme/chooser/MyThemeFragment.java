@@ -174,7 +174,6 @@ public class MyThemeFragment extends ThemeFragment {
     @Override
     public void setCurrentTheme(Map<String, String> currentTheme) {
         super.setCurrentTheme(currentTheme);
-        mSelectedComponentsMap.clear();
         for (String key : currentTheme.keySet()) {
             mSelectedComponentsMap.put(key, currentTheme.get(key));
         }
@@ -192,6 +191,64 @@ public class MyThemeFragment extends ThemeFragment {
             }
         }
         return false;
+    }
+
+    @Override
+    protected void applyThemeWhenPopulated(String pkgName) {
+        super.applyThemeWhenPopulated(pkgName);
+        populateComponentsToApply(pkgName);
+    }
+
+    private void populateComponentsToApply(String pkgName) {
+        String selection = ThemesColumns.PKG_NAME + "=?";
+        String[] selectionArgs = { pkgName };
+        Cursor c = getActivity().getContentResolver().query(ThemesColumns.CONTENT_URI,
+                null, selection, selectionArgs, null);
+        if (c != null) {
+            if (c.getCount() > 0 && c.moveToFirst()) {
+                mSelectedComponentsMap.clear();
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_ALARMS)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_ALARMS, pkgName);
+                }
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_BOOT_ANIM)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_BOOT_ANIM, pkgName);
+                }
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_FONTS)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_FONTS, pkgName);
+                }
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_ICONS)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_ICONS, pkgName);
+                }
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_LAUNCHER)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LAUNCHER, pkgName);
+                }
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_LOCKSCREEN)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, pkgName);
+                }
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_NAVIGATION_BAR)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_NAVIGATION_BAR, pkgName);
+                }
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_NOTIFICATIONS)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_NOTIFICATIONS, pkgName);
+                }
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_OVERLAYS)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_OVERLAYS, pkgName);
+                }
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_RINGTONES)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_RINGTONES, pkgName);
+                }
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_STATUS_BAR)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_STATUS_BAR, pkgName);
+                }
+            }
+            c.close();
+        }
+    }
+
+    private void loadComponentsToApply() {
+        for (String component : mSelectedComponentsMap.keySet()) {
+            loadComponentFromPackage(mSelectedComponentsMap.get(component), component);
+        }
     }
 
     private BroadcastReceiver mWallpaperChangeReceiver = new BroadcastReceiver() {
@@ -294,7 +351,18 @@ public class MyThemeFragment extends ThemeFragment {
         // theme components have been properly set.
         if (mThemeResetting && loader.getId() == LOADER_ID_ALL) {
             applyTheme();
+        } else if (loader.getId() == LOADER_ID_ALL && mApplyThemeOnPopulated) {
+            loadComponentsToApply();
+            applyTheme();
         }
+    }
+
+    @Override
+    protected Map<String, String> fillMissingComponentsWithDefault(
+            Map<String, String> originalMap) {
+        if (mApplyThemeOnPopulated) return originalMap;
+
+        return super.fillMissingComponentsWithDefault(originalMap);
     }
 
     @Override

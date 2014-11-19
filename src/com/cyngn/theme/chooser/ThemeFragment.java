@@ -268,7 +268,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected boolean mExpanded;
     protected boolean mProcessingResources;
-    private boolean mApplyThemeOnPopulated;
+    protected boolean mApplyThemeOnPopulated;
 
     protected enum CustomizeResetAction {
         Customize,
@@ -1466,7 +1466,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
 
         if (mApplyThemeOnPopulated) {
-            mApplyThemeOnPopulated = false;
             applyTheme();
         }
     }
@@ -1987,63 +1986,66 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     };
 
+    protected void loadComponentFromPackage(String pkgName, String component) {
+        Bundle args = new Bundle();
+        args.putString(ARG_PACKAGE_NAME, pkgName);
+        int loaderId = -1;
+        if (MODIFIES_STATUS_BAR.equals(component)) {
+            loaderId = LOADER_ID_STATUS_BAR;
+        } else if (MODIFIES_FONTS.equals(component)) {
+            loaderId = LOADER_ID_FONT;
+        } else if (MODIFIES_ICONS.equals(component)) {
+            loaderId = LOADER_ID_ICONS;
+        } else if (MODIFIES_NAVIGATION_BAR.equals(component)) {
+            loaderId = LOADER_ID_NAVIGATION_BAR;
+        } else if (MODIFIES_LAUNCHER.equals(component)) {
+            if (pkgName != null) {
+                if (TextUtils.isEmpty(pkgName)) {
+                    mWallpaperCard.setWallpaper(null);
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LAUNCHER, WALLPAPER_NONE);
+                    setCardTitle(mWallpaperCard, WALLPAPER_NONE,
+                            getString(R.string.wallpaper_label));
+                } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
+                    getChooserActivity().pickExternalWallpaper();
+                    setCardTitle(mWallpaperCard, WALLPAPER_NONE,
+                            getString(R.string.wallpaper_label));
+                } else {
+                    loaderId = LOADER_ID_WALLPAPER;
+                }
+            }
+        } else if (MODIFIES_LOCKSCREEN.equals(component)) {
+            if (pkgName != null && TextUtils.isEmpty(pkgName)) {
+                mLockScreenCard.setWallpaper(null);
+                mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, WALLPAPER_NONE);
+                setCardTitle(mLockScreenCard, WALLPAPER_NONE,
+                        getString(R.string.lockscreen_label));
+            } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
+                getChooserActivity().pickExternalLockscreen();
+                setCardTitle(mLockScreenCard, WALLPAPER_NONE,
+                        getString(R.string.lockscreen_label));
+            } else {
+                loaderId = LOADER_ID_LOCKSCREEN;
+            }
+        } else if (MODIFIES_OVERLAYS.equals(component)) {
+            loaderId = LOADER_ID_STYLE;
+        } else if (MODIFIES_BOOT_ANIM.equals(component)) {
+            loaderId = LOADER_ID_BOOT_ANIMATION;
+        } else if (MODIFIES_RINGTONES.equals(component)) {
+            loaderId = LOADER_ID_RINGTONE;
+        } else if (MODIFIES_NOTIFICATIONS.equals(component)) {
+            loaderId = LOADER_ID_NOTIFICATION;
+        } else if (MODIFIES_ALARMS.equals(component)) {
+            loaderId = LOADER_ID_ALARM;
+        } else {
+            return;
+        }
+        getLoaderManager().restartLoader(loaderId, args, ThemeFragment.this);
+    }
+
     private OnItemClickedListener mOnComponentItemClicked = new OnItemClickedListener() {
         @Override
         public void onItemClicked(String pkgName) {
-            Bundle args = new Bundle();
-            args.putString(ARG_PACKAGE_NAME, pkgName);
-            int loaderId = -1;
-            String component = mSelector.getComponentType();
-            if (MODIFIES_STATUS_BAR.equals(component)) {
-                loaderId = LOADER_ID_STATUS_BAR;
-            } else if (MODIFIES_FONTS.equals(component)) {
-                loaderId = LOADER_ID_FONT;
-            } else if (MODIFIES_ICONS.equals(component)) {
-                loaderId = LOADER_ID_ICONS;
-            } else if (MODIFIES_NAVIGATION_BAR.equals(component)) {
-                loaderId = LOADER_ID_NAVIGATION_BAR;
-            } else if (MODIFIES_LAUNCHER.equals(component)) {
-                if (pkgName != null) {
-                    if (TextUtils.isEmpty(pkgName)) {
-                        mWallpaperCard.setWallpaper(null);
-                        mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LAUNCHER, WALLPAPER_NONE);
-                        setCardTitle(mWallpaperCard, WALLPAPER_NONE,
-                                getString(R.string.wallpaper_label));
-                    } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
-                        getChooserActivity().pickExternalWallpaper();
-                        setCardTitle(mWallpaperCard, WALLPAPER_NONE,
-                                getString(R.string.wallpaper_label));
-                    } else {
-                        loaderId = LOADER_ID_WALLPAPER;
-                    }
-                }
-            } else if (MODIFIES_LOCKSCREEN.equals(component)) {
-                if (pkgName != null && TextUtils.isEmpty(pkgName)) {
-                    mLockScreenCard.setWallpaper(null);
-                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, WALLPAPER_NONE);
-                    setCardTitle(mLockScreenCard, WALLPAPER_NONE,
-                            getString(R.string.lockscreen_label));
-                } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
-                    getChooserActivity().pickExternalLockscreen();
-                    setCardTitle(mLockScreenCard, WALLPAPER_NONE,
-                            getString(R.string.lockscreen_label));
-                } else {
-                    loaderId = LOADER_ID_LOCKSCREEN;
-                }
-            } else if (MODIFIES_OVERLAYS.equals(component)) {
-                loaderId = LOADER_ID_STYLE;
-            } else if (MODIFIES_BOOT_ANIM.equals(component)) {
-                loaderId = LOADER_ID_BOOT_ANIMATION;
-            } else if (MODIFIES_RINGTONES.equals(component)) {
-                loaderId = LOADER_ID_RINGTONE;
-            } else if (MODIFIES_NOTIFICATIONS.equals(component)) {
-                loaderId = LOADER_ID_NOTIFICATION;
-            } else if (MODIFIES_ALARMS.equals(component)) {
-                loaderId = LOADER_ID_ALARM;
-            } else {
-                return;
-            }
-            getLoaderManager().restartLoader(loaderId, args, ThemeFragment.this);
+            loadComponentFromPackage(pkgName, mSelector.getComponentType());
         }
     };
 
@@ -2073,13 +2075,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     @Override
                     public void run() {
                         if (mSelectedComponentsMap != null && mSelectedComponentsMap.size() > 0) {
-                            final HashMap<String, String> fullMap
+                            final Map<String, String> fullMap
                                     = fillMissingComponentsWithDefault(mSelectedComponentsMap);
                             ThemeManager tm = getThemeManager();
                             if (tm != null) {
                                 tm.addClient(ThemeFragment.this);
                                 tm.requestThemeChange(fullMap);
                             }
+                            mApplyThemeOnPopulated = false;
                         } else {
                             onFinish(true);
                         }
@@ -2089,7 +2092,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     };
 
-    private HashMap<String, String> fillMissingComponentsWithDefault(
+    protected Map<String, String> fillMissingComponentsWithDefault(
             Map<String, String> originalMap) {
         HashMap newMap = new HashMap<String, String>();
         newMap.putAll(originalMap);
@@ -2165,8 +2168,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         animateProgressIn(mApplyThemeRunnable);
     }
 
-    // Use when applyTheme() might be too early. ie mSelectedComponentsMap is not pop. yet
-    protected void applyThemeWhenPopulated() {
+    /**
+     * Use when applyTheme() might be too early. ie mSelectedComponentsMap is not pop. yet
+     * @param pkgName Only used in MyThemeFragment to apply components on top of current theme
+     */
+    protected void applyThemeWhenPopulated(String pkgName) {
         mApplyThemeOnPopulated = true;
     }
 

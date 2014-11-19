@@ -121,7 +121,7 @@ public class ChooserActivity extends FragmentActivity
     private boolean mThemeChanging = false;
     private boolean mAnimateContentIn = false;
     private long mAnimateContentInDelay;
-    private boolean mApplyOnThemeLoaded;
+    private String mThemeToApply;
     private boolean mAlwaysHideShopThemes;
 
     ImageView mCustomBackground;
@@ -265,7 +265,7 @@ public class ChooserActivity extends FragmentActivity
         String action = intent.getAction();
         if ((Intent.ACTION_MAIN.equals(action) || ACTION_APPLY_THEME.equals(action))
                 && intent.hasExtra(EXTRA_PKGNAME)) {
-            mSelectedTheme = intent.getStringExtra(EXTRA_PKGNAME);
+            mSelectedTheme = getSelectedTheme(intent.getStringExtra(EXTRA_PKGNAME));
             if (mPager != null) {
                 startLoader(LOADER_ID_INSTALLED_THEMES);
                 if (mExpanded) {
@@ -291,9 +291,29 @@ public class ChooserActivity extends FragmentActivity
                             getPackageManager()
                                     .checkPermission(PERMISSION_WRITE_THEME,
                                             getCallingPackage())) {
-                mApplyOnThemeLoaded = true;
+                mThemeToApply = intent.getStringExtra(EXTRA_PKGNAME);
             }
         }
+    }
+
+    private String getSelectedTheme(String requestedTheme) {
+        String[] projection = { ThemesColumns.PRESENT_AS_THEME };
+        String selection = ThemesColumns.PKG_NAME + "=?";
+        String[] selectionArgs = { requestedTheme };
+
+        String selectedTheme = PreferenceUtils.getAppliedBaseTheme(this);
+
+        Cursor cursor = getContentResolver().query(ThemesColumns.CONTENT_URI,
+                projection, selection, selectionArgs, null);
+        if (cursor != null) {
+            if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+                if (cursor.getInt(0) == 1) {
+                    selectedTheme = requestedTheme;
+                }
+            }
+            cursor.close();
+        }
+        return selectedTheme;
     }
 
     private void setAnimatingStateAndScheduleFinish() {
@@ -765,10 +785,10 @@ public class ChooserActivity extends FragmentActivity
                 if (selectedThemeIndex >= 0) {
                     mPager.setCurrentItem(selectedThemeIndex, false);
 
-                    if (mApplyOnThemeLoaded) {
+                    if (mThemeToApply != null) {
                         ThemeFragment f = getCurrentFragment();
-                        f.applyThemeWhenPopulated();
-                        mApplyOnThemeLoaded = false;
+                        f.applyThemeWhenPopulated(mThemeToApply);
+                        mThemeToApply = null;
                     }
                 }
                 if (mAnimateContentIn) animateContentIn();
