@@ -9,6 +9,7 @@ import android.content.res.ThemeConfig;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -168,15 +169,25 @@ public class BootAnimationHelper {
 
         List<AnimationPart> animationParts = new ArrayList<AnimationPart>();
         while ((line = reader.readLine()) != null) {
-            String[] info = line.split(" ");
+            // trim off any leading and trailing spaces
+            line = line.trim();
+            // if the line is empty continue on to the next
+            if (TextUtils.isEmpty(line)) continue;
+
+            String[] info = line. split(" ");
             if (info.length != NUM_PART_LINE_PARAMETERS) {
-                throw new BootAnimationException(String.format(
+                Log.w(TAG, String.format(
                         "Invalid # of part parameters; exptected %d, read %d  (\"%s\")",
                         NUM_PART_LINE_PARAMETERS, info.length, line));
+                // let's continue in case there are parts that are valid
+                continue;
             }
             if (!info[0].equals("p") && !info[0].equals("c")) {
-                throw new BootAnimationException(String.format(
+                Log.w(TAG, String.format(
                    "Unknown part type; expected 'p' or 'c', read %s  (\"%s\")", info[0], line));
+
+                // let's continue in case there are parts that are valid
+                continue;
             }
             int playCount = Integer.parseInt(info[1]);
             int pause = Integer.parseInt(info[2]);
