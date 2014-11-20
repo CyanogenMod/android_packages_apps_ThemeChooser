@@ -2171,8 +2171,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     /**
      * Use when applyTheme() might be too early. ie mSelectedComponentsMap is not pop. yet
      * @param pkgName Only used in MyThemeFragment to apply components on top of current theme
+     * @param components Optional list of components to apply.
      */
-    protected void applyThemeWhenPopulated(String pkgName) {
+    protected void applyThemeWhenPopulated(String pkgName, List<String> components) {
         mApplyThemeOnPopulated = true;
     }
 

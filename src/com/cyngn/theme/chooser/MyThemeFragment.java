@@ -42,6 +42,8 @@ import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class MyThemeFragment extends ThemeFragment {
@@ -194,12 +196,12 @@ public class MyThemeFragment extends ThemeFragment {
     }
 
     @Override
-    protected void applyThemeWhenPopulated(String pkgName) {
-        super.applyThemeWhenPopulated(pkgName);
-        populateComponentsToApply(pkgName);
+    protected void applyThemeWhenPopulated(String pkgName, List<String> components) {
+        super.applyThemeWhenPopulated(pkgName, components);
+        populateComponentsToApply(pkgName, components);
     }
 
-    private void populateComponentsToApply(String pkgName) {
+    private void populateComponentsToApply(String pkgName, List<String> components) {
         String selection = ThemesColumns.PKG_NAME + "=?";
         String[] selectionArgs = { pkgName };
         Cursor c = getActivity().getContentResolver().query(ThemesColumns.CONTENT_URI,
@@ -242,6 +244,18 @@ public class MyThemeFragment extends ThemeFragment {
                 }
             }
             c.close();
+        }
+
+        // strip out any components that are not in the components list
+        if (components != null) {
+            Iterator<Map.Entry<String, String>> iterator =
+                    mSelectedComponentsMap.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, String> entry = iterator.next();
+                if (!components.contains(entry.getKey())) {
+                    iterator.remove();
+                }
+            }
         }
     }
 

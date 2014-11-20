@@ -72,6 +72,7 @@ public class ChooserActivity extends FragmentActivity
 
     public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
     public static final String EXTRA_PKGNAME = "pkgName";
+    public static final String EXTRA_COMPONENTS = "components";
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
 
@@ -122,6 +123,7 @@ public class ChooserActivity extends FragmentActivity
     private boolean mAnimateContentIn = false;
     private long mAnimateContentInDelay;
     private String mThemeToApply;
+    private ArrayList mComponentsToApply;
     private boolean mAlwaysHideShopThemes;
 
     ImageView mCustomBackground;
@@ -265,7 +267,14 @@ public class ChooserActivity extends FragmentActivity
         String action = intent.getAction();
         if ((Intent.ACTION_MAIN.equals(action) || ACTION_APPLY_THEME.equals(action))
                 && intent.hasExtra(EXTRA_PKGNAME)) {
-            mSelectedTheme = getSelectedTheme(intent.getStringExtra(EXTRA_PKGNAME));
+            if (intent.hasExtra(EXTRA_COMPONENTS)) {
+                mComponentsToApply = intent.getStringArrayListExtra(EXTRA_COMPONENTS);
+            } else {
+                mComponentsToApply = null;
+            }
+            mSelectedTheme = mComponentsToApply != null ?
+                             PreferenceUtils.getAppliedBaseTheme(this) :
+                             getSelectedTheme(intent.getStringExtra(EXTRA_PKGNAME));
             if (mPager != null) {
                 startLoader(LOADER_ID_INSTALLED_THEMES);
                 if (mExpanded) {
@@ -787,7 +796,7 @@ public class ChooserActivity extends FragmentActivity
 
                     if (mThemeToApply != null) {
                         ThemeFragment f = getCurrentFragment();
-                        f.applyThemeWhenPopulated(mThemeToApply);
+                        f.applyThemeWhenPopulated(mThemeToApply, mComponentsToApply);
                         mThemeToApply = null;
                     }
                 }
