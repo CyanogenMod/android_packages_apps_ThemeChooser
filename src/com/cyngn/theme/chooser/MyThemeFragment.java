@@ -42,6 +42,7 @@ import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -374,9 +375,23 @@ public class MyThemeFragment extends ThemeFragment {
     @Override
     protected Map<String, String> fillMissingComponentsWithDefault(
             Map<String, String> originalMap) {
-        if (mApplyThemeOnPopulated) return originalMap;
+        // Only the ThemeFragment should be altering this, for the MyThemeFragment this is not
+        // desirable as it changes components the user did not even touch.
+        return originalMap;
+    }
 
-        return super.fillMissingComponentsWithDefault(originalMap);
+    @Override
+    protected Map<String, String> getComponentsToApply() {
+        Map<String, String> componentsToApply = new HashMap<String, String>();
+        // Only apply components that actually changed
+        for (String component : mCurrentTheme.keySet()) {
+            String currentPkg = mCurrentTheme.get(component);
+            String selectedPkg = mSelectedComponentsMap.get(component);
+            if (selectedPkg != null && !currentPkg.equals(selectedPkg)) {
+                componentsToApply.put(component, selectedPkg);
+            }
+        }
+        return componentsToApply;
     }
 
     @Override

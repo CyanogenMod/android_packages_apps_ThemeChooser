@@ -2074,9 +2074,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (mSelectedComponentsMap != null && mSelectedComponentsMap.size() > 0) {
+                        final Map<String, String> componentsToApply = getComponentsToApply();
+                        if (componentsToApply != null && componentsToApply.size() > 0) {
                             final Map<String, String> fullMap
-                                    = fillMissingComponentsWithDefault(mSelectedComponentsMap);
+                                    = fillMissingComponentsWithDefault(componentsToApply);
                             ThemeManager tm = getThemeManager();
                             if (tm != null) {
                                 tm.addClient(ThemeFragment.this);
@@ -2101,16 +2102,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             String component = entry.getKey();
             String defaultPkg = entry.getValue();
             if (!newMap.containsKey(component)) {
-                // Don't use default wallpaper or lockscreen wallpaper if an external image
-                // is suppose to be used.
-                if (ThemesColumns.MODIFIES_LAUNCHER.equals(component) ||
-                        ThemesColumns.MODIFIES_LOCKSCREEN.equals(component)) {
-                    continue;
-                }
                 newMap.put(component, defaultPkg);
             }
         }
         return newMap;
+    }
+
+    protected Map<String, String> getComponentsToApply() {
+        return mSelectedComponentsMap;
     }
 
     private Runnable mApplyExternalWallpaperRunnable = new Runnable() {
