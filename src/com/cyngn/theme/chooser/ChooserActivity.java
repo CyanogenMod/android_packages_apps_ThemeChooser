@@ -133,6 +133,7 @@ public class ChooserActivity extends FragmentActivity
 
     private boolean mIsPickingImage = false;
     private boolean mRestartLoaderOnCollapse = false;
+    private boolean mActivityResuming = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -768,7 +769,7 @@ public class ChooserActivity extends FragmentActivity
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (mThemeChanging) return;
 
-        if (mExpanded) {
+        if (mExpanded && !mActivityResuming) {
             mRestartLoaderOnCollapse = true;
             return;
         }
@@ -801,6 +802,7 @@ public class ChooserActivity extends FragmentActivity
                     }
                 }
                 if (mAnimateContentIn) animateContentIn();
+                mActivityResuming = true;
                 break;
             case LOADER_ID_APPLIED:
                 startLoader(LOADER_ID_INSTALLED_THEMES);
