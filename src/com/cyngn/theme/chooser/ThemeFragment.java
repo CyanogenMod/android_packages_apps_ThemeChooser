@@ -1321,6 +1321,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mCurrentCursor = c;
         mCurrentLoaderId = loader.getId();
         c.moveToFirst();
+        boolean animate = !mApplyThemeOnPopulated;
         switch (mCurrentLoaderId) {
             case LOADER_ID_ALL:
                 if (mProcessingResources && !isThemeProcessing()) {
@@ -1342,37 +1343,37 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 });
                 break;
             case LOADER_ID_STATUS_BAR:
-                loadStatusBar(c, true);
+                loadStatusBar(c, animate);
                 break;
             case LOADER_ID_FONT:
-                loadFont(c, true);
+                loadFont(c, animate);
                 break;
             case LOADER_ID_ICONS:
-                loadIcons(c, true);
+                loadIcons(c, animate);
                 break;
             case LOADER_ID_WALLPAPER:
-                loadWallpaper(c, true);
+                loadWallpaper(c, animate);
                 break;
             case LOADER_ID_NAVIGATION_BAR:
-                loadNavBar(c, true);
+                loadNavBar(c, animate);
                 break;
             case LOADER_ID_LOCKSCREEN:
-                loadLockScreen(c, true);
+                loadLockScreen(c, animate);
                 break;
             case LOADER_ID_STYLE:
-                loadStyle(c, true);
+                loadStyle(c, animate);
                 break;
             case LOADER_ID_BOOT_ANIMATION:
                 loadBootAnimation(c);
                 break;
             case LOADER_ID_RINGTONE:
-                loadAudible(RingtoneManager.TYPE_RINGTONE, c, true);
+                loadAudible(RingtoneManager.TYPE_RINGTONE, c, animate);
                 break;
             case LOADER_ID_NOTIFICATION:
-                loadAudible(RingtoneManager.TYPE_NOTIFICATION, c, true);
+                loadAudible(RingtoneManager.TYPE_NOTIFICATION, c, animate);
                 break;
             case LOADER_ID_ALARM:
-                loadAudible(RingtoneManager.TYPE_ALARM, c, true);
+                loadAudible(RingtoneManager.TYPE_ALARM, c, animate);
                 break;
         }
     }
