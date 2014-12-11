@@ -294,8 +294,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         final Context context = getActivity();
         mPkgName = getArguments().getString(ARG_PACKAGE_NAME);
         mSkipLoadingAnim = getArguments().getBoolean(ARG_SKIP_LOADING_ANIM);
-        mBatteryStyle = Settings.System.getInt(context.getContentResolver(),
-                Settings.System.STATUS_BAR_BATTERY, 0);
+        mBatteryStyle = 0;
 
         getIconComponents(context);
         if (sTypefaceHelperCache == null) {
@@ -390,7 +389,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 Menu menu = popupmenu.getMenu();
                 if (CURRENTLY_APPLIED_THEME.equals(mPkgName) ||
                         mPkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity())) ||
-                        mPkgName.equals(ThemeConfig.HOLO_DEFAULT)) {
+                        mPkgName.equals(ThemeConfig.SYSTEM_DEFAULT)) {
                     menu.findItem(R.id.menu_delete).setEnabled(false);
                 }
                 if (!mThemeTagLayout.isCustomizedTagEnabled()) {
@@ -423,7 +422,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
         if (ThemeUtils.getDefaultThemePackageName(getActivity()).equals(mPkgName) ||
-                ThemeConfig.HOLO_DEFAULT.equals(mPkgName)) {
+                ThemeConfig.SYSTEM_DEFAULT.equals(mPkgName)) {
             mDelete.setVisibility(View.GONE);
         }
 
@@ -1000,7 +999,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Point p = new Point();
         display.getSize(p);
         int heightId = getResources()
-                .getIdentifier("system_bar_height", "dimen", "android");
+                .getIdentifier("navigation_bar_height", "dimen", "android");
         int navbar_height = getResources().getDimensionPixelSize(heightId);
         int[] pos = new int[2];
         v.getLocationInWindow(pos);
@@ -2606,7 +2605,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 return Boolean.FALSE;
             }
             ZipFile zip = null;
-            if (ThemeConfig.HOLO_DEFAULT.equals(mPkgName)) {
+            if (ThemeConfig.SYSTEM_DEFAULT.equals(mPkgName)) {
                 try {
                     zip = new ZipFile(new File(BootAnimationHelper.SYSTEM_BOOT_ANI_PATH));
                 } catch (Exception e) {

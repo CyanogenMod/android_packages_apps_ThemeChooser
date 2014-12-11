@@ -28,5 +28,5 @@
 
     <com.cyngn.theme.widget.NavBarSpace
         android:layout_width="match_parent"
-        android:layout_height="@*android:dimen/system_bar_height"/>
+        android:layout_height="@*android:dimen/navigation_bar_height"/>
 </LinearLayout>

@@ -62,7 +62,7 @@
     <dimen name="apply_progress_padding">10dp</dimen>
     <dimen name="apply_progress_height">24dp</dimen>
 
-    <dimen name="system_bar_height">@*android:dimen/system_bar_height</dimen>
+    <dimen name="system_bar_height">@*android:dimen/navigation_bar_height</dimen>
     <dimen name="expand_collapse_child_offset">12dp</dimen>
 
     <dimen name="shop_themes_margin_bottom">24dp</dimen>

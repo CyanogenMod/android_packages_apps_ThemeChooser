@@ -289,6 +289,7 @@ public class Utils {
         final int scaledWidth = Math.round((wallpaper.getWidth() * scale));
         final int scaledHeight = Math.round((wallpaper.getHeight() * scale));
 
+        // TODO: set xOffset to wm.getLastWallpaperX() once available
         int xOffset = wm.getLastWallpaperX();
         // x offset
         if (xOffset == -1) {
@@ -298,6 +299,7 @@ public class Utils {
         }
 
         // y offsets
+        // TODO: set yOffset to wm.getLastWallpaperY() once available
         int yOffset = wm.getLastWallpaperY();
         if (yOffset == -1) {
             yOffset = 0;

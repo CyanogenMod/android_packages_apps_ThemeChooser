@@ -27,7 +27,7 @@
             android:id="@+id/navigation_bar"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="@*android:dimen/system_bar_height"
+            android:layout_height="@*android:dimen/navigation_bar_height"
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
             android:background="#000">

@@ -114,8 +114,7 @@ public class ComponentSelector extends LinearLayout
 
         mContext = context;
         mInflater = LayoutInflater.from(context);
-        mBatteryStyle = Settings.System.getInt(context.getContentResolver(),
-                Settings.System.STATUS_BAR_BATTERY, 0);
+        mBatteryStyle = 0;
 
         mAnimateIn = AnimationUtils.loadAnimation(mContext,
                 R.anim.component_selection_animate_in);

@@ -23,16 +23,12 @@ public class AudioUtils {
 
     public static void loadThemeAudible(Context context, int type, String pkgName, MediaPlayer mp)
             throws PackageManager.NameNotFoundException {
-        if (ThemeConfig.HOLO_DEFAULT.equals(pkgName)) {
+        if (ThemeConfig.SYSTEM_DEFAULT.equals(pkgName)) {
             loadSystemAudible(type, mp);
             return;
         }
         PackageInfo pi = context.getPackageManager().getPackageInfo(pkgName, 0);
         Context themeCtx = context.createPackageContext(pkgName, 0);
-        if (pi.isLegacyThemeApk) {
-            loadLegacyThemeAudible(themeCtx, type, pi, mp);
-            return;
-        }
         AssetManager assetManager = themeCtx.getAssets();
         String assetPath;
         switch (type) {
@@ -64,38 +60,6 @@ public class AudioUtils {
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Unable to load sound for " + pkgName, e);
-            }
-        }
-    }
-
-    public static void loadLegacyThemeAudible(Context themeCtx, int type, PackageInfo pi,
-            MediaPlayer mp) {
-        if (pi.legacyThemeInfos == null || pi.legacyThemeInfos.length == 0)
-            return;
-        AssetManager assetManager = themeCtx.getAssets();
-        String assetPath;
-        switch (type) {
-            case RingtoneManager.TYPE_NOTIFICATION:
-                assetPath = pi.legacyThemeInfos[0].notificationFileName;
-                break;
-            case RingtoneManager.TYPE_RINGTONE:
-                assetPath = pi.legacyThemeInfos[0].ringtoneFileName;
-                break;
-            default:
-                assetPath = null;
-                break;
-        }
-        if (assetPath != null) {
-            try {
-                AssetFileDescriptor afd = assetManager.openFd(assetPath);
-                if (mp != null) {
-                    mp.reset();
-                    mp.setDataSource(afd.getFileDescriptor(),
-                            afd.getStartOffset(), afd.getLength());
-                    mp.prepare();
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Unable to load legacy sound for " + pi.packageName, e);
             }
         }
     }

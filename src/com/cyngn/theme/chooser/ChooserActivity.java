@@ -70,7 +70,7 @@ public class ChooserActivity extends FragmentActivity
     public static final String THEME_STORE_PACKAGE = "com.cyngn.themestore";
     private static final String TAG = ChooserActivity.class.getSimpleName();
 
-    public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
+    public static final String DEFAULT = ThemeConfig.SYSTEM_DEFAULT;
     public static final String EXTRA_PKGNAME = "pkgName";
     public static final String EXTRA_COMPONENTS = "components";
 

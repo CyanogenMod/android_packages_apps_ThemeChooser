@@ -74,14 +74,8 @@ public class AppReceiver extends BroadcastReceiver {
 
     private boolean isTheme(Context context, String pkgName) throws NameNotFoundException {
         PackageInfo pi = context.getPackageManager().getPackageInfo(pkgName, 0);
-        if (pi == null) return false;
 
-        if ((pi.themeInfos != null && pi.themeInfos.length > 0) ||
-                (pi.legacyThemeInfos != null && pi.legacyThemeInfos.length > 0)) {
-            return true;
-        }
-
-        return false;
+        return pi != null && pi.themeInfo != null;
     }
 
     private boolean isThemeBeingProcessed(Context context, String pkgName) {

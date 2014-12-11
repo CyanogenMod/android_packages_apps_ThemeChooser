@@ -35,6 +35,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.cyngn.theme.chooser.ThemeFragment;
 import com.cyngn.theme.util.AudioUtils;
 import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.ThemedTypefaceHelper;
@@ -388,7 +389,7 @@ public class MyThemeFragment extends ThemeFragment {
             String currentPkg = mCurrentTheme.get(component);
             String selectedPkg = mSelectedComponentsMap.get(component);
             if (selectedPkg != null && !currentPkg.equals(selectedPkg)) {
-                componentsToApply.put(component, selectedPkg);
+                componentsToApply.put(selectedPkg, component);
             }
         }
         return componentsToApply;
