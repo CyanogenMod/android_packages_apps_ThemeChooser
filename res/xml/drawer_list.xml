@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DrawerList
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- Note: The account drawer icon is set by the custom view 'item_account' -->
+    <DrawerItem
+        app:id="@+id/theme_packs"
+        app:title="@string/theme_packs"
+        app:icon="@drawable/ic_themes_themepacks" />
+    <DrawerItem
+        app:id="@+id/style"
+        app:title="@string/style"
+        app:components="mods_overlays"
+        app:icon="@drawable/ic_themes_styles" />
+    <DrawerItem
+        app:id="@+id/icons"
+        app:title="@string/icons"
+        app:components="mods_icons"
+        app:icon="@drawable/ic_themes_icons" />
+    <DrawerItem
+        app:id="@+id/fonts"
+        app:title="@string/fonts"
+        app:components="mods_fonts"
+        app:icon="@drawable/ic_themes_fonts" />
+    <DrawerItem
+        app:id="@+id/wallpaper"
+        app:title="@string/wallpapers"
+        app:components="mods_homescreen"
+        app:icon="@drawable/ic_themes_wallpaper"/>
+    <DrawerItem
+        app:id="@+id/lockwallpaper"
+        app:title="@string/lockscreen_wallpaper"
+        app:components="mods_lockscreen"
+        app:icon="@drawable/ic_themes_lockwall" />
+    <DrawerItem
+        app:id="@+id/boot_animations"
+        app:title="@string/boot_anims"
+        app:components="mods_bootanim"
+        app:icon="@drawable/ic_themes_bootanim" />
+    <DrawerItem
+        app:id="@+id/sounds"
+        app:title="@string/sounds"
+        app:components="mods_alarms,mods_ringtones,mods_notifications"
+        app:icon="@drawable/ic_themes_sounds" />
+</DrawerList>

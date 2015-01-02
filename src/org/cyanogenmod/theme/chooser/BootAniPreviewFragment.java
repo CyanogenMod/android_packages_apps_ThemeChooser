@@ -126,7 +126,7 @@ public class BootAniPreviewFragment extends Fragment {
                 return Boolean.FALSE;
             }
             ZipFile zip = null;
-            if (ThemeConfig.HOLO_DEFAULT.equals(mPkgName)) {
+            if (ThemeConfig.SYSTEM_DEFAULT.equals(mPkgName)) {
                 try {
                     zip = new ZipFile(new File(BootAnimationHelper.SYSTEM_BOOT_ANI_PATH));
                 } catch (Exception e) {

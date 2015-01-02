@@ -32,10 +32,8 @@ public class NotificationHelper {
         String themeName = null;
         try {
             PackageInfo pi = context.getPackageManager().getPackageInfo(pkgName, 0);
-            if (pi.themeInfos != null && pi.themeInfos.length > 0) {
-                themeName = pi.themeInfos[0].name;
-            } else if (pi.legacyThemeInfos != null && pi.legacyThemeInfos[0] != null) {
-                themeName = pi.legacyThemeInfos[0].name;
+            if (pi.themeInfo != null) {
+                themeName = pi.themeInfo.name;
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -62,7 +60,7 @@ public class NotificationHelper {
                 .setContentIntent(pi)
                 .setSmallIcon(R.drawable.ic_notifiy)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.ic_app_themes))
+                        R.drawable.ic_launcher))
                 .setWhen(System.currentTimeMillis())
                 .build();
         nm.notify(pkgName.hashCode(), notice);

@@ -152,7 +152,7 @@ public class AudiblePreviewFragment extends Fragment {
 
     private void loadAudibles() {
         mContent.removeAllViews();
-        if (ThemeConfig.HOLO_DEFAULT.equals(mPkgName)) {
+        if (ThemeConfig.SYSTEM_DEFAULT.equals(mPkgName)) {
             loadSystemAudible(RingtoneManager.TYPE_ALARM);
             loadSystemAudible(RingtoneManager.TYPE_NOTIFICATION);
             loadSystemAudible(RingtoneManager.TYPE_RINGTONE);
@@ -170,10 +170,6 @@ public class AudiblePreviewFragment extends Fragment {
     }
 
     private void loadThemeAudible(Context themeCtx, int type, PackageInfo pi) {
-        if (pi.isLegacyThemeApk) {
-            loadLegacyThemeAudible(themeCtx, type, pi);
-            return;
-        }
         AssetManager assetManager = themeCtx.getAssets();
         String assetPath;
         switch (type) {
@@ -200,35 +196,6 @@ public class AudiblePreviewFragment extends Fragment {
                     if (mp != null) {
                         addAudibleToLayout(type, mp);
                     }
-                }
-            } catch (IOException e) {
-                mMediaPlayers.put(type, null);
-            }
-        }
-    }
-
-    private void loadLegacyThemeAudible(Context themeCtx, int type, PackageInfo pi) {
-        if (pi.legacyThemeInfos == null || pi.legacyThemeInfos.length == 0)
-            return;
-        AssetManager assetManager = themeCtx.getAssets();
-        String assetPath;
-        switch (type) {
-            case RingtoneManager.TYPE_NOTIFICATION:
-                assetPath = pi.legacyThemeInfos[0].notificationFileName;
-                break;
-            case RingtoneManager.TYPE_RINGTONE:
-                assetPath = pi.legacyThemeInfos[0].ringtoneFileName;
-                break;
-            default:
-                assetPath = null;
-                break;
-        }
-        if (assetPath != null) {
-            try {
-                AssetFileDescriptor afd = assetManager.openFd(assetPath);
-                MediaPlayer mp = initAudibleMediaPlayer(afd, type);
-                if (mp != null) {
-                    addAudibleToLayout(type, mp);
                 }
             } catch (IOException e) {
                 mMediaPlayers.put(type, null);

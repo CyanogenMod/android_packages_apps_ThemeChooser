@@ -46,8 +46,7 @@ public class NotificationHijackingService extends NotificationListenerService {
                 try {
                     PackageInfo pi = getPackageManager().getPackageInfo(pkgName, 0);
                     if (pi != null) {
-                        if ((pi.themeInfos != null && pi.themeInfos.length > 0) ||
-                                (pi.legacyThemeInfos != null && pi.legacyThemeInfos.length > 0)) {
+                        if (pi.themeInfo != null) {
                             cancelNotification(GOOGLE_PLAY_PACKAGE_NAME, sbn.getTag(), sbn.getId());
                         }
                     }

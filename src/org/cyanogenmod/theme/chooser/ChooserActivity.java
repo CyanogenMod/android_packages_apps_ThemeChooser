@@ -18,29 +18,53 @@ package org.cyanogenmod.theme.chooser;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import android.app.ActionBar;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
-public class ChooserActivity extends FragmentActivity {
+public class ChooserActivity extends FragmentActivity implements DrawerAdapter.DrawerClickListener {
     public static final String TAG = ChooserActivity.class.getName();
     public static final String EXTRA_COMPONENT_FILTER = "component_filter";
     public static final String EXTRA_PKGNAME = "pkgName";
+
+    private DrawerAdapter mDrawerAdapter;
+
+    private DrawerLayout mDrawerLayout;
+    private ViewGroup mDrawerContainer;
+    private ListView mDrawerList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        NotificationHijackingService.ensureEnabled(this);
 
-        ActionBar mActionBar = getActionBar();
-        if (mActionBar != null) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (mDrawerLayout.isDrawerOpen(mDrawerContainer)) {
+                    mDrawerLayout.closeDrawer(mDrawerContainer);
+                } else {
+                    mDrawerLayout.openDrawer(mDrawerContainer);
+                }
+            }
+        });
+
+        initDrawer();
+
+        NotificationHijackingService.ensureEnabled(this);
 
         if (savedInstanceState == null) {
             handleIntent(getIntent());
@@ -51,6 +75,14 @@ public class ChooserActivity extends FragmentActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
+    }
+
+    private void initDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerContainer = (ViewGroup) findViewById(R.id.left_drawer_container);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerAdapter = new DrawerAdapter(this, this);
+        mDrawerList.setAdapter(mDrawerAdapter);
     }
 
     private void handleIntent(final Intent intent) {
@@ -88,8 +120,10 @@ public class ChooserActivity extends FragmentActivity {
         } else {
             fragment = ChooserBrowseFragment.newInstance(filtersList);
         }
+
         getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment,
                 "ChooserBrowseFragment").commit();
+
     }
 
     @Override
@@ -99,5 +133,26 @@ public class ChooserActivity extends FragmentActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onNavItemSelected(DrawerAdapter.DrawerItem item) {
+            Fragment fragment = null;
+            ArrayList<String> filtersList = new ArrayList<String>();
+            if (item.components != null) {
+                String[] filters = item.components.split(",");
+                filtersList.addAll(Arrays.asList(filters));
+                fragment = ChooserBrowseFragment.newInstance(filtersList);
+            } else if (item.id == R.id.theme_packs) {
+                fragment = ChooserBrowseFragment.newInstance(filtersList);
+            }
+
+            if (fragment != null) {
+                getSupportFragmentManager()
+                        .beginTransaction().replace(R.id.content, fragment,
+                        "ChooserBrowseFragment").commit();
+            }
+
+            mDrawerLayout.closeDrawer(mDrawerContainer);
     }
 }

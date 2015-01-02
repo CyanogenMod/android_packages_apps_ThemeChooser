@@ -18,12 +18,11 @@ package org.cyanogenmod.theme.chooser;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
-import android.graphics.Color;
+import android.os.Build;
 import android.view.Gravity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
@@ -36,7 +35,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Browser;
+import android.provider.ThemesContract;
 import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -45,7 +44,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -56,14 +54,11 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment.IconInfo;
@@ -72,15 +67,16 @@ import org.cyanogenmod.theme.util.IconPreviewHelper;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
 import org.cyanogenmod.theme.util.Utils;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static android.content.pm.ThemeUtils.SYSTEM_TARGET_API;
+
 public class ChooserBrowseFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String TAG = ChooserBrowseFragment.class.getCanonicalName();
-    public static final String DEFAULT = ThemeConfig.HOLO_DEFAULT;
+    public static final String DEFAULT = ThemeConfig.SYSTEM_DEFAULT;
 
     private static final String THEME_STORE_PACKAGE_NAME = "com.cyngn.theme.store";
     private static final String GET_THEMES_URL =
@@ -212,7 +208,6 @@ public class ChooserBrowseFragment extends Fragment
     }
 
     private void appendLink(StringBuffer sb, String name, String url) {
-        Context context = getActivity();
         sb.append("<li>");
         sb.append("<a href=\"");
         sb.append(url);
@@ -291,70 +286,65 @@ public class ChooserBrowseFragment extends Fragment
             int wpIdx = mCursor.getColumnIndex(ThemesColumns.WALLPAPER_URI);
             int styleIdx = mCursor.getColumnIndex(ThemesColumns.STYLE_URI);
             int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
-            int legacyIndex = mCursor.getColumnIndex(ThemesColumns.IS_LEGACY_THEME);
             int defaultIndex = mCursor.getColumnIndex(ThemesColumns.IS_DEFAULT_THEME);
+            int targetApiIdx = mCursor.getColumnIndex(ThemesColumns.TARGET_API);
 
             String pkgName = mCursor.getString(pkgIdx);
-            String title = DEFAULT.equals(pkgName) ? mContext.getString(R.string.holo)
+            String title = DEFAULT.equals(pkgName) ? mContext.getString(R.string.system_theme_name)
                     : mCursor.getString(titleIdx);
             String author = mCursor.getString(authorIdx);
             String hsImagePath = DEFAULT.equals(pkgName) ? mCursor.getString(hsIdx) :
                     mCursor.getString(wpIdx);
             String styleImagePath = mCursor.getString(styleIdx);
-            boolean isLegacyTheme = mCursor.getInt(legacyIndex) == 1;
             boolean isDefaultTheme = mCursor.getInt(defaultIndex) == 1;
 
             ThemeItemHolder item = (ThemeItemHolder) view.getTag();
             item.title.setText(title + (isDefaultTheme ? " "
                     + getString(R.string.default_tag) : ""));
             item.author.setText(author);
+
+            int targetApi = mCursor.getInt(targetApiIdx);
+            item.designedFor.setVisibility(
+                    (targetApi == SYSTEM_TARGET_API || targetApi > Build.VERSION_CODES.KITKAT) ?
+                    View.GONE : View.VISIBLE);
+
             if (mFilters.isEmpty()) {
-                bindDefaultView(item, pkgName, hsImagePath, isLegacyTheme);
+                bindDefaultView(item, pkgName, hsImagePath);
             } else if (mFilters.contains(ThemesColumns.MODIFIES_BOOT_ANIM)) {
                 bindBootAnimView(item, context, pkgName);
             } else if (mFilters.contains(ThemesColumns.MODIFIES_LAUNCHER)) {
-                bindWallpaperView(item, pkgName, hsImagePath, isLegacyTheme);
+                bindWallpaperView(item, pkgName, hsImagePath);
             } else if (mFilters.contains(ThemesColumns.MODIFIES_FONTS)) {
                 bindFontView(view, context, pkgName);
             } else if (mFilters.contains(ThemesColumns.MODIFIES_OVERLAYS)) {
-                bindOverlayView(item, pkgName, styleImagePath, isLegacyTheme);
+                bindOverlayView(item, pkgName, styleImagePath);
             } else if (mFilters.contains(ThemesColumns.MODIFIES_ICONS)) {
-                bindDefaultView(item, pkgName, hsImagePath, isLegacyTheme);
+                bindDefaultView(item, pkgName, hsImagePath);
                 bindIconView(view, context, pkgName);
             } else {
-                bindDefaultView(item, pkgName, hsImagePath, isLegacyTheme);
+                bindDefaultView(item, pkgName, hsImagePath);
             }
         }
 
         private void bindDefaultView(ThemeItemHolder item, String pkgName,
-                                     String hsImagePath, boolean isLegacyTheme) {
+                                     String hsImagePath) {
             //Do not load wallpaper if we preview icons
             if (mFilters.contains(ThemesColumns.MODIFIES_ICONS)) return;
 
-            if (isLegacyTheme) {
-                item.thumbnail.setTag(pkgName);
-            } else {
-                item.thumbnail.setTag(hsImagePath);
-            }
+            item.thumbnail.setTag(pkgName);
             item.thumbnail.setImageDrawable(null);
 
-            if (item.thumbnail.getTag() != null) {
-                LoadImage loadImageTask = new LoadImage(item.thumbnail, isLegacyTheme, false, pkgName);
-                loadImageTask.execute();
-            }
+            LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, null);
+            loadImageTask.execute();
         }
 
         private void bindOverlayView(ThemeItemHolder item, String pkgName,
-                                     String styleImgPath, boolean isLegacyTheme) {
-            if (isLegacyTheme) {
-                item.thumbnail.setTag(pkgName);
-            } else {
-                item.thumbnail.setTag(styleImgPath);
-            }
+                                     String styleImgPath) {
+            item.thumbnail.setTag(pkgName);
             item.thumbnail.setImageDrawable(null);
 
             if (item.thumbnail.getTag() != null) {
-                LoadImage loadImageTask = new LoadImage(item.thumbnail, isLegacyTheme, false, pkgName);
+                LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, styleImgPath);
                 loadImageTask.execute();
             }
         }
@@ -364,16 +354,13 @@ public class ChooserBrowseFragment extends Fragment
         }
 
         private void bindWallpaperView(ThemeItemHolder item, String pkgName,
-                                       String hsImagePath, boolean isLegacyTheme) {
-            if (isLegacyTheme) {
-                item.thumbnail.setTag(pkgName);
-            } else {
-                item.thumbnail.setTag(hsImagePath);
-            }
+                                       String hsImagePath) {
+
+            item.thumbnail.setTag(pkgName);
             item.thumbnail.setImageDrawable(null);
 
             if (item.thumbnail.getTag() != null) {
-                LoadImage loadImageTask = new LoadImage(item.thumbnail, isLegacyTheme, true, pkgName);
+                LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, null);
                 loadImageTask.execute();
             }
         }
@@ -419,6 +406,7 @@ public class ChooserBrowseFragment extends Fragment
             item.thumbnail = (ImageView) row.findViewById(R.id.image);
             item.title = (TextView) row.findViewById(R.id.title);
             item.author = (TextView) row.findViewById(R.id.author);
+            item.designedFor = (TextView) row.findViewById(R.id.designed_for);
             item.mIconHolders = (ViewGroup) row.findViewById(R.id.icon_container);
             row.setTag(item);
             return row;
@@ -432,6 +420,7 @@ public class ChooserBrowseFragment extends Fragment
             item.textViewBold = (TextView) row.findViewById(R.id.text2);
             item.title = (TextView) row.findViewById(R.id.title);
             item.author = (TextView) row.findViewById(R.id.author);
+            item.designedFor = (TextView) row.findViewById(R.id.designed_for);
             row.setTag(item);
             return row;
         }
@@ -441,6 +430,7 @@ public class ChooserBrowseFragment extends Fragment
         ImageView thumbnail;
         TextView title;
         TextView author;
+        TextView designedFor;
         ViewGroup mIconHolders;
     }
 
@@ -452,15 +442,11 @@ public class ChooserBrowseFragment extends Fragment
     public class LoadImage extends AsyncTask<Object, Void, Bitmap> {
         private ImageView imv;
         private String path;
-        private boolean isLegacyTheme;
-        private boolean showWallpaper;
         private String pkgName;
 
-        public LoadImage(ImageView imv, boolean isLegacyTheme, boolean showWallpaper, String pkgName) {
+        public LoadImage(ImageView imv, String pkgName, String path) {
             this.imv = imv;
-            this.path = imv.getTag().toString();
-            this.isLegacyTheme = isLegacyTheme;
-            this.showWallpaper = showWallpaper;
+            this.path = path;
             this.pkgName = pkgName;
         }
 
@@ -473,41 +459,29 @@ public class ChooserBrowseFragment extends Fragment
                 return null;
             }
 
-            if (!isLegacyTheme) {
-                if (DEFAULT.equals(pkgName)) {
-                    Resources res = context.getResources();
-                    AssetManager assets = new AssetManager();
-                    assets.addAssetPath(WallpaperAndIconPreviewFragment.FRAMEWORK_RES);
-                    Resources frameworkRes = new Resources(assets, res.getDisplayMetrics(),
-                            res.getConfiguration());
-                    bitmap = Utils.decodeResource(frameworkRes,
-                            com.android.internal.R.drawable.default_wallpaper,
-                            mMaxImageSize.x, mMaxImageSize.y);
-                } else {
-                    if (URLUtil.isAssetUrl(path)) {
-                        Context ctx = context;
-                        try {
-                            ctx = context.createPackageContext(pkgName, 0);
-                        } catch (PackageManager.NameNotFoundException e) {
-
-                        }
-                        bitmap = Utils.getBitmapFromAsset(ctx, path, mMaxImageSize.x, mMaxImageSize.y);
-                    } else if (path != null) {
-                        bitmap = Utils.decodeFile(path, mMaxImageSize.x, mMaxImageSize.y);
-                    }
-                }
+            if (DEFAULT.equals(pkgName)) {
+                Resources res = context.getResources();
+                AssetManager assets = new AssetManager();
+                assets.addAssetPath(WallpaperAndIconPreviewFragment.FRAMEWORK_RES);
+                Resources frameworkRes = new Resources(assets, res.getDisplayMetrics(),
+                        res.getConfiguration());
+                bitmap = Utils.decodeResource(frameworkRes,
+                        com.android.internal.R.drawable.default_wallpaper,
+                        mMaxImageSize.x, mMaxImageSize.y);
             } else {
-                try {
-                    PackageManager pm = context.getPackageManager();
-                    PackageInfo pi = pm.getPackageInfo(path, 0);
-                    final Context themeContext = context.createPackageContext(path,
-                            Context.CONTEXT_IGNORE_SECURITY);
-                    final Resources res = themeContext.getResources();
-                    final int resId = showWallpaper ? pi.legacyThemeInfos[0].wallpaperResourceId :
-                            pi.legacyThemeInfos[0].previewResourceId;
-                    bitmap = Utils.decodeResource(res, resId, mMaxImageSize.x, mMaxImageSize.y);
-                } catch (PackageManager.NameNotFoundException e) {
-                    bitmap = null;
+                if (URLUtil.isAssetUrl(path)) {
+                    Context ctx = context;
+                    try {
+                        ctx = context.createPackageContext(pkgName, 0);
+                    } catch (PackageManager.NameNotFoundException e) {
+
+                    }
+                    bitmap = Utils.getBitmapFromAsset(ctx, path, mMaxImageSize.x, mMaxImageSize.y);
+                } else if (path != null) {
+                    bitmap = Utils.decodeFile(path, mMaxImageSize.x, mMaxImageSize.y);
+                } else {
+                    bitmap = Utils.getPreviewBitmap(context, pkgName,
+                                 ThemesContract.PreviewColumns.WALLPAPER_PREVIEW);
                 }
             }
             return bitmap;
@@ -515,7 +489,7 @@ public class ChooserBrowseFragment extends Fragment
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            if (!imv.getTag().toString().equals(path)) {
+            if (!imv.getTag().toString().equals(pkgName)) {
                 return;
             }
 

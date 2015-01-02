@@ -20,7 +20,6 @@ import java.util.List;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
@@ -31,6 +30,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.ThemesContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
@@ -78,26 +78,24 @@ public class WallpaperAndIconPreviewFragment extends Fragment
 
     private static final String PKGNAME_EXTRA = "pkgname";
     private static final String IMAGE_DATA_EXTRA = "url";
-    private static final String LEGACY_THEME_EXTRA = "isLegacyTheme";
     private static final String HAS_ICONS_EXTRA = "hasIcons";
 
     public static final String FRAMEWORK_RES = "/system/framework/framework-res.apk";
 
     private String mPkgName;
     private String mImageUrl;
-    private boolean mIsLegacyTheme;
     private boolean mHasIcons;
 
     private ImageView mImageView;
     private LinearLayout mIconContainer;
     private TextView mNoPreview;
 
-    static WallpaperAndIconPreviewFragment newInstance(String imageUrl, String pkgName, boolean isLegacyTheme, boolean hasIcons) {
+    static WallpaperAndIconPreviewFragment newInstance(String imageUrl, String pkgName,
+            boolean hasIcons) {
         final WallpaperAndIconPreviewFragment f = new WallpaperAndIconPreviewFragment();
         final Bundle args = new Bundle();
         args.putString(IMAGE_DATA_EXTRA, imageUrl);
         args.putString(PKGNAME_EXTRA, pkgName);
-        args.putBoolean(LEGACY_THEME_EXTRA, isLegacyTheme);
         args.putBoolean(HAS_ICONS_EXTRA, hasIcons);
         f.setArguments(args);
         return f;
@@ -107,7 +105,6 @@ public class WallpaperAndIconPreviewFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mImageUrl = getArguments().getString(IMAGE_DATA_EXTRA);
-        mIsLegacyTheme = getArguments().getBoolean(LEGACY_THEME_EXTRA);
         mHasIcons = getArguments().getBoolean(HAS_ICONS_EXTRA);
         mPkgName = getArguments().getString(PKGNAME_EXTRA);
 
@@ -174,7 +171,7 @@ public class WallpaperAndIconPreviewFragment extends Fragment
 
         @Override
         public Loader<Bitmap> onCreateLoader(int id, Bundle args) {
-            return new ImageLoader(getActivity(), mIsLegacyTheme, mPkgName, mImageUrl);
+            return new ImageLoader(getActivity(), mPkgName, mImageUrl);
         }
 
         @Override
@@ -227,13 +224,11 @@ public class WallpaperAndIconPreviewFragment extends Fragment
 
     public static class ImageLoader extends AsyncTaskLoader<Bitmap> {
         private final String mPkgName;
-        private final boolean mIsLegacyTheme;
         private final String mImageUrl;
         private final Point mDisplaySize = new Point();
 
-        public ImageLoader(Context context, boolean isLegacyTheme, String pkgName, String imageUrl) {
+        public ImageLoader(Context context, String pkgName, String imageUrl) {
             super(context);
-            mIsLegacyTheme = isLegacyTheme;
             mPkgName = pkgName;
             mImageUrl = imageUrl;
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -253,11 +248,7 @@ public class WallpaperAndIconPreviewFragment extends Fragment
         public Bitmap loadInBackground() {
             Bitmap bitmap = null;
 
-            if (mIsLegacyTheme) {
-                return loadLegacyImage();
-            }
-
-            if (ThemeConfig.HOLO_DEFAULT.equals(mPkgName)) {
+            if (ThemeConfig.SYSTEM_DEFAULT.equals(mPkgName)) {
                 Resources res = getContext().getResources();
                 AssetManager assets = new AssetManager();
                 assets.addAssetPath(FRAMEWORK_RES);
@@ -267,28 +258,15 @@ public class WallpaperAndIconPreviewFragment extends Fragment
                         com.android.internal.R.drawable.default_wallpaper, mDisplaySize.x,
                         mDisplaySize.y);
             } else {
-                if (URLUtil.isAssetUrl(mImageUrl)) {
+                if (mImageUrl == null) {
+                    bitmap = Utils.getPreviewBitmap(getContext(), mPkgName,
+                            ThemesContract.PreviewColumns.WALLPAPER_PREVIEW);
+                } else if (URLUtil.isAssetUrl(mImageUrl)) {
                     bitmap = Utils.getBitmapFromAsset(getContext(), mImageUrl, mDisplaySize.x,
                             mDisplaySize.y);
                 } else {
                     bitmap = Utils.decodeFile(mImageUrl, mDisplaySize.x, mDisplaySize.y);
                 }
-            }
-            return bitmap;
-        }
-
-        private Bitmap loadLegacyImage() {
-            Bitmap bitmap;
-            try {
-                PackageManager pm = getContext().getPackageManager();
-                PackageInfo pi = pm.getPackageInfo(mPkgName, 0);
-                final Context themeContext = getContext().createPackageContext(mPkgName,
-                        Context.CONTEXT_IGNORE_SECURITY);
-                final Resources res = themeContext.getResources();
-                bitmap = Utils.decodeResource(res, pi.legacyThemeInfos[0].previewResourceId,
-                        mDisplaySize.x, mDisplaySize.y);
-            } catch (PackageManager.NameNotFoundException e) {
-                bitmap = null;
             }
             return bitmap;
         }

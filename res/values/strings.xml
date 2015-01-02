@@ -29,7 +29,12 @@
     <string name="alarms">Alarms</string>
     <string name="style">Style</string>
 
-    <string name="holo" translatable="false">Holo</string>
+    <!-- Drawer items (some items in drawer are part of themeable items) -->
+    <string name="theme_packs">Theme Packs</string>
+    <string name="sounds">Sounds</string>
+    <string name="lockscreen_wallpaper">Lock Wallpaper</string>
+
+    <string name="system_theme_name">System</string>
     <string name="default_tag">(Default)</string>
 
     <string name="apply">Apply</string>
@@ -68,4 +73,6 @@
         <item>https://play.google.com/store/search?q=theme+engine&amp;c=apps</item>
         <item>http://wiki.cyanogenmod.org/w/Themes</item>
     </string-array>
+
+    <string name="designed_for_cm11">Designed for CM11</string>
 </resources>

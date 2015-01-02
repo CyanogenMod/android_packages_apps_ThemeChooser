@@ -15,13 +15,18 @@
  */
 package org.cyanogenmod.theme.util;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.provider.ThemesContract;
+import android.provider.ThemesContract.ThemesColumns;
 import android.util.Log;
 import android.util.TypedValue;
 
@@ -234,5 +239,37 @@ public class Utils {
                 file.delete();
             }
         }
+    }
+
+    public static Bitmap loadBitmapBlob(Cursor cursor, int columnIdx) {
+        if (columnIdx < 0) {
+            Log.w(TAG, "loadBitmapBlob(): Invalid index provided, returning null");
+            return null;
+        }
+        byte[] blob = cursor.getBlob(columnIdx);
+        if (blob == null) return null;
+        return BitmapFactory.decodeByteArray(blob, 0, blob.length);
+    }
+
+    public static Bitmap getPreviewBitmap(Context context, String pkgName, String previewColumn) {
+        if (pkgName == null) return null;
+
+        Uri uri = ThemesContract.PreviewColumns.CONTENT_URI;
+        String[] projection = new String[] { previewColumn };
+        String selection = ThemesContract.ThemesColumns.PKG_NAME + "=?";
+        String[] selectionArgs = new String[] { pkgName };
+
+        Cursor cursor = context.getContentResolver()
+                .query(uri, projection, selection, selectionArgs, null);
+
+        if (cursor != null) {
+            try {
+                if (cursor != null && cursor.moveToFirst())
+                return loadBitmapBlob(cursor, 0);
+            } finally {
+                if (cursor != null) cursor.close();
+            }
+        }
+        return null;
     }
 }

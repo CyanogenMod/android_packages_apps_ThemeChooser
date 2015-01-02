@@ -64,8 +64,7 @@ public class AppReceiver extends BroadcastReceiver {
         PackageInfo pi = context.getPackageManager().getPackageInfo(pkgName, 0);
         if (pi == null) return false;
 
-        if ((pi.themeInfos != null && pi.themeInfos.length > 0) ||
-                (pi.legacyThemeInfos != null && pi.legacyThemeInfos.length > 0)) {
+        if (pi.themeInfo != null) {
             return true;
         }
 

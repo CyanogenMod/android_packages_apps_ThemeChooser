@@ -180,7 +180,7 @@ public class IconPreviewHelper {
     private Drawable getFullResIcon(Resources resources, int iconId) {
         Drawable d;
         try {
-            d = resources.getDrawableForDensity(iconId, mIconDpi, false);
+            d = resources.getDrawableForDensity(iconId, mIconDpi, null, false);
         } catch (Resources.NotFoundException e) {
             d = null;
         }

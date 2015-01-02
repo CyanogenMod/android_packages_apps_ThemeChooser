@@ -208,7 +208,7 @@ public class BootAnimationHelper {
             String previewName = null;
             // this is ugly, ugly, ugly.  Did I mention this is ugly?
             try {
-                if (ThemeConfig.HOLO_DEFAULT.equals(path)) {
+                if (ThemeConfig.SYSTEM_DEFAULT.equals(path)) {
                     previewName = getPreviewFrameEntryName(
                             new FileInputStream(SYSTEM_BOOT_ANI_PATH));
                     bitmap = loadPreviewFrame(

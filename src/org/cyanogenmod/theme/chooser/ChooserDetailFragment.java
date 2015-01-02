@@ -23,6 +23,7 @@ import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ThemesContract;
@@ -48,14 +49,19 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.viewpagerindicator.CirclePageIndicator;
+
 import org.cyanogenmod.theme.util.ChooserDetailScrollView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import static android.content.pm.ThemeUtils.SYSTEM_TARGET_API;
 
 public class ChooserDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, ThemeChangeListener {
     public static final HashMap<String, Integer> sComponentToId = new HashMap<String, Integer>();
@@ -87,6 +93,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
     private TextView mTitle;
     private TextView mAuthor;
+    private TextView mDesignedFor;
     private Button mApply;
     private ViewPager mPager;
     private ThemeDetailPagerAdapter mPagerAdapter;
@@ -143,6 +150,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         View v = inflater.inflate(R.layout.fragment_chooser_theme_pager_item, container, false);
         mTitle = (TextView) v.findViewById(R.id.title);
         mAuthor = (TextView) v.findViewById(R.id.author);
+        mDesignedFor = (TextView) v.findViewById(R.id.designed_for);
 
         mPager = (ViewPager) v.findViewById(R.id.pager);
         mPager.setOnClickListener(new OnClickListener() {
@@ -328,22 +336,26 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         int titleIdx = cursor.getColumnIndex(ThemesColumns.TITLE);
         int authorIdx = cursor.getColumnIndex(ThemesColumns.AUTHOR);
         int hsIdx = cursor.getColumnIndex(ThemesColumns.HOMESCREEN_URI);
-        int legacyIdx = cursor.getColumnIndex(ThemesColumns.IS_LEGACY_THEME);
         int styleIdx = cursor.getColumnIndex(ThemesColumns.STYLE_URI);
         int lockIdx = cursor.getColumnIndex(ThemesColumns.LOCKSCREEN_URI);
         int defaultIdx = cursor.getColumnIndex(ThemesColumns.IS_DEFAULT_THEME);
+        int targetApiIdx = cursor.getColumnIndex(ThemesColumns.TARGET_API);
 
-        boolean isLegacyTheme = cursor.getInt(legacyIdx) == 1;
         boolean isDefaultTheme = cursor.getInt(defaultIdx) == 1;
         String title = ChooserBrowseFragment.DEFAULT.equals(mPkgName)
-                ? getActivity().getString(R.string.holo) : cursor.getString(titleIdx);
+                ? getActivity().getString(R.string.system_theme_name) : cursor.getString(titleIdx);
         String author = cursor.getString(authorIdx);
-        String hsImagePath = isLegacyTheme ? mPkgName : cursor.getString(hsIdx);
+        String hsImagePath = cursor.getString(hsIdx);
         String styleImagePath = cursor.getString(styleIdx);
         String lockWallpaperImagePath = cursor.getString(lockIdx);
 
         mTitle.setText(title + (isDefaultTheme ? " " + getString(R.string.default_tag) : ""));
         mAuthor.setText(author);
+
+        int targetApi = cursor.getInt(targetApiIdx);
+        mDesignedFor.setVisibility(
+                (targetApi == SYSTEM_TARGET_API || targetApi > Build.VERSION_CODES.KITKAT) ?
+                View.GONE : View.VISIBLE);
 
         // Configure checkboxes for all the theme components
         List<String> supportedComponents = new LinkedList<String>();
@@ -369,7 +381,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             }
         }
 
-        mPagerAdapter.setPreviewImage(hsImagePath, isLegacyTheme);
+        mPagerAdapter.setPreviewImage(hsImagePath);
         mPagerAdapter.setStyleImage(styleImagePath);
         mPagerAdapter.setLockScreenImage(lockWallpaperImagePath);
         mPagerAdapter.update(supportedComponents);
@@ -486,7 +498,6 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         private List<String> mPreviewList = new LinkedList<String>();
         private List<String> mSupportedComponents = Collections.emptyList();
         private String mPreviewImagePath;
-        private boolean mIsLegacyTheme;
         private String mLockScreenImagePath;
         private String mStyleImagePath;
 
@@ -494,9 +505,8 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             super(fm);
         }
 
-        public void setPreviewImage(String imagePath, boolean isLegacyTheme) {
+        public void setPreviewImage(String imagePath) {
             mPreviewImagePath = imagePath;
-            mIsLegacyTheme = isLegacyTheme;
         }
 
         public void setStyleImage(String imagePath) {
@@ -534,6 +544,9 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
                 mPreviewList.remove(ThemesColumns.MODIFIES_RINGTONES);
             }
 
+            // Sort supported components so that the previews are more reasonable
+            Collections.sort(mPreviewList, new PreviewComparator());
+
             notifyDataSetChanged();
         }
 
@@ -549,23 +562,23 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
             if (component.equals(ThemesColumns.MODIFIES_LAUNCHER)) {
                 boolean showIcons = mSupportedComponents.contains(ThemesColumns.MODIFIES_ICONS);
-                fragment = WallpaperAndIconPreviewFragment.newInstance(mPreviewImagePath, mPkgName,
-                        mIsLegacyTheme, showIcons);
+                fragment = WallpaperAndIconPreviewFragment.newInstance(null, mPkgName,
+                        showIcons);
             } else if (component.equals(ThemesColumns.MODIFIES_OVERLAYS)) {
                 fragment = WallpaperAndIconPreviewFragment.newInstance(mStyleImagePath, mPkgName,
-                        mIsLegacyTheme, false);
+                        false);
             } else if (component.equals(ThemesColumns.MODIFIES_BOOT_ANIM)) {
                 fragment = BootAniPreviewFragment.newInstance(mPkgName);
             } else if (component.equals(ThemesColumns.MODIFIES_FONTS)) {
                 fragment = FontPreviewFragment.newInstance(mPkgName);
             } else if (component.equals(ThemesColumns.MODIFIES_LOCKSCREEN)) {
                 fragment = WallpaperAndIconPreviewFragment.newInstance(mLockScreenImagePath,
-                        mPkgName, mIsLegacyTheme, false);
+                        mPkgName, false);
             } else if (component.equals(ThemesColumns.MODIFIES_LAUNCHER)) {
                 throw new UnsupportedOperationException("Not implemented yet!");
             } else if (component.equals(ThemesColumns.MODIFIES_ICONS)) {
                 fragment = WallpaperAndIconPreviewFragment.newInstance(mPreviewImagePath, mPkgName,
-                        mIsLegacyTheme, mSupportedComponents.contains(ThemesColumns.MODIFIES_ICONS));
+                        mSupportedComponents.contains(ThemesColumns.MODIFIES_ICONS));
             } else if (component.equals(ThemesColumns.MODIFIES_ALARMS)
                     || component.equals(ThemesColumns.MODIFIES_NOTIFICATIONS)
                     || component.equals(ThemesColumns.MODIFIES_RINGTONES)) {
@@ -574,6 +587,30 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
                 throw new UnsupportedOperationException("Cannot preview " + component);
             }
             return fragment;
+        }
+    }
+
+    /**
+     * Used to put components in their correct preview order
+     */
+    public static class PreviewComparator implements Comparator<String> {
+        private static final List<String> sRank = Arrays.asList(
+                ThemesColumns.MODIFIES_LAUNCHER,
+                ThemesColumns.MODIFIES_OVERLAYS,
+                ThemesColumns.MODIFIES_LOCKSCREEN,
+                ThemesColumns.MODIFIES_FONTS,
+                ThemesColumns.MODIFIES_ICONS,
+                ThemesColumns.MODIFIES_BOOT_ANIM,
+                ThemesColumns.MODIFIES_ALARMS,
+                ThemesColumns.MODIFIES_NOTIFICATIONS,
+                ThemesColumns.MODIFIES_RINGTONES
+        );
+
+        @Override
+        public int compare(String lhs, String rhs) {
+            Integer lhsRank = sRank.indexOf(lhs);
+            Integer rhsRank = sRank.indexOf(rhs);
+            return Integer.compare(lhsRank, rhsRank);
         }
     }
 

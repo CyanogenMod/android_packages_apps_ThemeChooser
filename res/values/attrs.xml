@@ -28,13 +28,17 @@
         <attr name="parallaxDistance" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="Theme.ChooserBase">
+        <attr name="chooserListPreferredItemHeightSmall" format="dimension" />
+    </declare-styleable>
+
     <!-- Attributes for Drawer List -->
     <declare-styleable name="DrawerItem">
         <attr name="id" format="reference" />
         <attr name="title" format="string" />
         <attr name="icon" format="reference" />
         <attr name="fragmentName" format="string" />
-        <attr name="component" format="string" />
+        <attr name="components" format="string" />
     </declare-styleable>
 
 </resources>
