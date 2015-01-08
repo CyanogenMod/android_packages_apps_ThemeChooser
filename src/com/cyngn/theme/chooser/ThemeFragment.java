@@ -294,7 +294,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         final Context context = getActivity();
         mPkgName = getArguments().getString(ARG_PACKAGE_NAME);
         mSkipLoadingAnim = getArguments().getBoolean(ARG_SKIP_LOADING_ANIM);
-        mBatteryStyle = 0;
+        mBatteryStyle = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_STYLE, 0);
 
         getIconComponents(context);
         if (sTypefaceHelperCache == null) {
