@@ -17,7 +17,7 @@
 -->
 <resources>
   <string name="app_name">Designen</string>
-  <string name="lock_screen">Hannergrondbiller spären</string>
+  <string name="lock_screen">Spärschierm-Hannergrondbiller</string>
   <string name="icons">Symboler</string>
   <string name="fonts">Schrëftaarten</string>
   <string name="wallpapers">Hannergrondbiller</string>
@@ -37,11 +37,11 @@
   <string name="unknown_author">Auteur net bekannt</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s installéiert</string>
-  <string name="theme_installed_notification_text">Theme erfollegräich installéiert.</string>
+  <string name="theme_installed_notification_text">Design erfollegräich installéiert.</string>
   <string name="menu_item_get_more_themes">Méi eroflueden</string>
   <string name="get_more_description">Du kanns méi Designen iwwer ee vun dëse Linken eroflueden:</string>
   <string-array name="get_more_entry_names">
-    <item>Vitrin mat CyanogenMod-Designen</item>
+    <item>Vitrine mat CyanogenMod-Designen</item>
     <item>Play Store</item>
     <item>Méi Infoen op der CM-Wiki</item>
   </string-array>
