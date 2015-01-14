@@ -73,4 +73,7 @@
 
     <string name="processing_theme">Processing</string>
 
+    <string name="legacy_theme_tag_text">!</string>
+    <string name="legacy_theme_warning">NOTE: %s was designed for an older version of CM.  You may experience compatibility issues with this theme.</string>
+
 </resources>

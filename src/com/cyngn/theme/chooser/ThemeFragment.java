@@ -32,6 +32,7 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUtils;
 import android.os.Handler;
@@ -102,6 +103,8 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
+
+import static android.content.pm.ThemeUtils.SYSTEM_TARGET_API;
 
 public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
         ThemeManager.ThemeChangeListener, ThemeManager.ThemeProcessingListener {
@@ -269,6 +272,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected boolean mExpanded;
     protected boolean mProcessingResources;
     protected boolean mApplyThemeOnPopulated;
+
+    protected boolean mIsLegacyTheme;
 
     protected enum CustomizeResetAction {
         Customize,
@@ -1202,6 +1207,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         ThemesColumns.AUTHOR,
                         ThemesColumns.WALLPAPER_URI,
                         ThemesColumns.HOMESCREEN_URI,
+                        ThemesColumns.TARGET_API,
                         // Theme abilities
                         ThemesColumns.MODIFIES_LAUNCHER,
                         ThemesColumns.MODIFIES_LOCKSCREEN,
@@ -1328,6 +1334,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     mProcessingResources = false;
                     hideProcessingOverlay();
                 }
+                loadLegacyThemeInfo(c);
                 populateSupportedComponents(c);
                 loadWallpaper(c, false);
                 loadStatusBar(c, false);
@@ -1481,6 +1488,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected Boolean shouldShowComponentCard(String component) {
         String pkg = mSelectedComponentsMap.get(component);
         return pkg != null && pkg.equals(mPkgName);
+    }
+
+    protected void loadLegacyThemeInfo(Cursor c) {
+        int targetApiIdx = c.getColumnIndex(ThemesColumns.TARGET_API);
+        // If this is being called for a MyThemeFragment the index will be -1 so set to
+        // SYSTEM_TARGET_API so we don't display the tag.  If the user applied a legacy theme
+        // then they should have already been warned.
+        int targetApi = targetApiIdx < 0 ? SYSTEM_TARGET_API : c.getInt(targetApiIdx);
+        mIsLegacyTheme = targetApi != SYSTEM_TARGET_API && targetApi <= Build.VERSION_CODES.KITKAT;
+        mThemeTagLayout.setLegacyTagEnabled(mIsLegacyTheme);
     }
 
     protected void loadTitle(Cursor c) {
@@ -2290,6 +2307,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         anim.setListener(null);
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
         anim.alpha(1f).start();
+
+        if (mIsLegacyTheme) {
+            // Display cm11 theme warning message
+            TextView tv = (TextView) mConfirmCancelOverlay.findViewById(R.id.warning_message);
+            tv.setVisibility(View.VISIBLE);
+            tv.setText(String.format(getString(R.string.legacy_theme_warning), mTitle.getText()));
+        }
 
         disableActionButtons();
         mClickableView.setSoundEffectsEnabled(false);

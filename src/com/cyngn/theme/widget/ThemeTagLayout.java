@@ -17,6 +17,7 @@ public class ThemeTagLayout extends LinearLayout {
     private TextView mCustomizedTag;
     private TextView mUpdatedTag;
     private TextView mDefaultTag;
+    private TextView mLegacyTag;
 
     public ThemeTagLayout(Context context) {
         this(context, null);
@@ -39,6 +40,7 @@ public class ThemeTagLayout extends LinearLayout {
         mCustomizedTag = (TextView) inflater.inflate(R.layout.tag_customized, this, false);
         mUpdatedTag = (TextView) inflater.inflate(R.layout.tag_updated, this, false);
         mDefaultTag = (TextView) inflater.inflate(R.layout.tag_default, this, false);
+        mLegacyTag = (TextView) inflater.inflate(R.layout.tag_legacy, this, false);
     }
 
     public void setAppliedTagEnabled(boolean enabled) {
@@ -108,6 +110,16 @@ public class ThemeTagLayout extends LinearLayout {
         } else {
             if (findViewById(R.id.tag_default) == null) return;
             removeView(mDefaultTag);
+        }
+    }
+
+    public void setLegacyTagEnabled(boolean enabled) {
+        if (enabled) {
+            if (findViewById(R.id.tag_legacy) != null) return;
+            addView(mLegacyTag);
+        } else {
+            if (findViewById(R.id.tag_legacy) == null) return;
+            removeView(mLegacyTag);
         }
     }
 }

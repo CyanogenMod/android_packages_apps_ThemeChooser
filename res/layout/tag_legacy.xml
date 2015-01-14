@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014 Cyanogen, Inc.
+-->
+<com.cyngn.theme.widget.LatoTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tag_legacy"
+    android:layout_width="24dp"
+    android:layout_height="24dp"
+    android:layout_marginEnd="8dp"
+    android:gravity="center"
+    android:textSize="14sp"
+    android:textColor="@color/tag_text_color"
+    android:textAllCaps="true"
+    android:textStyle="bold"
+    android:background="@drawable/bg_tag_legacy"
+    android:text="@string/legacy_theme_tag_text" />

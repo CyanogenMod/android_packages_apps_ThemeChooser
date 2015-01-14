@@ -54,4 +54,16 @@
 
     </LinearLayout>
 
+    <com.cyngn.theme.widget.LatoTextView
+        android:id="@+id/warning_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginStart="26dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="56dp"
+        android:gravity="center"
+        android:textColor="@color/apply_overlay_text_color"
+        android:textSize="12sp"/>
+
 </com.cyngn.theme.widget.ConfirmCancelOverlay>
