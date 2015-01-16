@@ -17,7 +17,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="248dp"
+    android:layout_height="@dimen/item_browse_height"
     android:orientation="vertical"
     tools:context=".StoreActivity"
     tools:ignore="MergeRootFrame" >
@@ -53,34 +53,47 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
+        android:layout_weight="2"
+        android:background="@color/title_author_background" >
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-20dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingLeft="24dp"
-            android:fontFamily="sans-serif-light"
-            android:textSize="38sp"
-            android:includeFontPadding="false" />
+            android:paddingStart="24dp"
+            android:paddingTop="6dp"
+            android:textSize="28sp" />
 
         <TextView
             android:id="@+id/author"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/title"
             android:layout_marginTop="-2dp"
-            android:textColor="@color/author_grey"
-            android:textStyle="bold"
-            android:paddingLeft="26dp"
+            android:paddingStart="26dp"
             android:textSize="12sp" />
-    </LinearLayout>
+
+        <TextView
+            android:id="@+id/designed_for"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/title"
+            android:layout_marginTop="-2dp"
+            android:paddingEnd="26dp"
+            android:text="@string/designed_for_cm11"
+            android:textSize="12sp"
+            android:textColor="@color/designed_for_color"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
 
 </LinearLayout>
