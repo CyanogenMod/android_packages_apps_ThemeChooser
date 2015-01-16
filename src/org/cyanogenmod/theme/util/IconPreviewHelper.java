@@ -166,6 +166,7 @@ public class IconPreviewHelper {
     private void setupComposedIcon(Resources res, ActivityInfo info, int iconId) {
         ComposedIconInfo iconInfo = mIconPackHelper.getComposedIconInfo();
         if (iconInfo.iconBacks == null && iconInfo.iconMask == 0 && iconInfo.iconUpon == 0) {
+            res.setIconResources(null);
             return;
         }
 
