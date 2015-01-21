@@ -28,7 +28,7 @@
         app:icon="@drawable/ic_themes_wallpaper"/>
     <DrawerItem
         app:id="@+id/lockwallpaper"
-        app:title="@string/lockscreen_wallpaper"
+        app:title="@string/lock_screen"
         app:components="mods_lockscreen"
         app:icon="@drawable/ic_themes_lockwall" />
     <DrawerItem
