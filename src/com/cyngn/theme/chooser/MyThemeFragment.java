@@ -385,10 +385,10 @@ public class MyThemeFragment extends ThemeFragment {
     protected Map<String, String> getComponentsToApply() {
         Map<String, String> componentsToApply = new HashMap<String, String>();
         // Only apply components that actually changed
-        for (String component : mCurrentTheme.keySet()) {
+        for (String component : mSelectedComponentsMap.keySet()) {
             String currentPkg = mCurrentTheme.get(component);
             String selectedPkg = mSelectedComponentsMap.get(component);
-            if (selectedPkg != null && !currentPkg.equals(selectedPkg)) {
+            if (currentPkg == null || !currentPkg.equals(selectedPkg)) {
                 componentsToApply.put(component, selectedPkg);
             }
         }
