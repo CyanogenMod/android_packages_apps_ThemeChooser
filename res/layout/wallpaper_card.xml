@@ -19,7 +19,7 @@
         android:visibility="gone"
         style="@style/card_none_text"/>
 
-    <TextView
+    <com.cyngn.theme.widget.LatoTextView
         android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
