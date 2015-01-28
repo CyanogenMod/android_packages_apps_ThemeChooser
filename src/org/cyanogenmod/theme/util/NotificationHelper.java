@@ -58,7 +58,7 @@ public class NotificationHelper {
                         context.getString(R.string.theme_installed_notification_title), themeName))
                 .setContentText(context.getString(R.string.theme_installed_notification_text))
                 .setContentIntent(pi)
-                .setSmallIcon(R.drawable.ic_notifiy)
+                .setSmallIcon(R.drawable.ic_notify)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
                         R.drawable.ic_launcher))
                 .setWhen(System.currentTimeMillis())
