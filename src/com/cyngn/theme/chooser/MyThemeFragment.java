@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -551,22 +552,26 @@ public class MyThemeFragment extends ThemeFragment {
         if (mp == null) {
             mp = new MediaPlayer();
         }
+
         final Context context = getActivity();
-        Uri ringtoneUri;
+        Ringtone ringtone = null;
         try {
-            ringtoneUri = AudioUtils.loadDefaultAudible(context, type, mp);
+            Uri ringtoneUri = AudioUtils.loadDefaultAudible(context, type, mp);
+            if (ringtoneUri != null) ringtone = RingtoneManager.getRingtone(context, ringtoneUri);
         } catch (IOException e) {
             Log.w(TAG, "Unable to load default sound ", e);
-            return;
         }
-        if (ringtoneUri != null) {
-            title.setText(RingtoneManager.getRingtone(context, ringtoneUri).getTitle(context));
+
+        if (ringtone != null) {
+            title.setText(ringtone.getTitle(context));
+            setCardTitle(audibleContainer, mCurrentTheme.get(modsComponent),
+                    getAudibleLabel(type));
         } else {
             title.setText(getString(R.string.audible_title_none));
+            setAddComponentTitle(audibleContainer, getAudibleLabel(type));
             playPause.setVisibility(View.INVISIBLE);
+            audibleContainer.setEmptyViewEnabled(true);
         }
-        setCardTitle(audibleContainer, mCurrentTheme.get(modsComponent),
-                getAudibleLabel(type));
 
         playPause.setTag(mp);
         mMediaPlayers.put(playPause, mp);
