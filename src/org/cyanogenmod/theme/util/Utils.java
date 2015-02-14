@@ -29,6 +29,7 @@ import android.provider.ThemesContract;
 import android.provider.ThemesContract.ThemesColumns;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ViewConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -271,5 +272,9 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static boolean hasNavigationBar(Context context) {
+        return !ViewConfiguration.get(context).hasPermanentMenuKey();
     }
 }

@@ -27,6 +27,8 @@
     <string name="notifications">Notifications</string>
     <string name="alarms">Alarms</string>
     <string name="style">Style</string>
+    <string name="status_bar">Status bar</string>
+    <string name="nav_bar">Navigation bar</string>
 
     <!-- Drawer items (some items in drawer are part of themeable items) -->
     <string name="theme_packs">Theme packs</string>
