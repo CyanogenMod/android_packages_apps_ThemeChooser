@@ -52,6 +52,7 @@ import android.widget.TextView;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import org.cyanogenmod.theme.util.ChooserDetailScrollView;
+import org.cyanogenmod.theme.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,6 +120,8 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
     static {
         sComponentToId.put(ThemesColumns.MODIFIES_OVERLAYS, R.id.chk_overlays);
+        sComponentToId.put(ThemesColumns.MODIFIES_STATUS_BAR, R.id.chk_status_bar);
+        sComponentToId.put(ThemesColumns.MODIFIES_NAVIGATION_BAR, R.id.chk_nav_bar);
         sComponentToId.put(ThemesColumns.MODIFIES_BOOT_ANIM, R.id.chk_boot_anims);
         sComponentToId.put(ThemesColumns.MODIFIES_FONTS, R.id.chk_fonts);
         sComponentToId.put(ThemesColumns.MODIFIES_ICONS, R.id.chk_icons);
@@ -197,6 +200,14 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             CheckBox componentCheckbox = (CheckBox) v.findViewById(entry.getValue());
             mComponentToCheckbox.put(entry.getKey(), componentCheckbox);
             componentCheckbox.setOnCheckedChangeListener(mComponentCheckChangedListener);
+        }
+
+        // Remove the nav bar checkbox if the user has hardware nav keys
+        if (!Utils.hasNavigationBar(getActivity())) {
+            View navBarCheck = v.findViewById(R.id.chk_nav_bar);
+            if (navBarCheck != null) {
+                navBarCheck.setVisibility(View.GONE);
+            }
         }
 
         getLoaderManager().initLoader(LOADER_ID_THEME_INFO, null, this);
@@ -569,6 +580,14 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
                 mPreviewList.remove(ThemesColumns.MODIFIES_RINGTONES);
             } else if (mSupportedComponents.contains(ThemesColumns.MODIFIES_NOTIFICATIONS)) {
                 mPreviewList.remove(ThemesColumns.MODIFIES_RINGTONES);
+            }
+
+            // Currently no previews for status bar and navigation bar
+            if (mSupportedComponents.contains(ThemesColumns.MODIFIES_STATUS_BAR)) {
+                mPreviewList.remove(ThemesColumns.MODIFIES_STATUS_BAR);
+            }
+            if (mSupportedComponents.contains(ThemesColumns.MODIFIES_NAVIGATION_BAR)) {
+                mPreviewList.remove(ThemesColumns.MODIFIES_NAVIGATION_BAR);
             }
 
             // Sort supported components so that the previews are more reasonable

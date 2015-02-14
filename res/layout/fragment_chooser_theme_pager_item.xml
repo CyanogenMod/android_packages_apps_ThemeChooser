@@ -44,7 +44,7 @@
                 >
                 <org.cyanogenmod.theme.util.ClickableViewPager
                     android:id="@+id/pager"
-                android:layout_width="match_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </FrameLayout>
 
@@ -124,6 +124,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/style" />
+
+                    <CheckBox
+                        android:id="@+id/chk_status_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/status_bar"/>
+
+                    <CheckBox
+                        android:id="@+id/chk_nav_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nav_bar"/>
 
                     <CheckBox
                         android:id="@+id/chk_wallpaper"
