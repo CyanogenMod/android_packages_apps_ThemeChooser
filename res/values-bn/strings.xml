@@ -21,4 +21,13 @@
   <string name="icons">প্রতিমূর্তি</string>
   <string name="fonts">হরফ</string>
   <string name="wallpapers">ওয়ালপেপার গুলি</string>
+  <string name="ringtones">রিংটোন গুলি</string>
+  <string name="notifications">প্রজ্ঞাপন সমূহ</string>
+  <string name="alarms">এলার্মস</string>
+  <string name="style">স্টাইল</string>
+  <string name="default_tag">(পূর্ব-নির্ধারিত)</string>
+  <string name="apply">প্রয়োগ</string>
+  <string name="update">হালনাগাদ</string>
+  <string name="alarm_label">এলার্ম</string>
+  <string name="notification_label">প্রজ্ঞাপন</string>
 </resources>
