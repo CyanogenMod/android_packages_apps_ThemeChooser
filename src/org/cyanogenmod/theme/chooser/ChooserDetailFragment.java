@@ -382,6 +382,8 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
             if (componentIncludedInTheme) {
                 supportedComponents.add(componentName);
+            } else {
+                componentCheckbox.setVisibility(View.GONE);
             }
         }
 
