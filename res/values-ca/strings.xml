@@ -26,12 +26,16 @@
   <string name="notifications">Notificacions</string>
   <string name="alarms">Alarmes</string>
   <string name="style">Estil</string>
+  <string name="status_bar">Barra d\'estat</string>
+  <string name="nav_bar">Barra de navegació</string>
   <string name="theme_packs">Paquets de temes</string>
   <string name="sounds">Sons</string>
   <string name="system_theme_name">Sistema</string>
   <string name="default_tag">(Predeterminat)</string>
   <string name="apply">Aplica</string>
   <string name="applying">S\'està aplicant\u2026</string>
+  <string name="applied">Aplicat</string>
+  <string name="available">Disponible</string>
   <string name="update">Actualitza</string>
   <string name="no_preview_available">No hi ha previsualització disponible</string>
   <string name="alarm_label">Alarma</string>

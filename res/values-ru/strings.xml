@@ -26,12 +26,16 @@
   <string name="notifications">Уведомления</string>
   <string name="alarms">Будильники</string>
   <string name="style">Стиль</string>
+  <string name="status_bar">Строка состояния</string>
+  <string name="nav_bar">Панель навигации</string>
   <string name="theme_packs">Наборы тем</string>
   <string name="sounds">Звуки</string>
   <string name="system_theme_name">Системная</string>
   <string name="default_tag">(По умолчанию)</string>
   <string name="apply">Применить</string>
   <string name="applying">Применение\u2026</string>
+  <string name="applied">Применено</string>
+  <string name="available">Доступно</string>
   <string name="update">Обновить</string>
   <string name="no_preview_available">Предпросмотр недоступен</string>
   <string name="alarm_label">Будильник</string>

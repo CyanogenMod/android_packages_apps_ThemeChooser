@@ -26,12 +26,16 @@
   <string name="notifications">Ειδοποιήσεις</string>
   <string name="alarms">Ξυπνητήρια</string>
   <string name="style">Στυλ</string>
+  <string name="status_bar">Γραμμή κατάστασης</string>
+  <string name="nav_bar">Γραμμή πλοήγησης</string>
   <string name="theme_packs">Πακέτα θέματος</string>
   <string name="sounds">Ήχοι</string>
   <string name="system_theme_name">Σύστημα</string>
   <string name="default_tag">(Προεπιλογή)</string>
   <string name="apply">Εφαρμογή</string>
   <string name="applying">Εφαρμογή\u2026</string>
+  <string name="applied">Εφαρμοσμένα</string>
+  <string name="available">Διαθέσιμα</string>
   <string name="update">Ενημέρωση</string>
   <string name="no_preview_available">Δεν υπάρχει διαθέσιμη προεπισκόπηση</string>
   <string name="alarm_label">Ξυπνητήρι</string>

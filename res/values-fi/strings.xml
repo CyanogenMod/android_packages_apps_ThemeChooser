@@ -26,12 +26,16 @@
   <string name="notifications">Ilmoitukset</string>
   <string name="alarms">Hälytykset</string>
   <string name="style">Tyyli</string>
+  <string name="status_bar">Tilapalkki</string>
+  <string name="nav_bar">Navigointipalkki</string>
   <string name="theme_packs">Teemapaketit</string>
   <string name="sounds">Äänet</string>
   <string name="system_theme_name">Järjestelmä</string>
   <string name="default_tag">(Oletus)</string>
   <string name="apply">Ota käyttöön</string>
   <string name="applying">Otetaan käyttöön\u2026</string>
+  <string name="applied">Käytössä</string>
+  <string name="available">Saatavilla</string>
   <string name="update">Päivitä</string>
   <string name="no_preview_available">Esikatselu ei käytettävissä</string>
   <string name="alarm_label">Hälytys</string>

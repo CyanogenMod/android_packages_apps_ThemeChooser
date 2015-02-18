@@ -26,6 +26,9 @@
   <string name="notifications">Notificaciones</string>
   <string name="alarms">Alarmas</string>
   <string name="style">Estilo</string>
+  <string name="theme_packs">Paquetes de temas</string>
+  <string name="sounds">Sonidos</string>
+  <string name="system_theme_name">Sistema</string>
   <string name="default_tag">(Por defecto)</string>
   <string name="apply">Aplicar</string>
   <string name="applying">Aplicando\u2026</string>
@@ -40,4 +43,8 @@
   <string name="theme_installed_notification_text">Tema instalado correctamente.</string>
   <string name="menu_item_get_more_themes">Conseguir más</string>
   <string name="get_more_description">Puedes conseguir más temas en los siguientes enlaces:</string>
+  <string name="get_more_entry_cm_themes_showcase">Selección de temas de CyanogenMod</string>
+  <string name="get_more_entry_play_store">Play Store</string>
+  <string name="get_more_entry_cm_wiki">Más información en la Wiki de CM</string>
+  <string name="designed_for_cm11">Diseñado para CM11</string>
 </resources>
