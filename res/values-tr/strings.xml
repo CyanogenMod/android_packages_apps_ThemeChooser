@@ -26,12 +26,16 @@
   <string name="notifications">Bildirimler</string>
   <string name="alarms">Alarmlar</string>
   <string name="style">Stil</string>
+  <string name="status_bar">Durum çubuğu</string>
+  <string name="nav_bar">Dolaşım çubuğu</string>
   <string name="theme_packs">Tema paketleri</string>
   <string name="sounds">Sesler</string>
   <string name="system_theme_name">Sistem</string>
   <string name="default_tag">(Varsayılan)</string>
   <string name="apply">Uygula</string>
   <string name="applying">Uygulanıyor\u2026</string>
+  <string name="applied">Uygulandı</string>
+  <string name="available">Kullanılabilir</string>
   <string name="update">Güncelle</string>
   <string name="no_preview_available">Mevcut önizleme yok</string>
   <string name="alarm_label">Alarm</string>

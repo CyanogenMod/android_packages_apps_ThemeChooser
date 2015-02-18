@@ -26,6 +26,7 @@
   <string name="notifications">Upozornění</string>
   <string name="alarms">Budíky</string>
   <string name="style">Styl</string>
+  <string name="theme_packs">Balíčky motivů</string>
   <string name="sounds">Zvuky</string>
   <string name="system_theme_name">Systém</string>
   <string name="default_tag">(Výchozí)</string>
@@ -42,5 +43,8 @@
   <string name="theme_installed_notification_text">Motiv byl úspěšně nainstalován.</string>
   <string name="menu_item_get_more_themes">Získat více</string>
   <string name="get_more_description">Další motivy můžete získat z následujících odkazů:</string>
+  <string name="get_more_entry_cm_themes_showcase">Náhled motivů CyanogenMod</string>
+  <string name="get_more_entry_play_store">Obchod Play</string>
+  <string name="get_more_entry_cm_wiki">Další informace na CM Wiki</string>
   <string name="designed_for_cm11">Určené pro CM11</string>
 </resources>

@@ -26,6 +26,9 @@
   <string name="notifications">알림</string>
   <string name="alarms">알람</string>
   <string name="style">스타일</string>
+  <string name="theme_packs">테마 팩</string>
+  <string name="sounds">사운드 팩</string>
+  <string name="system_theme_name">시스템</string>
   <string name="default_tag">(기본값)</string>
   <string name="apply">적용</string>
   <string name="applying">적용 중\u2026</string>
@@ -40,4 +43,8 @@
   <string name="theme_installed_notification_text">테마가 성공적으로 설치되었습니다.</string>
   <string name="menu_item_get_more_themes">더 많은 테마 얻기</string>
   <string name="get_more_description">아래 링크에서 더 많은 테마를 얻을 수 있습니다:</string>
+  <string name="get_more_entry_cm_themes_showcase">CyanogenMod 테마 쇼케이스</string>
+  <string name="get_more_entry_play_store">Play 스토어</string>
+  <string name="get_more_entry_cm_wiki">CM 위키에서 자세히 알아보기</string>
+  <string name="designed_for_cm11">CM11용</string>
 </resources>

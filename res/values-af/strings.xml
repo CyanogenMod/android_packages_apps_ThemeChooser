@@ -26,6 +26,9 @@
   <string name="notifications">Kennisgewings</string>
   <string name="alarms">Alarms</string>
   <string name="style">Styl</string>
+  <string name="theme_packs">Tema pakkette</string>
+  <string name="sounds">Klanke</string>
+  <string name="system_theme_name">Stelsel</string>
   <string name="default_tag">(Standaard)</string>
   <string name="apply">Pas toe</string>
   <string name="applying">Pas toe\u2026</string>
@@ -40,4 +43,8 @@
   <string name="theme_installed_notification_text">Tema suksesvol geïnstalleer.</string>
   <string name="menu_item_get_more_themes">Kry meer</string>
   <string name="get_more_description">Jy kan meer temas verkry van die volgende skakels:</string>
+  <string name="get_more_entry_cm_themes_showcase">Vertoonkas van CyanogenMod Temas</string>
+  <string name="get_more_entry_play_store">Play-winkel</string>
+  <string name="get_more_entry_cm_wiki">Meer inligting op die CM Wiki</string>
+  <string name="designed_for_cm11">Geskep vir CM11</string>
 </resources>
