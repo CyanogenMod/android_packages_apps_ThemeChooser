@@ -30,6 +30,10 @@
     <!-- Used for disabling theme chooser icon if store exists -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- Used for per-app themes -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="19" />
@@ -101,6 +105,8 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+
+        <service android:name="com.cyngn.theme.perapptheming.PerAppThemingWindow" />
     </application>
 
 </manifest>

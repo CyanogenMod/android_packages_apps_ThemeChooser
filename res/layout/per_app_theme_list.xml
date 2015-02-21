@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.cyngn.theme.perapptheming.PerAppThemeListLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListView
+        android:id="@+id/theme_list"
+        android:layout_width="@dimen/theme_list_width"
+        android:layout_height="@dimen/theme_list_height"
+        android:layout_gravity="center_vertical|left"
+        android:divider="@android:color/transparent"
+        android:padding="4dp"
+        android:elevation="10dp"
+        android:layout_marginLeft="@dimen/theme_list_side_margin"
+        android:layout_marginRight="@dimen/theme_list_side_margin"
+        android:background="@drawable/per_app_theme_list_background"/>
+
+    <TextView
+        android:id="@+id/applying_theme_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/per_app_theme_list_item_text_color"
+        android:text="@string/per_app_theme_applying"
+        android:textSize="16sp"
+        android:alpha="0"/>
+
+</com.cyngn.theme.perapptheming.PerAppThemeListLayout>

@@ -55,4 +55,10 @@
 
     <color name="processing_text_color">#ffffff</color>
 
+    <color name="per_app_theme_bg_color">#0fb6df</color>
+    <color name="per_app_theme_list_item_text_color">#fff</color>
+    <color name="per_app_theme_list_item_applied_text_color">#80ffffff</color>
+    <color name="per_app_theme_remove_background_normal">#0fb6df</color>
+    <color name="per_app_theme_remove_background_hover">#4fdcff</color>
+
 </resources>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014 Cyanogen, Inc.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_actions_layout"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|center_horizontal"
+    android:alpha="0">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/shop_themes_margin_bottom"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/per_app_theming"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="top|center_horizontal"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/ic_quickthemes"/>
+                <ImageView
+                    android:id="@+id/new_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|left"
+                    android:layout_marginLeft="6dp"
+                    android:src="@drawable/tag_new"
+                    android:visibility="gone"/>
+            </FrameLayout>
+
+            <com.cyngn.theme.widget.LatoTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="12sp"
+                android:textColor="#fff"
+                android:text="@string/per_app_theming_title"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/shop_themes"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="8dp"
+                android:src="@drawable/ic_themestore"/>
+
+            <com.cyngn.theme.widget.LatoTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="12sp"
+                android:textColor="#fff"
+                android:text="@string/shop_themes"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.cyngn.theme.widget.NavBarSpace
+        android:layout_width="match_parent"
+        android:layout_height="@*android:dimen/navigation_bar_height"/>
+</LinearLayout>

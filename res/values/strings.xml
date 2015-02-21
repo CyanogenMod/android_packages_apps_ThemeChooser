@@ -76,4 +76,10 @@
     <string name="legacy_theme_tag_text">!</string>
     <string name="legacy_theme_warning">NOTE: %s was designed for an older version of CM.  You may experience compatibility issues with this theme.</string>
 
+    <!-- Per app theming -->
+    <string name="per_app_theming_title">Quick theme</string>
+    <string name="per_app_theme_removal_warning">NOTE: Applying a new theme will remove any quick theme customizations.</string>
+    <string name="per_app_applied_theme_indicator">\u2022</string>
+    <string name="per_app_theme_applying">Your theme is being applied</string>
+
 </resources>

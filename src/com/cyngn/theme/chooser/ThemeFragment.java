@@ -2313,6 +2313,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             TextView tv = (TextView) mConfirmCancelOverlay.findViewById(R.id.warning_message);
             tv.setVisibility(View.VISIBLE);
             tv.setText(String.format(getString(R.string.legacy_theme_warning), mTitle.getText()));
+        } else if (Utils.hasPerAppThemesApplied(getActivity())) {
+            // Display per app theme changes will be removed warning
+            TextView tv = (TextView) mConfirmCancelOverlay.findViewById(R.id.warning_message);
+            tv.setVisibility(View.VISIBLE);
+            tv.setText(String.format(getString(R.string.per_app_theme_removal_warning),
+                    mTitle.getText()));
         }
 
         disableActionButtons();

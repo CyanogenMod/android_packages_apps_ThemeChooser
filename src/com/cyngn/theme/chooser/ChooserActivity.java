@@ -51,6 +51,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import android.widget.ImageView;
+import com.cyngn.theme.perapptheming.PerAppThemingWindow;
 import com.cyngn.theme.util.NotificationHelper;
 import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.TypefaceHelperCache;
@@ -115,7 +116,7 @@ public class ChooserActivity extends FragmentActivity
     private TypefaceHelperCache mTypefaceHelperCache;
     private boolean mIsAnimating;
     private Handler mHandler;
-    private View mShopThemesLayout;
+    private View mBottomActionsLayout;
 
     private String mSelectedTheme;
     private String mAppliedBaseTheme;
@@ -124,7 +125,6 @@ public class ChooserActivity extends FragmentActivity
     private long mAnimateContentInDelay;
     private String mThemeToApply;
     private ArrayList mComponentsToApply;
-    private boolean mAlwaysHideShopThemes;
 
     ImageView mCustomBackground;
 
@@ -173,7 +173,7 @@ public class ChooserActivity extends FragmentActivity
         mSelector = (ComponentSelector) findViewById(R.id.component_selector);
         mSelector.setOnOpenCloseListener(mOpenCloseListener);
 
-        mShopThemesLayout = findViewById(R.id.shop_themes_layout);
+        mBottomActionsLayout = findViewById(R.id.bottom_actions_layout);
 
         mSaveApplyLayout = findViewById(R.id.save_apply_layout);
         mSaveApplyLayout.findViewById(R.id.save_apply_button).setOnClickListener(
@@ -187,7 +187,8 @@ public class ChooserActivity extends FragmentActivity
                     }
                 });
 
-        mShopThemesLayout.findViewById(R.id.shop_themes).setOnClickListener(mOnShopThemesClicked);
+        mBottomActionsLayout.findViewById(R.id.shop_themes)
+                            .setOnClickListener(mOnShopThemesClicked);
 
         mTypefaceHelperCache = TypefaceHelperCache.getInstance();
         mHandler = new Handler();
@@ -195,9 +196,25 @@ public class ChooserActivity extends FragmentActivity
         mAnimateContentIn = true;
         mAnimateContentInDelay = 0;
 
+        mBottomActionsLayout.findViewById(R.id.per_app_theming).setOnClickListener(
+                new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PreferenceUtils.setShowPerAppThemeNewTag(ChooserActivity.this, false);
+                Intent intent = new Intent(ChooserActivity.this, PerAppThemingWindow.class);
+                startService(intent);
+                finish();
+            }
+        });
+
         if (Utils.isRecentTaskThemeStore(this)) {
-            mAlwaysHideShopThemes = true;
-            mShopThemesLayout.setVisibility(View.GONE);
+            mBottomActionsLayout.findViewById(R.id.shop_themes).setVisibility(View.GONE);
+        }
+        if (PreferenceUtils.getShowPerAppThemeNewTag(this)) {
+            View tag = mBottomActionsLayout.findViewById(R.id.new_tag);
+            if (tag != null) {
+                tag.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -220,8 +237,8 @@ public class ChooserActivity extends FragmentActivity
         });
     }
 
-    private void hideShopThemesLayout() {
-        final ViewPropertyAnimator anim = mShopThemesLayout.animate();
+    private void hideBottomActionsLayout() {
+        final ViewPropertyAnimator anim = mBottomActionsLayout.animate();
         anim.alpha(0f).setDuration(ANIMATE_SHOP_THEMES_HIDE_DURATION);
         anim.setListener(new Animator.AnimatorListener() {
             @Override
@@ -230,7 +247,7 @@ public class ChooserActivity extends FragmentActivity
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mShopThemesLayout.setVisibility(View.GONE);
+                mBottomActionsLayout.setVisibility(View.GONE);
             }
 
             @Override
@@ -243,9 +260,9 @@ public class ChooserActivity extends FragmentActivity
         });
     }
 
-    private void showShopThemesLayout() {
-        mShopThemesLayout.setVisibility(View.VISIBLE);
-        final ViewPropertyAnimator anim = mShopThemesLayout.animate();
+    private void showBottomActionsLayout() {
+        mBottomActionsLayout.setVisibility(View.VISIBLE);
+        final ViewPropertyAnimator anim = mBottomActionsLayout.animate();
         anim.setListener(null);
         anim.alpha(1f).setStartDelay(ThemeFragment.ANIMATE_DURATION)
                 .setDuration(ANIMATE_SHOP_THEMES_SHOW_DURATION);
@@ -257,7 +274,7 @@ public class ChooserActivity extends FragmentActivity
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         if (Utils.isRecentTaskHome(this)) {
             mContainer.setAlpha(0f);
-            mShopThemesLayout.setAlpha(0f);
+            mBottomActionsLayout.setAlpha(0f);
             mAnimateContentIn = true;
             mAnimateContentInDelay = ANIMATE_CONTENT_DELAY;
         }
@@ -339,10 +356,10 @@ public class ChooserActivity extends FragmentActivity
                 }
             }
         }, FINISH_ANIMATION_DELAY);
-        if (mExpanded && !mAlwaysHideShopThemes) {
-            hideShopThemesLayout();
-        } else if (!mAlwaysHideShopThemes) {
-            showShopThemesLayout();
+        if (mExpanded) {
+            hideBottomActionsLayout();
+        } else {
+            showBottomActionsLayout();
         }
     }
 
@@ -673,8 +690,8 @@ public class ChooserActivity extends FragmentActivity
                 .setDuration(ANIMATE_CONTENT_IN_SCALE_DURATION));
         set.setStartDelay(mAnimateContentInDelay);
         set.start();
-        mShopThemesLayout.setAlpha(0f);
-        mShopThemesLayout.animate().alpha(1f).setStartDelay(mAnimateContentInDelay)
+        mBottomActionsLayout.setAlpha(0f);
+        mBottomActionsLayout.animate().alpha(1f).setStartDelay(mAnimateContentInDelay)
                 .setDuration(ANIMATE_CONTENT_IN_ALPHA_DURATION);
         mAnimateContentIn = false;
     }

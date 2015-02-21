@@ -10,8 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ThemeUtils;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.ThemeConfig;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
@@ -425,6 +429,36 @@ public class Utils {
         return false;
     }
 
+
+    public static String getTopTaskPackageName(Context context) {
+        final ActivityManager am =
+                (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        final List<ActivityManager.RecentTaskInfo> recentTasks = am.getRecentTasks(1, 0);
+        if (recentTasks.size() > 0) {
+            ActivityManager.RecentTaskInfo recentInfo = recentTasks.get(0);
+            if (recentInfo.origActivity != null) {
+                return recentInfo.origActivity.getPackageName();
+            }
+            if (recentInfo.baseIntent != null) {
+                return recentInfo.baseIntent.getComponent().getPackageName();
+            }
+        }
+        return null;
+    }
+
+    public static boolean hasPerAppThemesApplied(Context context) {
+        final Configuration config = context.getResources().getConfiguration();
+        final ThemeConfig themeConfig = config != null ? config.themeConfig : null;
+        if (themeConfig != null) {
+            Map<String, ThemeConfig.AppTheme> themes = themeConfig.getAppThemes();
+            for (String appPkgName : themes.keySet()) {
+                if (ThemeUtils.isPerAppThemeComponent(appPkgName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     private static boolean isCurrentHomeActivity(Context context,
             ComponentName component) {

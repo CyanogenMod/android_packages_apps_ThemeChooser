@@ -32,6 +32,6 @@
 
     <include layout="@layout/component_selector"/>
     <include layout="@layout/save_apply_button"/>
-    <include layout="@layout/shop_themes"/>
+    <include layout="@layout/bottom_actions"/>
 
 </FrameLayout>

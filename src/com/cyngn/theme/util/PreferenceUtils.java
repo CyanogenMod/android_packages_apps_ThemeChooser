@@ -21,6 +21,7 @@ public class PreferenceUtils {
     public static final String PREF_UPDATED_THEMES = "updated_themes";
     public static final String PREF_NEWLY_INSTALLED_THEME_COUNT = "newly_installed_theme_count";
     public static final String PREF_INSTALLED_THEMES_PROCESSING = "installed_themes_processing";
+    public static final String PREF_SHOW_PER_APP_THEMING_NEW_TAG = "show_per_app_new_tag";
 
     public static SharedPreferences getSharedPreferences(Context context) {
         if (context == null) return null;
@@ -133,6 +134,22 @@ public class PreferenceUtils {
         SharedPreferences prefs = getSharedPreferences(context);
         if (prefs != null) {
             prefs.edit().putInt(PREF_NEWLY_INSTALLED_THEME_COUNT, count).apply();
+        }
+    }
+
+    public static boolean getShowPerAppThemeNewTag(Context context) {
+        SharedPreferences prefs = getSharedPreferences(context);
+        if (prefs != null) {
+            return prefs.getBoolean(PREF_SHOW_PER_APP_THEMING_NEW_TAG, true);
+        }
+
+        return false;
+    }
+
+    public static void setShowPerAppThemeNewTag(Context context, boolean show) {
+        SharedPreferences prefs = getSharedPreferences(context);
+        if (prefs != null) {
+            prefs.edit().putBoolean(PREF_SHOW_PER_APP_THEMING_NEW_TAG, show).apply();
         }
     }
 }
