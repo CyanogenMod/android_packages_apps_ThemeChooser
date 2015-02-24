@@ -27,6 +27,7 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:actionMenuTextColor">@android:color/white</item>
+        <item name="android:navigationBarColor">@color/primary</item>
     </style>
 
     <!-- When this style was added, android:toolbarStyle was private. Therefore, this style
