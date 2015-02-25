@@ -16,6 +16,7 @@
 package org.cyanogenmod.theme.chooser;
 
 import android.content.Context;
+import android.content.res.ThemeChangeRequest;
 import android.content.res.ThemeManager;
 import android.content.res.ThemeManager.ThemeChangeListener;
 import android.database.Cursor;
@@ -187,8 +188,8 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         mApply = (Button) v.findViewById(R.id.apply);
         mApply.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
-                List<String> components = getCheckedComponents();
-                mService.requestThemeChange(mPkgName, components);
+                ThemeChangeRequest request = getThemeChangeRequestForSelectedComponents();
+                mService.requestThemeChange(request, true);
                 mApply.setText(R.string.applying);
             }
         });
@@ -216,18 +217,18 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         return v;
     }
 
-    private List<String> getCheckedComponents() {
+    private ThemeChangeRequest getThemeChangeRequestForSelectedComponents() {
         // Get all checked components
-        List<String> components = new ArrayList<String>();
+        ThemeChangeRequest.Builder builder = new ThemeChangeRequest.Builder();
         for (Map.Entry<String, CheckBox> entry : mComponentToCheckbox.entrySet()) {
             String component = entry.getKey();
             CheckBox checkbox = entry.getValue();
             if (checkbox.isEnabled() && checkbox.isChecked()
                     && !mAppliedComponents.contains(component)) {
-                components.add(component);
+                builder.setComponent(component, mPkgName);
             }
         }
-        return components;
+        return builder.build();
     }
 
     @Override
