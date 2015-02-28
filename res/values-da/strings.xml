@@ -26,9 +26,16 @@
   <string name="notifications">Meddelelser</string>
   <string name="alarms">Alarmer</string>
   <string name="style">Stil</string>
+  <string name="status_bar">Statuslinje</string>
+  <string name="nav_bar">Navigationslinje</string>
+  <string name="theme_packs">Temapakker</string>
+  <string name="sounds">Lyde</string>
+  <string name="system_theme_name">System</string>
   <string name="default_tag">(Standard)</string>
   <string name="apply">Anvend</string>
   <string name="applying">Anvender\u2026</string>
+  <string name="applied">Anvendt</string>
+  <string name="available">Tilgængelig</string>
   <string name="update">Opdatér</string>
   <string name="no_preview_available">Intet eksempel tilgængeligt</string>
   <string name="alarm_label">Alarm</string>
@@ -40,4 +47,8 @@
   <string name="theme_installed_notification_text">Tema installeret.</string>
   <string name="menu_item_get_more_themes">Hent mere</string>
   <string name="get_more_description">Du kan få flere temaer fra følgende links:</string>
+  <string name="get_more_entry_cm_themes_showcase">CyanogenMod Temapræsentation</string>
+  <string name="get_more_entry_play_store">Play Butik</string>
+  <string name="get_more_entry_cm_wiki">Mere info på CM Wikien</string>
+  <string name="designed_for_cm11">Designet til CM11</string>
 </resources>

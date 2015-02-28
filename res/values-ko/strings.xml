@@ -26,12 +26,16 @@
   <string name="notifications">알림</string>
   <string name="alarms">알람</string>
   <string name="style">스타일</string>
+  <string name="status_bar">상태 표시줄</string>
+  <string name="nav_bar">내비게이션 바</string>
   <string name="theme_packs">테마 팩</string>
   <string name="sounds">사운드 팩</string>
   <string name="system_theme_name">시스템</string>
   <string name="default_tag">(기본값)</string>
   <string name="apply">적용</string>
   <string name="applying">적용 중\u2026</string>
+  <string name="applied">적용됨</string>
+  <string name="available">사용 가능</string>
   <string name="update">업데이트</string>
   <string name="no_preview_available">미리보기 없음</string>
   <string name="alarm_label">알람</string>

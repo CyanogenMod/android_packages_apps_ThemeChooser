@@ -26,12 +26,16 @@
   <string name="notifications">通知</string>
   <string name="alarms">闹钟</string>
   <string name="style">样式</string>
+  <string name="status_bar">状态栏</string>
+  <string name="nav_bar">导航栏</string>
   <string name="theme_packs">主题包</string>
   <string name="sounds">音效</string>
   <string name="system_theme_name">系统</string>
   <string name="default_tag">(默认)</string>
   <string name="apply">应用</string>
   <string name="applying">正在应用\u2026</string>
+  <string name="applied">已应用</string>
+  <string name="available">可用</string>
   <string name="update">更新</string>
   <string name="no_preview_available">无可用预览</string>
   <string name="alarm_label">闹钟</string>

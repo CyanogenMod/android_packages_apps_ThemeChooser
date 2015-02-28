@@ -26,12 +26,16 @@
   <string name="notifications">通知</string>
   <string name="alarms">アラーム</string>
   <string name="style">スタイル</string>
+  <string name="status_bar">ステータスバー</string>
+  <string name="nav_bar">ナビゲーションバー</string>
   <string name="theme_packs">テーマパック</string>
   <string name="sounds">サウンド</string>
   <string name="system_theme_name">システム</string>
   <string name="default_tag">（デフォルト）</string>
   <string name="apply">適用</string>
   <string name="applying">適用中\u2026</string>
+  <string name="applied">適用済み</string>
+  <string name="available">利用可能</string>
   <string name="update">更新</string>
   <string name="no_preview_available">プレビューは利用できません</string>
   <string name="alarm_label">アラーム</string>

@@ -17,14 +17,14 @@
 -->
 <resources>
   <string name="app_name">Temos</string>
-  <string name="lock_screen">Ekrano užrakto fonai</string>
+  <string name="lock_screen">Užrakto fonai</string>
   <string name="icons">Piktogramos</string>
   <string name="fonts">Šriftai</string>
   <string name="wallpapers">Darbalaukio fonai</string>
   <string name="boot_anims">Įkrovos animacijos</string>
   <string name="ringtones">Melodijos</string>
   <string name="notifications">Pranešimai</string>
-  <string name="alarms">Įspėjimai</string>
+  <string name="alarms">Signalai</string>
   <string name="style">Stilius</string>
   <string name="status_bar">Būsenos juosta</string>
   <string name="nav_bar">Naršymo juosta</string>
@@ -38,7 +38,7 @@
   <string name="available">Pasiekiama</string>
   <string name="update">Atnaujinti</string>
   <string name="no_preview_available">Peržiūra negalima</string>
-  <string name="alarm_label">Įspėjimas</string>
+  <string name="alarm_label">Signalas</string>
   <string name="notification_label">Pranešimas</string>
   <string name="ringtone_label">Melodija</string>
   <string name="unknown_author">Autorius nežinomas</string>

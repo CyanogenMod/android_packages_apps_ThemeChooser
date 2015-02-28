@@ -26,12 +26,16 @@
   <string name="notifications">Upozornění</string>
   <string name="alarms">Budíky</string>
   <string name="style">Styl</string>
+  <string name="status_bar">Stavová lišta</string>
+  <string name="nav_bar">Navigační lišta</string>
   <string name="theme_packs">Balíčky motivů</string>
   <string name="sounds">Zvuky</string>
   <string name="system_theme_name">Systém</string>
   <string name="default_tag">(Výchozí)</string>
   <string name="apply">Použít</string>
   <string name="applying">Aplikuje se\u2026</string>
+  <string name="applied">Použito</string>
+  <string name="available">K dispozici</string>
   <string name="update">Aktualizovat</string>
   <string name="no_preview_available">Náhled není dostupný</string>
   <string name="alarm_label">Budík</string>

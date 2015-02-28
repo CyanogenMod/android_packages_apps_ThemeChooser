@@ -26,12 +26,16 @@
   <string name="notifications">Értesítések</string>
   <string name="alarms">Ébresztők</string>
   <string name="style">Stílus</string>
+  <string name="status_bar">Értesítési sáv</string>
+  <string name="nav_bar">Navigációs sáv</string>
   <string name="theme_packs">Téma csomagok</string>
   <string name="sounds">Hangok</string>
   <string name="system_theme_name">Rendszer</string>
   <string name="default_tag">(Alapértelmezett)</string>
   <string name="apply">Alkalmazás</string>
   <string name="applying">Alkalmazás\u2026</string>
+  <string name="applied">Beállítva</string>
+  <string name="available">Elérhető</string>
   <string name="update">Frissítés</string>
   <string name="no_preview_available">Nincs előnézeti kép</string>
   <string name="alarm_label">Ébresztő</string>

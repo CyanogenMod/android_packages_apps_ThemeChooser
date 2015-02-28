@@ -26,12 +26,16 @@
   <string name="notifications">Benachrichtigungen</string>
   <string name="alarms">Wecker</string>
   <string name="style">Stil</string>
+  <string name="status_bar">Statusleiste</string>
+  <string name="nav_bar">Navigationsleiste</string>
   <string name="theme_packs">Designpakete</string>
   <string name="sounds">Töne</string>
   <string name="system_theme_name">System</string>
   <string name="default_tag">(Standard)</string>
   <string name="apply">Anwenden</string>
   <string name="applying">Wird angewendet\u2026</string>
+  <string name="applied">Angewendet</string>
+  <string name="available">Verfügbar</string>
   <string name="update">Aktualisieren</string>
   <string name="no_preview_available">Keine Vorschau verfügbar</string>
   <string name="alarm_label">Wecker</string>

@@ -26,12 +26,16 @@
   <string name="notifications">Обавештења</string>
   <string name="alarms">Аларми</string>
   <string name="style">Стил</string>
+  <string name="status_bar">Статусна трака</string>
+  <string name="nav_bar">Навигациона трака</string>
   <string name="theme_packs">Пакети тема</string>
   <string name="sounds">Звуци</string>
   <string name="system_theme_name">Систем</string>
   <string name="default_tag">(Подразумевано)</string>
   <string name="apply">Примени</string>
   <string name="applying">Примена\u2026</string>
+  <string name="applied">Примењен</string>
+  <string name="available">Доступно</string>
   <string name="update">Ажурирај</string>
   <string name="no_preview_available">Нема доступног прегледа</string>
   <string name="alarm_label">Аларм</string>
