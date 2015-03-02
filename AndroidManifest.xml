@@ -47,12 +47,9 @@
 
         <receiver android:name="org.cyanogenmod.theme.chooser.AppReceiver" >
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED" />
+                <action android:name="themescontract.intent.action.THEME_INSTALLED" />
+                <action android:name="themescontract.intent.action.THEME_REMOVED" />
                 <data android:scheme="package" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.THEME_RESOURCES_CACHED" />
             </intent-filter>
         </receiver>
 
