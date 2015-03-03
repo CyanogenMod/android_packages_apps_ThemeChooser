@@ -17,6 +17,7 @@ package org.cyanogenmod.theme.chooser;
 
 import android.content.Context;
 import android.content.res.ThemeChangeRequest;
+import android.content.res.ThemeChangeRequest.RequestType;
 import android.content.res.ThemeManager;
 import android.content.res.ThemeManager.ThemeChangeListener;
 import android.database.Cursor;
@@ -228,6 +229,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
                 builder.setComponent(component, mPkgName);
             }
         }
+        builder.setRequestType(RequestType.USER_REQUEST);
         return builder.build();
     }
 
