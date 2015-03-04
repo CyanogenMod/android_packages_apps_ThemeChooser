@@ -869,8 +869,9 @@ public class ChooserActivity extends FragmentActivity
         switch (id) {
             case LOADER_ID_INSTALLED_THEMES:
                 mAppliedBaseTheme = PreferenceUtils.getAppliedBaseTheme(this);
-                selection = ThemesColumns.PRESENT_AS_THEME + "=?";
-                selectionArgs = new String[] { "1" };
+                selection = ThemesColumns.PRESENT_AS_THEME + "=? AND " +
+                        ThemesColumns.INSTALL_STATE + "=?";
+                selectionArgs = new String[] { "1", "" + ThemesColumns.InstallState.INSTALLED};
                 // sort in ascending order but make sure the "default" theme is always first
                 sortOrder = "(" + ThemesColumns.IS_DEFAULT_THEME + "=1) DESC, "
                         + "(" + ThemesColumns.PKG_NAME + "='" + mAppliedBaseTheme + "') DESC, "

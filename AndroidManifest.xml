@@ -79,20 +79,10 @@
 
         <receiver android:name="com.cyngn.theme.chooser.AppReceiver" >
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_REPLACED" />
-                <category
-                    android:name="com.tmobile.intent.category.THEME_PACKAGE_INSTALL_STATE_CHANGE" />
+                <action android:name="themescontract.intent.action.THEME_INSTALLED" />
+                <action android:name="themescontract.intent.action.THEME_REMOVED" />
+                <action android:name="themescontract.intent.action.THEME_UPDATED" />
                 <data android:scheme="package" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED" />
-                <category
-                    android:name="com.tmobile.intent.category.THEME_PACKAGE_INSTALL_STATE_CHANGE" />
-                <data android:scheme="package" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.THEME_RESOURCES_CACHED" />
             </intent-filter>
         </receiver>
 

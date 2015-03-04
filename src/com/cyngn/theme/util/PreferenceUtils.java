@@ -82,42 +82,6 @@ public class PreferenceUtils {
         }
     }
 
-    public static Set<String> getInstalledThemesBeingProcessed(Context context) {
-        SharedPreferences prefs = getSharedPreferences(context);
-        if (prefs == null) return null;
-
-        return prefs.getStringSet(PREF_INSTALLED_THEMES_PROCESSING, null);
-    }
-
-    public static void addThemeBeingProcessed(Context context, String pkgName) {
-        SharedPreferences prefs = getSharedPreferences(context);
-        if (prefs != null) {
-            Set<String> current = prefs.getStringSet(PREF_INSTALLED_THEMES_PROCESSING, null);
-            if (current == null) current = new HashSet<String>(1);
-            if (current.add(pkgName)) {
-                prefs.edit().putStringSet(PREF_INSTALLED_THEMES_PROCESSING, current).apply();
-            }
-        } else {
-            Log.w(TAG, "addThemeBeingProcessed: Unable to get shared preferences");
-        }
-    }
-
-    public static void removeThemeBeingProcessed(Context context, String pkgName) {
-        SharedPreferences prefs = getSharedPreferences(context);
-        if (prefs != null) {
-            Set<String> updatedThemes = new HashSet<String>();
-            Set<String> current = prefs.getStringSet(PREF_INSTALLED_THEMES_PROCESSING, null);
-            if (current != null) {
-                updatedThemes.addAll(current);
-            }
-            if (updatedThemes.remove(pkgName)) {
-                prefs.edit().putStringSet(PREF_INSTALLED_THEMES_PROCESSING, updatedThemes).apply();
-            }
-        } else {
-            Log.w(TAG, "removeThemeBeingProcessed: Unable to get shared preferences");
-        }
-    }
-
     public static boolean hasThemeBeenUpdated(Context context, String pkgName) {
         Set<String> updatedThemes = getUpdatedThemes(context);
         return updatedThemes != null && updatedThemes.contains(pkgName);
