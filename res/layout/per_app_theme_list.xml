@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.cyngn.theme.perapptheming.PerAppThemeListLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
+    <com.cyngn.theme.perapptheming.PerAppThemeListView
         android:id="@+id/theme_list"
         android:layout_width="@dimen/theme_list_width"
-        android:layout_height="@dimen/theme_list_height"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|left"
+        android:minHeight="@dimen/theme_list_min_height"
+        app:maxHeight="@dimen/theme_list_max_height"
         android:divider="@android:color/transparent"
         android:padding="4dp"
         android:elevation="10dp"

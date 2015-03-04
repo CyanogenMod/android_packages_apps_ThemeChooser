@@ -13,4 +13,9 @@
         <attr name="labelText" format="string" />
     </declare-styleable>
 
+    <!-- Attributes for PerAppThemeListView -->
+    <declare-styleable name="PerAppThemeListView">
+        <attr name="maxHeight" format="dimension" />
+    </declare-styleable>
+
 </resources>

@@ -46,7 +46,7 @@ public class PerAppThemeListLayout extends FrameLayout {
         super(context, attrs, defStyleAttr);
         final Resources res = getResources();
         float width = res.getDimension(R.dimen.theme_list_width);
-        float height = res.getDimension(R.dimen.theme_list_height);
+        float height = res.getDimension(R.dimen.theme_list_max_height);
         mMaxRadius = (float) Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
         mRevealPath = new Path();
 

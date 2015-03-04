@@ -75,7 +75,8 @@
     <dimen name="floating_window_delete_box_width">360dp</dimen>
     <!-- Theme list -->
     <dimen name="theme_list_width">204dp</dimen>
-    <dimen name="theme_list_height">360dp</dimen>
+    <dimen name="theme_list_min_height">160dp</dimen>
+    <dimen name="theme_list_max_height">360dp</dimen>
     <dimen name="theme_list_side_margin">16dp</dimen>
     <!-- floating window dimens -->
     <dimen name="floating_window_margin_vertical">5dp</dimen>

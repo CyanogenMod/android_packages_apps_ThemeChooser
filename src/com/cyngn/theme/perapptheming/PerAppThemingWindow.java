@@ -630,7 +630,8 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
                 });
         animator.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {}
+            public void onAnimationStart(Animator animation) {
+            }
 
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -638,10 +639,12 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {}
+            public void onAnimationCancel(Animator animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animator animation) {}
+            public void onAnimationRepeat(Animator animation) {
+            }
         });
         animator.start();
         mThemeApplyingView.animate()
@@ -653,7 +656,15 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         int thirdHeight = getScreenHeight() / 3;
         // use the center of the fab to decide where to place the list
         int fabLocationY = mParams.y + mDraggableIconImage.getHeight() / 2;
-        int listHeight = getResources().getDimensionPixelSize(R.dimen.theme_list_height);
+        int listHeight = mThemeList.getMeasuredHeight();
+        if (listHeight <= 0) {
+            // not measured yet so let's force that
+            int width = getResources().getDimensionPixelSize(R.dimen.theme_list_width);
+            int height = getResources().getDimensionPixelSize(R.dimen.theme_list_max_height);
+            mThemeList.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.AT_MOST),
+                    View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.AT_MOST));
+            listHeight = mThemeList.getMeasuredHeight();
+        }
 
         // If we're in the top 1/3 of the screen position the top of the list with the top
         // of the fab.  Second 3rd will position the list so that it is vertically centered
@@ -664,13 +675,11 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         } else if (fabLocationY < thirdHeight * 2) {
             mListParams.topMargin = fabLocationY - listHeight / 2;
         } else {
-            mListParams.topMargin = mParams.y + mDraggableIconImage.getHeight() -
-                    getResources().getDimensionPixelSize(R.dimen.theme_list_height);
+            mListParams.topMargin = mParams.y + mDraggableIconImage.getHeight() - listHeight;
         }
         mListParams.gravity = Gravity.TOP |
                 (listSide == LIST_ON_LEFT_SIDE ? Gravity.LEFT : Gravity.RIGHT);
         mThemeList.setLayoutParams(mListParams);
-        mThemeList.requestLayout();
     }
 
     private AdapterView.OnItemClickListener mThemeClickedListener =
