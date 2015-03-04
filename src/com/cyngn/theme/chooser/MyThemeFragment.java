@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ThemeUtils;
 import android.content.res.Resources;
+import android.content.res.ThemeChangeRequest;
+import android.content.res.ThemeChangeRequest.RequestType;
 import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -380,6 +382,12 @@ public class MyThemeFragment extends ThemeFragment {
         // Only the ThemeFragment should be altering this, for the MyThemeFragment this is not
         // desirable as it changes components the user did not even touch.
         return originalMap;
+    }
+
+    @Override
+    protected ThemeChangeRequest getThemeChangeRequestForComponents(
+            Map<String, String> componentMap) {
+        return getThemeChangeRequestForComponents(componentMap, RequestType.USER_REQUEST_MIXNMATCH);
     }
 
     @Override

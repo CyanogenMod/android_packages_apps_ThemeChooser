@@ -17,6 +17,8 @@ import android.content.pm.ThemeUtils;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.ThemeChangeRequest;
+import android.content.res.ThemeChangeRequest.RequestType;
 import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
 import android.database.Cursor;
@@ -2099,7 +2101,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                             ThemeManager tm = getThemeManager();
                             if (tm != null) {
                                 tm.addClient(ThemeFragment.this);
-                                tm.requestThemeChange(fullMap);
+                                tm.requestThemeChange(getThemeChangeRequestForComponents(fullMap),
+                                        true);
                             }
                             mApplyThemeOnPopulated = false;
                         } else {
@@ -2124,6 +2127,28 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         }
         return newMap;
+    }
+
+    /**
+     * This is the method that will be called when applying a theme and the idea is to override
+     * it in MyThemeFragment and pass in a different RequestType, once we have a type that indicates
+     * the user is mixing and matching instead of applying an entire theme.
+     * @param componentMap
+     * @return
+     */
+    protected ThemeChangeRequest getThemeChangeRequestForComponents(
+            Map<String, String> componentMap) {
+        return getThemeChangeRequestForComponents(componentMap, RequestType.USER_REQUEST);
+    }
+
+    protected ThemeChangeRequest getThemeChangeRequestForComponents(
+            Map<String, String> componentMap, RequestType requestType) {
+        ThemeChangeRequest.Builder builder = new ThemeChangeRequest.Builder();
+        for (String component : componentMap.keySet()) {
+            builder.setComponent(component, componentMap.get(component));
+        }
+        builder.setRequestType(requestType);
+        return builder.build();
     }
 
     protected Map<String, String> getComponentsToApply() {
