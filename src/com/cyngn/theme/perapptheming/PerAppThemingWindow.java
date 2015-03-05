@@ -580,7 +580,13 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
 
         mDraggableIconImage.animate()
                            .alpha(0f)
-                           .setDuration(ANIMATION_DURATION);
+                           .setDuration(ANIMATION_DURATION)
+                           .withEndAction(new Runnable() {
+                               @Override
+                               public void run() {
+                                   mDraggableIcon.setVisibility(View.GONE);
+                               }
+                           });
 
         setThemeListPosition(listSide);
         mAdapter.setCurrentTheme(
@@ -595,6 +601,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         }
         mThemeListLayout.circularHide(mParams.x + mDraggableIconImage.getWidth() / 2,
                 mParams.y + mDraggableIconImage.getHeight() / 2, ANIMATION_DURATION);
+        mDraggableIcon.setVisibility(View.VISIBLE);
         mDraggableIconImage.animate()
                            .alpha(1f)
                            .setDuration(ANIMATION_DURATION)
