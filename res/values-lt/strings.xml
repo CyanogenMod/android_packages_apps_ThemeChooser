@@ -21,7 +21,7 @@
   <string name="icons">Piktogramos</string>
   <string name="fonts">Šriftai</string>
   <string name="wallpapers">Darbalaukio fonai</string>
-  <string name="boot_anims">Įkrovos animacijos</string>
+  <string name="boot_anims">Paleidimo animacijos</string>
   <string name="ringtones">Melodijos</string>
   <string name="notifications">Pranešimai</string>
   <string name="alarms">Signalai</string>

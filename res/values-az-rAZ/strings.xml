@@ -16,5 +16,35 @@
      limitations under the License.
 -->
 <resources>
+  <string name="app_name">Temalar</string>
   <string name="lock_screen">Kilit ekranı divar kağızları</string>
+  <string name="icons">Nişanlar</string>
+  <string name="fonts">Yazı tipləri</string>
+  <string name="wallpapers">Divar kağızları</string>
+  <string name="boot_anims">Açılış animasiyaları</string>
+  <string name="notifications">Bildirişlər</string>
+  <string name="style">Stil</string>
+  <string name="status_bar">Durum sətri</string>
+  <string name="nav_bar">Naviqasiya sətri</string>
+  <string name="theme_packs">Tema paketləri</string>
+  <string name="sounds">Səslər</string>
+  <string name="system_theme_name">Sistem</string>
+  <string name="default_tag">(İlkin)</string>
+  <string name="apply">Tətbiq et</string>
+  <string name="applying">Tətbiq edilir\u2026</string>
+  <string name="applied">Tətbiq edildi</string>
+  <string name="available">Mövcuddur</string>
+  <string name="update">Yenilə</string>
+  <string name="no_preview_available">Mövcud önizləmə yoxdur</string>
+  <string name="notification_label">Bildiriş</string>
+  <string name="unknown_author">Sahibi bilinmir</string>
+  <string name="font_preview_letters">AaBbCcDd123</string>
+  <string name="theme_installed_notification_title">%s quraşdırıldı</string>
+  <string name="theme_installed_notification_text">Tema uğurla quraşdırıldı.</string>
+  <string name="menu_item_get_more_themes">Daha çoxunu əldə edin</string>
+  <string name="get_more_description">Aşağıdakı keçidlərdən daha çox tema əldə edin:</string>
+  <string name="get_more_entry_cm_themes_showcase">CyanogenMod Tema Vitrini</string>
+  <string name="get_more_entry_play_store">Play Market</string>
+  <string name="get_more_entry_cm_wiki">Daha ətraflı CM Wiki\'də</string>
+  <string name="designed_for_cm11">CM11 üçün hazırlanıb</string>
 </resources>
