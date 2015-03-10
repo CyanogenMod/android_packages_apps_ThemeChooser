@@ -87,6 +87,14 @@ public class ChooserActivity extends FragmentActivity
 
     private static final String TYPE_IMAGE = "image/*";
 
+    private static final String CYNGN_THEMES_PERMISSION =
+            "com.cyngn.themes.permission.THEMES_APP";
+    private static final String ACTION_CHOOSER_OPENED =
+            "com.cyngn.themes.action.CHOOSER_OPENED";
+    private static final String ACTION_THEME_REMOVED =
+            "com.cyngn.themes.action.THEME_REMOVED_FROM_CHOOSER";
+    private static final String EXTRA_PACKAGE = "package";
+
     /**
      * Request code for picking an external wallpaper
      */
@@ -555,6 +563,7 @@ public class ChooserActivity extends FragmentActivity
     public void uninstallTheme(String pkgName) {
         PackageManager pm = getPackageManager();
         pm.deletePackage(pkgName, new PackageDeleteObserver(), PackageManager.DELETE_ALL_USERS);
+        sendThemeRemovedBroadcast(pkgName);
     }
 
     private void slideContentIntoView(int yDelta, int selectorHeight) {
@@ -649,6 +658,7 @@ public class ChooserActivity extends FragmentActivity
         if (mTypefaceHelperCache.getTypefaceCount() <= 0) {
             new TypefacePreloadTask().execute();
         }
+        sendChooserOpenedBroadcast();
         mAnimateContentInDelay = ANIMATE_CONTENT_DELAY;
     }
 
@@ -673,6 +683,16 @@ public class ChooserActivity extends FragmentActivity
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void sendChooserOpenedBroadcast() {
+        sendBroadcast(new Intent(ACTION_CHOOSER_OPENED), CYNGN_THEMES_PERMISSION);
+    }
+
+    private void sendThemeRemovedBroadcast(String pkgName) {
+        Intent intent = new Intent(ACTION_THEME_REMOVED);
+        intent.putExtra(EXTRA_PACKAGE, pkgName);
+        sendBroadcast(intent, CYNGN_THEMES_PERMISSION);
     }
 
     private void animateContentIn() {

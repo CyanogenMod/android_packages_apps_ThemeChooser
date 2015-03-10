@@ -34,6 +34,9 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
 
+    <permission android:name="com.cyngn.themes.permission.THEMES_APP"
+        android:protectionLevel="signature" />
+
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="19" />
