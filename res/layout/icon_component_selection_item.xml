@@ -12,7 +12,7 @@
         android:id="@+id/icon"
         android:layout_width="@dimen/component_selection_content_width"
         android:layout_height="@dimen/component_selection_content_height"
-        android:src="@drawable/ic_app_themes"
+        android:src="@mipmap/ic_app_themes"
         android:scaleType="fitCenter"
         android:layout_marginTop="@dimen/component_margin_top"
         android:layout_gravity="center_horizontal"/>
