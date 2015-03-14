@@ -26,9 +26,16 @@
   <string name="notifications">Teated</string>
   <string name="alarms">Alarmid</string>
   <string name="style">Stiil</string>
+  <string name="status_bar">Olekuriba</string>
+  <string name="nav_bar">Navigeerimisriba</string>
+  <string name="theme_packs">Teemade pakid</string>
+  <string name="sounds">Helid</string>
+  <string name="system_theme_name">Süsteem</string>
   <string name="default_tag">(Vaikimisi)</string>
   <string name="apply">Rakenda</string>
   <string name="applying">Rakendan\u2026</string>
+  <string name="applied">Rakendatud</string>
+  <string name="available">Saadaval</string>
   <string name="update">Värskenda</string>
   <string name="no_preview_available">Eelvaade pole saadaval</string>
   <string name="alarm_label">Alarm</string>
@@ -40,4 +47,8 @@
   <string name="theme_installed_notification_text">Teema edukalt installitud.</string>
   <string name="menu_item_get_more_themes">Saa rohkem</string>
   <string name="get_more_description">Sa saad rohkem teemasid järgnevatelt linkidelt:</string>
+  <string name="get_more_entry_cm_themes_showcase">CyanogenMod Teemade Esitlus</string>
+  <string name="get_more_entry_play_store">Play Pood</string>
+  <string name="get_more_entry_cm_wiki">Rohkem teavet CM Wiki\'st</string>
+  <string name="designed_for_cm11">Mõeldud CM11-le</string>
 </resources>
