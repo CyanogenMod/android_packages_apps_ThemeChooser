@@ -24,7 +24,9 @@ public class AppReceiver extends BroadcastReceiver {
         String action = intent.getAction();
 
         if (ThemesContract.Intent.ACTION_THEME_INSTALLED.equals(action)) {
-            NotificationHelper.postThemeInstalledNotification(context, pkgName);
+            if (!pkgName.equals(ThemeUtils.getDefaultThemePackageName(context))) {
+                NotificationHelper.postThemeInstalledNotification(context, pkgName);
+            }
         } else if (ThemesContract.Intent.ACTION_THEME_REMOVED.equals(action)) {
             // remove updated status for this theme (if one exists)
             PreferenceUtils.removeUpdatedTheme(context, pkgName);
