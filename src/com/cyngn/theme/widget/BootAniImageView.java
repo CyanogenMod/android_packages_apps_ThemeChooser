@@ -20,6 +20,8 @@ import java.util.zip.ZipFile;
 public class BootAniImageView extends ImageView {
     private static final String TAG = BootAniImageView.class.getName();
 
+    private static final boolean DEBUG = false;
+
     private static final int MAX_BUFFERS = 2;
 
     private Bitmap[] mBuffers = new Bitmap[MAX_BUFFERS];
@@ -128,7 +130,26 @@ public class BootAniImageView extends ImageView {
             mBuffers[mWriteBufferIndex] =
                     BitmapFactory.decodeStream(mBootAniZip.getInputStream(mBootAniZip.getEntry(
                             part.frames.get(mCurrentFrame++))), null, opts);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException iae) {
+            // In case we're here because the bitmap could not be re-used, try creating a new one
+            opts.inBitmap = null;
+            try {
+                if (DEBUG) {
+                    Log.d(TAG, "Trying to load frame without reusing existing bitmap", iae);
+                }
+                if (mBuffers[mWriteBufferIndex] != null) {
+                    // clean up our old bitmap
+                    mBuffers[mWriteBufferIndex].recycle();
+                    mBuffers[mWriteBufferIndex] = null;
+                }
+                mBuffers[mWriteBufferIndex] =
+                        BitmapFactory.decodeStream(mBootAniZip.getInputStream(mBootAniZip.getEntry(
+                                part.frames.get(mCurrentFrame++))), null, opts);
+            } catch (Exception e) {
+                // Still failling?  Let's log it and carry on.
+                Log.w(TAG, "Unable to get next frame", e);
+            }
+        } catch (IOException e) {
             Log.w(TAG, "Unable to get next frame", e);
         }
         mWriteBufferIndex = (mWriteBufferIndex + 1) % MAX_BUFFERS;
