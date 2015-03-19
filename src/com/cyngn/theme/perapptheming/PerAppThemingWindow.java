@@ -14,8 +14,10 @@ import android.content.res.Resources;
 import android.content.res.ThemeChangeRequest;
 import android.content.res.ThemeConfig;
 import android.content.res.ThemeManager;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.ThemesContract.ThemesColumns;
@@ -168,6 +170,8 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         final Configuration config = getResources().getConfiguration();
         mThemeConfig = config != null ? config.themeConfig : null;
         loadThemes();
+        getContentResolver().registerContentObserver(ThemesColumns.CONTENT_URI, true,
+                mThemesObserver);
     }
 
     @Override
@@ -301,6 +305,10 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         if (mBroadcastReceiver != null) {
             unregisterReceiver(mBroadcastReceiver);
             mBroadcastReceiver = null;
+        }
+        if (mThemesObserver != null) {
+            getContentResolver().unregisterContentObserver(mThemesObserver);
+            mThemesObserver = null;
         }
     }
 
@@ -551,17 +559,36 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
 
     private void loadThemes() {
         String[] columns = {ThemesColumns._ID, ThemesColumns.TITLE, ThemesColumns.PKG_NAME};
-        String selection = ThemesColumns.MODIFIES_OVERLAYS + "=?";
-        String[] selectionArgs = {"1"};
+        String selection = ThemesColumns.MODIFIES_OVERLAYS + "=? AND " +
+                ThemesColumns.INSTALL_STATE + "=?";
+        String[] selectionArgs = {"1", "" + ThemesColumns.InstallState.INSTALLED};
         String sortOrder = ThemesColumns.TITLE + " ASC";
         Cursor c = getContentResolver().query(ThemesColumns.CONTENT_URI, columns, selection,
                 selectionArgs, sortOrder);
         if (c != null) {
-            mAdapter = new ThemesAdapter(this, c);
-            mThemeList.setAdapter(mAdapter);
-            mThemeList.setOnItemClickListener(mThemeClickedListener);
+            if (mAdapter == null) {
+                mAdapter = new ThemesAdapter(this, c);
+                mThemeList.setAdapter(mAdapter);
+                mThemeList.setOnItemClickListener(mThemeClickedListener);
+            } else {
+                String pkgName = (String) mAdapter.getItem(0);
+                mAdapter.populateThemes(c);
+                mAdapter.setCurrentTheme(pkgName);
+            }
         }
     }
+
+    private ContentObserver mThemesObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            onChange(selfChange, null);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            loadThemes();
+        }
+    };
 
     private void showThemeList(final int listSide) {
         if (mListLayoutParams == null) {
@@ -955,6 +982,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         }
 
         private void populateThemes(Cursor cursor) {
+            mThemes.clear();
             while(cursor.moveToNext()) {
                 ThemeInfo info = new ThemeInfo(
                         cursor.getString(cursor.getColumnIndex(ThemesColumns.PKG_NAME)),
