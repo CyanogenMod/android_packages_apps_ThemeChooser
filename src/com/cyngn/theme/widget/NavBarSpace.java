@@ -28,11 +28,12 @@ public class NavBarSpace extends View {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (!Utils.hasNavigationBar(mContext)) {
-            int width = MeasureSpec.getSize(widthMeasureSpec);
-            setMeasuredDimension(width, 0);
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        if (!Utils.hasNavigationBar(getContext())) {
+            this.setVisibility(View.GONE);
+        } else {
+            this.setVisibility(View.VISIBLE);
         }
     }
 }

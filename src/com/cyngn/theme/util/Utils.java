@@ -21,12 +21,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.RemoteException;
+import android.provider.Settings;
 import android.provider.ThemesContract;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.ViewConfiguration;
+import android.view.IWindowManager;
 import android.view.WindowManager;
 
+import android.view.WindowManagerGlobal;
 import com.cyngn.theme.chooser.ChooserActivity;
 
 import java.io.File;
@@ -244,7 +247,18 @@ public class Utils {
     }
 
     public static boolean hasNavigationBar(Context context) {
-        return !ViewConfiguration.get(context).hasPermanentMenuKey();
+        boolean needsNavigationBar = false;
+        try {
+            IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
+            needsNavigationBar = wm.needsNavigationBar();
+        } catch (RemoteException e) {
+        }
+        // Need to also check for devices with hardware keys where the user has chosen to use
+        // the on screen navigation bar
+        needsNavigationBar = needsNavigationBar ||
+                Settings.Secure.getInt(context.getContentResolver(),
+                        Settings.Secure.DEV_FORCE_SHOW_NAVBAR, 0) == 1;
+        return needsNavigationBar;
     }
 
     public static Bitmap loadBitmapBlob(Cursor cursor, int columnIdx) {
