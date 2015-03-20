@@ -720,7 +720,7 @@ public class ChooserActivity extends FragmentActivity
         @Override
         public void onClick(View v) {
             ThemeFragment f = getCurrentFragment();
-            if (f != null) {
+            if (f != null && !mThemeChanging) {
                 f.performClick(mPager.isClickedOnContent());
             }
         }
