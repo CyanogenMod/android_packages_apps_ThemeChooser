@@ -1,34 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2014 Cyanogen, Inc.
+     Copyright (C) 2014-2015 Cyanogen, Inc.
 -->
 <resources>
 
     <string name="app_name">Theme Chooser</string>
-
-    <string name="unknown_author">Author unknown</string>
 
     <string name="font_preview_letters">AaBbCcDd</string>
 
     <string name="theme_installed_notification_title">%s installed</string>
     <string name="theme_installed_notification_text">Theme successfully installed.</string>
 
-    <!-- Note: These two are for "themes", meaning multiple themes -->
+    <!-- Note: These are for "themes", meaning multiple themes -->
     <string name="themes_installed_notification_title">%d themes installed</string>
+    <string name="themes_installed_notification_text_one">%1$s and %2$d other installed.</string>
+    <string name="themes_installed_notification_text_other">%1$s and %2$d others installed.</string>
     <plurals name="themes_installed_notification_text">
-        <item quantity="one">%1$s and %2$d other installed.</item>
-        <item quantity="other">%1$s and %2$d others installed.</item>
+        <item quantity="one">@string/themes_installed_notification_text_one</item>
+        <item quantity="other">@string/themes_installed_notification_text_other</item>
     </plurals>
 
     <string name="status_bar_clock_text" translatable="false">5:30</string>
-    <string name="status_bar">Status bar</string>
-    <string name="navigation_bar">Navigation bar</string>
 
     <string name="font_component_item_text">Aa</string>
-
-    <string name="my_theme">My theme</string>
-
-    <string name="save_and_apply_title">Save &amp; apply</string>
 
     <!-- Labels for each theme component card -->
     <string name="icon_label">Icons</string>
@@ -43,19 +37,23 @@
     <string name="notification_label">Notification</string>
     <string name="ringtone_label">Ringtone</string>
 
+    <!-- Overflow menu -->
     <string name="menu_author_info">Author</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_reset">Reset theme</string>
 
+    <!-- Shop themes -->
     <string name="shop_themes">Shop themes</string>
-    <string name="themes_showcase_link">https://play.google.com/store/apps/details?id=com.cyngn.theme.store</string>
+    <string name="themes_showcase_link" translatable="false">
+        https://play.google.com/store/apps/details?id=com.cyngn.theme.store
+    </string>
 
-    <string name="audible_title_none">None</string>
-
+    <!-- Overlay titles -->
     <string name="apply_theme_overlay_title">Apply</string>
     <string name="delete_theme_overlay_title">Delete</string>
     <string name="reset_theme_overlay_title">Reset</string>
 
+    <!-- TAG text -->
     <string name="default_tag_text">Default</string>
     <string name="customized_tag_text">Customized</string>
     <string name="updated_tag_text">Updated</string>
@@ -64,22 +62,30 @@
 
     <string name="wallpaper_none">None</string>
 
+    <string name="audible_title_none">None</string>
+
     <!-- Labels for the customize/reset theme layout -->
     <string name="reset_theme">Reset</string>
     <string name="customize_theme">Customize</string>
 
+    <!-- Extra wallpaper components for selector -->
     <string name="wallpaper_external_title">Pick image</string>
     <string name="wallpaper_none_title">None</string>
 
     <string name="processing_theme">Processing</string>
 
-    <string name="legacy_theme_tag_text">!</string>
-    <string name="legacy_theme_warning">NOTE: %s was designed for an older version of CM.  You may experience compatibility issues with this theme.</string>
+    <!-- Legacy themes -->
+    <string name="legacy_theme_tag_text" translatable="false">!</string>
+    <string name="legacy_theme_warning">
+        NOTE: %s was designed for an older version of CM.  You may experience compatibility issues with this theme.
+    </string>
 
     <!-- Per app theming -->
     <string name="per_app_theming_title">App Themer</string>
-    <string name="per_app_theme_removal_warning">NOTE: Applying a new theme will remove any app theme customizations.</string>
-    <string name="per_app_applied_theme_indicator">\u2022</string>
+    <string name="per_app_theme_removal_warning">
+        NOTE: Applying a new theme will remove any app theme customizations.
+    </string>
+    <string name="per_app_applied_theme_indicator" translatable="false">\u2022</string>
     <string name="per_app_theme_applying">Your theme is being applied</string>
 
 </resources>
