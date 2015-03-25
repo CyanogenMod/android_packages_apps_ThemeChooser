@@ -647,6 +647,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
     private void showScrim() {
         ValueAnimator animator = ValueAnimator.ofArgb(SCRIM_COLOR_TRANSPARENT,
                 SCRIM_COLOR_OPAQUE);
+        mThemeListLayout.setEnabled(false);
         animator.setDuration(ANIMATION_DURATION)
                 .addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override

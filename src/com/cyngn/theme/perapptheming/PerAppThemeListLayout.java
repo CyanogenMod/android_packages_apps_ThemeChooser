@@ -67,7 +67,7 @@ public class PerAppThemeListLayout extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN && mWindow != null) {
+        if (isEnabled() && event.getAction() == MotionEvent.ACTION_DOWN && mWindow != null) {
             mWindow.hideThemeList();
             return true;
         }
