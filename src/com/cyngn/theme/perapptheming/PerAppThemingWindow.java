@@ -291,11 +291,11 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         super.onDestroy();
         mIsDestroyed = true;
         if (mDraggableIcon != null) {
-            mWindowManager.removeView(mDraggableIcon);
+            removeViewIfAttached(mDraggableIcon);
             mDraggableIcon = null;
         }
         if (mDeleteView != null) {
-            mWindowManager.removeView(mDeleteView);
+            removeViewIfAttached(mDeleteView);
             mDeleteView = null;
         }
         if (mAnimationTask != null) {
@@ -339,9 +339,15 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         hideThemeList(false, new Runnable() {
             @Override
             public void run() {
-                mWindowManager.removeViewImmediate(mThemeListLayout);
+                removeViewIfAttached(mThemeListLayout);
             }
         });
+    }
+
+    private void removeViewIfAttached(View view) {
+        if (view.isAttachedToWindow()) {
+            mWindowManager.removeViewImmediate(view);
+        }
     }
 
     private WindowManager.LayoutParams addView(View v, int x, int y) {
@@ -625,14 +631,17 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
     private void hideThemeList(boolean showScrim, final Runnable endAction) {
         if (showScrim) {
             showScrim();
+        } else {
+            mDraggableIcon.setVisibility(View.VISIBLE);
+            mDraggableIconImage.animate()
+                    .alpha(1f)
+                    .setDuration(ANIMATION_DURATION);
         }
         mThemeListLayout.circularHide(mParams.x + mDraggableIconImage.getWidth() / 2,
                 mParams.y + mDraggableIconImage.getHeight() / 2, ANIMATION_DURATION);
-        mDraggableIcon.setVisibility(View.VISIBLE);
-        mDraggableIconImage.animate()
-                           .alpha(1f)
-                           .setDuration(ANIMATION_DURATION)
-                           .withEndAction(endAction);
+        if (endAction != null) {
+            mDraggableIcon.postDelayed(endAction, ANIMATION_DURATION);
+        }
     }
 
     private void showScrim() {
@@ -669,7 +678,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mWindowManager.removeViewImmediate(mThemeListLayout);
+                removeViewIfAttached(mThemeListLayout);
             }
 
             @Override
@@ -683,7 +692,11 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         animator.start();
         mThemeApplyingView.animate()
                           .alpha(0f)
-                          .setDuration(ANIMATION_DURATION);
+                .setDuration(ANIMATION_DURATION);
+        mDraggableIcon.setVisibility(View.VISIBLE);
+        mDraggableIconImage.animate()
+                .alpha(1f)
+                .setDuration(ANIMATION_DURATION);
     }
 
     private void setThemeListPosition(final int listSide) {
