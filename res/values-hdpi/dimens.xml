@@ -5,8 +5,15 @@
 <resources>
 
     <!-- Distance from top of screen to the collapsed theme preview -->
-    <dimen name="collapsed_theme_page_padding_top">2dp</dimen>
+    <dimen name="collapsed_theme_page_padding_top">16dp</dimen>
+    <dimen name="collapsed_theme_page_padding">16dp</dimen>
 
-    <dimen name="shop_themes_margin_bottom">8dp</dimen>
+    <dimen name="theme_fragment_width">300dp</dimen>
+    <dimen name="theme_preview_width">268dp</dimen>
+    <dimen name="wallpaper_preview_width">260dp</dimen>
+
+    <dimen name="card_padding_left_right">20dp</dimen>
+
+    <dimen name="shop_themes_margin_bottom">16dp</dimen>
 
 </resources>
