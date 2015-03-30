@@ -26,12 +26,16 @@
   <string name="notifications">Pemberitahuan</string>
   <string name="alarms">Alarm</string>
   <string name="style">Gaya</string>
+  <string name="status_bar">Status bar</string>
+  <string name="nav_bar">Bar navigasi</string>
   <string name="theme_packs">Paket tema</string>
   <string name="sounds">Suara</string>
   <string name="system_theme_name">Sistem</string>
   <string name="default_tag">(Default)</string>
   <string name="apply">Terapkan</string>
   <string name="applying">Menerapkan\u2026</string>
+  <string name="applied">Diterapkan</string>
+  <string name="available">Tersedia</string>
   <string name="update">Perbarui</string>
   <string name="no_preview_available">Tidak ada pratinjau tersedia</string>
   <string name="alarm_label">Alarm</string>

@@ -46,8 +46,8 @@
   <string name="theme_installed_notification_title">%s הותקן</string>
   <string name="theme_installed_notification_text">הערכה הותקנה בהצלחה.</string>
   <string name="menu_item_get_more_themes">קבל עוד</string>
-  <string name="get_more_description">אתה יכול לקבל עוד ערכות מהקישורים הבאים:</string>
-  <string name="get_more_entry_cm_themes_showcase">תצוגת ערכות נושא של CyanogenMod</string>
+  <string name="get_more_description">אתה יכול לקבל עוד ערכות עיצוב מהקישורים הבאים:</string>
+  <string name="get_more_entry_cm_themes_showcase">תצוגת ערכות עיצוב של CyanogenMod</string>
   <string name="get_more_entry_play_store">חנות Play</string>
   <string name="get_more_entry_cm_wiki">מידע נוסף ב-CM Wiki</string>
   <string name="designed_for_cm11">עוצב ל-CM11</string>
