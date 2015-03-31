@@ -43,6 +43,8 @@ public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
     private static final boolean DEBUG = false;
 
+    private static final String OVERLAY_BASE_PATH = "overlays" + File.separator;
+
     public static Bitmap decodeFile(String path, int reqWidth, int reqHeight) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
 
@@ -472,6 +474,30 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    /**
+     * Method to identify if a theme explicitly overlays a particular app.  Explicit is defined
+     * as having files in overlays/appPkgName/
+     * @param context
+     * @param appPkgNane
+     * @param themePkgName
+     * @return
+     */
+    public static boolean themeHasOverlayForApp(Context context, String appPkgNane,
+            String themePkgName) {
+        boolean hasExplicitOverlay = false;
+        try {
+            Context themeContext = context.createPackageContext(themePkgName, 0);
+            if (themeContext != null) {
+                AssetManager assets = themeContext.getAssets();
+                String[] files = assets.list(OVERLAY_BASE_PATH + appPkgNane);
+                if (files != null && files.length > 0) hasExplicitOverlay = true;
+            }
+        } catch (Exception e) {
+            // don't care, we'll return false and let the caller handle things
+        }
+        return hasExplicitOverlay;
     }
 
     private static boolean isCurrentHomeActivity(Context context,

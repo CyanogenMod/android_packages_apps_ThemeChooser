@@ -87,5 +87,6 @@
     </string>
     <string name="per_app_applied_theme_indicator" translatable="false">\u2022</string>
     <string name="per_app_theme_applying">Your theme is being applied</string>
+    <string name="per_app_theme_app_not_overlaid_warning">Theme does not support this app, some elements may not change.</string>
 
 </resources>

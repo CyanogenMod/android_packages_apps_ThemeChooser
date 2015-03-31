@@ -39,6 +39,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import android.widget.Toast;
 import com.cyngn.theme.chooser.R;
 import com.cyngn.theme.util.Utils;
 
@@ -737,6 +738,10 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
             final String themePkgName = (String) view.getTag(R.id.tag_key_name);
             final String appPkgName = Utils.getTopTaskPackageName(getContext());
             if (!TextUtils.isEmpty(appPkgName) && !TextUtils.isEmpty(themePkgName)) {
+                if (!Utils.themeHasOverlayForApp(getContext(), appPkgName, themePkgName)) {
+                    Toast.makeText(getContext(), R.string.per_app_theme_app_not_overlaid_warning,
+                            Toast.LENGTH_LONG).show();
+                }
                 hideThemeList(true, new Runnable() {
                     @Override
                     public void run() {
