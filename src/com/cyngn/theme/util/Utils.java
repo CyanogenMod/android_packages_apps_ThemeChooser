@@ -337,66 +337,71 @@ public class Utils {
             Log.d(TAG, "yOffset: " + yOffset);
         }
 
-        if (wallpaper.getHeight() < dh) {
-            // need to scale it up vertically
+        try {
+            if (wallpaper.getHeight() < dh) {
+                // need to scale it up vertically
 
-            if (wallpaper.getHeight() > wallpaper.getWidth()) {
-                // handle portrait wallpaper
-                float diff = scaledWidth - dw;
-                int diffhalf = Math.round(diff / 2);
+                if (wallpaper.getHeight() > wallpaper.getWidth()) {
+                    // handle portrait wallpaper
+                    float diff = scaledWidth - dw;
+                    int diffhalf = Math.round(diff / 2);
 
-                bitmap = Bitmap.createScaledBitmap(wallpaper, scaledWidth, scaledHeight, true);
-                bitmap = Bitmap.createBitmap(bitmap, diffhalf, 0, dw, dh);
-                bitmap = Bitmap.createBitmap(bitmap, xOffset, 0, dw, dh);
-            } else {
-                int goldenWidth = Math.round(wallpaper.getHeight() * 1.125f);
-                int spaceA = (wallpaper.getWidth() - goldenWidth) / 2;
-                int spaceB = (goldenWidth - Math.round(dh/scale)) / 2;
+                    bitmap = Bitmap.createScaledBitmap(wallpaper, scaledWidth, scaledHeight, true);
+                    bitmap = Bitmap.createBitmap(bitmap, diffhalf, 0, dw, dh);
+                    bitmap = Bitmap.createBitmap(bitmap, xOffset, 0, dw, dh);
+                } else {
+                    int goldenWidth = Math.round(wallpaper.getHeight() * 1.125f);
+                    int spaceA = (wallpaper.getWidth() - goldenWidth) / 2;
+                    int spaceB = (goldenWidth - Math.round(dh / scale)) / 2;
 
-                bitmap = Bitmap.createBitmap(wallpaper, spaceA, 0, goldenWidth,
-                        wallpaper.getHeight());
-                int left = spaceB + Math.round(xOffset/scale);
-                bitmap = Bitmap.createBitmap(bitmap, left, 0, Math.round(dw / scale),
-                        Math.round(dh / scale));
-            }
-
-        } else if (wallpaper.getWidth() < dw) {
-            // need to scale it up horizontally
-
-            if (wallpaper.getHeight() > wallpaper.getWidth()) {
-                // handle portrait wallpaper
-                return wallpaper;
-
-            } else {
-                // handle landscape wallpaper
-                float diff = wallpaper.getHeight() - wallpaper.getWidth();
-                int diffhalf = Math.round(diff / 2);
-
-                if (diffhalf < 0) {
-                    return wallpaper;
+                    bitmap = Bitmap.createBitmap(wallpaper, spaceA, 0, goldenWidth,
+                            wallpaper.getHeight());
+                    int left = spaceB + Math.round(xOffset / scale);
+                    bitmap = Bitmap.createBitmap(bitmap, left, 0, Math.round(dw / scale),
+                            Math.round(dh / scale));
                 }
 
-                bitmap = Bitmap.createBitmap(
-                        wallpaper, diffhalf, 0,
-                        wallpaper.getWidth(), wallpaper.getWidth());
+            } else if (wallpaper.getWidth() < dw) {
+                // need to scale it up horizontally
 
-                // blow it up
-                bitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledWidth, true);
+                if (wallpaper.getHeight() > wallpaper.getWidth()) {
+                    // handle portrait wallpaper
+                    return wallpaper;
 
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0, dw, dh);
-            }
+                } else {
+                    // handle landscape wallpaper
+                    float diff = wallpaper.getHeight() - wallpaper.getWidth();
+                    int diffhalf = Math.round(diff / 2);
 
-        } else {
-            // sometimes the wallpaper manager gives incorrect offsets,
-            // and adds like 200 pixels randomly. If it's bigger than we can handle, calculate
-            // our own :)
-            if (yOffset + dh > wallpaper.getHeight()) {
-                yOffset = (wallpaper.getHeight() - dh) / 2;
+                    if (diffhalf < 0) {
+                        return wallpaper;
+                    }
+
+                    bitmap = Bitmap.createBitmap(
+                            wallpaper, diffhalf, 0,
+                            wallpaper.getWidth(), wallpaper.getWidth());
+
+                    // blow it up
+                    bitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledWidth, true);
+
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, dw, dh);
+                }
+
+            } else {
+                // sometimes the wallpaper manager gives incorrect offsets,
+                // and adds like 200 pixels randomly. If it's bigger than we can handle, calculate
+                // our own :)
+                if (yOffset + dh > wallpaper.getHeight()) {
+                    yOffset = (wallpaper.getHeight() - dh) / 2;
+                }
+                if (xOffset + dw > wallpaper.getWidth()) {
+                    yOffset = (wallpaper.getWidth() - dw) / 2;
+                }
+                bitmap = Bitmap.createBitmap(wallpaper, xOffset, yOffset, dw, dh);
             }
-            if (xOffset + dw > wallpaper.getWidth()) {
-                yOffset = (wallpaper.getWidth() - dw) / 2;
-            }
-            bitmap = Bitmap.createBitmap(wallpaper, xOffset, yOffset, dw, dh);
+        } catch (IllegalArgumentException e) {
+            // Cropping/resizing failed so return the original
+            bitmap = wallpaper;
         }
         return bitmap;
     }
