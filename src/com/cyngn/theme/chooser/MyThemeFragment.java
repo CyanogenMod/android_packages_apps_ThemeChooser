@@ -397,7 +397,7 @@ public class MyThemeFragment extends ThemeFragment {
         for (String component : mSelectedComponentsMap.keySet()) {
             String currentPkg = mCurrentTheme.get(component);
             String selectedPkg = mSelectedComponentsMap.get(component);
-            if (currentPkg == null || !currentPkg.equals(selectedPkg)) {
+            if (currentPkg == null || mThemeResetting || !currentPkg.equals(selectedPkg)) {
                 componentsToApply.put(component, selectedPkg);
             }
         }
