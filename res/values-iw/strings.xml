@@ -17,10 +17,10 @@
 -->
 <resources>
   <string name="app_name">ערכות עיצוב</string>
-  <string name="lock_screen">רקעי מסך הנעילה</string>
+  <string name="lock_screen">טפטים של מסך הנעילה</string>
   <string name="icons">סמלים</string>
   <string name="fonts">גופנים</string>
-  <string name="wallpapers">רקעים</string>
+  <string name="wallpapers">טפטים</string>
   <string name="boot_anims">אנימציות אתחול</string>
   <string name="ringtones">רינגטונים</string>
   <string name="notifications">התראות</string>
