@@ -688,7 +688,7 @@ public class ComponentSelector extends LinearLayout
         String pkgName = cursor.getString(cursor.getColumnIndex(ThemesColumns.PKG_NAME));
         if (ThemeUtils.getDefaultThemePackageName(mContext).equals(pkgName)) {
             titleView.setText(mContext.getString(R.string.default_tag_text));
-            titleView.setTypeface(null, Typeface.BOLD);
+            titleView.setTypeface(titleView.getTypeface(), Typeface.BOLD);
         } else {
             titleView.setText(cursor.getString(cursor.getColumnIndex(ThemesColumns.TITLE)));
         }
