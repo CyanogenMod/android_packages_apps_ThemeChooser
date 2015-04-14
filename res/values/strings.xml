@@ -89,15 +89,11 @@
 
     <!-- Legacy themes -->
     <string name="legacy_theme_tag_text" translatable="false">!</string>
-    <string name="legacy_theme_warning">
-        NOTE: %s was designed for an older version of CM.  You may experience compatibility issues with this theme.
-    </string>
+    <string name="legacy_theme_warning">NOTE: %s was designed for an older version of CM. You may experience compatibility issues with this theme.</string>
 
     <!-- Per app theming -->
     <string name="per_app_theming_title">App Themer</string>
-    <string name="per_app_theme_removal_warning">
-        NOTE: Applying a new theme will remove any app theme customizations.
-    </string>
+    <string name="per_app_theme_removal_warning">NOTE: Applying a new theme will remove any app theme customizations.</string>
     <string name="per_app_applied_theme_indicator" translatable="false">\u2022</string>
     <string name="per_app_theme_applying">Your theme is being applied</string>
     <string name="per_app_theme_app_not_overlaid_warning">Theme does not support this app, some elements may not change.</string>
