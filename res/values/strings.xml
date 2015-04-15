@@ -85,7 +85,7 @@
     <string name="wallpaper_none_title">None</string>
     <string name="mod_lock_title">MOD Lock</string>
 
-    <string name="processing_theme">Processing</string>
+    <string name="processing_theme">Processing\u2026</string>
 
     <!-- Legacy themes -->
     <string name="legacy_theme_tag_text" translatable="false">!</string>
