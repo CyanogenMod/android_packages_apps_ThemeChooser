@@ -215,7 +215,7 @@ public class ChooserActivity extends FragmentActivity
             }
         });
 
-        if (Utils.isRecentTaskThemeStore(this)) {
+        if (shouldHideShopThemes()) {
             mBottomActionsLayout.findViewById(R.id.shop_themes).setVisibility(View.GONE);
         }
         if (PreferenceUtils.getShowPerAppThemeNewTag(this)) {
@@ -274,6 +274,18 @@ public class ChooserActivity extends FragmentActivity
         anim.setListener(null);
         anim.alpha(1f).setStartDelay(ThemeFragment.ANIMATE_DURATION)
                 .setDuration(ANIMATE_SHOP_THEMES_SHOW_DURATION);
+    }
+
+    private boolean shouldHideShopThemes() {
+        boolean hasThemeStore = false;
+        try {
+            if (getPackageManager().getPackageInfo(THEME_STORE_PACKAGE, 0) != null) {
+                hasThemeStore = true;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
+        return !hasThemeStore || Utils.isRecentTaskThemeStore(this);
     }
 
     @Override
@@ -784,10 +796,7 @@ public class ChooserActivity extends FragmentActivity
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                // Unable to launch the theme store so link the user to it
-                intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.themes_showcase_link)));
-                startActivity(intent);
+                Log.e(TAG, "Unable to launch Theme Store", e);
             }
         }
     };
