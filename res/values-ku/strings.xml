@@ -26,6 +26,7 @@
   <string name="notifications">تێبینیه‌کان</string>
   <string name="alarms">ئاگادارکرنه‌وه‌</string>
   <string name="style">ستایل</string>
+  <string name="sounds">دەنگ</string>
   <string name="default_tag">(بنه‌ڕه‌ت)</string>
   <string name="apply">لێدان</string>
   <string name="applying">لێدانی/u2026</string>
@@ -40,4 +41,5 @@
   <string name="theme_installed_notification_text">تێم به‌سه‌رکه‌وتوی دامه‌زرا.</string>
   <string name="menu_item_get_more_themes">وه‌رگرتنی زیاتر</string>
   <string name="get_more_description">ئه‌توانی ڕووکاری زیاتر وه‌ربگری له‌م به‌سته‌رانه‌وه‌:</string>
+  <string name="get_more_entry_cm_wiki">زانیاری زیاتر لە CM Wiki</string>
 </resources>
