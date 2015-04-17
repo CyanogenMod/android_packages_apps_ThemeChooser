@@ -22,7 +22,7 @@
   <string name="fonts">Šriftai</string>
   <string name="wallpapers">Darbalaukio fonai</string>
   <string name="boot_anims">Paleidimo animacijos</string>
-  <string name="ringtones">Melodijos</string>
+  <string name="ringtones">Skambėjimo tonai</string>
   <string name="notifications">Pranešimai</string>
   <string name="alarms">Signalai</string>
   <string name="style">Stilius</string>
@@ -40,7 +40,7 @@
   <string name="no_preview_available">Peržiūra negalima</string>
   <string name="alarm_label">Signalas</string>
   <string name="notification_label">Pranešimas</string>
-  <string name="ringtone_label">Melodija</string>
+  <string name="ringtone_label">Skambėjimo tonas</string>
   <string name="unknown_author">Autorius nežinomas</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s įdiegta</string>

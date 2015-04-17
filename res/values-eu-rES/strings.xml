@@ -17,16 +17,13 @@
 -->
 <resources>
   <string name="app_name">Gaiak</string>
-  <string name="lock_screen">Lokatze hormairudiak</string>
   <string name="icons">Ikonoak</string>
   <string name="fonts">Iturburuak</string>
-  <string name="wallpapers">Hormairudiak</string>
   <string name="boot_anims">Pizte animazioak</string>
   <string name="ringtones">Dei doinuak</string>
   <string name="notifications">Jakinarazpenak</string>
   <string name="alarms">Alarmak</string>
   <string name="style">Estiloa</string>
-  <string name="default_tag">(Lehenetsita)</string>
   <string name="apply">Ezarri</string>
   <string name="applying">Ezartzen\u2026</string>
   <string name="update">Eguneratu</string>
@@ -39,5 +36,4 @@
   <string name="theme_installed_notification_title">%s instalatu da</string>
   <string name="theme_installed_notification_text">Gaia arrakastaz instalatu da.</string>
   <string name="menu_item_get_more_themes">Gehiago lortu</string>
-  <string name="get_more_description">Gai gehiago lor ditzazkezu hurrengo estekan:</string>
 </resources>
