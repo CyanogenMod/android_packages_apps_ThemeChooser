@@ -32,7 +32,7 @@
             android:shadowDx="2"
             android:shadowDy="2"
             android:shadowRadius="4"
-            android:textSize="40sp"
+            android:textSize="40dp"
             android:gravity="center"
             />
         <LinearLayout

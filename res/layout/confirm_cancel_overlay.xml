@@ -64,6 +64,6 @@
         android:layout_marginBottom="56dp"
         android:gravity="center"
         android:textColor="@color/apply_overlay_text_color"
-        android:textSize="12sp"/>
+        android:textSize="12dp"/>
 
 </com.cyngn.theme.widget.ConfirmCancelOverlay>

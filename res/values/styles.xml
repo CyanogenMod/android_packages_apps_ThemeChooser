@@ -30,13 +30,13 @@
     <style name="TextAppearance.Widget.PopupMenu.Large"
         parent="android:TextAppearance.Widget.PopupMenu.Large">
         <item name="android:textColor">@color/popup_menu_text_color</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">16dp</item>
     </style>
 
     <style name="TextAppearance.Widget.PopupMenu.Small"
         parent="android:TextAppearance.Widget.PopupMenu.Small">
         <item name="android:textColor">@color/popup_menu_text_color</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">16dp</item>
     </style>
 
     <style name="TextAppearance.StatusBar.Clock" parent="">
@@ -61,7 +61,7 @@
         <item name="android:paddingEnd">2dp</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">12dp</item>
         <item name="android:maxLines">2</item>
     </style>
 
@@ -69,7 +69,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">18dp</item>
         <item name="android:maxLines">1</item>
     </style>
 
@@ -77,14 +77,14 @@
         <item name="android:textColor">@color/component_label_color</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">12dp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingTop">16dp</item>
         <item name="android:paddingBottom">16dp</item>
     </style>
 
     <style name="audible_name">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">18dp</item>
         <item name="android:textColor">@color/audible_name_color</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:singleLine">true</item>
@@ -92,14 +92,14 @@
     </style>
 
     <style name="add_component">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">12dp</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/add_component_text_color</item>
         <item name="android:text">@string/add_component_text</item>
     </style>
 
     <style name="card_none_text">
-        <item name="android:textSize">34sp</item>
+        <item name="android:textSize">34dp</item>
         <item name="android:textColor">@color/card_none_text_color</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:text">@string/wallpaper_none</item>
@@ -107,13 +107,13 @@
 
     <style name="apply_overlay_text_style">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">20dp</item>
         <item name="android:textColor">@color/apply_overlay_text_color</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="customize_layout_text_style">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">12dp</item>
         <item name="android:textColor">@color/customize_layout_text_color</item>
         <item name="android:textAllCaps">true</item>
     </style>
@@ -123,7 +123,7 @@
         <item name="android:paddingStart">4dp</item>
         <item name="android:paddingEnd">4dp</item>
         <item name="android:gravity">center</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">12dp</item>
         <item name="android:textColor">@color/tag_text_color</item>
         <item name="android:textAllCaps">true</item>
     </style>

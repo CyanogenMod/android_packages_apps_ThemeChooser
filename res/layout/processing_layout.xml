@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:textAllCaps="true"
         android:textColor="@color/processing_text_color"
         android:text="@string/processing_theme" />

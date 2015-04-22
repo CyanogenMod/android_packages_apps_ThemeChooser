@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginStart="16dp"
-        android:textSize="16sp"
+        android:textSize="16dp"
         android:textColor="@color/per_app_theme_list_item_text_color"/>
 
     <TextView android:id="@+id/selected_indicator"
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:gravity="right"
-        android:textSize="16sp"
+        android:textSize="16dp"
         android:textColor="@color/per_app_theme_list_item_applied_text_color"
         android:text="@string/per_app_applied_theme_indicator"/>
 
