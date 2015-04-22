@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -514,5 +515,35 @@ public class Utils {
         return homeInfo != null
                 && homeInfo.packageName.equals(component.getPackageName())
                 && homeInfo.name.equals(component.getClassName());
+    }
+
+    /**
+     * Returns the resource-IDs for all attributes specified in the given
+     * <declare-styleable>-resource tag as an int array.
+     * stackoverflow.com/questions/13816596/accessing-declare-styleable-resources-programatically
+     *
+     * @param name
+     * @return
+     */
+    public static final int[] getResourceDeclareStyleableIntArray(String pkgName, String name) {
+        try {
+            //use reflection to access the resource class
+            Field[] fields2 =
+                    Class.forName(pkgName + ".R$styleable").getFields();
+
+            //browse all fields
+            for (Field f : fields2) {
+                //pick matching field
+                if (f.getName().equals(name)) {
+                    //return as int array
+                    int[] ret = (int[])f.get(null);
+                    return ret;
+                }
+            }
+        }
+        catch (Throwable t) {
+        }
+
+        return null;
     }
 }

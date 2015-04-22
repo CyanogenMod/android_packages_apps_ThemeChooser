@@ -10,6 +10,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
+import com.cyngn.theme.util.Utils;
 
 import java.io.File;
 
@@ -51,6 +52,10 @@ public class LatoTextView extends TextView {
     private static Typeface[] sLatoCondensedTypeface;
     private static Typeface[] sLatoLightTypeface;
     private static final Object sLock = new Object();
+
+    // Retrieving these attributes is done via reflection so let's just do this once and share
+    // it amongst the other instances of LatoTextView
+    private static int[] sTextViewStyleAttributes;
 
     public LatoTextView(Context context) {
         this(context, null);
@@ -100,29 +105,37 @@ public class LatoTextView extends TextView {
         }
 
         final Resources.Theme theme = context.getTheme();
-        TypedArray a = theme.obtainStyledAttributes(
-                attrs, com.android.internal.R.styleable.TextView, defStyle, 0);
-        String fontFamily = "sans-serif";
-        int styleIndex = Typeface.NORMAL;
-        if (a != null) {
-            int n = a.getIndexCount();
-            for (int i = 0; i < n; i++) {
-                int attr = a.getIndex(i);
-
-                switch (attr) {
-                    case com.android.internal.R.styleable.TextView_fontFamily:
-                        fontFamily = a.getString(attr);
-                        break;
-
-                    case com.android.internal.R.styleable.TextView_textStyle:
-                        styleIndex = a.getInt(attr, styleIndex);
-                        break;
-                }
-            }
-            a.recycle();
+        if (sTextViewStyleAttributes == null) {
+            sTextViewStyleAttributes =
+                    Utils.getResourceDeclareStyleableIntArray("com.android.internal", "TextView");
         }
 
-        setTypefaceFromAttrs(fontFamily, styleIndex);
+        if (sTextViewStyleAttributes != null) {
+            TypedArray a =
+                    theme.obtainStyledAttributes(attrs, sTextViewStyleAttributes, defStyle, 0);
+            String fontFamily = "sans-serif";
+            int styleIndex = Typeface.NORMAL;
+            if (a != null) {
+                int n = a.getIndexCount();
+                for (int i = 0; i < n; i++) {
+                    int attr = a.getIndex(i);
+
+                    final Resources res = getResources();
+                    int attrFontFamily =
+                            res.getIdentifier("TextView_fontFamily", "styleable", "android");
+                    int attrTextStyle =
+                            res.getIdentifier("TextView_textStyle", "styleable", "android");
+                    if (attr == attrFontFamily) {
+                        fontFamily = a.getString(attr);
+                    } else if (attr == attrTextStyle) {
+                        styleIndex = a.getInt(attr, styleIndex);
+                    }
+                }
+                a.recycle();
+            }
+
+            setTypefaceFromAttrs(fontFamily, styleIndex);
+        }
     }
 
     private void setTypefaceFromAttrs(String familyName, int styleIndex) {

@@ -4,10 +4,12 @@
 package com.cyngn.theme.perapptheming;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.ListView;
 import com.cyngn.theme.chooser.R;
+import com.cyngn.theme.util.Utils;
 
 public class PerAppThemeListView extends ListView {
     private int mMinHeight;
@@ -23,8 +25,11 @@ public class PerAppThemeListView extends ListView {
 
     public PerAppThemeListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray a = context.obtainStyledAttributes(attrs, com.android.internal.R.styleable.View);
-        mMinHeight = a.getDimensionPixelSize(com.android.internal.R.styleable.View_minHeight, 0);
+        final Resources res = getResources();
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                Utils.getResourceDeclareStyleableIntArray("com.android.internal", "View"));
+        int resId = res.getIdentifier("View_minHeight", "styleable", "android");
+        mMinHeight = a.getDimensionPixelSize(resId, 0);
         a.recycle();
 
         a = context.obtainStyledAttributes(attrs, R.styleable.PerAppThemeListView);

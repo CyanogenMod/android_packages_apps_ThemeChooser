@@ -28,7 +28,7 @@
             android:id="@+id/status_bar"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="@*android:dimen/status_bar_height"
+            android:layout_height="@dimen/status_bar_height"
             android:paddingEnd="6dp"
             android:background="#000">
 
@@ -41,7 +41,7 @@
             <ImageView
                 android:id="@+id/bluetooth_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="@*android:dimen/status_bar_icon_size"
+                android:layout_height="@dimen/status_bar_icon_size"
                 android:layout_gravity="center_vertical"
                 android:paddingEnd="6dp"
                 android:scaleType="fitCenter"/>
@@ -49,14 +49,14 @@
             <ImageView
                 android:id="@+id/wifi_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="@*android:dimen/status_bar_icon_size"
+                android:layout_height="@dimen/status_bar_icon_size"
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitCenter"/>
 
             <ImageView
                 android:id="@+id/signal_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="@*android:dimen/status_bar_icon_size"
+                android:layout_height="@dimen/status_bar_icon_size"
                 android:layout_gravity="center_vertical"
                 android:paddingEnd="6dp"
                 android:scaleType="fitCenter"/>
@@ -64,7 +64,7 @@
             <ImageView
                 android:id="@+id/battery"
                 android:layout_width="wrap_content"
-                android:layout_height="@*android:dimen/status_bar_icon_size"
+                android:layout_height="@dimen/status_bar_icon_size"
                 android:layout_gravity="center_vertical"
                 android:paddingEnd="6dp"
                 android:scaleType="fitCenter"/>

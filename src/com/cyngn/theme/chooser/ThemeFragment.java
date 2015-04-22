@@ -616,7 +616,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private void adjustScrollViewPaddingTop() {
         Resources res = getResources();
         int extraPadding =
-                res.getDimensionPixelSize(R.dimen.system_bar_height) / 2;
+                res.getDimensionPixelSize(R.dimen.navigation_bar_height) / 2;
         mScrollView.setPadding(mScrollView.getPaddingLeft(),
                 mScrollView.getPaddingTop() + extraPadding, mScrollView.getPaddingRight(),
                 mScrollView.getPaddingBottom());
@@ -688,7 +688,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     (LinearLayout.LayoutParams) child.getLayoutParams();
             if (child == mStatusBarCard) {
                 int statusBarHeight = getResources()
-                        .getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
+                        .getDimensionPixelSize(R.dimen.status_bar_height);
                 lparams.setMargins(0, top + statusBarHeight, 0, 0);
             } else {
                 lparams.setMargins(0, top, 0, 0);
@@ -780,7 +780,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int paddingTop = (int) r.getDimension(R.dimen.collapsed_theme_page_padding_top);
         if (!Utils.hasNavigationBar(getActivity())) {
             paddingTop +=
-                    r.getDimensionPixelSize(R.dimen.system_bar_height) / 2;
+                    r.getDimensionPixelSize(R.dimen.navigation_bar_height) / 2;
         }
         mScrollView.setPadding(0, paddingTop, 0, 0);
 

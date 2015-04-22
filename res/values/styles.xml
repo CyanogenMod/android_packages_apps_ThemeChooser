@@ -39,10 +39,12 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="TextAppearance.StatusBar.Clock" parent="@*android:style/TextAppearance.StatusBar.Icon">
+    <style name="TextAppearance.StatusBar.Clock" parent="">
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <!-- Note: must be dp to fit in status bar -->
         <item name="android:textSize">16dp</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="status_bar_component_icon">
