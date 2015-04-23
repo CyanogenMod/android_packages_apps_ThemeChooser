@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -158,6 +159,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         mDraggableIcon.setOnTouchListener(this);
         View.inflate(getContext(), R.layout.per_app_fab_floating_window_icon, mDraggableIcon);
         mDraggableIconImage = mDraggableIcon.findViewById(R.id.box);
+        mDraggableIconImage.getViewTreeObserver().addOnWindowAttachListener(mWindowAttachListener);
         mParams = addView(mDraggableIcon, 0, 0);
         updateIconPosition(MARGIN_HORIZONTAL, STARTING_POINT_Y);
 
@@ -594,6 +596,28 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             loadThemes();
+        }
+    };
+
+    private ViewTreeObserver.OnWindowAttachListener mWindowAttachListener =
+            new ViewTreeObserver.OnWindowAttachListener() {
+        @Override
+        public void onWindowAttached() {
+            // Remove the this OnWindowAttachListener now that we are done with it.
+            mDraggableIconImage.getViewTreeObserver().removeOnWindowAttachListener(this);
+
+            final float fabWidth = getResources().getDimension(R.dimen.floating_window_icon);
+            mDraggableIconImage.setAlpha(0);
+            mDraggableIconImage.setX(-fabWidth);
+            mDraggableIconImage.animate()
+                    .alpha(1f)
+                    .xBy(fabWidth)
+                    .setDuration(ANIMATION_DURATION)
+                    .start();
+        }
+
+        @Override
+        public void onWindowDetached() {
         }
     };
 
