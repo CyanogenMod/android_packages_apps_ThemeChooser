@@ -40,9 +40,11 @@
   <string name="customize_theme">Προσαρμογή</string>
   <string name="wallpaper_external_title">Επιλογή εικόνας</string>
   <string name="wallpaper_none_title">Καμία</string>
-  <string name="processing_theme">Επεξεργασία</string>
+  <string name="processing_theme">Επεξεργασία\u2026</string>
   <string name="legacy_theme_warning">ΣΗΜΕΙΩΣΗ: Το %s σχεδιάστηκε για μια παλαιότερη έκδοση του CM. Ενδέχεται να αντιμετωπίσετε ζητήματα συμβατότητας με αυτό το θέμα.</string>
   <string name="per_app_theming_title">Θέμα ανά εφαρμογή</string>
   <string name="per_app_theme_removal_warning">ΣΗΜΕΙΩΣΗ: Η εφαρμογή ενός νέου θέματος θα καταργήσει τις προσαρμογές θέματος ανά εφαρμογή.</string>
   <string name="per_app_theme_applying">Το θέμα σας εφαρμόζεται</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Το θέμα δεν υποστηρίζει αυτή την εφαρμογή, ορισμένα στοιχεία ίσως δεν αλλάξουν.</string>
+  <string name="file_type_not_supported">Ο τύπος αρχείου δεν υποστηρίζεται</string>
 </resources>

@@ -40,9 +40,11 @@
   <string name="customize_theme">自定义</string>
   <string name="wallpaper_external_title">选择图像</string>
   <string name="wallpaper_none_title">无</string>
-  <string name="processing_theme">正在处理</string>
+  <string name="processing_theme">处理中\u2026</string>
   <string name="legacy_theme_warning">注意：%s 是为旧版本的 CM 所设计，您可能会在该主题中遇到兼容性问题。</string>
   <string name="per_app_theming_title">应用特定主题</string>
   <string name="per_app_theme_removal_warning">注意：应用新的主题将会移除所有应用的自定义主题。</string>
   <string name="per_app_theme_applying">您的主题正在被应用</string>
+  <string name="per_app_theme_app_not_overlaid_warning">主题不支持此应用，某些元素可能不会改变。</string>
+  <string name="file_type_not_supported">文件类型不被支持</string>
 </resources>

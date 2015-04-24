@@ -40,9 +40,11 @@
   <string name="customize_theme">Personalizza</string>
   <string name="wallpaper_external_title">Scegli immagine</string>
   <string name="wallpaper_none_title">Nessuno</string>
-  <string name="processing_theme">Elaborazione</string>
+  <string name="processing_theme">Applico\u2026</string>
   <string name="legacy_theme_warning">NOTA: %s è stato progettato per una versione precedente di CM. Potrebbero verificarsi problemi di compatibilità con questo tema.</string>
   <string name="per_app_theming_title">App Themer</string>
   <string name="per_app_theme_removal_warning">NOTA: Applicando un nuovo tema tutte le personalizzazioni App Theme saranno rimosse.</string>
   <string name="per_app_theme_applying">Il tema sta per essere applicato</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Il tema non supporta quest\'app, alcuni elementi potrebbero non cambiare.</string>
+  <string name="file_type_not_supported">Tipo di file non supportato</string>
 </resources>

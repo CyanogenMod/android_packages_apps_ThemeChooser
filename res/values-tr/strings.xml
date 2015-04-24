@@ -26,6 +26,7 @@
   <string name="menu_author_info">Hazırlayan</string>
   <string name="menu_delete">Sil</string>
   <string name="menu_reset">Temayı sıfırla</string>
+  <string name="shop_themes">Tema alın</string>
   <string name="apply_theme_overlay_title">Uygula</string>
   <string name="delete_theme_overlay_title">Sil</string>
   <string name="reset_theme_overlay_title">Sıfırla</string>
@@ -39,9 +40,11 @@
   <string name="customize_theme">Özelleştir</string>
   <string name="wallpaper_external_title">Görsel seç</string>
   <string name="wallpaper_none_title">Yok</string>
-  <string name="processing_theme">İşleniyor</string>
+  <string name="processing_theme">İşleniyor\u2026</string>
   <string name="legacy_theme_warning">NOT: %s CM\'nin daha eski bir sürümü için tasarlanmıştır. Bu tema ile uyumluluk sorunlarıyla karşılaşabilirsiniz.</string>
   <string name="per_app_theming_title">Uyg. Temacısı</string>
   <string name="per_app_theme_removal_warning">NOT: Yeni bir tema uygulanınca tüm uygulama tema özelleştirmeleri kaldırılacaktır.</string>
   <string name="per_app_theme_applying">Temanız uygulanıyor</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Tema bu uygulamayı desteklemiyor, bazı ögeler değişmeyebilir.</string>
+  <string name="file_type_not_supported">Dosya türü desteklenmiyor</string>
 </resources>

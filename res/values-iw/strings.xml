@@ -40,9 +40,11 @@
   <string name="customize_theme">התאם אישית</string>
   <string name="wallpaper_external_title">בחר תמונה</string>
   <string name="wallpaper_none_title">ללא</string>
-  <string name="processing_theme">מעבד</string>
+  <string name="processing_theme">מעבד\u2026</string>
   <string name="legacy_theme_warning">הערה: %s עוצב עבור גרסה ישנה יותר של CM. ייתכן וייווצרו בעיות תאימות עם ערכת עיצוב זאת.</string>
   <string name="per_app_theming_title">מעצב היישומים</string>
   <string name="per_app_theme_removal_warning">הערה: החלת ערכת עיצוב חדשה תגרום להסרת כל עיצוב מותאם אישית של יישומים.</string>
   <string name="per_app_theme_applying">ערכת העיצוב מוחלת ברגעים אלה</string>
+  <string name="per_app_theme_app_not_overlaid_warning">ערכת העיצוב אינה תומכת ביישום זה. רכיבים מסוימים עלולים לא להשתנות.</string>
+  <string name="file_type_not_supported">סוג הקובץ אינו נתמך</string>
 </resources>

@@ -40,7 +40,6 @@
   <string name="customize_theme">Prispôsobiť</string>
   <string name="wallpaper_external_title">Vybrať obrázok</string>
   <string name="wallpaper_none_title">Žiadna</string>
-  <string name="processing_theme">Spracovávanie</string>
   <string name="legacy_theme_warning">Poznámka: Téma %s bola navrhnutá pre staršiu verziu CM. Môžu sa vyskytnúť problémy s kompatibilitou s touto témou.</string>
   <string name="per_app_theming_title">Témy aplikácií</string>
   <string name="per_app_theme_removal_warning">Poznámka: Použitie novej témy odstráni všetky prispôbenia témy aplikácie.</string>

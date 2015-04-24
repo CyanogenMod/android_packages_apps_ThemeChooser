@@ -40,9 +40,11 @@
   <string name="customize_theme">Přizpůsobit</string>
   <string name="wallpaper_external_title">Vybrat obrázek</string>
   <string name="wallpaper_none_title">Žádný</string>
-  <string name="processing_theme">Zpracovává se\u2026</string>
+  <string name="processing_theme">Zpracování…</string>
   <string name="legacy_theme_warning">Poznámka: %s byl určen pro starší verzi CM. S tímto motivem může docházet k problémům.</string>
   <string name="per_app_theming_title">Motivy na aplikaci</string>
   <string name="per_app_theme_removal_warning">Poznámka: Použitím nového motivu odebere veškeré vlastní nastavení motivu.</string>
   <string name="per_app_theme_applying">Motiv je aplikován</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Motiv tuto aplikaci nepodporuje, některé elementy nelze změnit.</string>
+  <string name="file_type_not_supported">Typ souboru není podporován</string>
 </resources>

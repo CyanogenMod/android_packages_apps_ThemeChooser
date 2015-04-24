@@ -4,6 +4,7 @@
      Copyright (C) 2014-2015 Cyanogen, Inc.
 -->
 <resources>
+  <string name="app_name">Designauswahl</string>
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s installiert</string>
   <string name="theme_installed_notification_text">Design erfolgreich installiert.</string>
@@ -33,8 +34,14 @@
   <string name="customized_tag_text">Angepasst</string>
   <string name="updated_tag_text">Aktualisiert</string>
   <string name="add_component_text">Hinzufügen</string>
+  <string name="wallpaper_none">Kein</string>
+  <string name="audible_title_none">Kein</string>
   <string name="reset_theme">Zurücksetzen</string>
   <string name="customize_theme">Anpassen</string>
   <string name="wallpaper_external_title">Bild auswählen</string>
+  <string name="wallpaper_none_title">Kein</string>
   <string name="legacy_theme_warning">Hinweis: %s wurde für eine ältere CM-Version entwickelt. Es können Kompatibilitätsprobleme mit diesem Design auftreten.</string>
+  <string name="per_app_theming_title">App-Designer</string>
+  <string name="per_app_theme_removal_warning">Hinweis: Anwenden eines neuen Designs entfernt alle APP-Design-Anpassungen.</string>
+  <string name="per_app_theme_applying">Ihr Design wird angewandt</string>
 </resources>

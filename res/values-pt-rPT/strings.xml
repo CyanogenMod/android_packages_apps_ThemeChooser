@@ -40,7 +40,6 @@
   <string name="customize_theme">Personalizar</string>
   <string name="wallpaper_external_title">Escolher imagem</string>
   <string name="wallpaper_none_title">Nenhum</string>
-  <string name="processing_theme">A processar</string>
   <string name="legacy_theme_warning">NOTA: %s foi concebido para uma versão antiga da rom CM. Podem ocorrer problemas de compatibilidade com este tema.</string>
   <string name="per_app_theming_title">Personalizar aplicações</string>
   <string name="per_app_theme_removal_warning">Nota: Aplicar um novo tema irá remover qualquer personalização de tema das aplicações.</string>

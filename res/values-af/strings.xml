@@ -40,7 +40,6 @@
   <string name="customize_theme">Pasmaak</string>
   <string name="wallpaper_external_title">Kies prent</string>
   <string name="wallpaper_none_title">Geen</string>
-  <string name="processing_theme">Verwerking</string>
   <string name="legacy_theme_warning">KENNISGEWING: %s is ontwerp vir \'n ouer weergawe van CM. Jy mag versoenbaarheid probleme met hierdie tema ervaar.</string>
   <string name="per_app_theming_title">Program Temas</string>
   <string name="per_app_theme_removal_warning">KENNISGEWING: Toepassing van \'n nuwe tema sal enige pasgemaakte tema vir enige program verwyder.</string>

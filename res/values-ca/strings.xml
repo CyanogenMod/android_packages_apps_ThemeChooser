@@ -40,9 +40,11 @@
   <string name="customize_theme">Personalitza</string>
   <string name="wallpaper_external_title">Tria una imatge</string>
   <string name="wallpaper_none_title">Cap</string>
-  <string name="processing_theme">S\'està processant</string>
+  <string name="processing_theme">S\'està processant\u2026</string>
   <string name="legacy_theme_warning">NOTA: %s ha estat dissenyat per a una versió anterior de CM. Pot ser que tinguis problemes de compatibilitat amb aquest tema.</string>
   <string name="per_app_theming_title">Aplicador de temes en aplicacions</string>
   <string name="per_app_theme_removal_warning">NOTA: Aplicant un tema nou s\'eliminarà qualsevol personalització de tema en les aplicacions.</string>
   <string name="per_app_theme_applying">S\'està aplicant el teu tema</string>
+  <string name="per_app_theme_app_not_overlaid_warning">El tema no és compatible amb aquesta aplicació, alguns elements pot ser que no canviïn.</string>
+  <string name="file_type_not_supported">El tipus de fitxer no està suportat</string>
 </resources>

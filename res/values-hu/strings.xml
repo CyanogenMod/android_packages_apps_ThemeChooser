@@ -9,8 +9,13 @@
   <string name="theme_installed_notification_title">%s telepítve</string>
   <string name="theme_installed_notification_text">Téma sikeresen telepítve.</string>
   <string name="themes_installed_notification_title">%d telepített téma</string>
+  <string name="themes_installed_notification_text_one">%1$s és %2$d másik telepítve.</string>
+  <string name="themes_installed_notification_text_other">%1$s és %2$d másik telepítve.</string>
+  <string name="font_component_item_text">Aa</string>
   <string name="icon_label">Ikonok</string>
   <string name="font_label">Betűtípusok</string>
+  <string name="statusbar_label">Státusz</string>
+  <string name="navbar_label">Navigáció</string>
   <string name="wallpaper_label">Háttérkép</string>
   <string name="lockscreen_label">Képernyőzár háttérkép</string>
   <string name="style_label">Vezérlők</string>
@@ -35,7 +40,11 @@
   <string name="customize_theme">Testreszabás</string>
   <string name="wallpaper_external_title">Kép kiválasztása</string>
   <string name="wallpaper_none_title">Nincs</string>
-  <string name="processing_theme">Feldolgozás</string>
+  <string name="processing_theme">Feldolgozás\u2026</string>
   <string name="legacy_theme_warning">Megjegyzés: %s egy korábbi CM verzióhoz készült. A téma használata közben kompatibilitási problémákkal szembesülhet.</string>
   <string name="per_app_theming_title">Alkalmazás témázó</string>
+  <string name="per_app_theme_removal_warning">MEGJEGYZÉS: Új téma alkalmazásával minden alkalmazás témamódosítása elveszik.</string>
+  <string name="per_app_theme_applying">A témája alkalmazásra került</string>
+  <string name="per_app_theme_app_not_overlaid_warning">A téma nem támogatja az alkalmazást, egyes elemek nem fognak változni.</string>
+  <string name="file_type_not_supported">Nem támogatott fájl típus</string>
 </resources>

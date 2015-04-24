@@ -40,9 +40,11 @@
   <string name="customize_theme">Personalizar</string>
   <string name="wallpaper_external_title">Escolher imagem</string>
   <string name="wallpaper_none_title">Nenhum</string>
-  <string name="processing_theme">Processando</string>
+  <string name="processing_theme">Processando\u2026</string>
   <string name="legacy_theme_warning">NOTA: %s foi projetado para uma versão mais antiga do CM. Você pode ter problemas de compatibilidade com este tema.</string>
   <string name="per_app_theming_title">Tematizador de App</string>
   <string name="per_app_theme_removal_warning">NOTA: Aplicando um novo tema removerá todas as personalizações no tema do app.</string>
   <string name="per_app_theme_applying">O tema está sendo aplicado</string>
+  <string name="per_app_theme_app_not_overlaid_warning">O tema não suporta este app, alguns elementos podem não mudar.</string>
+  <string name="file_type_not_supported">Tipo de arquivo não suportado</string>
 </resources>

@@ -40,6 +40,11 @@
   <string name="customize_theme">Aanpassen</string>
   <string name="wallpaper_external_title">Afbeelding kiezen</string>
   <string name="wallpaper_none_title">Geen</string>
-  <string name="processing_theme">Verwerken</string>
+  <string name="processing_theme">Verwerken\u2026</string>
   <string name="legacy_theme_warning">Let op: %s is ontworpen voor een oudere versie van CM. Er kunnen compatibiliteitsproblemen optreden bij het gebruik van dit thema.</string>
+  <string name="per_app_theming_title">App-thema\'s</string>
+  <string name="per_app_theme_removal_warning">Let op: Toepassen van een nieuw thema zal alle aanpassingen van het app-thema verwijderen.</string>
+  <string name="per_app_theme_applying">Uw thema wordt toegepast</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Het thema ondersteunt deze app niet. Enkele elementen kunnen ongewijzigd blijven.</string>
+  <string name="file_type_not_supported">Bestandstype niet ondersteund</string>
 </resources>

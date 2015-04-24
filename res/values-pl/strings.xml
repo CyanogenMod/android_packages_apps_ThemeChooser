@@ -6,8 +6,11 @@
 <resources>
   <string name="app_name">Menedżer Motywów</string>
   <string name="font_preview_letters">AaBbCcDd</string>
+  <string name="theme_installed_notification_title">zainstalowano %s</string>
   <string name="theme_installed_notification_text">Motyw został pomyślnie zainstalowany.</string>
   <string name="themes_installed_notification_title">zainstalowane motywy %d</string>
+  <string name="themes_installed_notification_text_one">%1$s i %2$d inny zostały zainstalowane.</string>
+  <string name="themes_installed_notification_text_other">%1$s i %2$d inne zostały zainstalowane.</string>
   <string name="font_component_item_text">Aa</string>
   <string name="icon_label">Ikony</string>
   <string name="font_label">Czcionki</string>
@@ -21,20 +24,26 @@
   <string name="ringtone_label">Dzwonek</string>
   <string name="menu_author_info">Autor</string>
   <string name="menu_delete">Usuń</string>
+  <string name="menu_reset">Zresetuj motyw</string>
+  <string name="shop_themes">Sklep motywów</string>
   <string name="apply_theme_overlay_title">Ustaw</string>
   <string name="delete_theme_overlay_title">Usuń</string>
+  <string name="reset_theme_overlay_title">Przywróć domyślne</string>
   <string name="default_tag_text">Domyślny</string>
   <string name="customized_tag_text">Zmodyfikowany</string>
   <string name="updated_tag_text">Zaktualizowany</string>
   <string name="add_component_text">Dodaj</string>
   <string name="wallpaper_none">Brak</string>
   <string name="audible_title_none">Brak</string>
+  <string name="reset_theme">Przywróć domyślne</string>
   <string name="customize_theme">Dostosuj</string>
   <string name="wallpaper_external_title">Wybierz obraz</string>
   <string name="wallpaper_none_title">Brak</string>
-  <string name="processing_theme">Przetwarzanie</string>
+  <string name="processing_theme">Przetwarzanie\u2026</string>
   <string name="legacy_theme_warning">UWAGA: %s został zaprojektowany dla starszej wersji CM. Mogą wystąpić problemy z kompatybilnością tego motywu.</string>
   <string name="per_app_theming_title">Zmiana wyglądu aplikacji</string>
   <string name="per_app_theme_removal_warning">UWAGA: Zastosowanie nowego motywu usunie wszelkie modyfikacje wyglądu aplikacji.</string>
   <string name="per_app_theme_applying">Twój motyw zostanie zastosowany</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Motyw nie obsługuje tej aplikacji, niektóre elementy mogą się nie zmienić.</string>
+  <string name="file_type_not_supported">Nieobsługiwany typ pliku</string>
 </resources>
