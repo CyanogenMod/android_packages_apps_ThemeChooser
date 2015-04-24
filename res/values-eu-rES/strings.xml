@@ -35,5 +35,4 @@
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s instalatu da</string>
   <string name="theme_installed_notification_text">Gaia arrakastaz instalatu da.</string>
-  <string name="menu_item_get_more_themes">Gehiago lortu</string>
 </resources>
