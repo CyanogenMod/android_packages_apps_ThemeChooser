@@ -22,7 +22,7 @@
   <string name="fonts">גופנים</string>
   <string name="wallpapers">טפטים</string>
   <string name="boot_anims">אנימציות אתחול</string>
-  <string name="ringtones">רינגטונים</string>
+  <string name="ringtones">צלצולים</string>
   <string name="notifications">התראות</string>
   <string name="alarms">שעונים מעוררים</string>
   <string name="style">סגנון</string>
@@ -40,7 +40,7 @@
   <string name="no_preview_available">אין תצוגה מקדימה</string>
   <string name="alarm_label">שעון מעורר</string>
   <string name="notification_label">התראות</string>
-  <string name="ringtone_label">רינגטון</string>
+  <string name="ringtone_label">צלצול</string>
   <string name="unknown_author">מחבר לא ידוע</string>
   <string name="font_preview_letters">אבגדAaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s הותקן</string>
