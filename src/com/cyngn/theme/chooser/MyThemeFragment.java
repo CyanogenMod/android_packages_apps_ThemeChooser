@@ -588,6 +588,41 @@ public class MyThemeFragment extends ThemeFragment {
     }
 
     @Override
+    protected void loadStatusBar(Cursor c, boolean animate) {
+        super.loadStatusBar(c, animate);
+        setCardTitle(mStatusBarCard, mCurrentTheme.get(ThemesColumns.MODIFIES_STATUS_BAR),
+                getString(R.string.statusbar_label));
+    }
+
+    @Override
+    protected void loadIcons(Cursor c, boolean animate) {
+        super.loadIcons(c, animate);
+        setCardTitle(mIconCard, mCurrentTheme.get(ThemesColumns.MODIFIES_ICONS),
+                getString(R.string.icon_label));
+    }
+
+    @Override
+    protected void loadNavBar(Cursor c, boolean animate) {
+        super.loadNavBar(c, animate);
+        setCardTitle(mNavBarCard, mCurrentTheme.get(ThemesColumns.MODIFIES_NAVIGATION_BAR),
+                getString(R.string.navbar_label));
+    }
+
+    @Override
+    protected void loadStyle(Cursor c, boolean animate) {
+        super.loadStyle(c, animate);
+        setCardTitle(mStyleCard, mCurrentTheme.get(ThemesColumns.MODIFIES_OVERLAYS),
+                getString(R.string.style_label));
+    }
+
+    @Override
+    protected void loadBootAnimation(Cursor c) {
+        super.loadBootAnimation(c);
+        setCardTitle(mBootAnimationCard, mCurrentTheme.get(ThemesColumns.MODIFIES_BOOT_ANIM),
+                getString(R.string.boot_animation_label));
+    }
+
+    @Override
     public String getThemePackageName() {
         if (mBaseThemePkgName == null) {
             // check if the package name is defined in the arguments bundle
