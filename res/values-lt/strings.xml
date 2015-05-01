@@ -40,8 +40,11 @@
   <string name="customize_theme">Tinkinti</string>
   <string name="wallpaper_external_title">Pasirinkti vaizdą</string>
   <string name="wallpaper_none_title">Joks</string>
+  <string name="processing_theme">Apdorojama\u2026</string>
   <string name="legacy_theme_warning">PASTABA: %s buvo sukurtą senesniai CM versijai. Gali kilti suderinamumo problemų su šia tema.</string>
   <string name="per_app_theming_title">Programos tema</string>
   <string name="per_app_theme_removal_warning">PASTABA: Taikant naują temą bus pašalinti programos temos tinkinimai.</string>
   <string name="per_app_theme_applying">Taikoma jūsų tema</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Tema nepalaiko šios programos kai kurie elementai gali nepasikeisti.</string>
+  <string name="file_type_not_supported">Failo tipas nepalaikomas</string>
 </resources>

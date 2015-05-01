@@ -40,8 +40,11 @@
   <string name="customize_theme">Personalizar</string>
   <string name="wallpaper_external_title">Elegir imagen</string>
   <string name="wallpaper_none_title">Ninguno</string>
+  <string name="processing_theme">Procesando\u2026</string>
   <string name="legacy_theme_warning">%s fue diseñado para una versión anterior de CM. Puedes experimentar problemas de compatibilidad con este tema.</string>
   <string name="per_app_theming_title">Aplicación de temas</string>
   <string name="per_app_theme_removal_warning">Nota: Aplicar un nuevo tema eliminará cualquier personalización previa de la aplicación de temas.</string>
   <string name="per_app_theme_applying">El tema está siendo aplicado</string>
+  <string name="per_app_theme_app_not_overlaid_warning">El tema no soporta esta aplicación. Puede que algunos elementos queden sin cambios.</string>
+  <string name="file_type_not_supported">Tipo de archivo no soportado</string>
 </resources>

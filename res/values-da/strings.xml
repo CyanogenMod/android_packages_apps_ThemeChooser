@@ -40,8 +40,11 @@
   <string name="customize_theme">Tilpas</string>
   <string name="wallpaper_external_title">Vælg billede</string>
   <string name="wallpaper_none_title">Ingen</string>
+  <string name="processing_theme">Behandler\u2026</string>
   <string name="legacy_theme_warning">BEMÆRK: %s var designet til en ældre version af CM. Du kan opleve kompatibilitetsproblemer med dette tema.</string>
   <string name="per_app_theming_title">Temaer til app</string>
   <string name="per_app_theme_removal_warning">BEMÆRK: Når du anvender et nyt tema, vil enhver tilpasning af app temaer blive fjernet.</string>
   <string name="per_app_theme_applying">Dit tema anvendes</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Temaet understøtter ikke denne app, nogle elementer ændrer sig muligvis ikke.</string>
+  <string name="file_type_not_supported">Filtypen understøttes ikke</string>
 </resources>

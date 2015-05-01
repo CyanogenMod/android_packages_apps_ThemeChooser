@@ -18,6 +18,7 @@
   <string name="navbar_label">Nawigacja</string>
   <string name="wallpaper_label">Tapeta</string>
   <string name="lockscreen_label">Tapeta ekranu blokady</string>
+  <string name="style_label">Przełączniki</string>
   <string name="boot_animation_label">Animacja uruchamiania</string>
   <string name="alarm_label">Budzik</string>
   <string name="notification_label">Powiadomienie</string>
