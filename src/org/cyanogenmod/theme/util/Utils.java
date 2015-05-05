@@ -252,21 +252,23 @@ public class Utils {
         return BitmapFactory.decodeByteArray(blob, 0, blob.length);
     }
 
-    public static Bitmap getPreviewBitmap(Context context, String pkgName, String previewColumn) {
-        if (pkgName == null) return null;
+    public static Bitmap getPreviewBitmap(Context context, String pkgName,
+                                          String previewColumnKey) {
+        if (pkgName == null || previewColumnKey == null) return null;
 
         Uri uri = ThemesContract.PreviewColumns.CONTENT_URI;
-        String[] projection = new String[] { previewColumn };
-        String selection = ThemesContract.ThemesColumns.PKG_NAME + "=?";
-        String[] selectionArgs = new String[] { pkgName };
+        String[]projection = new String[]{ThemesContract.PreviewColumns.COL_VALUE};
+        String selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND " +
+                ThemesContract.PreviewColumns.COL_KEY + "=?";
+        String[] selectionArgs = new String[]{ pkgName, previewColumnKey };
 
-        Cursor cursor = context.getContentResolver()
-                .query(uri, projection, selection, selectionArgs, null);
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection,
+                selectionArgs, null);
 
         if (cursor != null) {
             try {
                 if (cursor != null && cursor.moveToFirst())
-                return loadBitmapBlob(cursor, 0);
+                    return loadBitmapBlob(cursor, 0);
             } finally {
                 if (cursor != null) cursor.close();
             }
