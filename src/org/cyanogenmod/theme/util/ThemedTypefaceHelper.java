@@ -18,10 +18,10 @@ package org.cyanogenmod.theme.util;
 import android.content.Context;
 import android.content.pm.ThemeUtils;
 import android.content.res.AssetManager;
+import android.graphics.FontListParser;
+import android.graphics.FontListParser.Family;
 import android.graphics.Typeface;
 import android.util.Log;
-
-import org.cyanogenmod.theme.util.FontConfigParser.Family;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,13 +35,13 @@ import java.util.List;
 public class ThemedTypefaceHelper {
     private static final String TAG = ThemedTypefaceHelper.class.getName();
     private static final String FAMILY_SANS_SERIF = "sans-serif";
-    private static final String FONTS_DIR = "fonts/";
+    private static final String FONTS_DIR = "fonts";
     private static final String SYSTEM_FONTS_XML = "/system/etc/system_fonts.xml";
-    private static final String SYSTEM_FONTS_DIR = "/system/fonts/";
+    private static final String SYSTEM_FONTS_DIR = "/system/fonts";
 
     private boolean mIsLoaded;
     private Context mThemeContext;
-    private List<Family> mFamilies;
+    private List<FontListParser.Family> mFamilies;
     private Typeface[] mTypefaces = new Typeface[4];
 
     public void load(Context context, String pkgName) {
@@ -49,15 +49,15 @@ public class ThemedTypefaceHelper {
             loadThemedFonts(context, pkgName);
             return;
         } catch(Exception e) {
-            Log.e(TAG, "Unable to parse and load themed fonts. Falling back to system fonts", e);
+            Log.w(TAG, "Unable to parse and load themed fonts for " + pkgName +
+                    ". Falling back to system fonts", e );
         }
 
         try {
             loadSystemFonts();
             return;
         } catch(Exception e) {
-            Log.e(TAG, "Parsing system fonts failed. Falling back to Typeface loaded fonts");
-
+            Log.e(TAG, "Parsing system fonts failed. Falling back to Typeface loaded fonts", e);
         }
 
         // There is no reason for this to happen unless someone
@@ -69,8 +69,9 @@ public class ThemedTypefaceHelper {
         //Parse the font XML
         mThemeContext = context.createPackageContext(pkgName, Context.CONTEXT_IGNORE_SECURITY);
         AssetManager assetManager = mThemeContext.getAssets();
-        InputStream is = assetManager.open(FONTS_DIR + ThemeUtils.FONT_XML);
-        mFamilies = FontConfigParser.parse(is);
+        InputStream is = assetManager.open(FONTS_DIR + File.separator + ThemeUtils.FONT_XML);
+        FontListParser.Config fontConfig = FontListParser.parse(is, FONTS_DIR);
+        mFamilies = fontConfig.families;
 
         //Load the typefaces for sans-serif
         Family sanSerif = getFamily(FAMILY_SANS_SERIF);
@@ -85,7 +86,8 @@ public class ThemedTypefaceHelper {
         //Parse the system font XML
         File file = new File(SYSTEM_FONTS_XML);
         InputStream is = new FileInputStream(file);
-        mFamilies = FontConfigParser.parse(is);
+        FontListParser.Config fontConfig = FontListParser.parse(is, SYSTEM_FONTS_DIR);
+        mFamilies = fontConfig.families;
 
         //Load the typefaces for sans-serif
         Family sanSerif = getFamily(FAMILY_SANS_SERIF);
@@ -112,7 +114,7 @@ public class ThemedTypefaceHelper {
 
     private Family getFamily(String familyName) throws Exception {
         for(Family family : mFamilies) {
-            if (family.nameset.contains(familyName)) {
+            if (family.name.equals(familyName)) {
                 return family;
             }
         }
@@ -121,12 +123,12 @@ public class ThemedTypefaceHelper {
 
     private Typeface loadTypeface(Family family, int style) {
         AssetManager assets = mThemeContext.getAssets();
-        String path = FONTS_DIR + family.fileset.get(style);
+        String path = family.fonts.get(style).fontName;
         return Typeface.createFromAsset(assets, path);
     }
 
     private Typeface loadSystemTypeface(Family family, int style) {
-        return Typeface.createFromFile(SYSTEM_FONTS_DIR + family.fileset.get(style));
+        return Typeface.createFromFile(family.fonts.get(style).fontName);
     }
 
     public Typeface getTypeface(int style) {
