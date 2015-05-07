@@ -61,4 +61,6 @@
     <color name="per_app_theme_remove_background_normal">#0fb6df</color>
     <color name="per_app_theme_remove_background_hover">#4fdcff</color>
 
+    <color name="edge_effect_color">#ffffff</color>
+
 </resources>
