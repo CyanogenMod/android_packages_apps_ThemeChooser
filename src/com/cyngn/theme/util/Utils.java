@@ -274,14 +274,14 @@ public class Utils {
         return BitmapFactory.decodeByteArray(blob, 0, blob.length);
     }
 
-    public static String getBatteryIndex(int type) {
+    public static String getBatteryKey(int type) {
         switch(type) {
             case 2:
-                return ThemesContract.PreviewColumns.STATUSBAR_BATTERY_CIRCLE;
+                return ThemesContract.PreviewColumns.KEY_STATUSBAR_BATTERY_CIRCLE;
             case 5:
-                return ThemesContract.PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE;
+                return ThemesContract.PreviewColumns.KEY_STATUSBAR_BATTERY_LANDSCAPE;
             default:
-                return ThemesContract.PreviewColumns.STATUSBAR_BATTERY_PORTRAIT;
+                return ThemesContract.PreviewColumns.KEY_STATUSBAR_BATTERY_PORTRAIT;
         }
     }
 
@@ -545,5 +545,17 @@ public class Utils {
         }
 
         return null;
+    }
+
+    /**
+     * This allows pivoting key/value pairs as column/entry pairs.
+     * This is only needed when querying multiple keys at a time.
+     * @param keyValue
+     * @return
+     */
+    public static String getProjectionFromKeyValue(String keyValue) {
+        return String.format("MAX( CASE %s WHEN '%s' THEN %s ELSE NULL END) AS %s",
+                ThemesContract.PreviewColumns.COL_KEY, keyValue,
+                ThemesContract.PreviewColumns.COL_VALUE, keyValue);
     }
 }

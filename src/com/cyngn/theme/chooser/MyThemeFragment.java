@@ -334,29 +334,8 @@ public class MyThemeFragment extends ThemeFragment {
                         return super.onCreateLoader(id, args);
                     }
                 }
-                projection = new String[]{
-                        PreviewColumns.WALLPAPER_PREVIEW,
-                        PreviewColumns.STATUSBAR_BACKGROUND,
-                        PreviewColumns.STATUSBAR_WIFI_ICON,
-                        PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
-                        PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
-                        PreviewColumns.STATUSBAR_SIGNAL_ICON,
-                        PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
-                        PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
-                        PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
-                        PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
-                        PreviewColumns.NAVBAR_BACK_BUTTON,
-                        PreviewColumns.NAVBAR_HOME_BUTTON,
-                        PreviewColumns.NAVBAR_RECENT_BUTTON,
-                        PreviewColumns.ICON_PREVIEW_1,
-                        PreviewColumns.ICON_PREVIEW_2,
-                        PreviewColumns.ICON_PREVIEW_3,
-                        PreviewColumns.LOCK_WALLPAPER_PREVIEW,
-                        PreviewColumns.STYLE_PREVIEW,
-                        PreviewColumns.NAVBAR_BACKGROUND
-                };
                 uri = PreviewColumns.APPLIED_URI;
-                return new CursorLoader(getActivity(), uri, projection, null, null, null);
+                return new CursorLoader(getActivity(), uri, null, null, null, null);
             default:
                 // Only LOADER_ID_ALL differs for MyThemeFragment
                 return super.onCreateLoader(id, args);
@@ -432,7 +411,7 @@ public class MyThemeFragment extends ThemeFragment {
             overlay = getOverlayDrawable(mWallpaperCard, true);
         }
 
-        int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
+        int wpIdx = c.getColumnIndex(PreviewColumns.KEY_WALLPAPER_PREVIEW);
         final Resources res = getResources();
         final Context context = getActivity();
         final WallpaperManager wm = WallpaperManager.getInstance(context);
@@ -476,7 +455,7 @@ public class MyThemeFragment extends ThemeFragment {
             overlay = getOverlayDrawable(mLockScreenCard, true);
         }
 
-        int wpIdx = c.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_PREVIEW);
+        int wpIdx = c.getColumnIndex(PreviewColumns.KEY_LOCK_WALLPAPER_PREVIEW);
         final Resources res = getResources();
         final Context context = getActivity();
         Drawable wp = context == null ? null :
