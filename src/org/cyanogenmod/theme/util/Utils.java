@@ -25,16 +25,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.FileUtils;
 import android.provider.ThemesContract;
 import android.provider.ThemesContract.ThemesColumns;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ViewConfiguration;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
@@ -252,6 +251,33 @@ public class Utils {
         return BitmapFactory.decodeByteArray(blob, 0, blob.length);
     }
 
+    public static Bitmap loadBitmapFile(Cursor cursor, int columnIdx) {
+        if (columnIdx < 0) {
+            Log.w(TAG, "loadBitmapBlob(): Invalid index provided, returning null");
+            return null;
+        }
+        String path = cursor.getString(columnIdx);
+        if (TextUtils.isEmpty(path)) {
+            return null;
+        }
+
+        byte[] image = null;
+        FileInputStream inputStream;
+        try {
+            inputStream = new FileInputStream(path);
+            BufferedInputStream buffer = new BufferedInputStream(inputStream);
+            image = new byte[buffer.available()];
+            buffer.read(image);
+            inputStream.close();
+            buffer.close();
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to open preview " + path, e);
+        }
+
+        if (image == null) return null;
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
+    }
+
     public static Bitmap getPreviewBitmap(Context context, String pkgName,
                                           String previewColumnKey) {
         if (pkgName == null || previewColumnKey == null) return null;
@@ -268,7 +294,7 @@ public class Utils {
         if (cursor != null) {
             try {
                 if (cursor != null && cursor.moveToFirst())
-                    return loadBitmapBlob(cursor, 0);
+                    return loadBitmapFile(cursor, 0);
             } finally {
                 if (cursor != null) cursor.close();
             }
