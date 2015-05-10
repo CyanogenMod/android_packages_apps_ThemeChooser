@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Gaiak</string>
+  <string name="lock_screen">Blokeo-pantailako horma-paperak</string>
   <string name="icons">Ikonoak</string>
   <string name="fonts">Iturburuak</string>
   <string name="boot_anims">Pizte animazioak</string>
