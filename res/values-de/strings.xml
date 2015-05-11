@@ -40,8 +40,11 @@
   <string name="customize_theme">Anpassen</string>
   <string name="wallpaper_external_title">Bild auswählen</string>
   <string name="wallpaper_none_title">Kein</string>
+  <string name="processing_theme">Verarbeite\u2026</string>
   <string name="legacy_theme_warning">Hinweis: %s wurde für eine ältere CM-Version entwickelt. Es können Kompatibilitätsprobleme mit diesem Design auftreten.</string>
   <string name="per_app_theming_title">App-Designer</string>
   <string name="per_app_theme_removal_warning">Hinweis: Anwenden eines neuen Designs entfernt alle APP-Design-Anpassungen.</string>
   <string name="per_app_theme_applying">Ihr Design wird angewandt</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Dieses App wird vom Design nicht unterstützt. Einige Elemente werden nicht geändert.</string>
+  <string name="file_type_not_supported">Dateityp nicht unterstützt</string>
 </resources>
