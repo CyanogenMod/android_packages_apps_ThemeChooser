@@ -17,15 +17,23 @@
 -->
 <resources>
   <string name="app_name">Gaiak</string>
+  <string name="lock_screen">Blokeo-pantailako horma-paperak</string>
   <string name="icons">Ikonoak</string>
   <string name="fonts">Iturburuak</string>
+  <string name="wallpapers">Horma-irudiak</string>
   <string name="boot_anims">Pizte animazioak</string>
   <string name="ringtones">Dei doinuak</string>
   <string name="notifications">Jakinarazpenak</string>
   <string name="alarms">Alarmak</string>
   <string name="style">Estiloa</string>
+  <string name="status_bar">Egoera barra</string>
+  <string name="nav_bar">Nabigazio-barra</string>
+  <string name="sounds">Soinuak</string>
+  <string name="default_tag">(Lehenetsia)</string>
   <string name="apply">Ezarri</string>
   <string name="applying">Ezartzen\u2026</string>
+  <string name="applied">Ezarrita</string>
+  <string name="available">Eskuragarri</string>
   <string name="update">Eguneratu</string>
   <string name="no_preview_available">Aurrebista ez dago eskuragarri</string>
   <string name="alarm_label">Alarma</string>
@@ -35,4 +43,10 @@
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s instalatu da</string>
   <string name="theme_installed_notification_text">Gaia arrakastaz instalatu da.</string>
+  <string name="menu_item_get_more_themes">Lortu gehiago</string>
+  <string name="get_more_description">Gai gehiago lor ditzakezu hurrengo esteketan:</string>
+  <string name="get_more_entry_cm_themes_showcase">CyanogenMod gaien erakusleihoa</string>
+  <string name="get_more_entry_play_store">Play Store</string>
+  <string name="get_more_entry_cm_wiki">informazio gehiago CM Wikian</string>
+  <string name="designed_for_cm11">CM11rako diseinatuta</string>
 </resources>

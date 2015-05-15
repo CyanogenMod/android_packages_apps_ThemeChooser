@@ -26,9 +26,16 @@
   <string name="notifications">การแจ้งเตือน</string>
   <string name="alarms">นาฬิกาปลุก</string>
   <string name="style">ลักษณะ</string>
+  <string name="status_bar">แถบสถานะ</string>
+  <string name="nav_bar">แถบนำทาง</string>
+  <string name="theme_packs">แพ็คชุดรูปแบบ</string>
+  <string name="sounds">เสียง</string>
+  <string name="system_theme_name">ระบบ</string>
   <string name="default_tag">(เริ่มต้น)</string>
   <string name="apply">นำไปใช้</string>
   <string name="applying">กำลังนำไปใช้\u2026</string>
+  <string name="applied">นำไปใช้แล้ว</string>
+  <string name="available">ใช้งานได้</string>
   <string name="update">อัพเดต</string>
   <string name="no_preview_available">ไม่มีภาพตัวอย่าง</string>
   <string name="alarm_label">นาฬิกาปลุก</string>
@@ -40,4 +47,8 @@
   <string name="theme_installed_notification_text">ติดตั้งชุดรูปแบบสำเร็จ</string>
   <string name="menu_item_get_more_themes">เพิ่มเติม</string>
   <string name="get_more_description">คุณจะได้รับชุดรูปแบบเพิ่มเติมได้จากลิงค์ต่อไปนี้:</string>
+  <string name="get_more_entry_cm_themes_showcase">CyanogenMod แสดงชุดรูปแบบ</string>
+  <string name="get_more_entry_play_store">Play Store</string>
+  <string name="get_more_entry_cm_wiki">ข้อมูลเพิ่มเติมที่ CM Wiki</string>
+  <string name="designed_for_cm11">ออกแบบมาสำหรับ CM11</string>
 </resources>
