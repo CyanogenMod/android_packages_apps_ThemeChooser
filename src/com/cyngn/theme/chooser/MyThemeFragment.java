@@ -423,7 +423,7 @@ public class MyThemeFragment extends ThemeFragment {
 
         Drawable wp = context == null ? null : wm.getDrawable();
         if (wp == null) {
-            Bitmap bmp = Utils.loadBitmapFile(c, wpIdx);
+            Bitmap bmp = Utils.loadBitmapBlob(c, wpIdx);
             if (bmp != null) wp = new BitmapDrawable(res, bmp);
         }
         if (wp != null) {
@@ -461,7 +461,7 @@ public class MyThemeFragment extends ThemeFragment {
         Drawable wp = context == null ? null :
                 WallpaperManager.getInstance(context).getFastKeyguardDrawable();
         if (wp == null) {
-            Bitmap bmp = Utils.loadBitmapFile(c, wpIdx);
+            Bitmap bmp = Utils.loadBitmapBlob(c, wpIdx);
             if (bmp != null) wp = new BitmapDrawable(res, bmp);
         }
         if (wp != null) {

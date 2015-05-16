@@ -527,16 +527,16 @@ public class ComponentSelector extends LinearLayout
         int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
         ((ImageView) v.findViewById(R.id.slot1)).setImageBitmap(
-                Utils.loadBitmapFile(cursor, wifiIndex));
+                Utils.loadBitmapBlob(cursor, wifiIndex));
         ((ImageView) v.findViewById(R.id.slot2)).setImageBitmap(
-                Utils.loadBitmapFile(cursor, signalIndex));
+                Utils.loadBitmapBlob(cursor, signalIndex));
         ((ImageView) v.findViewById(R.id.slot3)).setImageBitmap(
-                Utils.loadBitmapFile(cursor, bluetoothIndex));
+                Utils.loadBitmapBlob(cursor, bluetoothIndex));
         ((ImageView) v.findViewById(R.id.slot4)).setImageBitmap(
-                Utils.loadBitmapFile(cursor, batteryIndex));
+                Utils.loadBitmapBlob(cursor, batteryIndex));
         setTitle(((TextView) v.findViewById(R.id.title)), cursor);
         v.findViewById(R.id.container).setBackground(
-                new BitmapDrawable(Utils.loadBitmapFile(cursor, backgroundIndex)));
+                new BitmapDrawable(Utils.loadBitmapBlob(cursor, backgroundIndex)));
         v.setTag(cursor.getString(pkgNameIndex));
         v.setOnClickListener(mItemClickListener);
         return v;
@@ -551,10 +551,10 @@ public class ComponentSelector extends LinearLayout
         int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
         ((ImageView) v.findViewById(R.id.back)).setImageBitmap(
-                Utils.loadBitmapFile(cursor, backIndex));
+                Utils.loadBitmapBlob(cursor, backIndex));
         setTitle(((TextView) v.findViewById(R.id.title)), cursor);
         v.findViewById(R.id.container).setBackground(
-                new BitmapDrawable(Utils.loadBitmapFile(cursor, backgroundIndex)));
+                new BitmapDrawable(Utils.loadBitmapBlob(cursor, backgroundIndex)));
         v.setTag(cursor.getString(pkgNameIndex));
         v.setOnClickListener(mItemClickListener);
         return v;
@@ -586,7 +586,7 @@ public class ComponentSelector extends LinearLayout
         int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
         ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
-                Utils.loadBitmapFile(cursor, iconIndex));
+                Utils.loadBitmapBlob(cursor, iconIndex));
         setTitle(((TextView) v.findViewById(R.id.title)), cursor);
         v.setTag(cursor.getString(pkgNameIndex));
         v.setOnClickListener(mItemClickListener);
@@ -601,7 +601,7 @@ public class ComponentSelector extends LinearLayout
         int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
         ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
-                Utils.loadBitmapFile(cursor, styleIndex));
+                Utils.loadBitmapBlob(cursor, styleIndex));
         setTitle(((TextView) v.findViewById(R.id.title)), cursor);
         v.setTag(cursor.getString(pkgNameIndex));
         v.setOnClickListener(mItemClickListener);
@@ -626,7 +626,7 @@ public class ComponentSelector extends LinearLayout
             cursor.moveToPosition(position - EXTRA_WALLPAPER_COMPONENTS);
             int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
             iv.setImageBitmap(
-                    Utils.loadBitmapFile(cursor, wallpaperIndex));
+                    Utils.loadBitmapBlob(cursor, wallpaperIndex));
             setTitle(((TextView) v.findViewById(R.id.title)), cursor);
             v.setTag(cursor.getString(pkgNameIndex));
         }
@@ -642,7 +642,7 @@ public class ComponentSelector extends LinearLayout
         int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
         ((ImageView) v.findViewById(R.id.preview)).setImageBitmap(
-                Utils.loadBitmapFile(cursor, wallpaperIndex));
+                Utils.loadBitmapBlob(cursor, wallpaperIndex));
         setTitle(((TextView) v.findViewById(R.id.title)), cursor);
         v.setTag(cursor.getString(pkgNameIndex));
         v.setOnClickListener(mItemClickListener);

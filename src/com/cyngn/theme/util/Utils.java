@@ -24,7 +24,6 @@ import android.graphics.Rect;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.provider.ThemesContract;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.IWindowManager;
@@ -33,9 +32,7 @@ import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import com.cyngn.theme.chooser.ChooserActivity;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -275,29 +272,6 @@ public class Utils {
         byte[] blob = cursor.getBlob(columnIdx);
         if (blob == null) return null;
         return BitmapFactory.decodeByteArray(blob, 0, blob.length);
-    }
-
-    public static Bitmap loadBitmapFile(Cursor cursor, int columnIdx) {
-        if (columnIdx < 0) {
-            Log.w(TAG, "loadBitmapFile(): Invalid index provided, returning null");
-            return null;
-        }
-        String path = cursor.getString(columnIdx);
-        if (TextUtils.isEmpty(path)) {
-            return null;
-        }
-
-        Bitmap image = null;
-        FileInputStream inputStream;
-        try {
-            inputStream = new FileInputStream(path);
-            image = BitmapFactory.decodeStream(inputStream);
-            inputStream.close();
-        } catch (Exception e) {
-            Log.w(TAG, "Unable to open preview " + path, e);
-        }
-
-        return image;
     }
 
     public static String getBatteryKey(int type) {

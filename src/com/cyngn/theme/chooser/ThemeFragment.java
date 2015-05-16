@@ -1638,7 +1638,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         int wpIdx = c.getColumnIndex(PreviewColumns.KEY_WALLPAPER_PREVIEW);
         final Resources res = getResources();
-        Bitmap bitmap = Utils.loadBitmapFile(c, wpIdx);
+        Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
         if (bitmap != null) {
             mWallpaper.setImageBitmap(bitmap);
             mWallpaperCard.setWallpaper(new BitmapDrawable(res, bitmap));
@@ -1671,7 +1671,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         int wpIdx = c.getColumnIndex(PreviewColumns.KEY_LOCK_WALLPAPER_PREVIEW);
         final Resources res = getResources();
-        Bitmap bitmap = Utils.loadBitmapFile(c, wpIdx);
+        Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
         if (bitmap != null) {
             mLockScreenCard.setWallpaper(new BitmapDrawable(res, bitmap));
             String pkgName = c.getString(pkgNameIdx);
@@ -1701,11 +1701,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         int clockColorIdx = c.getColumnIndex(PreviewColumns.KEY_STATUSBAR_CLOCK_TEXT_COLOR);
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
 
-        Bitmap background = Utils.loadBitmapFile(c, backgroundIdx);
-        Bitmap bluetoothIcon = Utils.loadBitmapFile(c, bluetoothIdx);
-        Bitmap wifiIcon = Utils.loadBitmapFile(c, wifiIdx);
-        Bitmap signalIcon = Utils.loadBitmapFile(c, signalIdx);
-        Bitmap batteryIcon = Utils.loadBitmapFile(c, batteryIdx);
+        Bitmap background = Utils.loadBitmapBlob(c, backgroundIdx);
+        Bitmap bluetoothIcon = Utils.loadBitmapBlob(c, bluetoothIdx);
+        Bitmap wifiIcon = Utils.loadBitmapBlob(c, wifiIdx);
+        Bitmap signalIcon = Utils.loadBitmapBlob(c, signalIdx);
+        Bitmap batteryIcon = Utils.loadBitmapBlob(c, batteryIdx);
         int wifiMargin = c.getInt(wifiMarginIdx);
         int clockTextColor = c.getInt(clockColorIdx);
 
@@ -1778,7 +1778,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         for(int i=0; i < iconViews.size() && i < iconIdx.length; i++) {
             final ImageView v = iconViews.get(i);
-            Bitmap bitmap = Utils.loadBitmapFile(c, iconIdx[i]);
+            Bitmap bitmap = Utils.loadBitmapBlob(c, iconIdx[i]);
             Drawable oldIcon = v.getDrawable();
             Drawable newIcon;
             if (bitmap == null) {
@@ -1826,10 +1826,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
 
-        Bitmap background = Utils.loadBitmapFile(c, backgroundIdx);
-        Bitmap backButton = Utils.loadBitmapFile(c, backButtonIdx);
-        Bitmap homeButton = Utils.loadBitmapFile(c, homeButtonIdx);
-        Bitmap recentButton = Utils.loadBitmapFile(c, recentButtonIdx);
+        Bitmap background = Utils.loadBitmapBlob(c, backgroundIdx);
+        Bitmap backButton = Utils.loadBitmapBlob(c, backButtonIdx);
+        Bitmap homeButton = Utils.loadBitmapBlob(c, homeButtonIdx);
+        Bitmap recentButton = Utils.loadBitmapBlob(c, recentButtonIdx);
 
         Drawable overlay = null;
         if (animate) {
@@ -1890,7 +1890,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         int styleIdx = c.getColumnIndex(PreviewColumns.KEY_STYLE_PREVIEW);
-        mStylePreview.setImageBitmap(Utils.loadBitmapFile(c, styleIdx));
+        mStylePreview.setImageBitmap(Utils.loadBitmapBlob(c, styleIdx));
         if (pkgNameIdx > -1) {
             String pkgName = c.getString(pkgNameIdx);
             if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
