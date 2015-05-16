@@ -13,7 +13,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -286,113 +285,66 @@ public class ComponentSelector extends LinearLayout
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = PreviewColumns.COMPONENTS_URI;
         String selection;
         String[] selectionArgs = { "1" };
         String[] projection = { ThemesColumns.TITLE, ThemesColumns.PKG_NAME };
         switch(id) {
             case LOADER_ID_STATUS_BAR:
+                selection = MODIFIES_STATUS_BAR + "=?";
                 projection = new String[] {
-                        ThemesColumns.PKG_NAME,
+                        PreviewColumns.STATUSBAR_WIFI_ICON,
+                        PreviewColumns.STATUSBAR_SIGNAL_ICON,
+                        PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
+                        PreviewColumns.STATUSBAR_BACKGROUND,
+                        PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
+                        PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
+                        PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STATUSBAR_BACKGROUND),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STATUSBAR_WIFI_ICON),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BLUETOOTH_ICON),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STATUSBAR_SIGNAL_ICON),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BATTERY_CIRCLE),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BATTERY_LANDSCAPE),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BATTERY_PORTRAIT)
-                };
-                selection = MODIFIES_STATUS_BAR + "=? AND (" +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=?" +
-                        ")";
-                selectionArgs = new String[] {
-                        "1",
-                        PreviewColumns.KEY_STATUSBAR_WIFI_ICON,
-                        PreviewColumns.KEY_STATUSBAR_SIGNAL_ICON,
-                        PreviewColumns.KEY_STATUSBAR_BLUETOOTH_ICON,
-                        PreviewColumns.KEY_STATUSBAR_BACKGROUND,
-                        PreviewColumns.KEY_STATUSBAR_BATTERY_CIRCLE,
-                        PreviewColumns.KEY_STATUSBAR_BATTERY_LANDSCAPE,
-                        PreviewColumns.KEY_STATUSBAR_BATTERY_PORTRAIT
+                        ThemesColumns.PKG_NAME
                 };
                 break;
             case LOADER_ID_NAVIGATION_BAR:
+                selection = MODIFIES_NAVIGATION_BAR + "=?";
                 projection = new String[] {
-                        ThemesColumns.PKG_NAME,
+                        PreviewColumns.NAVBAR_BACK_BUTTON,
+                        PreviewColumns.STATUSBAR_BACKGROUND,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STATUSBAR_BACKGROUND),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_NAVBAR_BACK_BUTTON)
-                };
-                selection = MODIFIES_NAVIGATION_BAR + "=? AND (" +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=?" +
-                        ")";
-                selectionArgs = new String[] {
-                        "1",
-                        PreviewColumns.KEY_NAVBAR_BACK_BUTTON,
-                        PreviewColumns.KEY_STATUSBAR_BACKGROUND
+                        ThemesColumns.PKG_NAME,
                 };
                 break;
             case LOADER_ID_FONT:
                 selection = MODIFIES_FONTS + "=?";
                 break;
             case LOADER_ID_ICON:
+                selection = MODIFIES_ICONS + "=?";
                 projection = new String[] {
-                        ThemesColumns.PKG_NAME,
+                        PreviewColumns.ICON_PREVIEW_1,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_ICON_PREVIEW_1)
-                };
-                selection = MODIFIES_ICONS + "=? AND " + PreviewColumns.COL_KEY + "=?";
-                selectionArgs = new String[] {
-                        "1",
-                        PreviewColumns.KEY_ICON_PREVIEW_1
+                        ThemesColumns.PKG_NAME
                 };
                 break;
             case LOADER_ID_STYLE:
+                selection = MODIFIES_OVERLAYS + "=?";
                 projection = new String[] {
-                        ThemesColumns.PKG_NAME,
+                        PreviewColumns.STYLE_THUMBNAIL,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STYLE_THUMBNAIL)
-                };
-                selection = MODIFIES_OVERLAYS + "=? AND " + PreviewColumns.COL_KEY + "=?";
-                selectionArgs = new String[] {
-                        "1",
-                        PreviewColumns.KEY_STYLE_THUMBNAIL
+                        ThemesColumns.PKG_NAME
                 };
                 break;
             case LOADER_ID_WALLPAPER:
+                selection = MODIFIES_LAUNCHER + "=?";
                 projection = new String[] {
-                        ThemesColumns.PKG_NAME,
+                        PreviewColumns.WALLPAPER_THUMBNAIL,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_WALLPAPER_THUMBNAIL)
-                };
-                selection = MODIFIES_LAUNCHER + "=? AND " + PreviewColumns.COL_KEY + "=?";
-                selectionArgs = new String[] {
-                        "1",
-                        PreviewColumns.KEY_WALLPAPER_THUMBNAIL
+                        ThemesColumns.PKG_NAME
                 };
                 break;
             case LOADER_ID_BOOTANIMATIONS:
+                selection = MODIFIES_BOOT_ANIM + "=?";
                 projection = new String[] {
-                        ThemesColumns.PKG_NAME,
+                        PreviewColumns.BOOTANIMATION_THUMBNAIL,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_BOOTANIMATION_THUMBNAIL)
-                };
-                selection = MODIFIES_BOOT_ANIM + "=? AND " + PreviewColumns.COL_KEY + "=?";
-                selectionArgs = new String[] {
-                        "1",
-                        PreviewColumns.KEY_BOOTANIMATION_THUMBNAIL
+                        ThemesColumns.PKG_NAME
                 };
                 break;
             case LOADER_ID_RINGTONE:
@@ -405,15 +357,11 @@ public class ComponentSelector extends LinearLayout
                 selection = MODIFIES_ALARMS + "=?";
                 break;
             case LOADER_ID_LOCKSCREEN:
+                selection = MODIFIES_LOCKSCREEN + "=?";
                 projection = new String[] {
-                        ThemesColumns.PKG_NAME,
+                        PreviewColumns.LOCK_WALLPAPER_THUMBNAIL,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_LOCK_WALLPAPER_THUMBNAIL)
-                };
-                selection = MODIFIES_LOCKSCREEN + "=? AND " + PreviewColumns.COL_KEY + "=?";
-                selectionArgs = new String[] {
-                        "1",
-                        PreviewColumns.KEY_LOCK_WALLPAPER_THUMBNAIL
+                        ThemesColumns.PKG_NAME
                 };
                 break;
             default:
@@ -422,7 +370,8 @@ public class ComponentSelector extends LinearLayout
         // sort in ascending order but make sure the "default" theme is always first
         String sortOrder = "(" + ThemesContract.ThemesColumns.IS_DEFAULT_THEME + "=1) DESC, "
                 + ThemesContract.ThemesColumns.TITLE + " ASC";
-        return new CursorLoader(mContext, uri, projection, selection, selectionArgs, sortOrder);
+        return new CursorLoader(mContext, PreviewColumns.CONTENT_URI,
+                projection, selection, selectionArgs, sortOrder);
     }
 
     @Override
@@ -498,7 +447,7 @@ public class ComponentSelector extends LinearLayout
         }
         if (MODIFIES_LAUNCHER.equals(mComponentType)) {
             return newWallpapersView(cursor, container, position,
-                    cursor.getColumnIndex(PreviewColumns.KEY_WALLPAPER_THUMBNAIL));
+                    cursor.getColumnIndex(PreviewColumns.WALLPAPER_THUMBNAIL));
         }
         if (MODIFIES_BOOT_ANIM.equals(mComponentType)) {
             return newBootanimationView(cursor, container, position);
@@ -510,7 +459,7 @@ public class ComponentSelector extends LinearLayout
         }
         if (MODIFIES_LOCKSCREEN.equals(mComponentType)) {
             return newWallpapersView(cursor, container, position,
-                    cursor.getColumnIndex(PreviewColumns.KEY_LOCK_WALLPAPER_THUMBNAIL));
+                    cursor.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL));
         }
         return null;
     }
@@ -519,11 +468,11 @@ public class ComponentSelector extends LinearLayout
         cursor.moveToPosition(position);
         View v = mInflater.inflate(R.layout.status_bar_component_selection_item,
                                    parent, false);
-        int wifiIndex = cursor.getColumnIndex(PreviewColumns.KEY_STATUSBAR_WIFI_ICON);
-        int signalIndex = cursor.getColumnIndex(PreviewColumns.KEY_STATUSBAR_SIGNAL_ICON);
-        int bluetoothIndex = cursor.getColumnIndex(PreviewColumns.KEY_STATUSBAR_BLUETOOTH_ICON);
-        int batteryIndex = cursor.getColumnIndex(Utils.getBatteryKey(mBatteryStyle));
-        int backgroundIndex = cursor.getColumnIndex(PreviewColumns.KEY_STATUSBAR_BACKGROUND);
+        int wifiIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_WIFI_ICON);
+        int signalIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_SIGNAL_ICON);
+        int bluetoothIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BLUETOOTH_ICON);
+        int batteryIndex = cursor.getColumnIndex(Utils.getBatteryIndex(mBatteryStyle));
+        int backgroundIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
         int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
         ((ImageView) v.findViewById(R.id.slot1)).setImageBitmap(
@@ -546,8 +495,8 @@ public class ComponentSelector extends LinearLayout
         cursor.moveToPosition(position);
         View v = mInflater.inflate(R.layout.navigation_bar_component_selection_item, parent,
                 false);
-        int backIndex = cursor.getColumnIndex(PreviewColumns.KEY_NAVBAR_BACK_BUTTON);
-        int backgroundIndex = cursor.getColumnIndex(PreviewColumns.KEY_STATUSBAR_BACKGROUND);
+        int backIndex = cursor.getColumnIndex(PreviewColumns.NAVBAR_BACK_BUTTON);
+        int backgroundIndex = cursor.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
         int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
         ((ImageView) v.findViewById(R.id.back)).setImageBitmap(
@@ -582,7 +531,7 @@ public class ComponentSelector extends LinearLayout
         cursor.moveToPosition(position);
         View v = mInflater.inflate(R.layout.icon_component_selection_item, parent,
                 false);
-        int iconIndex = cursor.getColumnIndex(PreviewColumns.KEY_ICON_PREVIEW_1);
+        int iconIndex = cursor.getColumnIndex(PreviewColumns.ICON_PREVIEW_1);
         int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
         ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
@@ -597,7 +546,7 @@ public class ComponentSelector extends LinearLayout
         cursor.moveToPosition(position);
         View v = mInflater.inflate(R.layout.icon_component_selection_item, parent,
                 false);
-        int styleIndex = cursor.getColumnIndex(PreviewColumns.KEY_STYLE_THUMBNAIL);
+        int styleIndex = cursor.getColumnIndex(PreviewColumns.STYLE_THUMBNAIL);
         int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
         ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
@@ -638,7 +587,7 @@ public class ComponentSelector extends LinearLayout
         cursor.moveToPosition(position);
         View v = mInflater.inflate(R.layout.bootani_component_selection_item, parent,
                 false);
-        int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.KEY_BOOTANIMATION_THUMBNAIL);
+        int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.BOOTANIMATION_THUMBNAIL);
         int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
         ((ImageView) v.findViewById(R.id.preview)).setImageBitmap(

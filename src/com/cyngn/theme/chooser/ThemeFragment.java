@@ -1197,7 +1197,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (args != null) {
             pkgName = args.getString(ARG_PACKAGE_NAME);
         }
-        Uri uri = PreviewColumns.CONTENT_URI;
+        Uri uri = ThemesContract.PreviewColumns.CONTENT_URI;
         String selection = ThemesContract.ThemesColumns.PKG_NAME + "= ?";
         String[] selectionArgs = new String[] { pkgName };
         String[] projection = null;
@@ -1223,115 +1223,39 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         ThemesColumns.MODIFIES_STATUS_BAR,
                         ThemesColumns.MODIFIES_NOTIFICATIONS,
                         //Previews
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_WALLPAPER_PREVIEW),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STATUSBAR_BACKGROUND),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STATUSBAR_WIFI_ICON),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_WIFI_COMBO_MARGIN_END),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BLUETOOTH_ICON),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STATUSBAR_SIGNAL_ICON),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_CLOCK_TEXT_COLOR),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BATTERY_CIRCLE),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BATTERY_LANDSCAPE),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BATTERY_PORTRAIT),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_NAVBAR_BACK_BUTTON),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_NAVBAR_HOME_BUTTON),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_NAVBAR_RECENT_BUTTON),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_ICON_PREVIEW_1),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_ICON_PREVIEW_2),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_ICON_PREVIEW_3),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_LOCK_WALLPAPER_PREVIEW),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STYLE_PREVIEW)
-                };
-                selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND (" +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=?" +
-                        ")";
-                selectionArgs = new String[] {
-                        pkgName,
-                        PreviewColumns.KEY_WALLPAPER_PREVIEW,
-                        PreviewColumns.KEY_STATUSBAR_BACKGROUND,
-                        PreviewColumns.KEY_STATUSBAR_WIFI_ICON,
-                        PreviewColumns.KEY_STATUSBAR_WIFI_COMBO_MARGIN_END,
-                        PreviewColumns.KEY_STATUSBAR_BLUETOOTH_ICON,
-                        PreviewColumns.KEY_STATUSBAR_SIGNAL_ICON,
-                        PreviewColumns.KEY_STATUSBAR_CLOCK_TEXT_COLOR,
-                        PreviewColumns.KEY_STATUSBAR_BATTERY_CIRCLE,
-                        PreviewColumns.KEY_STATUSBAR_BATTERY_LANDSCAPE,
-                        PreviewColumns.KEY_STATUSBAR_BATTERY_PORTRAIT,
-                        PreviewColumns.KEY_NAVBAR_BACK_BUTTON,
-                        PreviewColumns.KEY_NAVBAR_HOME_BUTTON,
-                        PreviewColumns.KEY_NAVBAR_RECENT_BUTTON,
-                        PreviewColumns.KEY_ICON_PREVIEW_1,
-                        PreviewColumns.KEY_ICON_PREVIEW_2,
-                        PreviewColumns.KEY_ICON_PREVIEW_3,
-                        PreviewColumns.KEY_LOCK_WALLPAPER_PREVIEW,
-                        PreviewColumns.KEY_STYLE_PREVIEW
+                        PreviewColumns.WALLPAPER_PREVIEW,
+                        PreviewColumns.STATUSBAR_BACKGROUND,
+                        PreviewColumns.STATUSBAR_WIFI_ICON,
+                        PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
+                        PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
+                        PreviewColumns.STATUSBAR_SIGNAL_ICON,
+                        PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
+                        PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
+                        PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
+                        PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
+                        PreviewColumns.NAVBAR_BACK_BUTTON,
+                        PreviewColumns.NAVBAR_HOME_BUTTON,
+                        PreviewColumns.NAVBAR_RECENT_BUTTON,
+                        PreviewColumns.ICON_PREVIEW_1,
+                        PreviewColumns.ICON_PREVIEW_2,
+                        PreviewColumns.ICON_PREVIEW_3,
+                        PreviewColumns.LOCK_WALLPAPER_PREVIEW,
+                        PreviewColumns.STYLE_PREVIEW
                 };
                 break;
             case LOADER_ID_STATUS_BAR:
                 projection = new String[] {
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STATUSBAR_BACKGROUND),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STATUSBAR_WIFI_ICON),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_WIFI_COMBO_MARGIN_END),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BLUETOOTH_ICON),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STATUSBAR_SIGNAL_ICON),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_CLOCK_TEXT_COLOR),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BATTERY_CIRCLE),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BATTERY_LANDSCAPE),
-                        Utils.getProjectionFromKeyValue(
-                                PreviewColumns.KEY_STATUSBAR_BATTERY_PORTRAIT)
-                };
-                selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND (" +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=?" +
-                        ")";
-                selectionArgs = new String[] {
-                        pkgName,
-                        PreviewColumns.KEY_STATUSBAR_BACKGROUND,
-                        PreviewColumns.KEY_STATUSBAR_WIFI_ICON,
-                        PreviewColumns.KEY_STATUSBAR_WIFI_COMBO_MARGIN_END,
-                        PreviewColumns.KEY_STATUSBAR_BLUETOOTH_ICON,
-                        PreviewColumns.KEY_STATUSBAR_SIGNAL_ICON,
-                        PreviewColumns.KEY_STATUSBAR_CLOCK_TEXT_COLOR,
-                        PreviewColumns.KEY_STATUSBAR_BATTERY_CIRCLE,
-                        PreviewColumns.KEY_STATUSBAR_BATTERY_LANDSCAPE,
-                        PreviewColumns.KEY_STATUSBAR_BATTERY_PORTRAIT
+                        PreviewColumns.STATUSBAR_BACKGROUND,
+                        PreviewColumns.STATUSBAR_WIFI_ICON,
+                        PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
+                        PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
+                        PreviewColumns.STATUSBAR_SIGNAL_ICON,
+                        PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
+                        PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
+                        PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
+                        PreviewColumns.STATUSBAR_BATTERY_PORTRAIT
                 };
                 break;
             case LOADER_ID_FONT:
@@ -1344,83 +1268,41 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 projection = new String[] {
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_ICON_PREVIEW_1),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_ICON_PREVIEW_2),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_ICON_PREVIEW_3)
-                };
-                selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND (" +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=?" +
-                        ")";
-                selectionArgs = new String[] {
-                        pkgName,
-                        PreviewColumns.KEY_ICON_PREVIEW_1,
-                        PreviewColumns.KEY_ICON_PREVIEW_2,
-                        PreviewColumns.KEY_ICON_PREVIEW_3
+                        PreviewColumns.ICON_PREVIEW_1,
+                        PreviewColumns.ICON_PREVIEW_2,
+                        PreviewColumns.ICON_PREVIEW_3,
+                        PreviewColumns.ICON_PREVIEW_4
                 };
                 break;
             case LOADER_ID_WALLPAPER:
                 projection = new String[] {
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_WALLPAPER_PREVIEW)
-                };
-                selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND " +
-                        PreviewColumns.COL_KEY + "=?";
-                selectionArgs = new String[] {
-                        pkgName,
-                        PreviewColumns.KEY_WALLPAPER_PREVIEW
+                        PreviewColumns.WALLPAPER_PREVIEW
                 };
                 break;
             case LOADER_ID_NAVIGATION_BAR:
                 projection = new String[] {
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STATUSBAR_BACKGROUND),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_NAVBAR_BACK_BUTTON),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_NAVBAR_HOME_BUTTON),
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_NAVBAR_RECENT_BUTTON)
-                };
-                selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND (" +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=? OR " +
-                        PreviewColumns.COL_KEY + "=?" +
-                        ")";
-                selectionArgs = new String[] {
-                        pkgName,
-                        PreviewColumns.KEY_STATUSBAR_BACKGROUND,
-                        PreviewColumns.KEY_NAVBAR_BACK_BUTTON,
-                        PreviewColumns.KEY_NAVBAR_HOME_BUTTON,
-                        PreviewColumns.KEY_NAVBAR_RECENT_BUTTON
+                        PreviewColumns.STATUSBAR_BACKGROUND,
+                        PreviewColumns.NAVBAR_BACK_BUTTON,
+                        PreviewColumns.NAVBAR_HOME_BUTTON,
+                        PreviewColumns.NAVBAR_RECENT_BUTTON
                 };
                 break;
             case LOADER_ID_LOCKSCREEN:
                 projection = new String[]{
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_LOCK_WALLPAPER_PREVIEW)
-                };
-                selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND " +
-                        PreviewColumns.COL_KEY + "=?";
-                selectionArgs = new String[] {
-                        pkgName,
-                        PreviewColumns.KEY_LOCK_WALLPAPER_PREVIEW
+                        PreviewColumns.LOCK_WALLPAPER_PREVIEW
                 };
                 break;
             case LOADER_ID_STYLE:
                 projection = new String[] {
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE,
-                        Utils.getProjectionFromKeyValue(PreviewColumns.KEY_STYLE_PREVIEW)
-                };
-                selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND " +
-                        PreviewColumns.COL_KEY + "=?";
-                selectionArgs = new String[] {
-                        pkgName,
-                        PreviewColumns.KEY_STYLE_PREVIEW
+                        PreviewColumns.STYLE_PREVIEW
                 };
                 break;
             case LOADER_ID_BOOT_ANIMATION:
@@ -1636,7 +1518,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (mWallpaperCard.isShowingEmptyView()) mWallpaperCard.setEmptyViewEnabled(false);
 
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
-        int wpIdx = c.getColumnIndex(PreviewColumns.KEY_WALLPAPER_PREVIEW);
+        int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
         final Resources res = getResources();
         Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
         if (bitmap != null) {
@@ -1669,7 +1551,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (mLockScreenCard.isShowingEmptyView()) mLockScreenCard.setEmptyViewEnabled(false);
 
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
-        int wpIdx = c.getColumnIndex(PreviewColumns.KEY_LOCK_WALLPAPER_PREVIEW);
+        int wpIdx = c.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_PREVIEW);
         final Resources res = getResources();
         Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
         if (bitmap != null) {
@@ -1692,13 +1574,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     protected void loadStatusBar(Cursor c, boolean animate) {
-        int backgroundIdx = c.getColumnIndex(PreviewColumns.KEY_STATUSBAR_BACKGROUND);
-        int wifiIdx = c.getColumnIndex(PreviewColumns.KEY_STATUSBAR_WIFI_ICON);
-        int wifiMarginIdx = c.getColumnIndex(PreviewColumns.KEY_STATUSBAR_WIFI_COMBO_MARGIN_END);
-        int bluetoothIdx = c.getColumnIndex(PreviewColumns.KEY_STATUSBAR_BLUETOOTH_ICON);
-        int signalIdx = c.getColumnIndex(PreviewColumns.KEY_STATUSBAR_SIGNAL_ICON);
-        int batteryIdx = c.getColumnIndex(Utils.getBatteryKey(mBatteryStyle));
-        int clockColorIdx = c.getColumnIndex(PreviewColumns.KEY_STATUSBAR_CLOCK_TEXT_COLOR);
+        int backgroundIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
+        int wifiIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_WIFI_ICON);
+        int wifiMarginIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END);
+        int bluetoothIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_BLUETOOTH_ICON);
+        int signalIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_SIGNAL_ICON);
+        int batteryIdx = c.getColumnIndex(Utils.getBatteryIndex(mBatteryStyle));
+        int clockColorIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR);
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
 
         Bitmap background = Utils.loadBitmapBlob(c, backgroundIdx);
@@ -1756,10 +1638,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (mIconCard.isShowingEmptyView()) {
             mIconCard.setEmptyViewEnabled(false);
         }
-        int[] iconIdx = new int[3];
-        iconIdx[0] = c.getColumnIndex(PreviewColumns.KEY_ICON_PREVIEW_1);
-        iconIdx[1] = c.getColumnIndex(PreviewColumns.KEY_ICON_PREVIEW_2);
-        iconIdx[2] = c.getColumnIndex(PreviewColumns.KEY_ICON_PREVIEW_3);
+        int[] iconIdx = new int[4];
+        iconIdx[0] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_1);
+        iconIdx[1] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_2);
+        iconIdx[2] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_3);
+        iconIdx[3] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_4);
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
 
         // Set the icons. If the provider does not have an icon preview then
@@ -1817,12 +1700,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     protected void loadNavBar(Cursor c, boolean animate) {
-        int backButtonIdx = c.getColumnIndex(PreviewColumns.KEY_NAVBAR_BACK_BUTTON);
-        int homeButtonIdx = c.getColumnIndex(PreviewColumns.KEY_NAVBAR_HOME_BUTTON);
-        int recentButtonIdx = c.getColumnIndex(PreviewColumns.KEY_NAVBAR_RECENT_BUTTON);
-        int backgroundIdx = c.getColumnIndex(PreviewColumns.KEY_NAVBAR_BACKGROUND);
+        int backButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_BACK_BUTTON);
+        int homeButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_HOME_BUTTON);
+        int recentButtonIdx = c.getColumnIndex(PreviewColumns.NAVBAR_RECENT_BUTTON);
+        int backgroundIdx = c.getColumnIndex(PreviewColumns.NAVBAR_BACKGROUND);
         if (backgroundIdx == -1) {
-            backgroundIdx = c.getColumnIndex(PreviewColumns.KEY_STATUSBAR_BACKGROUND);
+            backgroundIdx = c.getColumnIndex(PreviewColumns.STATUSBAR_BACKGROUND);
         }
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
 
@@ -1889,7 +1772,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
 
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
-        int styleIdx = c.getColumnIndex(PreviewColumns.KEY_STYLE_PREVIEW);
+        int styleIdx = c.getColumnIndex(PreviewColumns.STYLE_PREVIEW);
         mStylePreview.setImageBitmap(Utils.loadBitmapBlob(c, styleIdx));
         if (pkgNameIdx > -1) {
             String pkgName = c.getString(pkgNameIdx);
