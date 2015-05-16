@@ -481,7 +481,7 @@ public class ChooserBrowseFragment extends Fragment
                     bitmap = Utils.decodeFile(path, mMaxImageSize.x, mMaxImageSize.y);
                 } else {
                     bitmap = Utils.getPreviewBitmap(context, pkgName,
-                                 ThemesContract.PreviewColumns.KEY_WALLPAPER_PREVIEW);
+                                 ThemesContract.PreviewColumns.WALLPAPER_PREVIEW);
                 }
             }
             return bitmap;

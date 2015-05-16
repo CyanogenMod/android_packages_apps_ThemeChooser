@@ -260,7 +260,7 @@ public class WallpaperAndIconPreviewFragment extends Fragment
             } else {
                 if (mImageUrl == null) {
                     bitmap = Utils.getPreviewBitmap(getContext(), mPkgName,
-                            ThemesContract.PreviewColumns.KEY_WALLPAPER_PREVIEW);
+                            ThemesContract.PreviewColumns.WALLPAPER_PREVIEW);
                 } else if (URLUtil.isAssetUrl(mImageUrl)) {
                     bitmap = Utils.getBitmapFromAsset(getContext(), mImageUrl, mDisplaySize.x,
                             mDisplaySize.y);
