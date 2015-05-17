@@ -45,6 +45,8 @@
 
     <string name="no_preview_available">No preview available</string>
 
+    <string name="menu_item_uninstall">Uninstall</string>
+
     <!-- Audibles preview -->
     <string name="alarm_label">Alarm</string>
     <string name="notification_label">Notification</string>
