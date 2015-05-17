@@ -16,6 +16,9 @@
 package org.cyanogenmod.theme.chooser;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.ThemeChangeRequest;
 import android.content.res.ThemeChangeRequest.RequestType;
 import android.content.res.ThemeManager;
@@ -44,6 +47,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -151,6 +157,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         mPkgName = getArguments().getString("pkgName");
         ArrayList<String> filters = getArguments().getStringArrayList(ChooserActivity.EXTRA_COMPONENT_FILTER);
         mComponentFilters = (filters != null) ? filters : new ArrayList<String>(0);
@@ -216,6 +223,32 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         getLoaderManager().initLoader(LOADER_ID_APPLIED_THEME, null, this);
         mService = (ThemeManager) getActivity().getSystemService(Context.THEME_SERVICE);
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        try {
+            ApplicationInfo themeApplicationInfo = getActivity().getPackageManager()
+                    .getApplicationInfo(mPkgName, 0);
+            if (!mPkgName.equals("system")
+                    && (themeApplicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                inflater.inflate(R.menu.chooser_detail_menu, menu);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_uninstall:
+                Uri packageUri = Uri.parse("package:" + mPkgName);
+                Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageUri);
+                startActivity(uninstallIntent);
+                return true;
+        }
+        return false;
     }
 
     private ThemeChangeRequest getThemeChangeRequestForSelectedComponents() {
