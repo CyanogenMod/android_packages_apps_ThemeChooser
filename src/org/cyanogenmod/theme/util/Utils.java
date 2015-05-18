@@ -283,10 +283,9 @@ public class Utils {
         if (pkgName == null || previewColumnKey == null) return null;
 
         Uri uri = ThemesContract.PreviewColumns.CONTENT_URI;
-        String[]projection = new String[]{ThemesContract.PreviewColumns.COL_VALUE};
-        String selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND " +
-                ThemesContract.PreviewColumns.COL_KEY + "=?";
-        String[] selectionArgs = new String[]{ pkgName, previewColumnKey };
+        String[]projection = new String[]{ previewColumnKey };
+        String selection = ThemesContract.ThemesColumns.PKG_NAME + "=?";
+        String[] selectionArgs = new String[]{ pkgName };
 
         Cursor cursor = context.getContentResolver().query(uri, projection, selection,
                 selectionArgs, null);
