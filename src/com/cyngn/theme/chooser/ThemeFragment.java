@@ -1271,7 +1271,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         PreviewColumns.ICON_PREVIEW_1,
                         PreviewColumns.ICON_PREVIEW_2,
                         PreviewColumns.ICON_PREVIEW_3,
-                        PreviewColumns.ICON_PREVIEW_4
                 };
                 break;
             case LOADER_ID_WALLPAPER:
@@ -1638,11 +1637,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (mIconCard.isShowingEmptyView()) {
             mIconCard.setEmptyViewEnabled(false);
         }
-        int[] iconIdx = new int[4];
+        int[] iconIdx = new int[3];
         iconIdx[0] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_1);
         iconIdx[1] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_2);
         iconIdx[2] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_3);
-        iconIdx[3] = c.getColumnIndex(PreviewColumns.ICON_PREVIEW_4);
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
 
         // Set the icons. If the provider does not have an icon preview then
