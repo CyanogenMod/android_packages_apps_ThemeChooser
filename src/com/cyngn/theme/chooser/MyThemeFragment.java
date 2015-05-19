@@ -29,6 +29,7 @@ import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
+import android.util.MutableLong;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -38,7 +39,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.cyngn.theme.chooser.ThemeFragment;
 import com.cyngn.theme.util.AudioUtils;
 import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.ThemedTypefaceHelper;
@@ -50,6 +50,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static com.cyngn.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
 
 public class MyThemeFragment extends ThemeFragment {
     private static final String TAG = MyThemeFragment.class.getSimpleName();
@@ -179,11 +181,13 @@ public class MyThemeFragment extends ThemeFragment {
     }
 
     @Override
-    public void setCurrentTheme(Map<String, String> currentTheme) {
-        super.setCurrentTheme(currentTheme);
+    public void setCurrentTheme(Map<String, String> currentTheme,
+            MutableLong currentWallpaperComponentId) {
+        super.setCurrentTheme(currentTheme, currentWallpaperComponentId);
         for (String key : currentTheme.keySet()) {
             mSelectedComponentsMap.put(key, currentTheme.get(key));
         }
+        mSelectedWallpaperComponentId = currentWallpaperComponentId.value;
     }
 
     @Override
@@ -194,6 +198,10 @@ public class MyThemeFragment extends ThemeFragment {
         for (String key : mSelectedComponentsMap.keySet()) {
             String current = mCurrentTheme.get(key);
             if (current == null || !current.equals(mSelectedComponentsMap.get(key))) {
+                return true;
+            }
+            if (ThemesColumns.MODIFIES_LAUNCHER.equals(key) &&
+                    mCurrentWallpaperComponentId.value != mSelectedWallpaperComponentId) {
                 return true;
             }
         }
@@ -266,7 +274,8 @@ public class MyThemeFragment extends ThemeFragment {
 
     private void loadComponentsToApply() {
         for (String component : mSelectedComponentsMap.keySet()) {
-            loadComponentFromPackage(mSelectedComponentsMap.get(component), component);
+            loadComponentFromPackage(mSelectedComponentsMap.get(component), component,
+                    mSelectedWallpaperComponentId);
         }
     }
 
@@ -397,7 +406,8 @@ public class MyThemeFragment extends ThemeFragment {
         for (String component : mSelectedComponentsMap.keySet()) {
             String currentPkg = mCurrentTheme.get(component);
             String selectedPkg = mSelectedComponentsMap.get(component);
-            if (currentPkg == null || mThemeResetting || !currentPkg.equals(selectedPkg)) {
+            if (currentPkg == null || mThemeResetting || !currentPkg.equals(selectedPkg) ||
+                    mCurrentWallpaperComponentId.value != mSelectedWallpaperComponentId) {
                 componentsToApply.put(component, selectedPkg);
             }
         }

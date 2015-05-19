@@ -44,6 +44,7 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.MutableLong;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
@@ -65,6 +66,8 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
+
+import static com.cyngn.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
 
 public class ChooserActivity extends FragmentActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -138,6 +141,7 @@ public class ChooserActivity extends FragmentActivity
 
     // Current system theme configuration as component -> pkgName
     private Map<String, String> mCurrentTheme = new HashMap<String, String>();
+    private MutableLong mCurrentWallpaperCmpntId = new MutableLong(DEFAULT_COMPONENT_ID);
 
     private boolean mIsPickingImage = false;
     private boolean mRestartLoaderOnCollapse = false;
@@ -493,10 +497,11 @@ public class ChooserActivity extends FragmentActivity
     }
 
     public void showComponentSelector(String component, View v) {
-        showComponentSelector(component, null, v);
+        showComponentSelector(component, null, DEFAULT_COMPONENT_ID, v);
     }
 
-    public void showComponentSelector(String component, String selectedPkgName, View v) {
+    public void showComponentSelector(String component, String selectedPkgName,
+            long selectedCmpntId, View v) {
         if (component != null) {
             final Resources res = getResources();
             int itemsPerPage = res.getInteger(R.integer.default_items_per_page);
@@ -513,7 +518,7 @@ public class ChooserActivity extends FragmentActivity
                         R.dimen.component_selection_cell_height_sounds);
             }
             if (mSaveApplyLayout.getVisibility() == View.VISIBLE) hideSaveApplyButton();
-            mSelector.show(component, selectedPkgName, itemsPerPage, height);
+            mSelector.show(component, selectedPkgName, selectedCmpntId, itemsPerPage, height);
 
             // determine if we need to shift the cards up
             int[] coordinates = new int[2];
@@ -776,13 +781,19 @@ public class ChooserActivity extends FragmentActivity
 
     private void populateCurrentTheme(Cursor c) {
         c.moveToPosition(-1);
+        //Default to first wallpaper
+        mCurrentWallpaperCmpntId.value = DEFAULT_COMPONENT_ID;
         while(c.moveToNext()) {
             int mixkeyIdx = c.getColumnIndex(ThemesContract.MixnMatchColumns.COL_KEY);
             int pkgIdx = c.getColumnIndex(ThemesContract.MixnMatchColumns.COL_VALUE);
+            int cmpntIdIdx = c.getColumnIndex(ThemesContract.MixnMatchColumns.COL_COMPONENT_ID);
             String mixkey = c.getString(mixkeyIdx);
             String component = ThemesContract.MixnMatchColumns.mixNMatchKeyToComponent(mixkey);
             String pkg = c.getString(pkgIdx);
             mCurrentTheme.put(component, pkg);
+            if (cmpntIdIdx >= 0 && TextUtils.equals(component, ThemesColumns.MODIFIES_LAUNCHER)) {
+                mCurrentWallpaperCmpntId.value = c.getLong(cmpntIdIdx);
+            }
         }
     }
 
@@ -915,15 +926,18 @@ public class ChooserActivity extends FragmentActivity
         @Override
         public Fragment getItem(int position) {
             ThemeFragment f = null;
+            MutableLong wallpaperCmpntId;
             if (mInstalledThemes != null) {
                 final String pkgName = mInstalledThemes.get(position);
                 if (pkgName.equals(mAppliedBaseTheme)) {
                     f = MyThemeFragment.newInstance(mAppliedBaseTheme, mAppliedThemeTitle,
                             mAppliedThemeAuthor, mAnimateContentIn);
+                    wallpaperCmpntId = mCurrentWallpaperCmpntId;
                 } else {
                     f = ThemeFragment.newInstance(pkgName, mAnimateContentIn);
+                    wallpaperCmpntId = new MutableLong(DEFAULT_COMPONENT_ID);
                 }
-                f.setCurrentTheme(mCurrentTheme);
+                f.setCurrentTheme(mCurrentTheme, wallpaperCmpntId);
             }
             return f;
         }

@@ -48,6 +48,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.MutableLong;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.Gravity;
@@ -106,6 +107,8 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
+import static com.cyngn.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
+
 import static android.content.pm.ThemeUtils.SYSTEM_TARGET_API;
 
 public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
@@ -163,6 +166,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected static final int LOADER_ID_ALARM = 11;
 
     protected static final String ARG_PACKAGE_NAME = "pkgName";
+    protected static final String ARG_COMPONENT_ID = "cmpntId";
     protected static final String ARG_SKIP_LOADING_ANIM = "skipLoadingAnim";
 
     protected static ComponentName[] sIconComponents;
@@ -243,8 +247,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected ComponentSelector mSelector;
     // Supported components for the theme this fragment represents
     protected Map<String, String> mSelectedComponentsMap = new HashMap<String, String>();
+    protected Long mSelectedWallpaperComponentId;
     // Current system theme configuration as component -> pkgName
     protected Map<String, String> mCurrentTheme = new HashMap<String, String>();
+    protected MutableLong mCurrentWallpaperComponentId = new MutableLong(DEFAULT_COMPONENT_ID);
     // Set of components available in the base theme
     protected HashSet<String> mBaseThemeSupportedComponents = new HashSet<String>();
     protected Cursor mCurrentCursor;
@@ -289,6 +295,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Bundle args = new Bundle();
         args.putString(ARG_PACKAGE_NAME, pkgName);
         args.putBoolean(ARG_SKIP_LOADING_ANIM, skipLoadingAnim);
+        args.putLong(ARG_COMPONENT_ID, DEFAULT_COMPONENT_ID);
         f.setArguments(args);
         return f;
     }
@@ -1188,6 +1195,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mSelectedComponentsMap.clear();
         Bundle args = new Bundle();
         args.putString(ARG_PACKAGE_NAME, mBaseThemePkgName);
+        args.putLong(ARG_COMPONENT_ID, DEFAULT_COMPONENT_ID);
         getLoaderManager().restartLoader(LOADER_ID_ALL, args, this);
         mThemeResetting = true;
     }
@@ -1195,8 +1203,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String pkgName = mPkgName;
+        long componentId = DEFAULT_COMPONENT_ID;
         if (args != null) {
             pkgName = args.getString(ARG_PACKAGE_NAME);
+            componentId = args.getLong(ARG_COMPONENT_ID, DEFAULT_COMPONENT_ID);
         }
         Uri uri = ThemesContract.PreviewColumns.CONTENT_URI;
         String selection = ThemesContract.ThemesColumns.PKG_NAME + "= ?";
@@ -1204,6 +1214,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         String[] projection = null;
         switch (id) {
             case LOADER_ID_ALL:
+                // Load all default component previews (component_id == 0)
+                selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND " +
+                        PreviewColumns.COMPONENT_ID + "=?";
+                selectionArgs = new String[] { pkgName, String.valueOf(DEFAULT_COMPONENT_ID) };
                 projection = new String[] {
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE,
@@ -1275,10 +1289,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 };
                 break;
             case LOADER_ID_WALLPAPER:
+                uri = PreviewColumns.COMPONENTS_URI;
+                // Load specified wallpaper previews (component_id is specified)
+                selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND " +
+                        PreviewColumns.COMPONENT_ID + "=?";
+                selectionArgs = new String[] { pkgName, String.valueOf(componentId) };
                 projection = new String[] {
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE,
-                        PreviewColumns.WALLPAPER_PREVIEW
+                        PreviewColumns.WALLPAPER_PREVIEW,
+                        PreviewColumns.COMPONENT_ID
                 };
                 break;
             case LOADER_ID_NAVIGATION_BAR:
@@ -1470,11 +1490,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         }
 
-        // if the theme has no lockscreen, set an empty string to indicate "none";
-        if (!mSelectedComponentsMap.containsKey(ThemesColumns.MODIFIES_LOCKSCREEN)) {
-            mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, WALLPAPER_NONE);
-        }
-
         if (mApplyThemeOnPopulated) {
             applyTheme();
         }
@@ -1519,15 +1534,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
         int wpIdx = c.getColumnIndex(PreviewColumns.WALLPAPER_PREVIEW);
+        int cmpntIdIdx = c.getColumnIndex(PreviewColumns.COMPONENT_ID);
         final Resources res = getResources();
         Bitmap bitmap = Utils.loadBitmapBlob(c, wpIdx);
         if (bitmap != null) {
             mWallpaper.setImageBitmap(bitmap);
             mWallpaperCard.setWallpaper(new BitmapDrawable(res, bitmap));
             String pkgName = c.getString(pkgNameIdx);
+            Long cmpntId = (cmpntIdIdx >= 0) ? c.getLong(cmpntIdIdx) : DEFAULT_COMPONENT_ID;
             if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
                     && mBaseThemeSupportedComponents.contains(MODIFIES_LAUNCHER))) {
                 mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
+                mSelectedWallpaperComponentId = cmpntId;
                 setCardTitle(mWallpaperCard, pkgName, getString(R.string.wallpaper_label));
             }
         } else {
@@ -1959,8 +1977,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
             mActiveCardId = v.getId();
             String component = mCardIdsToComponentTypes.get(mActiveCardId);
+            // Only pass on mSelectedWallpaperComponentId if dealing with mods_launcher
+            long selectedComponentId = (ThemesColumns.MODIFIES_LAUNCHER.equals(component)) ?
+                    mSelectedWallpaperComponentId : DEFAULT_COMPONENT_ID;
             getChooserActivity().showComponentSelector(component,
-                    mSelectedComponentsMap.get(component), v);
+                    mSelectedComponentsMap.get(component), selectedComponentId, v);
             fadeOutNonSelectedCards(mActiveCardId);
             stopMediaPlayers();
         }
@@ -2005,9 +2026,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     };
 
-    protected void loadComponentFromPackage(String pkgName, String component) {
+    protected void loadComponentFromPackage(String pkgName, String component, long componentId) {
         Bundle args = new Bundle();
         args.putString(ARG_PACKAGE_NAME, pkgName);
+        args.putLong(ARG_COMPONENT_ID, componentId);
         int loaderId = LOADER_ID_INVALID;
         if (MODIFIES_STATUS_BAR.equals(component)) {
             loaderId = LOADER_ID_STATUS_BAR;
@@ -2066,8 +2088,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private OnItemClickedListener mOnComponentItemClicked = new OnItemClickedListener() {
         @Override
-        public void onItemClicked(String pkgName) {
-            loadComponentFromPackage(pkgName, mSelector.getComponentType());
+        public void onItemClicked(String pkgName, long componentId) {
+            loadComponentFromPackage(pkgName, mSelector.getComponentType(), componentId);
         }
     };
 
@@ -2150,6 +2172,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             builder.setComponent(component, componentMap.get(component));
         }
         builder.setRequestType(requestType);
+        builder.setWallpaperId(mSelectedWallpaperComponentId);
         return builder.build();
     }
 
@@ -2540,6 +2563,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (!mPkgName.equals(mSelectedComponentsMap.get(key))) {
                 return true;
             }
+            if (ThemesColumns.MODIFIES_LAUNCHER.equals(key) &&
+                    mCurrentWallpaperComponentId.value != mSelectedWallpaperComponentId) {
+                return true;
+            }
         }
         return false;
     }
@@ -2566,8 +2593,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         getChooserActivity().uninstallTheme(mPkgName);
     }
 
-    public void setCurrentTheme(Map<String, String> currentTheme) {
+    public void setCurrentTheme(Map<String, String> currentTheme,
+            MutableLong currentWallpaperComponentId) {
         mCurrentTheme = currentTheme;
+        mCurrentWallpaperComponentId = currentWallpaperComponentId;
     }
 
     /**

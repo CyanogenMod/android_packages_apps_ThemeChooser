@@ -13,6 +13,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -23,6 +24,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,6 +78,8 @@ public class ComponentSelector extends LinearLayout
 
     private static final int EXTRA_WALLPAPER_COMPONENTS = 2;
 
+    protected static final long DEFAULT_COMPONENT_ID = 0;
+
     private Context mContext;
     private LayoutInflater mInflater;
     private ComponentSelectorLinearLayout mContent;
@@ -88,6 +92,7 @@ public class ComponentSelector extends LinearLayout
     private int mItemsPerPage;
     private String mAppliedComponentPkgName;
     private String mSelectedComponentPkgName;
+    private long mSelectedComponentId;
 
     // animations for bringing selector in and out of view
     private Animation mAnimateIn;
@@ -171,11 +176,17 @@ public class ComponentSelector extends LinearLayout
     }
 
     public void setComponentType(String component) {
-        setComponentType(component, null);
+        setComponentType(component, null, DEFAULT_COMPONENT_ID);
     }
 
     public void setComponentType(String component, String selectedPkgName) {
+        setComponentType(component, null, DEFAULT_COMPONENT_ID);
+    }
+
+    public void setComponentType(String component, String selectedPkgName,
+            long selectedComponentId) {
         mSelectedComponentPkgName = selectedPkgName;
+        mSelectedComponentId = selectedComponentId;
         if (mComponentType == null || !mComponentType.equals(component)) {
             mContent.removeAllViews();
             mComponentType = component;
@@ -190,8 +201,12 @@ public class ComponentSelector extends LinearLayout
                 // The child itself may have the tag, or in the case of sounds its the grandchild,
                 // either way the parent of the textview will have the pkgName in its tag
                 final View viewWithTag = (View) tv.getParent();
-                final String pkgName = (String) viewWithTag.getTag();
-                if (pkgName.equals(selectedPkgName)) {
+                final String pkgName = (String) viewWithTag.getTag(R.id.tag_key_package_name);
+                Long cmpntId = (Long) viewWithTag.getTag(R.id.tag_key_component_id);
+                if (cmpntId == null) {
+                    cmpntId = DEFAULT_COMPONENT_ID;
+                }
+                if (pkgName.equals(selectedPkgName) && cmpntId == selectedComponentId) {
                     tv.setTextColor(res.getColor(R.color.component_selection_current_text_color));
                 } else {
                     tv.setTextColor(res.getColor(android.R.color.white));
@@ -224,9 +239,14 @@ public class ComponentSelector extends LinearLayout
     }
 
     public void show(String componentType, String selectedPkgName, int itemsPerPage, int height) {
+        show(componentType, selectedPkgName, DEFAULT_COMPONENT_ID, itemsPerPage, height);
+    }
+
+    public void show(String componentType, String selectedPkgName, long selectedComponentId,
+            int itemsPerPage, int height) {
         setNumItemsPerPage(itemsPerPage);
         setHeight(height);
-        setComponentType(componentType, selectedPkgName);
+        setComponentType(componentType, selectedPkgName, selectedComponentId);
         show();
     }
 
@@ -285,6 +305,7 @@ public class ComponentSelector extends LinearLayout
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = PreviewColumns.CONTENT_URI;
         String selection;
         String[] selectionArgs = { "1" };
         String[] projection = { ThemesColumns.TITLE, ThemesColumns.PKG_NAME };
@@ -332,11 +353,13 @@ public class ComponentSelector extends LinearLayout
                 };
                 break;
             case LOADER_ID_WALLPAPER:
+                uri = PreviewColumns.COMPONENTS_URI;
                 selection = MODIFIES_LAUNCHER + "=?";
                 projection = new String[] {
                         PreviewColumns.WALLPAPER_THUMBNAIL,
                         ThemesColumns.TITLE,
-                        ThemesColumns.PKG_NAME
+                        ThemesColumns.PKG_NAME,
+                        PreviewColumns.COMPONENT_ID
                 };
                 break;
             case LOADER_ID_BOOTANIMATIONS:
@@ -361,7 +384,8 @@ public class ComponentSelector extends LinearLayout
                 projection = new String[] {
                         PreviewColumns.LOCK_WALLPAPER_THUMBNAIL,
                         ThemesColumns.TITLE,
-                        ThemesColumns.PKG_NAME
+                        ThemesColumns.PKG_NAME,
+                        PreviewColumns.COMPONENT_ID
                 };
                 break;
             default:
@@ -370,8 +394,7 @@ public class ComponentSelector extends LinearLayout
         // sort in ascending order but make sure the "default" theme is always first
         String sortOrder = "(" + ThemesContract.ThemesColumns.IS_DEFAULT_THEME + "=1) DESC, "
                 + ThemesContract.ThemesColumns.TITLE + " ASC";
-        return new CursorLoader(mContext, PreviewColumns.CONTENT_URI,
-                projection, selection, selectionArgs, sortOrder);
+        return new CursorLoader(mContext, uri, projection, selection, selectionArgs, sortOrder);
     }
 
     @Override
@@ -486,7 +509,7 @@ public class ComponentSelector extends LinearLayout
         setTitle(((TextView) v.findViewById(R.id.title)), cursor);
         v.findViewById(R.id.container).setBackground(
                 new BitmapDrawable(Utils.loadBitmapBlob(cursor, backgroundIndex)));
-        v.setTag(cursor.getString(pkgNameIndex));
+        v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
         v.setOnClickListener(mItemClickListener);
         return v;
     }
@@ -504,7 +527,7 @@ public class ComponentSelector extends LinearLayout
         setTitle(((TextView) v.findViewById(R.id.title)), cursor);
         v.findViewById(R.id.container).setBackground(
                 new BitmapDrawable(Utils.loadBitmapBlob(cursor, backgroundIndex)));
-        v.setTag(cursor.getString(pkgNameIndex));
+        v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
         v.setOnClickListener(mItemClickListener);
         return v;
     }
@@ -522,7 +545,7 @@ public class ComponentSelector extends LinearLayout
         preview.setTypeface(typefaceNormal);
 
         setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-        v.setTag(cursor.getString(pkgNameIndex));
+        v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
         v.setOnClickListener(mItemClickListener);
         return v;
     }
@@ -537,7 +560,7 @@ public class ComponentSelector extends LinearLayout
         ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
                 Utils.loadBitmapBlob(cursor, iconIndex));
         setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-        v.setTag(cursor.getString(pkgNameIndex));
+        v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
         v.setOnClickListener(mItemClickListener);
         return v;
     }
@@ -552,7 +575,7 @@ public class ComponentSelector extends LinearLayout
         ((ImageView) v.findViewById(R.id.icon)).setImageBitmap(
                 Utils.loadBitmapBlob(cursor, styleIndex));
         setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-        v.setTag(cursor.getString(pkgNameIndex));
+        v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
         v.setOnClickListener(mItemClickListener);
         return v;
     }
@@ -564,20 +587,22 @@ public class ComponentSelector extends LinearLayout
         ImageView iv = (ImageView) v.findViewById(R.id.icon);
         if (position == 0) {
             iv.setImageResource(R.drawable.img_wallpaper_none);
-            v.setTag("");
+            v.setTag(R.id.tag_key_package_name, "");
             ((TextView) v.findViewById(R.id.title)).setText(R.string.wallpaper_none_title);
         } else if (position == 1) {
             iv.setImageResource(R.drawable.img_wallpaper_external);
-            v.setTag(EXTERNAL_WALLPAPER);
+            v.setTag(R.id.tag_key_package_name, EXTERNAL_WALLPAPER);
             ((TextView) v.findViewById(R.id.title))
                     .setText(R.string.wallpaper_external_title);
         } else {
             cursor.moveToPosition(position - EXTRA_WALLPAPER_COMPONENTS);
             int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+            int cmpntIdIndex = cursor.getColumnIndex(PreviewColumns.COMPONENT_ID);
             iv.setImageBitmap(
                     Utils.loadBitmapBlob(cursor, wallpaperIndex));
             setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-            v.setTag(cursor.getString(pkgNameIndex));
+            v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
+            v.setTag(R.id.tag_key_component_id, cursor.getLong(cmpntIdIndex));
         }
         v.setOnClickListener(mItemClickListener);
         return v;
@@ -593,7 +618,7 @@ public class ComponentSelector extends LinearLayout
         ((ImageView) v.findViewById(R.id.preview)).setImageBitmap(
                 Utils.loadBitmapBlob(cursor, wallpaperIndex));
         setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-        v.setTag(cursor.getString(pkgNameIndex));
+        v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
         v.setOnClickListener(mItemClickListener);
         return v;
     }
@@ -612,7 +637,7 @@ public class ComponentSelector extends LinearLayout
             final int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
             setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-            v.setTag(cursor.getString(pkgNameIndex));
+            v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
             v.setOnClickListener(mItemClickListener);
             container.addView(v, mSoundItemParams);
             final View playButton = v.findViewById(R.id.play_button);
@@ -621,7 +646,7 @@ public class ComponentSelector extends LinearLayout
                 @Override
                 public void onClick(View v) {
                     int type;
-                    String pkgName = (String) v.getTag();
+                    String pkgName = (String) v.getTag(R.id.tag_key_package_name);
                     if (component.equals(MODIFIES_RINGTONES)) {
                         type = RingtoneManager.TYPE_RINGTONE;
                     } else if (component.equals(MODIFIES_NOTIFICATIONS)) {
@@ -686,13 +711,18 @@ public class ComponentSelector extends LinearLayout
 
     private void setTitle(TextView titleView, Cursor cursor) {
         String pkgName = cursor.getString(cursor.getColumnIndex(ThemesColumns.PKG_NAME));
+        int cmpntIdIndex = cursor.getColumnIndex(PreviewColumns.COMPONENT_ID);
+        long cmpntId = DEFAULT_COMPONENT_ID;
+        if (cmpntIdIndex >= 0) {
+            cmpntId = cursor.getLong(cmpntIdIndex);
+        }
         if (ThemeUtils.getDefaultThemePackageName(mContext).equals(pkgName)) {
             titleView.setText(mContext.getString(R.string.default_tag_text));
             titleView.setTypeface(titleView.getTypeface(), Typeface.BOLD);
         } else {
             titleView.setText(cursor.getString(cursor.getColumnIndex(ThemesColumns.TITLE)));
         }
-        if (pkgName.equals(mSelectedComponentPkgName)) {
+        if (pkgName.equals(mSelectedComponentPkgName) && cmpntId == mSelectedComponentId) {
             titleView.setTextColor(getResources().getColor(
                     R.color.component_selection_current_text_color));
         }
@@ -701,12 +731,18 @@ public class ComponentSelector extends LinearLayout
     private OnClickListener mItemClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            String pkgName = (String) v.getTag();
+            long cmpntId = DEFAULT_COMPONENT_ID;
+            String pkgName = (String) v.getTag(R.id.tag_key_package_name);
+            Long cmpntIdTag = (Long) v.getTag(R.id.tag_key_component_id);
+            if (cmpntIdTag != null) {
+                cmpntId = cmpntIdTag;
+            }
             if (DEBUG_SELECTOR) Toast.makeText(mContext, pkgName, Toast.LENGTH_SHORT).show();
             if (mListener != null && (!pkgName.equals(mSelectedComponentPkgName) ||
-                    pkgName.equals(EXTERNAL_WALLPAPER))) {
+                    pkgName.equals(EXTERNAL_WALLPAPER) || cmpntId != mSelectedComponentId)) {
                 mSelectedComponentPkgName = pkgName;
-                mListener.onItemClicked(pkgName);
+                mSelectedComponentId = cmpntId;
+                mListener.onItemClicked(pkgName, cmpntId);
                 final int count = mContent.getChildCount();
                 final Resources res = getResources();
                 for (int i = 0; i < count; i++) {
@@ -726,7 +762,7 @@ public class ComponentSelector extends LinearLayout
     };
 
     public interface OnItemClickedListener {
-        public void onItemClicked(String pkgName);
+        public void onItemClicked(String pkgName, long componentId);
     }
 
     public interface OnOpenCloseListener {
