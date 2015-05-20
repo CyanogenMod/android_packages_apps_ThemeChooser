@@ -148,6 +148,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected static final String WALLPAPER_NONE = "";
 
+    protected static final int LOADER_ID_INVALID = -1;
     protected static final int LOADER_ID_ALL = 0;
     protected static final int LOADER_ID_STATUS_BAR = 1;
     protected static final int LOADER_ID_FONT = 2;
@@ -2007,7 +2008,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected void loadComponentFromPackage(String pkgName, String component) {
         Bundle args = new Bundle();
         args.putString(ARG_PACKAGE_NAME, pkgName);
-        int loaderId = -1;
+        int loaderId = LOADER_ID_INVALID;
         if (MODIFIES_STATUS_BAR.equals(component)) {
             loaderId = LOADER_ID_STATUS_BAR;
         } else if (MODIFIES_FONTS.equals(component)) {
@@ -2057,7 +2058,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         } else {
             return;
         }
-        getLoaderManager().restartLoader(loaderId, args, ThemeFragment.this);
+
+        if (loaderId != LOADER_ID_INVALID) {
+            getLoaderManager().restartLoader(loaderId, args, ThemeFragment.this);
+        }
     }
 
     private OnItemClickedListener mOnComponentItemClicked = new OnItemClickedListener() {
