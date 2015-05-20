@@ -1365,7 +1365,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             int modifiesCompIdx = c.getColumnIndex(component);
 
             String pkg = c.getString(pkgIdx);
-            boolean supported = c.getInt(modifiesCompIdx) == 1;
+            boolean supported = (modifiesCompIdx >= 0) && (c.getInt(modifiesCompIdx) == 1);
             if (supported) {
                 mBaseThemeSupportedComponents.add(component);
                 mSelectedComponentsMap.put(component, pkg);
