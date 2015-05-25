@@ -102,6 +102,11 @@ public class ChooserBrowseFragment extends Fragment
         View v = inflater.inflate(R.layout.fragment_chooser_browse, container, false);
         ArrayList<String> filters = getArguments().getStringArrayList(ChooserActivity.EXTRA_COMPONENT_FILTER);
         mComponentFilters = (filters != null) ? filters : new ArrayList<String>(0);
+        // If we are filtering by "styles" add status bar and navigation bar to the list
+        if (mComponentFilters.contains(ThemesColumns.MODIFIES_OVERLAYS)) {
+            mComponentFilters.add(ThemesColumns.MODIFIES_STATUS_BAR);
+            mComponentFilters.add(ThemesColumns.MODIFIES_NAVIGATION_BAR);
+        }
         mListView = (ListView) v.findViewById(R.id.list);
         mAdapter = new LocalPagerAdapter(getActivity(), null, mComponentFilters);
         mListView.setAdapter(mAdapter);
