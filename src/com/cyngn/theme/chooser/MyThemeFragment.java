@@ -40,6 +40,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.cyngn.theme.util.AudioUtils;
+import com.cyngn.theme.util.CursorLoaderHelper;
 import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.ThemedTypefaceHelper;
 import com.cyngn.theme.util.TypefaceHelperCache;
@@ -51,7 +52,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static com.cyngn.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ALL;
 
 public class MyThemeFragment extends ThemeFragment {
     private static final String TAG = MyThemeFragment.class.getSimpleName();
@@ -333,8 +334,6 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri;
-        String[] projection;
         switch (id) {
             case LOADER_ID_ALL:
                 if (args != null) {
@@ -343,29 +342,7 @@ public class MyThemeFragment extends ThemeFragment {
                         return super.onCreateLoader(id, args);
                     }
                 }
-                projection = new String[]{
-                        PreviewColumns.WALLPAPER_PREVIEW,
-                        PreviewColumns.STATUSBAR_BACKGROUND,
-                        PreviewColumns.STATUSBAR_WIFI_ICON,
-                        PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
-                        PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
-                        PreviewColumns.STATUSBAR_SIGNAL_ICON,
-                        PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
-                        PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
-                        PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
-                        PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
-                        PreviewColumns.NAVBAR_BACK_BUTTON,
-                        PreviewColumns.NAVBAR_HOME_BUTTON,
-                        PreviewColumns.NAVBAR_RECENT_BUTTON,
-                        PreviewColumns.ICON_PREVIEW_1,
-                        PreviewColumns.ICON_PREVIEW_2,
-                        PreviewColumns.ICON_PREVIEW_3,
-                        PreviewColumns.LOCK_WALLPAPER_PREVIEW,
-                        PreviewColumns.STYLE_PREVIEW,
-                        PreviewColumns.NAVBAR_BACKGROUND
-                };
-                uri = PreviewColumns.APPLIED_URI;
-                return new CursorLoader(getActivity(), uri, projection, null, null, null);
+                return CursorLoaderHelper.myThemeFragmentCursorLoader(getActivity(), id);
             default:
                 // Only LOADER_ID_ALL differs for MyThemeFragment
                 return super.onCreateLoader(id, args);

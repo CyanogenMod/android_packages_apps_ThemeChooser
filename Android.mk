@@ -18,5 +18,6 @@ LOCAL_PRIVILEGED_MODULE := true
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-v4 \
+    org.cyanogenmod.platform.sdk
 
 include $(BUILD_PACKAGE)

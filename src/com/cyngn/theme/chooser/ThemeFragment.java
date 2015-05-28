@@ -74,6 +74,7 @@ import android.widget.TextView;
 import com.cyngn.theme.chooser.ComponentSelector.OnItemClickedListener;
 import com.cyngn.theme.util.AudioUtils;
 import com.cyngn.theme.util.BootAnimationHelper;
+import com.cyngn.theme.util.CursorLoaderHelper;
 import com.cyngn.theme.util.IconPreviewHelper;
 import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.ThemedTypefaceHelper;
@@ -84,6 +85,8 @@ import com.cyngn.theme.widget.BootAniImageView;
 import com.cyngn.theme.widget.ConfirmCancelOverlay;
 import com.cyngn.theme.widget.LockableScrollView;
 import com.cyngn.theme.widget.ThemeTagLayout;
+
+import cyanogenmod.app.ThemeVersion;
 
 import java.io.File;
 import java.io.IOException;
@@ -108,6 +111,20 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
 import static com.cyngn.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
+
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_INVALID;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ALL;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_STATUS_BAR;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_FONT;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ICONS;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_WALLPAPER;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_NAVIGATION_BAR;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_LOCKSCREEN;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_STYLE;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_BOOT_ANIMATION;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_RINGTONE;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_NOTIFICATION;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ALARM;
 
 import static android.content.pm.ThemeUtils.SYSTEM_TARGET_API;
 
@@ -150,20 +167,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final long SLIDE_CONTENT_ANIM_DURATION = 300L;
 
     protected static final String WALLPAPER_NONE = "";
-
-    protected static final int LOADER_ID_INVALID = -1;
-    protected static final int LOADER_ID_ALL = 0;
-    protected static final int LOADER_ID_STATUS_BAR = 1;
-    protected static final int LOADER_ID_FONT = 2;
-    protected static final int LOADER_ID_ICONS = 3;
-    protected static final int LOADER_ID_WALLPAPER = 4;
-    protected static final int LOADER_ID_NAVIGATION_BAR = 5;
-    protected static final int LOADER_ID_LOCKSCREEN = 6;
-    protected static final int LOADER_ID_STYLE = 7;
-    protected static final int LOADER_ID_BOOT_ANIMATION = 8;
-    protected static final int LOADER_ID_RINGTONE = 9;
-    protected static final int LOADER_ID_NOTIFICATION = 10;
-    protected static final int LOADER_ID_ALARM = 11;
 
     protected static final String ARG_PACKAGE_NAME = "pkgName";
     protected static final String ARG_COMPONENT_ID = "cmpntId";
@@ -283,6 +286,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected boolean mApplyThemeOnPopulated;
 
     protected boolean mIsLegacyTheme;
+
+    private static final int mThemeVersion = ThemeVersion.getVersion();
 
     protected enum CustomizeResetAction {
         Customize,
@@ -1208,139 +1213,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             pkgName = args.getString(ARG_PACKAGE_NAME);
             componentId = args.getLong(ARG_COMPONENT_ID, DEFAULT_COMPONENT_ID);
         }
-        Uri uri = ThemesContract.PreviewColumns.CONTENT_URI;
-        String selection = ThemesContract.ThemesColumns.PKG_NAME + "= ?";
-        String[] selectionArgs = new String[] { pkgName };
-        String[] projection = null;
-        switch (id) {
-            case LOADER_ID_ALL:
-                // Load all default component previews (component_id == 0)
-                selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND " +
-                        PreviewColumns.COMPONENT_ID + "=?";
-                selectionArgs = new String[] { pkgName, String.valueOf(DEFAULT_COMPONENT_ID) };
-                projection = new String[] {
-                        ThemesColumns.PKG_NAME,
-                        ThemesColumns.TITLE,
-                        ThemesColumns.AUTHOR,
-                        ThemesColumns.WALLPAPER_URI,
-                        ThemesColumns.HOMESCREEN_URI,
-                        ThemesColumns.TARGET_API,
-                        // Theme abilities
-                        ThemesColumns.MODIFIES_LAUNCHER,
-                        ThemesColumns.MODIFIES_LOCKSCREEN,
-                        ThemesColumns.MODIFIES_ALARMS,
-                        ThemesColumns.MODIFIES_BOOT_ANIM,
-                        ThemesColumns.MODIFIES_FONTS,
-                        ThemesColumns.MODIFIES_ICONS,
-                        ThemesColumns.MODIFIES_NAVIGATION_BAR,
-                        ThemesColumns.MODIFIES_OVERLAYS,
-                        ThemesColumns.MODIFIES_RINGTONES,
-                        ThemesColumns.MODIFIES_STATUS_BAR,
-                        ThemesColumns.MODIFIES_NOTIFICATIONS,
-                        //Previews
-                        PreviewColumns.WALLPAPER_PREVIEW,
-                        PreviewColumns.STATUSBAR_BACKGROUND,
-                        PreviewColumns.STATUSBAR_WIFI_ICON,
-                        PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
-                        PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
-                        PreviewColumns.STATUSBAR_SIGNAL_ICON,
-                        PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
-                        PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
-                        PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
-                        PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
-                        PreviewColumns.NAVBAR_BACK_BUTTON,
-                        PreviewColumns.NAVBAR_HOME_BUTTON,
-                        PreviewColumns.NAVBAR_RECENT_BUTTON,
-                        PreviewColumns.ICON_PREVIEW_1,
-                        PreviewColumns.ICON_PREVIEW_2,
-                        PreviewColumns.ICON_PREVIEW_3,
-                        PreviewColumns.LOCK_WALLPAPER_PREVIEW,
-                        PreviewColumns.STYLE_PREVIEW
-                };
-                break;
-            case LOADER_ID_STATUS_BAR:
-                projection = new String[] {
-                        ThemesColumns.PKG_NAME,
-                        ThemesColumns.TITLE,
-                        PreviewColumns.STATUSBAR_BACKGROUND,
-                        PreviewColumns.STATUSBAR_WIFI_ICON,
-                        PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
-                        PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
-                        PreviewColumns.STATUSBAR_SIGNAL_ICON,
-                        PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
-                        PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
-                        PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
-                        PreviewColumns.STATUSBAR_BATTERY_PORTRAIT
-                };
-                break;
-            case LOADER_ID_FONT:
-                projection = new String[] {
-                        ThemesColumns.PKG_NAME,
-                        ThemesColumns.TITLE
-                };
-                break;
-            case LOADER_ID_ICONS:
-                projection = new String[] {
-                        ThemesColumns.PKG_NAME,
-                        ThemesColumns.TITLE,
-                        PreviewColumns.ICON_PREVIEW_1,
-                        PreviewColumns.ICON_PREVIEW_2,
-                        PreviewColumns.ICON_PREVIEW_3,
-                };
-                break;
-            case LOADER_ID_WALLPAPER:
-                uri = PreviewColumns.COMPONENTS_URI;
-                // Load specified wallpaper previews (component_id is specified)
-                selection = ThemesContract.ThemesColumns.PKG_NAME + "=? AND " +
-                        PreviewColumns.COMPONENT_ID + "=?";
-                selectionArgs = new String[] { pkgName, String.valueOf(componentId) };
-                projection = new String[] {
-                        ThemesColumns.PKG_NAME,
-                        ThemesColumns.TITLE,
-                        PreviewColumns.WALLPAPER_PREVIEW,
-                        PreviewColumns.COMPONENT_ID
-                };
-                break;
-            case LOADER_ID_NAVIGATION_BAR:
-                projection = new String[] {
-                        ThemesColumns.PKG_NAME,
-                        ThemesColumns.TITLE,
-                        PreviewColumns.STATUSBAR_BACKGROUND,
-                        PreviewColumns.NAVBAR_BACK_BUTTON,
-                        PreviewColumns.NAVBAR_HOME_BUTTON,
-                        PreviewColumns.NAVBAR_RECENT_BUTTON
-                };
-                break;
-            case LOADER_ID_LOCKSCREEN:
-                projection = new String[]{
-                        ThemesColumns.PKG_NAME,
-                        ThemesColumns.TITLE,
-                        PreviewColumns.LOCK_WALLPAPER_PREVIEW
-                };
-                break;
-            case LOADER_ID_STYLE:
-                projection = new String[] {
-                        ThemesColumns.PKG_NAME,
-                        ThemesColumns.TITLE,
-                        PreviewColumns.STYLE_PREVIEW
-                };
-                break;
-            case LOADER_ID_BOOT_ANIMATION:
-                projection = new String[] {
-                        ThemesColumns.PKG_NAME,
-                        ThemesColumns.TITLE
-                };
-                break;
-            case LOADER_ID_RINGTONE:
-            case LOADER_ID_NOTIFICATION:
-            case LOADER_ID_ALARM:
-                projection = new String[] {
-                        ThemesColumns.PKG_NAME,
-                        ThemesColumns.TITLE
-                };
-                break;
-        }
-        return new CursorLoader(getActivity(), uri, projection, selection, selectionArgs, null);
+        return CursorLoaderHelper.themeFragmentCursorLoader(getActivity(), id, pkgName,
+                componentId);
     }
 
     @Override
@@ -2172,7 +2046,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             builder.setComponent(component, componentMap.get(component));
         }
         builder.setRequestType(requestType);
-        builder.setWallpaperId(mSelectedWallpaperComponentId);
+        if (mThemeVersion >= 3) builder.setWallpaperId(mSelectedWallpaperComponentId);
         return builder.build();
     }
 

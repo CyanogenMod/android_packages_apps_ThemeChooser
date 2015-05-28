@@ -40,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cyngn.theme.util.AudioUtils;
+import com.cyngn.theme.util.CursorLoaderHelper;
 import com.cyngn.theme.util.ThemedTypefaceHelper;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
@@ -56,6 +57,18 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_STATUS_BAR;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_FONT;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ICONS;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_WALLPAPER;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_NAVIGATION_BAR;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_LOCKSCREEN;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_STYLE;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_BOOT_ANIMATION;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_RINGTONE;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_NOTIFICATION;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ALARM;
+
 public class ComponentSelector extends LinearLayout
         implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = ComponentSelector.class.getSimpleName();
@@ -63,18 +76,6 @@ public class ComponentSelector extends LinearLayout
     public static final boolean DEBUG_SELECTOR = false;
 
     public static final String EXTERNAL_WALLPAPER = "external";
-
-    private static final int LOADER_ID_STATUS_BAR = 100;
-    private static final int LOADER_ID_NAVIGATION_BAR = 101;
-    private static final int LOADER_ID_FONT = 102;
-    private static final int LOADER_ID_ICON = 103;
-    private static final int LOADER_ID_STYLE = 104;
-    private static final int LOADER_ID_WALLPAPER = 105;
-    private static final int LOADER_ID_BOOTANIMATIONS = 106;
-    private static final int LOADER_ID_RINGTONE = 107;
-    private static final int LOADER_ID_NOTIFICATION = 108;
-    private static final int LOADER_ID_ALARM = 109;
-    private static final int LOADER_ID_LOCKSCREEN = 110;
 
     private static final int EXTRA_WALLPAPER_COMPONENTS = 2;
 
@@ -277,7 +278,7 @@ public class ComponentSelector extends LinearLayout
             return LOADER_ID_FONT;
         }
         if (MODIFIES_ICONS.equals(component)) {
-            return LOADER_ID_ICON;
+            return LOADER_ID_ICONS;
         }
         if (MODIFIES_OVERLAYS.equals(component)) {
             return LOADER_ID_STYLE;
@@ -286,7 +287,7 @@ public class ComponentSelector extends LinearLayout
             return LOADER_ID_WALLPAPER;
         }
         if (MODIFIES_BOOT_ANIM.equals(component)) {
-            return LOADER_ID_BOOTANIMATIONS;
+            return LOADER_ID_BOOT_ANIMATION;
         }
         if (MODIFIES_RINGTONES.equals(component)) {
             return LOADER_ID_RINGTONE;
@@ -305,96 +306,7 @@ public class ComponentSelector extends LinearLayout
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = PreviewColumns.CONTENT_URI;
-        String selection;
-        String[] selectionArgs = { "1" };
-        String[] projection = { ThemesColumns.TITLE, ThemesColumns.PKG_NAME };
-        switch(id) {
-            case LOADER_ID_STATUS_BAR:
-                selection = MODIFIES_STATUS_BAR + "=?";
-                projection = new String[] {
-                        PreviewColumns.STATUSBAR_WIFI_ICON,
-                        PreviewColumns.STATUSBAR_SIGNAL_ICON,
-                        PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
-                        PreviewColumns.STATUSBAR_BACKGROUND,
-                        PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
-                        PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
-                        PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
-                        ThemesColumns.TITLE,
-                        ThemesColumns.PKG_NAME
-                };
-                break;
-            case LOADER_ID_NAVIGATION_BAR:
-                selection = MODIFIES_NAVIGATION_BAR + "=?";
-                projection = new String[] {
-                        PreviewColumns.NAVBAR_BACK_BUTTON,
-                        PreviewColumns.STATUSBAR_BACKGROUND,
-                        ThemesColumns.TITLE,
-                        ThemesColumns.PKG_NAME,
-                };
-                break;
-            case LOADER_ID_FONT:
-                selection = MODIFIES_FONTS + "=?";
-                break;
-            case LOADER_ID_ICON:
-                selection = MODIFIES_ICONS + "=?";
-                projection = new String[] {
-                        PreviewColumns.ICON_PREVIEW_1,
-                        ThemesColumns.TITLE,
-                        ThemesColumns.PKG_NAME
-                };
-                break;
-            case LOADER_ID_STYLE:
-                selection = MODIFIES_OVERLAYS + "=?";
-                projection = new String[] {
-                        PreviewColumns.STYLE_THUMBNAIL,
-                        ThemesColumns.TITLE,
-                        ThemesColumns.PKG_NAME
-                };
-                break;
-            case LOADER_ID_WALLPAPER:
-                uri = PreviewColumns.COMPONENTS_URI;
-                selection = MODIFIES_LAUNCHER + "=?";
-                projection = new String[] {
-                        PreviewColumns.WALLPAPER_THUMBNAIL,
-                        ThemesColumns.TITLE,
-                        ThemesColumns.PKG_NAME,
-                        PreviewColumns.COMPONENT_ID
-                };
-                break;
-            case LOADER_ID_BOOTANIMATIONS:
-                selection = MODIFIES_BOOT_ANIM + "=?";
-                projection = new String[] {
-                        PreviewColumns.BOOTANIMATION_THUMBNAIL,
-                        ThemesColumns.TITLE,
-                        ThemesColumns.PKG_NAME
-                };
-                break;
-            case LOADER_ID_RINGTONE:
-                selection = MODIFIES_RINGTONES + "=?";
-                break;
-            case LOADER_ID_NOTIFICATION:
-                selection = MODIFIES_NOTIFICATIONS + "=?";
-                break;
-            case LOADER_ID_ALARM:
-                selection = MODIFIES_ALARMS + "=?";
-                break;
-            case LOADER_ID_LOCKSCREEN:
-                selection = MODIFIES_LOCKSCREEN + "=?";
-                projection = new String[] {
-                        PreviewColumns.LOCK_WALLPAPER_THUMBNAIL,
-                        ThemesColumns.TITLE,
-                        ThemesColumns.PKG_NAME,
-                        PreviewColumns.COMPONENT_ID
-                };
-                break;
-            default:
-                return null;
-        }
-        // sort in ascending order but make sure the "default" theme is always first
-        String sortOrder = "(" + ThemesContract.ThemesColumns.IS_DEFAULT_THEME + "=1) DESC, "
-                + ThemesContract.ThemesColumns.TITLE + " ASC";
-        return new CursorLoader(mContext, uri, projection, selection, selectionArgs, sortOrder);
+        return CursorLoaderHelper.componentSelectorCursorLoader(mContext, id);
     }
 
     @Override
@@ -418,7 +330,7 @@ public class ComponentSelector extends LinearLayout
                 count = (int) Math.ceil((double)count / mItemsPerPage);
                 mContent.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
                 break;
-            case LOADER_ID_BOOTANIMATIONS:
+            case LOADER_ID_BOOT_ANIMATION:
                 dividerPadding = res.getDimensionPixelSize(
                         R.dimen.component_divider_padding_top_bootani);
                 dividerHeight = res.getDimensionPixelSize(R.dimen.component_divider_height_bootani);
@@ -598,11 +510,13 @@ public class ComponentSelector extends LinearLayout
             cursor.moveToPosition(position - EXTRA_WALLPAPER_COMPONENTS);
             int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
             int cmpntIdIndex = cursor.getColumnIndex(PreviewColumns.COMPONENT_ID);
+            long cmpntId = (cmpntIdIndex >= 0) ?
+                    cursor.getLong(cmpntIdIndex) : DEFAULT_COMPONENT_ID;
             iv.setImageBitmap(
                     Utils.loadBitmapBlob(cursor, wallpaperIndex));
             setTitle(((TextView) v.findViewById(R.id.title)), cursor);
             v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
-            v.setTag(R.id.tag_key_component_id, cursor.getLong(cmpntIdIndex));
+            v.setTag(R.id.tag_key_component_id, cmpntId);
         }
         v.setOnClickListener(mItemClickListener);
         return v;

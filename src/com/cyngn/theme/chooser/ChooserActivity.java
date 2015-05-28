@@ -53,6 +53,7 @@ import android.view.animation.AnimationUtils;
 
 import android.widget.ImageView;
 import com.cyngn.theme.perapptheming.PerAppThemingWindow;
+import com.cyngn.theme.util.CursorLoaderHelper;
 import com.cyngn.theme.util.NotificationHelper;
 import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.TypefaceHelperCache;
@@ -69,6 +70,9 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
 
 import static com.cyngn.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
 
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_INSTALLED_THEMES;
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_APPLIED;
+
 public class ChooserActivity extends FragmentActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String THEME_STORE_PACKAGE = "com.cyngn.themestore";
@@ -79,10 +83,6 @@ public class ChooserActivity extends FragmentActivity
     public static final String EXTRA_COMPONENTS = "components";
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
-
-    private static final int LOADER_ID_INSTALLED_THEMES = 1000;
-    private static final int LOADER_ID_APPLIED = 1001;
-
 
     private static final String THEME_STORE_ACTIVITY = THEME_STORE_PACKAGE + ".ui.StoreActivity";
     private static final String ACTION_APPLY_THEME = "android.intent.action.APPLY_THEME";
@@ -879,37 +879,15 @@ public class ChooserActivity extends FragmentActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String selection = null;
-        String selectionArgs[] = null;
-        String sortOrder = null;
-        String[] projection = null;
-        Uri contentUri = null;
-
         switch (id) {
             case LOADER_ID_INSTALLED_THEMES:
                 mAppliedBaseTheme = PreferenceUtils.getAppliedBaseTheme(this);
-                selection = ThemesColumns.PRESENT_AS_THEME + "=? AND " +
-                        ThemesColumns.INSTALL_STATE + "=?";
-                selectionArgs = new String[] { "1", "" + ThemesColumns.InstallState.INSTALLED};
-                // sort in ascending order but make sure the "default" theme is always first
-                sortOrder = "(" + ThemesColumns.IS_DEFAULT_THEME + "=1) DESC, "
-                        + "(" + ThemesColumns.PKG_NAME + "='" + mAppliedBaseTheme + "') DESC, "
-                        + ThemesColumns.INSTALL_TIME + " DESC";
-                contentUri = ThemesColumns.CONTENT_URI;
-                projection = new String[] {ThemesColumns.PKG_NAME, ThemesColumns.TITLE,
-                        ThemesColumns.AUTHOR};
                 break;
             case LOADER_ID_APPLIED:
                 //TODO: Mix n match query should only be done once
-                contentUri = ThemesContract.MixnMatchColumns.CONTENT_URI;
-                selection = null;
-                selectionArgs = null;
                 break;
         }
-
-
-        return new CursorLoader(this, contentUri, projection, selection,
-                selectionArgs, sortOrder);
+        return CursorLoaderHelper.chooserActivityCursorLoader(this, id, mAppliedBaseTheme);
     }
 
     public class ThemesAdapter extends NewFragmentStatePagerAdapter {
