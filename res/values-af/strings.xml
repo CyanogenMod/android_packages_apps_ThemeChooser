@@ -38,6 +38,7 @@
   <string name="available">Beskikbaar</string>
   <string name="update">Opgradeer</string>
   <string name="no_preview_available">Geen voorskou beskikbaar nie</string>
+  <string name="menu_item_uninstall">Deïnstalleer</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Kennisgewing</string>
   <string name="ringtone_label">Luitoon</string>

@@ -38,6 +38,7 @@
   <string name="available">Kullanılabilir</string>
   <string name="update">Güncelle</string>
   <string name="no_preview_available">Mevcut önizleme yok</string>
+  <string name="menu_item_uninstall">Kaldır</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Bildirim</string>
   <string name="ringtone_label">Zil sesi</string>

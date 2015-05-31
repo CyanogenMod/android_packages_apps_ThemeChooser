@@ -38,6 +38,7 @@
   <string name="available">Verfügbar</string>
   <string name="update">Aktualisieren</string>
   <string name="no_preview_available">Keine Vorschau verfügbar</string>
+  <string name="menu_item_uninstall">Deinstallieren</string>
   <string name="alarm_label">Wecker</string>
   <string name="notification_label">Benachrichtigung</string>
   <string name="ringtone_label">Klingelton</string>

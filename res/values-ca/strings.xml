@@ -38,6 +38,7 @@
   <string name="available">Disponible</string>
   <string name="update">Actualitza</string>
   <string name="no_preview_available">No hi ha previsualització disponible</string>
+  <string name="menu_item_uninstall">Desinstal·la</string>
   <string name="alarm_label">Alarma</string>
   <string name="notification_label">Notificació</string>
   <string name="ringtone_label">To de trucada</string>

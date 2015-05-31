@@ -38,6 +38,7 @@
   <string name="available">ใช้งานได้</string>
   <string name="update">อัพเดต</string>
   <string name="no_preview_available">ไม่มีภาพตัวอย่าง</string>
+  <string name="menu_item_uninstall">ถอนการติดตั้ง</string>
   <string name="alarm_label">นาฬิกาปลุก</string>
   <string name="notification_label">การแจ้งเตือน</string>
   <string name="ringtone_label">เสียง​เรียก​เข้า</string>

@@ -38,6 +38,7 @@
   <string name="available">Доступно</string>
   <string name="update">Ажурирај</string>
   <string name="no_preview_available">Нема доступног прегледа</string>
+  <string name="menu_item_uninstall">Деинсталирај</string>
   <string name="alarm_label">Аларм</string>
   <string name="notification_label">Обавештење</string>
   <string name="ringtone_label">Тон звона</string>

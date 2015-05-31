@@ -38,6 +38,7 @@
   <string name="available">Dostępne</string>
   <string name="update">Zaktualizuj</string>
   <string name="no_preview_available">Podgląd niedostępny</string>
+  <string name="menu_item_uninstall">Odinstaluj</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Powiadomienie</string>
   <string name="ringtone_label">Dzwonek</string>

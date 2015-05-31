@@ -38,6 +38,7 @@
   <string name="available">K dispozici</string>
   <string name="update">Aktualizovat</string>
   <string name="no_preview_available">Náhled není dostupný</string>
+  <string name="menu_item_uninstall">Odinstalovat</string>
   <string name="alarm_label">Budík</string>
   <string name="notification_label">Upozornění</string>
   <string name="ringtone_label">Vyzváněcí tón</string>

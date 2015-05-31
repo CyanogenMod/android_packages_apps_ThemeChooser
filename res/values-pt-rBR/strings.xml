@@ -38,6 +38,7 @@
   <string name="available">Disponível</string>
   <string name="update">Atualizar</string>
   <string name="no_preview_available">Sem previsualização</string>
+  <string name="menu_item_uninstall">Desinstalar</string>
   <string name="alarm_label">Alarme</string>
   <string name="notification_label">Notificação</string>
   <string name="ringtone_label">Toque</string>

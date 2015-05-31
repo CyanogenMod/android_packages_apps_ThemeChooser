@@ -38,6 +38,7 @@
   <string name="available">Saatavilla</string>
   <string name="update">Päivitä</string>
   <string name="no_preview_available">Esikatselu ei käytettävissä</string>
+  <string name="menu_item_uninstall">Poista</string>
   <string name="alarm_label">Hälytys</string>
   <string name="notification_label">Ilmoitus</string>
   <string name="ringtone_label">Soittoääni</string>

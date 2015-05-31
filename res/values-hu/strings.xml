@@ -38,6 +38,7 @@
   <string name="available">Elérhető</string>
   <string name="update">Frissítés</string>
   <string name="no_preview_available">Nincs előnézeti kép</string>
+  <string name="menu_item_uninstall">Eltávolítás</string>
   <string name="alarm_label">Ébresztő</string>
   <string name="notification_label">Értesítés</string>
   <string name="ringtone_label">Csengőhang</string>

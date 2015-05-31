@@ -38,6 +38,7 @@
   <string name="available">사용 가능</string>
   <string name="update">업데이트</string>
   <string name="no_preview_available">미리보기 없음</string>
+  <string name="menu_item_uninstall">제거</string>
   <string name="alarm_label">알람</string>
   <string name="notification_label">알림</string>
   <string name="ringtone_label">벨소리</string>
