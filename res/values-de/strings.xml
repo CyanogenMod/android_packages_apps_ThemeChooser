@@ -45,6 +45,6 @@
   <string name="per_app_theming_title">App-Designer</string>
   <string name="per_app_theme_removal_warning">Hinweis: Anwenden eines neuen Designs entfernt alle APP-Design-Anpassungen.</string>
   <string name="per_app_theme_applying">Ihr Design wird angewandt</string>
-  <string name="per_app_theme_app_not_overlaid_warning">Dieses App wird vom Design nicht unterstützt. Einige Elemente werden nicht geändert.</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Diese App wird vom Design nicht unterstützt; einige Elemente könnten ungeändert bleiben.</string>
   <string name="file_type_not_supported">Dateityp nicht unterstützt</string>
 </resources>
