@@ -18,7 +18,7 @@
               android:layout_weight="1"
               android:textAppearance="?android:attr/textAppearanceListItemSmall"
               android:gravity="center_vertical"
-              android:textSize="14sp"
+              android:textSize="@dimen/drawer_item_label_text_size"
               android:textColor="@color/drawer_item_textcolor"
               android:minHeight="48dp" />
 </LinearLayout>
