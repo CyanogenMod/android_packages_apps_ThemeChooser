@@ -54,11 +54,11 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment.IconInfo;
@@ -83,7 +83,7 @@ public class ChooserBrowseFragment extends Fragment
             "http://wiki.cyanogenmod.org/w/Get_Themes?action=render";
     private static final String THEME_STORE_ACTIVITY = "com.cyngn.theme.store.StoreActivity";
 
-    public ListView mListView;
+    public AbsListView mListView;
     public LocalPagerAdapter mAdapter;
     public ArrayList<String> mComponentFilters;
 
@@ -107,7 +107,7 @@ public class ChooserBrowseFragment extends Fragment
             mComponentFilters.add(ThemesColumns.MODIFIES_STATUS_BAR);
             mComponentFilters.add(ThemesColumns.MODIFIES_NAVIGATION_BAR);
         }
-        mListView = (ListView) v.findViewById(R.id.list);
+        mListView = (AbsListView) v.findViewById(R.id.list);
         mAdapter = new LocalPagerAdapter(getActivity(), null, mComponentFilters);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -414,6 +414,7 @@ public class ChooserBrowseFragment extends Fragment
             item.designedFor = (TextView) row.findViewById(R.id.designed_for);
             item.mIconHolders = (ViewGroup) row.findViewById(R.id.icon_container);
             row.setTag(item);
+            row.findViewById(R.id.theme_card).setClipToOutline(true);
             return row;
         }
 
@@ -427,6 +428,7 @@ public class ChooserBrowseFragment extends Fragment
             item.author = (TextView) row.findViewById(R.id.author);
             item.designedFor = (TextView) row.findViewById(R.id.designed_for);
             row.setTag(item);
+            row.findViewById(R.id.theme_card).setClipToOutline(true);
             return row;
         }
     }
@@ -545,19 +547,21 @@ public class ChooserBrowseFragment extends Fragment
                 return;
             }
 
+            if (mIconViewGroup.getChildCount() != 0) mIconViewGroup.removeAllViews();
+
+            final int iconPadding =
+                    mContext.getResources().getDimensionPixelSize(R.dimen.icon_padding);
+
             for (IconInfo info : icons) {
                 LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(0,
                         LayoutParams.WRAP_CONTENT, 1f);
                 lparams.weight = 1f / icons.size();
 
-                // Sizes of composed icons differ in size from other icons when using
-                // ImageView.  Using a TextView like in WallpaperAndIconPreviewFragment
-                // displays the icons as the correct size.
-                TextView tv = new TextView(mContext);
-                tv.setGravity(Gravity.CENTER_HORIZONTAL);
-                tv.setLayoutParams(lparams);
-                tv.setCompoundDrawables(null, info.icon, null, null);
-                mIconViewGroup.addView(tv);
+                ImageView iv = new ImageView(mContext);
+                iv.setLayoutParams(lparams);
+                iv.setImageDrawable(info.icon);
+                iv.setPadding(iconPadding, iconPadding, iconPadding, iconPadding);
+                mIconViewGroup.addView(iv);
             }
         }
     }

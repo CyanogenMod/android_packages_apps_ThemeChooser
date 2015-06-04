@@ -20,10 +20,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity$PlaceholderFragment" >
 
-    <ListView
+    <GridView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:numColumns="2"
         android:divider="@null"
         android:paddingTop="16dp"
         android:clipToPadding="false"/>
