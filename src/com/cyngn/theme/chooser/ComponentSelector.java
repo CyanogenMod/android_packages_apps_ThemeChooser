@@ -3,11 +3,13 @@
  */
 package com.cyngn.theme.chooser;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ThemeUtils;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -110,6 +112,8 @@ public class ComponentSelector extends LinearLayout
 
     private TypefaceHelperCache mTypefaceCache;
 
+    private ThemesObserver mThemesObserver;
+
     public ComponentSelector(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -167,6 +171,7 @@ public class ComponentSelector extends LinearLayout
             }
         });
         mTypefaceCache = TypefaceHelperCache.getInstance();
+        mThemesObserver = new ThemesObserver();
     }
 
     @Override
@@ -174,6 +179,18 @@ public class ComponentSelector extends LinearLayout
         super.onFinishInflate();
         mContent = (ComponentSelectorLinearLayout) findViewById(R.id.content);
         setEnabled(false);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mThemesObserver.register();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mThemesObserver.unregister();
     }
 
     public void setComponentType(String component) {
@@ -674,6 +691,29 @@ public class ComponentSelector extends LinearLayout
             }
         }
     };
+
+    private class ThemesObserver extends ContentObserver {
+        public ThemesObserver() {
+            super(null);
+        }
+
+        public void register() {
+            mContext.getContentResolver().registerContentObserver(
+                    ThemesColumns.CONTENT_URI, false, this);
+        }
+
+        public void unregister() {
+            mContext.getContentResolver().unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            // reload items by calling setComponentType()
+            final String componentType = mComponentType;
+            mComponentType = null;
+            setComponentType(componentType, mSelectedComponentPkgName);
+        }
+    }
 
     public interface OnItemClickedListener {
         public void onItemClicked(String pkgName, long componentId);
