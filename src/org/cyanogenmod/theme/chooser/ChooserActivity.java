@@ -49,20 +49,22 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initDrawer();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (mDrawerLayout.isDrawerOpen(mDrawerContainer)) {
-                    mDrawerLayout.closeDrawer(mDrawerContainer);
-                } else {
-                    mDrawerLayout.openDrawer(mDrawerContainer);
+        if (mDrawerLayout != null) {
+            toolbar.setNavigationIcon(R.drawable.ic_menu);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (mDrawerLayout.isDrawerOpen(mDrawerContainer)) {
+                        mDrawerLayout.closeDrawer(mDrawerContainer);
+                    } else {
+                        mDrawerLayout.openDrawer(mDrawerContainer);
+                    }
                 }
-            }
-        });
-
-        initDrawer();
+            });
+        }
 
         NotificationHijackingService.ensureEnabled(this);
 
@@ -153,6 +155,6 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
                         "ChooserBrowseFragment").commit();
             }
 
-            mDrawerLayout.closeDrawer(mDrawerContainer);
+            if (mDrawerLayout != null) mDrawerLayout.closeDrawer(mDrawerContainer);
     }
 }

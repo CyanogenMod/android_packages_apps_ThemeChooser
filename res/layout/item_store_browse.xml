@@ -14,75 +14,83 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/item_browse_height"
-    android:orientation="vertical"
-    tools:context=".StoreActivity"
-    tools:ignore="MergeRootFrame" >
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp"
+    android:clipToPadding="false">
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/theme_card"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5"
-        android:background="@color/offwhite">
-        <ImageView android:id="@+id/image"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/card_background"
+        android:elevation="5dp">
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
-        <LinearLayout
-            android:id="@+id/icon_container"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:background="@color/offwhite">
+            <ImageView android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
+            <LinearLayout
+                android:id="@+id/icon_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp">
+            </LinearLayout>
+        </FrameLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp">
-        </LinearLayout>
-    </FrameLayout>
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:background="@color/title_author_background" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:background="@color/title_author_background" >
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingStart="24dp"
+                android:paddingTop="6dp"
+                android:textSize="28sp" />
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingStart="24dp"
-            android:paddingTop="6dp"
-            android:textSize="28sp" />
+            <TextView
+                android:id="@+id/author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/title"
+                android:layout_marginTop="-2dp"
+                android:paddingStart="26dp"
+                android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/title"
-            android:layout_marginTop="-2dp"
-            android:paddingStart="26dp"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/designed_for"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/title"
-            android:layout_marginTop="-2dp"
-            android:paddingEnd="26dp"
-            android:text="@string/designed_for_cm11"
-            android:textSize="12sp"
-            android:textColor="@color/designed_for_color"
-            android:visibility="gone"/>
-
-    </RelativeLayout>
-
-</LinearLayout>
+            <TextView
+                android:id="@+id/designed_for"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/title"
+                android:layout_marginTop="-2dp"
+                android:paddingEnd="26dp"
+                android:text="@string/designed_for_cm11"
+                android:textSize="12sp"
+                android:textColor="@color/designed_for_color"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </LinearLayout>
+</FrameLayout>

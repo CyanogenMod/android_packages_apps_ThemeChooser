@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- * Copyright (C) 2014 The CyanogenMod Project
+ * Copyright (C) 2015 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity$PlaceholderFragment" >
 
-    <ListView
+    <GridView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:numColumns="2"
         android:divider="@null"
         android:paddingTop="16dp"
         android:clipToPadding="false"/>
