@@ -18,8 +18,6 @@ package org.cyanogenmod.theme.chooser;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -30,7 +28,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.Toolbar;
 
 public class ChooserActivity extends FragmentActivity implements DrawerAdapter.DrawerClickListener {
@@ -40,7 +37,7 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
 
     private DrawerAdapter mDrawerAdapter;
 
-    private DrawerLayout mDrawerLayout;
+    private ViewGroup mLayout;
     private ViewGroup mDrawerContainer;
     private ListView mDrawerList;
 
@@ -49,20 +46,25 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initDrawer();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (mDrawerLayout.isDrawerOpen(mDrawerContainer)) {
-                    mDrawerLayout.closeDrawer(mDrawerContainer);
-                } else {
-                    mDrawerLayout.openDrawer(mDrawerContainer);
+        if (mLayout instanceof DrawerLayout) {
+            toolbar.setNavigationIcon(R.drawable.ic_menu);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (mLayout instanceof DrawerLayout) {
+                        DrawerLayout dl = (DrawerLayout) mLayout;
+                        if (dl.isDrawerOpen(mDrawerContainer)) {
+                            dl.closeDrawer(mDrawerContainer);
+                        } else {
+                            dl.openDrawer(mDrawerContainer);
+                        }
+                    }
                 }
-            }
-        });
-
-        initDrawer();
+            });
+        }
 
         NotificationHijackingService.ensureEnabled(this);
 
@@ -78,7 +80,7 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
     }
 
     private void initDrawer() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mLayout = (ViewGroup) findViewById(R.id.drawer_layout);
         mDrawerContainer = (ViewGroup) findViewById(R.id.left_drawer_container);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerAdapter = new DrawerAdapter(this, this);
@@ -153,6 +155,8 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
                         "ChooserBrowseFragment").commit();
             }
 
-            mDrawerLayout.closeDrawer(mDrawerContainer);
+            if (mLayout instanceof DrawerLayout) {
+                ((DrawerLayout) mLayout).closeDrawer(mDrawerContainer);
+            }
     }
 }

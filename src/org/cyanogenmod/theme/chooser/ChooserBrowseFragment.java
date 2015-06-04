@@ -409,6 +409,7 @@ public class ChooserBrowseFragment extends Fragment
             item.designedFor = (TextView) row.findViewById(R.id.designed_for);
             item.mIconHolders = (ViewGroup) row.findViewById(R.id.icon_container);
             row.setTag(item);
+            row.findViewById(R.id.theme_card).setClipToOutline(true);
             return row;
         }
 
@@ -422,6 +423,7 @@ public class ChooserBrowseFragment extends Fragment
             item.author = (TextView) row.findViewById(R.id.author);
             item.designedFor = (TextView) row.findViewById(R.id.designed_for);
             row.setTag(item);
+            row.findViewById(R.id.theme_card).setClipToOutline(true);
             return row;
         }
     }
