@@ -38,6 +38,7 @@
   <string name="available">זמין</string>
   <string name="update">עדכן</string>
   <string name="no_preview_available">אין תצוגה מקדימה</string>
+  <string name="menu_item_uninstall">הסר</string>
   <string name="alarm_label">שעון מעורר</string>
   <string name="notification_label">התראות</string>
   <string name="ringtone_label">צלצול</string>

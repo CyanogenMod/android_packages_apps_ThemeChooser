@@ -38,6 +38,7 @@
   <string name="available">利用可能</string>
   <string name="update">更新</string>
   <string name="no_preview_available">プレビューは利用できません</string>
+  <string name="menu_item_uninstall">アンインストール</string>
   <string name="alarm_label">アラーム</string>
   <string name="notification_label">通知</string>
   <string name="ringtone_label">着信音</string>

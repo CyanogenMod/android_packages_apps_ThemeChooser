@@ -38,6 +38,7 @@
   <string name="available">Beschikbaar</string>
   <string name="update">Bijwerken</string>
   <string name="no_preview_available">Geen voorbeeld beschikbaar</string>
+  <string name="menu_item_uninstall">Verwijderen</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Melding</string>
   <string name="ringtone_label">Beltoon</string>
