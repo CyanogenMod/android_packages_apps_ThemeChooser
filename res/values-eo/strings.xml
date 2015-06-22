@@ -16,14 +16,26 @@
      limitations under the License.
 -->
 <resources>
+  <string name="lock_screen">Ekranfono dum ŝlosado</string>
   <string name="icons">Piktogramoj</string>
   <string name="fonts">Tiparoj</string>
+  <string name="wallpapers">Ekranfonoj</string>
+  <string name="boot_anims">Animacioj de praŝargo</string>
   <string name="notifications">Atentigoj</string>
   <string name="alarms">Alarmoj</string>
   <string name="style">Stilo</string>
+  <string name="status_bar">Stata breto</string>
+  <string name="nav_bar">Navigilo</string>
   <string name="system_theme_name">Sistemo</string>
   <string name="available">Disponebla</string>
   <string name="update">Aktualigi</string>
   <string name="no_preview_available">Antaŭrigardo ne haveblas</string>
   <string name="alarm_label">Alarmo</string>
+  <string name="theme_installed_notification_text">Etoso sukcese instalita.</string>
+  <string name="menu_item_get_more_themes">Havu pliajn</string>
+  <string name="get_more_description">Vi povas akiri pliajn etosojn per tiuj ligiloj:</string>
+  <string name="get_more_entry_cm_themes_showcase">Galerio de CyanogenMod etosoj</string>
+  <string name="get_more_entry_play_store">Play Store</string>
+  <string name="get_more_entry_cm_wiki">Pliaj informoj pri la CM Vikio</string>
+  <string name="designed_for_cm11">Fasonita por CM11</string>
 </resources>

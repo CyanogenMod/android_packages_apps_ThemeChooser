@@ -17,6 +17,11 @@
 -->
 <resources>
   <string name="app_name">مضامین</string>
+  <string name="lock_screen">کاغذدیواری‌های قفل</string>
   <string name="wallpapers">کاغذدیواری‌ها</string>
+  <string name="notifications">اعلان‌ها</string>
   <string name="alarms">هشدارها</string>
+  <string name="status_bar">نوار وضعیت</string>
+  <string name="sounds">صداها</string>
+  <string name="notification_label">اعلان</string>
 </resources>
