@@ -38,6 +38,7 @@
   <string name="available">Tilgængelig</string>
   <string name="update">Opdatér</string>
   <string name="no_preview_available">Intet eksempel tilgængeligt</string>
+  <string name="menu_item_uninstall">Afinstallér</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Meddelelse</string>
   <string name="ringtone_label">Ringetone</string>

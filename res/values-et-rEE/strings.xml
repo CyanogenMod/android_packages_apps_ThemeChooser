@@ -38,6 +38,7 @@
   <string name="available">Saadaval</string>
   <string name="update">Värskenda</string>
   <string name="no_preview_available">Eelvaade pole saadaval</string>
+  <string name="menu_item_uninstall">Eemalda</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Teade</string>
   <string name="ringtone_label">Helin</string>

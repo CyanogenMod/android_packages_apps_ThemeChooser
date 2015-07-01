@@ -26,6 +26,7 @@
   <string name="notifications">Aviseringar</string>
   <string name="alarms">Alarm</string>
   <string name="style">Stil</string>
+  <string name="status_bar">Statusfält</string>
   <string name="sounds">Ljud</string>
   <string name="system_theme_name">System</string>
   <string name="default_tag">(Standard)</string>
@@ -33,6 +34,7 @@
   <string name="applying">Tillämpar\u2026</string>
   <string name="update">Uppdatera</string>
   <string name="no_preview_available">Ingen förhandsgranskning tillgänglig</string>
+  <string name="menu_item_uninstall">Avinstallera</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Avisering</string>
   <string name="ringtone_label">Ringsignal</string>
@@ -43,4 +45,5 @@
   <string name="menu_item_get_more_themes">Hitta fler</string>
   <string name="get_more_description">Du kan få fler teman från följande länkar:</string>
   <string name="get_more_entry_play_store">Play Butik</string>
+  <string name="designed_for_cm11">Designad för CM11</string>
 </resources>

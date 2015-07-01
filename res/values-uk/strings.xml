@@ -38,6 +38,7 @@
   <string name="available">Доступно</string>
   <string name="update">Оновити</string>
   <string name="no_preview_available">Перегляд недоступний</string>
+  <string name="menu_item_uninstall">Видалити</string>
   <string name="alarm_label">Будильник</string>
   <string name="notification_label">Сповіщення</string>
   <string name="ringtone_label">Дзвінок</string>
