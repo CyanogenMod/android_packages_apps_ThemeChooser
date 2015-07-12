@@ -27,11 +27,15 @@
   <string name="alarms">Alarm</string>
   <string name="style">Stil</string>
   <string name="status_bar">Statusfält</string>
+  <string name="nav_bar">Navigeringsfält</string>
+  <string name="theme_packs">Temapaket</string>
   <string name="sounds">Ljud</string>
   <string name="system_theme_name">System</string>
   <string name="default_tag">(Standard)</string>
   <string name="apply">Verkställ</string>
   <string name="applying">Tillämpar\u2026</string>
+  <string name="applied">Tillämpas</string>
+  <string name="available">Tillgänglig</string>
   <string name="update">Uppdatera</string>
   <string name="no_preview_available">Ingen förhandsgranskning tillgänglig</string>
   <string name="menu_item_uninstall">Avinstallera</string>
@@ -44,6 +48,8 @@
   <string name="theme_installed_notification_text">Temat installerades.</string>
   <string name="menu_item_get_more_themes">Hitta fler</string>
   <string name="get_more_description">Du kan få fler teman från följande länkar:</string>
+  <string name="get_more_entry_cm_themes_showcase">Visning av CyanogenMod-teman</string>
   <string name="get_more_entry_play_store">Play Butik</string>
+  <string name="get_more_entry_cm_wiki">Mer info på CyanogenMods Wiki</string>
   <string name="designed_for_cm11">Designad för CM11</string>
 </resources>
