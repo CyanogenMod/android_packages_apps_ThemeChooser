@@ -5,11 +5,14 @@
 
     <FrameLayout android:id="@+id/box"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:clipChildren="false"
+        android:elevation="10dp">
 
-        <ImageView android:id="@+id/icon"
+        <View android:id="@+id/icon"
             android:layout_width="@dimen/floating_window_icon"
             android:layout_height="@dimen/floating_window_icon"
-            android:src="@drawable/quick_theme_fab" />
+            android:background="@drawable/quick_theme_fab"
+            android:elevation="10dp"/>
     </FrameLayout>
 </FrameLayout>

@@ -55,11 +55,13 @@
 
     <color name="processing_text_color">#ffffff</color>
 
-    <color name="per_app_theme_bg_color">#0fb6df</color>
-    <color name="per_app_theme_list_item_text_color">#fff</color>
-    <color name="per_app_theme_list_item_applied_text_color">#80ffffff</color>
-    <color name="per_app_theme_remove_background_normal">#0fb6df</color>
-    <color name="per_app_theme_remove_background_hover">#4fdcff</color>
+    <color name="per_app_theme_bg_color">#f5f5f5</color>
+    <color name="per_app_theme_list_item_text_color">#1f1f1f</color>
+    <color name="per_app_theme_list_item_applied_text_color">#00b1e5</color>
+    <color name="per_app_theme_remove_background_normal">#80000000</color>
+    <color name="per_app_theme_remove_background_hover">#80e53935</color>
+    <color name="per_app_theme_fab_bg_color">#00b1e5</color>
+    <color name="per_app_theme_fab_icon_color">#ffffff</color>
     <color name="per_app_theme_qs_icon_color">#ffffff</color>
 
     <color name="bottom_row_icon_color">#ffffff</color>

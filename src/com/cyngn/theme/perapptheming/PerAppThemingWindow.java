@@ -60,6 +60,8 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
 
     private static final int ANIMATION_DURATION = 300;
 
+    private static final int FAB_SCALE_ANIMATION_DURATION = 150;
+
     private static final int LIST_ON_LEFT_SIDE = 0;
     private static final int LIST_ON_RIGHT_SIDE = 1;
 
@@ -77,6 +79,8 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
     private static final float DELETE_BOX_ANIMATION_SCALE = 0.3f;
 
     private static final int MAX_DEPRECIATION = 5;
+
+    private static final float FAB_ANIMATION_SCALE_FACTOR = 0.44f;
 
     // Margin around the phone
     private static int MARGIN_VERTICAL;
@@ -126,6 +130,8 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
     float mOrigY;
     boolean mDragged;
 
+    private int mListSide = LIST_ON_LEFT_SIDE;
+
     private ThemeConfig mThemeConfig;
 
     @Override
@@ -155,10 +161,19 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         FLOATING_WINDOW_ICON_SIZE = (int) getResources().getDimension(
                 R.dimen.floating_window_icon);
 
+        mDeleteView = new LinearLayout(getContext());
+        View.inflate(getContext(), R.layout.per_app_delete_box_window, mDeleteView);
+        mDeleteBoxView = mDeleteView.findViewById(R.id.box);
+        addView(mDeleteView, 0, 0, Gravity.BOTTOM | Gravity.CENTER_VERTICAL,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+        mDeleteView.setVisibility(View.GONE);
+
         mDraggableIcon = new LinearLayout(this);
         mDraggableIcon.setOnTouchListener(this);
         View.inflate(getContext(), R.layout.per_app_fab_floating_window_icon, mDraggableIcon);
         mDraggableIconImage = mDraggableIcon.findViewById(R.id.box);
+        mDraggableIconImage.setClipToOutline(true);
         mDraggableIconImage.getViewTreeObserver().addOnWindowAttachListener(mWindowAttachListener);
         mParams = addView(mDraggableIcon, 0, 0);
         updateIconPosition(MARGIN_HORIZONTAL, STARTING_POINT_Y);
@@ -181,6 +196,10 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
     public boolean onTouch(View v, MotionEvent event) {
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if (mThemeListLayout.isAttachedToWindow()) {
+                    hideThemeList();
+                    return false;
+                }
                 mPrevDragX = mOrigX = event.getRawX();
                 mPrevDragY = mOrigY = event.getRawY();
 
@@ -209,9 +228,9 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
                 if (!mDragged) {
                     // clicked so show theme list
                     final int mid = getScreenWidth() / 2;
-                    int side = LIST_ON_LEFT_SIDE;
-                    if (mCurrentPosX > mid) side = LIST_ON_RIGHT_SIDE;
-                    if (!mThemeListLayout.isAttachedToWindow()) showThemeList(side);
+                    mListSide = LIST_ON_LEFT_SIDE;
+                    if (mCurrentPosX > mid) mListSide = LIST_ON_RIGHT_SIDE;
+                    if (!mThemeListLayout.isAttachedToWindow()) showThemeList();
                 } else {
                     // Animate the icon
                     mAnimationTask = new AnimationTask();
@@ -229,40 +248,18 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
             case MotionEvent.ACTION_MOVE:
                 mCurrentX = (int) (event.getRawX() - mDraggableIcon.getWidth() / 2);
                 mCurrentY = (int) (event.getRawY() - mDraggableIcon.getHeight());
-                if (isDeleteMode(mCurrentX, mCurrentY)) {
-                    if (!mIsInDeleteMode) {
-                        animateToDeleteBoxCenter(null);
-                    }
-                } else if (isDeleteMode() && !mIsAnimationLocked) {
+                if (isDeleteMode()) {
+                    mDeleteBoxView.setBackgroundResource(R.drawable.btn_quicktheme_remove_hover);
+                    mIsInDeleteMode = true;
+                    updateIconPosition(mCurrentX, mCurrentY);
+                } else if (mIsInDeleteMode){
+                    mDeleteBoxView.setBackgroundResource(R.drawable.btn_quicktheme_remove_normal);
                     mIsInDeleteMode = false;
-                    if (mAnimationTask != null) {
-                        mAnimationTask.cancel();
-                    }
-
-                    mAnimationTask = new AnimationTask(mCurrentX, mCurrentY);
-                    mAnimationTask.setDuration(EXIT_DELETE_MODE_ANIMATION_DURATION);
-                    mAnimationTask.setInterpolator(new LinearInterpolator());
-                    mAnimationTask.setAnimationFinishedListener(new OnAnimationFinishedListener() {
-                        @Override
-                        public void onAnimationFinished() {
-                            mIsAnimationLocked = false;
-                        }
-                    });
-
-                    mAnimationTask.run();
-                    mIsAnimationLocked = true;
-                    mDeleteBoxView.setBackgroundResource(R.drawable
-                            .btn_quicktheme_remove_normal);
                 } else {
-                    if (mIsInDeleteMode) {
-                        mDeleteBoxView.setBackgroundResource(R.drawable
-                                .btn_quicktheme_remove_normal);
-                        mIsInDeleteMode = false;
-                    } if(!mIsAnimationLocked && mDragged) {
+                    if(!mIsAnimationLocked && mDragged) {
                         if (mAnimationTask != null) {
                             mAnimationTask.cancel();
                         }
-
                         updateIconPosition(mCurrentX, mCurrentY);
                     }
                 }
@@ -329,11 +326,11 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
     public void onFinish(boolean isSuccess) {
         ThemeManager tm = (ThemeManager) getSystemService(Context.THEME_SERVICE);
         tm.removeClient(this);
-        mDraggableIconImage.findViewById(R.id.icon).setVisibility(View.VISIBLE);
         mThemeListLayout.postDelayed(new Runnable() {
             @Override
             public void run() {
                 hideScrim();
+                startFabScaleUpAnimation();
             }
         }, THEME_CHANGE_DELAY);
     }
@@ -408,38 +405,17 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
     }
 
     private boolean isDeleteMode() {
-        return isDeleteMode(mParams.x, mParams.y);
+        return isHoveringOverDeleteBox(mParams.y);
     }
 
-    private boolean isDeleteMode(int x, int y) {
-        int screenWidth = getScreenWidth();
-        int screenHeight = getScreenHeight();
-        int boxWidth = DELETE_BOX_WIDTH;
-        int boxHeight = DELETE_BOX_HEIGHT;
-
-        boolean horz = x + (mDraggableIcon == null ? 0
-                : mDraggableIcon.getWidth()) > (screenWidth / 2 - boxWidth / 2)
-                && x < (screenWidth / 2 + boxWidth / 2);
-
-        boolean vert = y + (mDraggableIcon == null ? 0
-                : mDraggableIcon.getHeight()) > (screenHeight - boxHeight);
-
-        return horz && vert;
+    private boolean isHoveringOverDeleteBox(int y) {
+        return y + mDraggableIconImage.getHeight() >= getScreenHeight() - DELETE_BOX_HEIGHT;
     }
 
     private void showDeleteBox() {
         if (!mDeleteBoxVisible) {
             mDeleteBoxVisible = true;
-            if (mDeleteView == null) {
-                mDeleteView = new LinearLayout(getContext());
-                View.inflate(getContext(), R.layout.per_app_delete_box_window, mDeleteView);
-                mDeleteBoxView = mDeleteView.findViewById(R.id.box);
-                addView(mDeleteView, 0, 0, Gravity.BOTTOM | Gravity.CENTER_VERTICAL,
-                        WindowManager.LayoutParams.MATCH_PARENT,
-                        WindowManager.LayoutParams.WRAP_CONTENT);
-            } else {
-                mDeleteView.setVisibility(View.VISIBLE);
-            }
+            mDeleteView.setVisibility(View.VISIBLE);
 
             mDeleteBoxView.setAlpha(0);
             mDeleteBoxView.setTranslationY(CLOSE_ANIMATION_DISTANCE);
@@ -621,7 +597,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         }
     };
 
-    private void showThemeList(final int listSide) {
+    private void showThemeList() {
         if (mListLayoutParams == null) {
             mListLayoutParams = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -633,20 +609,12 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
                     PixelFormat.TRANSLUCENT);
         }
         mListLayoutParams.gravity = Gravity.TOP |
-                (listSide == LIST_ON_LEFT_SIDE ? Gravity.LEFT : Gravity.RIGHT);
+                (mListSide == LIST_ON_LEFT_SIDE ? Gravity.LEFT : Gravity.RIGHT);
         mWindowManager.addView(mThemeListLayout, mListLayoutParams);
 
-        mDraggableIconImage.animate()
-                           .alpha(0f)
-                           .setDuration(ANIMATION_DURATION)
-                           .withEndAction(new Runnable() {
-                               @Override
-                               public void run() {
-                                   mDraggableIcon.setVisibility(View.GONE);
-                               }
-                           });
+        setThemeListPosition();
+        startFabScaleDownAnimation();
 
-        setThemeListPosition(listSide);
         mAdapter.setCurrentTheme(
                 mThemeConfig.getOverlayPkgNameForApp(Utils.getTopTaskPackageName(this)));
         mThemeListLayout.circularReveal(mParams.x + mDraggableIconImage.getWidth() / 2,
@@ -657,10 +625,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         if (showScrim) {
             showScrim();
         } else {
-            mDraggableIcon.setVisibility(View.VISIBLE);
-            mDraggableIconImage.animate()
-                    .alpha(1f)
-                    .setDuration(ANIMATION_DURATION);
+            startFabScaleUpAnimation();
         }
         mThemeListLayout.circularHide(mParams.x + mDraggableIconImage.getWidth() / 2,
                 mParams.y + mDraggableIconImage.getHeight() / 2, ANIMATION_DURATION);
@@ -725,7 +690,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
                 .setDuration(ANIMATION_DURATION);
     }
 
-    private void setThemeListPosition(final int listSide) {
+    private void setThemeListPosition() {
         int thirdHeight = getScreenHeight() / 3;
         // use the center of the fab to decide where to place the list
         int fabLocationY = mParams.y + mDraggableIconImage.getHeight() / 2;
@@ -744,15 +709,39 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         // with the fab center.  Bottom 3rd will position the bottom of the list with the
         // bottom of the fab.
         if (fabLocationY < thirdHeight) {
-            mListParams.topMargin = mParams.y;
+            mListParams.topMargin = mParams.y + mDraggableIconImage.getHeight() / 2;
         } else if (fabLocationY < thirdHeight * 2) {
             mListParams.topMargin = fabLocationY - listHeight / 2;
         } else {
-            mListParams.topMargin = mParams.y + mDraggableIconImage.getHeight() - listHeight;
+            mListParams.topMargin = mParams.y + mDraggableIconImage.getHeight() / 2 - listHeight;
         }
         mListParams.gravity = Gravity.TOP |
-                (listSide == LIST_ON_LEFT_SIDE ? Gravity.LEFT : Gravity.RIGHT);
+                (mListSide == LIST_ON_LEFT_SIDE ? Gravity.LEFT : Gravity.RIGHT);
         mThemeList.setLayoutParams(mListParams);
+    }
+
+    private void startFabScaleDownAnimation() {
+        final int iconWidth = mDraggableIconImage.getWidth();
+        final float translateX = (iconWidth - (float) iconWidth * FAB_ANIMATION_SCALE_FACTOR) / 2 *
+                (mListSide == LIST_ON_LEFT_SIDE ? -1 : 1);
+
+        mDraggableIconImage.animate()
+                .scaleX(FAB_ANIMATION_SCALE_FACTOR)
+                .scaleY(FAB_ANIMATION_SCALE_FACTOR)
+                .translationXBy(translateX)
+                .setDuration(FAB_SCALE_ANIMATION_DURATION);
+    }
+
+    private void startFabScaleUpAnimation() {
+        final float iconWidth = mDraggableIconImage.getWidth();
+        final float translateX = (iconWidth - (float) iconWidth * FAB_ANIMATION_SCALE_FACTOR) / 2 *
+                (mListSide == LIST_ON_LEFT_SIDE ? 1 : -1);
+
+        mDraggableIconImage.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .translationXBy(translateX)
+                .setDuration(FAB_SCALE_ANIMATION_DURATION);
     }
 
     private AdapterView.OnItemClickListener mThemeClickedListener =
