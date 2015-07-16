@@ -59,8 +59,6 @@ public class NotificationHelper {
                 .setContentText(context.getString(R.string.theme_installed_notification_text))
                 .setContentIntent(pi)
                 .setSmallIcon(R.drawable.ic_notify)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.ic_launcher))
                 .setWhen(System.currentTimeMillis())
                 .build();
         nm.notify(pkgName.hashCode(), notice);
