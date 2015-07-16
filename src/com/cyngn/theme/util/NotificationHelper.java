@@ -66,8 +66,6 @@ public class NotificationHelper {
                 .setContentText(content)
                 .setContentIntent(pi)
                 .setSmallIcon(R.drawable.ic_notify)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
-                        R.mipmap.ic_app_themes))
                 .setWhen(System.currentTimeMillis())
                 .build();
         if (themeCount > 1) notice.number = themeCount;

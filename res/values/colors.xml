@@ -60,6 +60,9 @@
     <color name="per_app_theme_list_item_applied_text_color">#80ffffff</color>
     <color name="per_app_theme_remove_background_normal">#0fb6df</color>
     <color name="per_app_theme_remove_background_hover">#4fdcff</color>
+    <color name="per_app_theme_qs_icon_color">#ffffff</color>
+
+    <color name="bottom_row_icon_color">#ffffff</color>
 
     <color name="edge_effect_color">#ffffff</color>
 
