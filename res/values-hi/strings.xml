@@ -38,6 +38,7 @@
   <string name="available">उपलब्ध</string>
   <string name="update">अद्यतन करें</string>
   <string name="no_preview_available">कोई पूर्वावलोकन उपलब्ध नहीं है</string>
+  <string name="menu_item_uninstall">विस्थापित करें</string>
   <string name="alarm_label">अलार्म</string>
   <string name="notification_label">अधिसूचना</string>
   <string name="ringtone_label">रिंगटोन</string>
