@@ -4,13 +4,24 @@
      Copyright (C) 2014-2015 Cyanogen, Inc.
 -->
 <resources>
+  <string name="font_preview_letters">AaBbCcDd</string>
+  <string name="theme_installed_notification_title">%s instalată</string>
+  <string name="themes_installed_notification_title">%d teme instalate</string>
+  <string name="themes_installed_notification_text_one">%1$s și încă %2$d instalate.</string>
+  <string name="themes_installed_notification_text_other">%1$s și încă %2$d instalate.</string>
   <string name="font_component_item_text">Aa</string>
+  <string name="icon_label">Pictograme</string>
+  <string name="font_label">Fonturi</string>
   <string name="statusbar_label">Stare</string>
   <string name="navbar_label">Navigare</string>
   <string name="wallpaper_label">Tapet</string>
+  <string name="style_label">Controale</string>
   <string name="alarm_label">Alarmă</string>
   <string name="notification_label">Notificare</string>
   <string name="ringtone_label">Ton de apel</string>
   <string name="menu_author_info">Autor</string>
+  <string name="reset_theme_overlay_title">Resetare</string>
+  <string name="updated_tag_text">Actualizat</string>
+  <string name="add_component_text">Adăugare</string>
   <string name="customize_theme">Personalizare</string>
 </resources>

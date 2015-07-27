@@ -4,13 +4,47 @@
      Copyright (C) 2014-2015 Cyanogen, Inc.
 -->
 <resources>
+  <string name="app_name">انتخاب‌کننده تم</string>
+  <string name="font_preview_letters">AaBbCcDd</string>
+  <string name="theme_installed_notification_title">%s نصب شد</string>
   <string name="theme_installed_notification_text">مضمون با موفقیت نصب شد.</string>
-  <string name="wallpaper_label">کاغذدیواری</string>
-  <string name="lockscreen_label">کاغذدیواری قفل صفحه</string>
+  <string name="themes_installed_notification_title">%d تم نصب شد</string>
+  <string name="themes_installed_notification_text_one">%1$s و %2$d عدد دیگر نصب شد.</string>
+  <string name="themes_installed_notification_text_other">%1$s و %2$d عدد دیگر نصب شد.</string>
+  <string name="font_component_item_text">Aa</string>
+  <string name="icon_label">آیکون‌ها</string>
+  <string name="font_label">فونت‌ها</string>
+  <string name="statusbar_label">وضعیت</string>
+  <string name="navbar_label">پیمایش</string>
+  <string name="wallpaper_label">تصویر زمینه</string>
+  <string name="lockscreen_label">تصویر زمینه قفل صفحه</string>
+  <string name="style_label">کنترل‌ها</string>
+  <string name="boot_animation_label">انیمیشن‌های بوت</string>
+  <string name="alarm_label">زنگ هشدار</string>
   <string name="notification_label">اعلان</string>
+  <string name="ringtone_label">صدای زنگ</string>
+  <string name="menu_author_info">سازنده</string>
   <string name="menu_delete">حذف</string>
+  <string name="menu_reset">تنظیم مجدد تم</string>
+  <string name="shop_themes">فروشگاه تم</string>
+  <string name="apply_theme_overlay_title">اعمال</string>
   <string name="delete_theme_overlay_title">حذف</string>
+  <string name="reset_theme_overlay_title">تنظیم مجدد</string>
+  <string name="default_tag_text">پیش‌فرض</string>
+  <string name="customized_tag_text">سفارشی</string>
+  <string name="updated_tag_text">به‌روزشده</string>
+  <string name="add_component_text">افزودن</string>
   <string name="wallpaper_none">هیچ‌کدام</string>
+  <string name="audible_title_none">هیچ‌کدام</string>
+  <string name="reset_theme">تنظیم مجدد</string>
+  <string name="customize_theme">سفارشی‌سازی</string>
   <string name="wallpaper_external_title">انتخاب تصویر</string>
   <string name="wallpaper_none_title">هیچ‌کدام</string>
+  <string name="processing_theme">در حال پردازش\u2026</string>
+  <string name="legacy_theme_warning">توجه: %s برای نسخه‌های قدیمی CM طراحی شد. ممکن است مشکلات مربوط به سازگاری این تم را مشاهده کنید.</string>
+  <string name="per_app_theming_title">تم‌گذار برنامه</string>
+  <string name="per_app_theme_removal_warning">توجه: اعمال تم جدید باعث حذف سفارشی‌سازی‌های تم برنامه‌ها خواهد شد.</string>
+  <string name="per_app_theme_applying">تم شما اعمال شد</string>
+  <string name="per_app_theme_app_not_overlaid_warning">تم از این برنامه پشتیبانی نمی‌کند، ممکن است بعضی از عناصر ثابت بمانند.</string>
+  <string name="file_type_not_supported">از این نوع فایل پشتیبانی نمی‌شود</string>
 </resources>
