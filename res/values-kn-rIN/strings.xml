@@ -18,13 +18,13 @@
 <resources>
   <string name="app_name">ಥೀಮ್ಸ್</string>
   <string name="lock_screen">ಲಾಕ್ ವಾಲ್‍ಪೇಪರ್‍ಗಳು</string>
-  <string name="icons">ಐಕಾನ್ಸ್</string>
+  <string name="icons">ಐಕಾನ್‍ಗಳು</string>
   <string name="fonts">ಫಾಂಟ್‍ಗಳು</string>
   <string name="wallpapers">ವಾಲ್‍ಪೇಪರ್‍ಗಳು</string>
   <string name="boot_anims">ಬೂಟ್ ಆನಿಮೇಶನ್‍ಗಳು</string>
   <string name="ringtones">ರಿಂಗ್‍ಟೋನ್‍ಗಳು</string>
   <string name="notifications">ಅಧಿಸೂಚನೆಗಳು</string>
-  <string name="alarms">ಅಲಾರ್ಮ್‍ಗಳು</string>
+  <string name="alarms">ಅಲಾರಂಗಳು</string>
   <string name="style">ಶೈಲಿ</string>
   <string name="status_bar">ಸ್ಟೇಟಸ್ ಬಾರ್</string>
   <string name="nav_bar">ನಾವಿಗೇಶನ್ ಬಾರ್</string>
@@ -39,7 +39,7 @@
   <string name="update">ನವೀಕರಿಸು</string>
   <string name="no_preview_available">ಯಾವುದೇ ಮುನ್ನೋಟ ಲಭ್ಯವಿಲ್ಲ</string>
   <string name="menu_item_uninstall">ಅಸ್ಥಾಪಿಸಿ</string>
-  <string name="alarm_label">ಅಲಾರ್ಮ್</string>
+  <string name="alarm_label">ಅಲಾರಂ</string>
   <string name="notification_label">ಅಧಿಸೂಚನೆ</string>
   <string name="ringtone_label">ರಿಂಗ್‍ಟೋನ್</string>
   <string name="unknown_author">ಲೇಖಕ ಅಜ್ಞಾತ</string>
