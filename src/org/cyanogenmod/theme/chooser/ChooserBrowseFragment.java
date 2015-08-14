@@ -22,6 +22,7 @@ import android.os.Build;
 import android.view.Gravity;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -33,6 +34,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ThemesContract;
@@ -53,13 +55,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.URLUtil;
-import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment.IconInfo;
 import org.cyanogenmod.theme.util.BootAnimationHelper;
@@ -149,10 +151,10 @@ public class ChooserBrowseFragment extends Fragment
                     try {
                         launchThemeStore();
                     } catch (ActivityNotFoundException e) {
-                        launchGetThemesWebView();
+                        lauchGetThemesWithoutStore();
                     }
                 } else {
-                    launchGetThemesWebView();
+                    lauchGetThemesWithoutStore();
                 }
                 return true;
         }
@@ -177,49 +179,29 @@ public class ChooserBrowseFragment extends Fragment
         getActivity().startActivity(intent);
     }
 
-    private void launchGetThemesWebView() {
-        Context context = getActivity();
-        if (context == null) return;
+    private void lauchGetThemesWithoutStore() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.get_more_description);
+        builder.setItems(R.array.get_more_entry_names, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Context context = getActivity();
+                if (context == null) return;
 
-        final WebView webView = new WebView(context);
-        String html = createGetThemesHtml(context);
-        webView.loadData(html.toString(), "text/html; charset=UTF-8", null);
+                String[] entryUrls = context.getResources().getStringArray(R.array.get_more_entry_urls);
 
-        // Setup the dialog
-        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setView(webView);
-        Dialog dialog = alert.create();
-        dialog.show();
-    }
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(entryUrls[which]));
 
-    private String createGetThemesHtml(Context context) {
-        // Setup the webview with progress bar
-        StringBuffer sb = new StringBuffer();
-        sb.append("<html><body>");
-        sb.append(getActivity().getString(R.string.get_more_description));
-        sb.append("<ul>");
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    context.startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), R.string.get_more_app_not_available,
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
-        String[] entryNames = context.getResources().getStringArray(R.array.get_more_entry_names);
-        String[] entryUrls = context.getResources().getStringArray(R.array.get_more_entry_urls);
-        for(int i=0; i < entryNames.length; i++) {
-            String name = entryNames[i];
-            String url = entryUrls[i];
-            appendLink(sb, name, url);
-        }
-
-        sb.append("</ul>");
-        sb.append("</body></html>");
-        return sb.toString();
-    }
-
-    private void appendLink(StringBuffer sb, String name, String url) {
-        sb.append("<li>");
-        sb.append("<a href=\"");
-        sb.append(url);
-        sb.append("\">");
-        sb.append(name);
-        sb.append("</a>");
-        sb.append("</li>");
+        builder.show();
     }
 
     @Override
