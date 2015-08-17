@@ -37,6 +37,7 @@
   <string name="available">Disponibil</string>
   <string name="update">Actualizare</string>
   <string name="no_preview_available">Nicio previzualizare disponibilă</string>
+  <string name="menu_item_uninstall">Dezinstalare</string>
   <string name="alarm_label">Alarmă</string>
   <string name="notification_label">Notificare</string>
   <string name="ringtone_label">Ton de apel</string>
