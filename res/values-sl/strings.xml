@@ -5,4 +5,46 @@
 -->
 <resources>
   <string name="app_name">Izbirnik tem</string>
+  <string name="font_preview_letters">AaBbCcDd</string>
+  <string name="theme_installed_notification_title">%s nameščena</string>
+  <string name="theme_installed_notification_text">Tema uspešno nameščena.</string>
+  <string name="themes_installed_notification_title">%d tem nameščenih</string>
+  <string name="themes_installed_notification_text_one">%1$s in še %2$d nameščena.</string>
+  <string name="themes_installed_notification_text_other">%1$s in še %2$d nameščenih.</string>
+  <string name="font_component_item_text">Aa</string>
+  <string name="icon_label">Ikone</string>
+  <string name="font_label">Pisave</string>
+  <string name="statusbar_label">Stanje</string>
+  <string name="navbar_label">Krmarjenje</string>
+  <string name="wallpaper_label">Slika ozadja</string>
+  <string name="lockscreen_label">Slika ozadja zaslona za zaklepanje</string>
+  <string name="style_label">Nadzorne tipke</string>
+  <string name="boot_animation_label">Zagonska animacija</string>
+  <string name="alarm_label">Budilka</string>
+  <string name="notification_label">Obvestilo</string>
+  <string name="ringtone_label">Melodija zvonjenja</string>
+  <string name="menu_author_info">Avtor</string>
+  <string name="menu_delete">Izbriši</string>
+  <string name="menu_reset">Ponastavi temo</string>
+  <string name="shop_themes">Nakupuj teme</string>
+  <string name="apply_theme_overlay_title">Uveljavi</string>
+  <string name="delete_theme_overlay_title">Izbriši</string>
+  <string name="reset_theme_overlay_title">Ponastavi</string>
+  <string name="default_tag_text">Privzeto</string>
+  <string name="customized_tag_text">Po meri</string>
+  <string name="updated_tag_text">Posodobljeno</string>
+  <string name="add_component_text">Dodaj</string>
+  <string name="wallpaper_none">Brez</string>
+  <string name="audible_title_none">Brez</string>
+  <string name="reset_theme">Ponastavi</string>
+  <string name="customize_theme">Prilagodi</string>
+  <string name="wallpaper_external_title">Izberite sliko</string>
+  <string name="wallpaper_none_title">Brez</string>
+  <string name="processing_theme">Obdelovanje \u2026</string>
+  <string name="legacy_theme_warning">OPOMBA: %s je bila oblikovana za starejšo različico CM-a. Pri tej temi se lahko pojavijo težave z združljivostjo.</string>
+  <string name="per_app_theming_title">Izbirnik tem za programe</string>
+  <string name="per_app_theme_removal_warning">OPOMBA: Uveljavitev nove teme bo odstranila prilagoditve tem za programe.</string>
+  <string name="per_app_theme_applying">Vaša tema se uveljavlja</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Tema ne podpira tega programa, nekateri elementi se morda ne bodo spremenili.</string>
+  <string name="file_type_not_supported">Vrsta datoteke ni podprta</string>
 </resources>

@@ -4,8 +4,10 @@
      Copyright (C) 2014-2015 Cyanogen, Inc.
 -->
 <resources>
+  <string name="app_name">Selector de temă</string>
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s instalată</string>
+  <string name="theme_installed_notification_text">Tema a fost instalată cu succes.</string>
   <string name="themes_installed_notification_title">%d teme instalate</string>
   <string name="themes_installed_notification_text_one">%1$s și încă %2$d instalate.</string>
   <string name="themes_installed_notification_text_other">%1$s și încă %2$d instalate.</string>
@@ -15,13 +17,24 @@
   <string name="statusbar_label">Stare</string>
   <string name="navbar_label">Navigare</string>
   <string name="wallpaper_label">Tapet</string>
+  <string name="lockscreen_label">Tapete ecran de blocare</string>
   <string name="style_label">Controale</string>
+  <string name="boot_animation_label">Animație pornire</string>
   <string name="alarm_label">Alarmă</string>
   <string name="notification_label">Notificare</string>
   <string name="ringtone_label">Ton de apel</string>
   <string name="menu_author_info">Autor</string>
+  <string name="menu_delete">Ștergeți</string>
+  <string name="menu_reset">Reinițializare temă</string>
+  <string name="apply_theme_overlay_title">Activare</string>
+  <string name="delete_theme_overlay_title">Ștergeți</string>
   <string name="reset_theme_overlay_title">Resetare</string>
+  <string name="default_tag_text">Implicit</string>
+  <string name="customized_tag_text">Personalizate</string>
   <string name="updated_tag_text">Actualizat</string>
   <string name="add_component_text">Adăugare</string>
+  <string name="reset_theme">Resetare</string>
   <string name="customize_theme">Personalizare</string>
+  <string name="per_app_theme_applying">Tema se aplică</string>
+  <string name="file_type_not_supported">Tip de fișier neacceptat</string>
 </resources>
