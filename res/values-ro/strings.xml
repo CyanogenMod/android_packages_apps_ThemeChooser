@@ -49,5 +49,6 @@
   <string name="get_more_description">Puteți obține mai multe teme de la link-urile următoare:</string>
   <string name="get_more_entry_cm_themes_showcase">Galerie de teme CyanogenMod</string>
   <string name="get_more_entry_play_store">Magazin Play</string>
+  <string name="get_more_entry_cm_wiki">Mai multe informații pe CM Wiki</string>
   <string name="designed_for_cm11">Conceput pentru CM11</string>
 </resources>
