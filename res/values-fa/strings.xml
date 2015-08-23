@@ -18,7 +18,18 @@
 <resources>
   <string name="app_name">مضامین</string>
   <string name="lock_screen">کاغذدیواری‌های قفل</string>
+  <string name="fonts">فونت‌ها</string>
   <string name="wallpapers">کاغذدیواری‌ها</string>
+  <string name="ringtones">صداهای زنگ</string>
   <string name="notifications">اعلان‌ها</string>
   <string name="notification_label">اعلان</string>
+  <string name="ringtone_label">صدای زنگ</string>
+  <string name="font_preview_letters">ا ب‌ پ‌ ت‌ ث ۱ ۲ ۳</string>
+  <string name="theme_installed_notification_text">تم با موفقیت نصب شد.</string>
+  <string name="get_more_description">شما می‌توانید از طریق لینک‌های زیر، تم‌های بیشتری دریافت کنید:</string>
+  <string-array name="get_more_entry_names">
+    <item>ویترین تم‌های سایانوژن‌مود</item>
+    <item>Play Store</item>
+    <item>More info on the CM Wiki</item>
+  </string-array>
 </resources>
