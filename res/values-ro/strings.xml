@@ -26,6 +26,7 @@
   <string name="menu_author_info">Autor</string>
   <string name="menu_delete">Ștergeți</string>
   <string name="menu_reset">Reinițializare temă</string>
+  <string name="shop_themes">Magazin de teme</string>
   <string name="apply_theme_overlay_title">Activare</string>
   <string name="delete_theme_overlay_title">Ștergeți</string>
   <string name="reset_theme_overlay_title">Resetare</string>
@@ -33,8 +34,15 @@
   <string name="customized_tag_text">Personalizate</string>
   <string name="updated_tag_text">Actualizat</string>
   <string name="add_component_text">Adăugare</string>
+  <string name="wallpaper_none">Nimic</string>
+  <string name="audible_title_none">Nimic</string>
   <string name="reset_theme">Resetare</string>
   <string name="customize_theme">Personalizare</string>
+  <string name="wallpaper_external_title">Alege imaginea</string>
+  <string name="wallpaper_none_title">Nimic</string>
+  <string name="processing_theme">Procesând\u2026</string>
+  <string name="per_app_theme_removal_warning">NOTĂ: Aplicarea unei noi teme va elimina toate particularizările de temă ale aplicațiilor.</string>
   <string name="per_app_theme_applying">Tema se aplică</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Tema nu are suport pentru acestă aplicație, unele elemente nu se pot schimba.</string>
   <string name="file_type_not_supported">Tip de fișier neacceptat</string>
 </resources>
