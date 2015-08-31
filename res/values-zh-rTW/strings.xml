@@ -47,7 +47,6 @@
   <string name="theme_installed_notification_text">已成功主題安裝。</string>
   <string name="menu_item_get_more_themes">獲得更多主題</string>
   <string name="get_more_description">您可以從下面的連結獲取更多主題：</string>
-  <string name="get_more_entry_cm_themes_showcase">CyanogenMod 主題展示</string>
   <string name="get_more_entry_play_store">Play 商店</string>
   <string name="get_more_entry_cm_wiki">CM Wiki 上更多的資訊</string>
   <string name="designed_for_cm11">專為 CM11 設計</string>

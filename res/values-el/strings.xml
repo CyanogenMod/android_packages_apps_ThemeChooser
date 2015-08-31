@@ -48,7 +48,7 @@
   <string name="theme_installed_notification_text">Το θέμα εγκαταστάθηκε με επιτυχία.</string>
   <string name="menu_item_get_more_themes">Βρείτε περισσότερα</string>
   <string name="get_more_description">Μπορείτε να βρείτε περισσότερα θέματα από τους παρακάτω συνδέσμους:</string>
-  <string name="get_more_entry_cm_themes_showcase">Κατάστημα Θεμάτων CyanogenMod</string>
+  <string name="get_more_app_not_available">Η εφαρμογή δεν είναι διαθέσιμη</string>
   <string name="get_more_entry_play_store">Play Store</string>
   <string name="get_more_entry_cm_wiki">Περισσότερες πληροφορίες στο CM Wiki</string>
   <string name="designed_for_cm11">Σχεδιασμένο για CM11</string>

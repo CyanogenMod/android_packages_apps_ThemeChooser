@@ -48,7 +48,6 @@
   <string name="theme_installed_notification_text">Motyw został pomyślnie zainstalowany.</string>
   <string name="menu_item_get_more_themes">Uzyskaj więcej</string>
   <string name="get_more_description">Więcej motywów można znaleźć na stronach:</string>
-  <string name="get_more_entry_cm_themes_showcase">Prezentacja motywów CyanogenMod</string>
   <string name="get_more_entry_play_store">Sklep Play</string>
   <string name="get_more_entry_cm_wiki">Więcej informacji na stronie CM Wiki</string>
   <string name="designed_for_cm11">Zaprojektowany dla CM11</string>

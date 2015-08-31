@@ -48,7 +48,7 @@
   <string name="theme_installed_notification_text">Gaia ondo instalatu da.</string>
   <string name="menu_item_get_more_themes">Lortu gehiago</string>
   <string name="get_more_description">Gai gehiago lor ditzakezu hurrengo esteketan:</string>
-  <string name="get_more_entry_cm_themes_showcase">CyanogenMod gaien erakusleihoa</string>
+  <string name="get_more_app_not_available">Aplikazioa ez dago eskuragarri</string>
   <string name="get_more_entry_play_store">Play Store</string>
   <string name="get_more_entry_cm_wiki">informazio gehiago CM Wikian</string>
   <string name="designed_for_cm11">CM11rako diseinatuta</string>

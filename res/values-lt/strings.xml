@@ -48,7 +48,7 @@
   <string name="theme_installed_notification_text">Tema sėkmingai įdiegta.</string>
   <string name="menu_item_get_more_themes">Gauti daugiau</string>
   <string name="get_more_description">Galite gauti daugiau temų iš šių nuorodų:</string>
-  <string name="get_more_entry_cm_themes_showcase">„CyanogenMod“ temų vitrina</string>
+  <string name="get_more_app_not_available">Programa nepasiekiama</string>
   <string name="get_more_entry_play_store">„Play“ parduotuvė</string>
   <string name="get_more_entry_cm_wiki">Daugiau informacijos CM vikipedijoje</string>
   <string name="designed_for_cm11">Sukurta CM 11</string>

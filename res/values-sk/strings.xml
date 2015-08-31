@@ -48,7 +48,7 @@
   <string name="theme_installed_notification_text">Téma bola úspešne nainštalovaná.</string>
   <string name="menu_item_get_more_themes">Získať viac</string>
   <string name="get_more_description">Viac tém môžete získať z nasledujúcich odkazov:</string>
-  <string name="get_more_entry_cm_themes_showcase">Témy vzhľadu CyanogenModu</string>
+  <string name="get_more_app_not_available">Aplikácia nie je k dispozícii</string>
   <string name="get_more_entry_play_store">Obchod Play</string>
   <string name="get_more_entry_cm_wiki">Viac informácií na CM Wiki</string>
   <string name="designed_for_cm11">Určená pre CM11</string>

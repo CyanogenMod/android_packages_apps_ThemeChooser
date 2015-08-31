@@ -30,15 +30,15 @@
   <string name="nav_bar">نوار پیمایش</string>
   <string name="theme_packs">بسته‌های تم</string>
   <string name="sounds">صداها</string>
-  <string name="system_theme_name">سیستم</string>
+  <string name="system_theme_name">سیستمی</string>
   <string name="default_tag">(پیش‌فرض)</string>
   <string name="apply">اعمال</string>
   <string name="applying">اعمال\u2026</string>
   <string name="applied">اعمال شد</string>
   <string name="available">در دسترس</string>
   <string name="update">بروزرسانی</string>
-  <string name="no_preview_available">هیچ پیش نمایشی یافت نشد</string>
-  <string name="menu_item_uninstall">لغونصب</string>
+  <string name="no_preview_available">پیش نمایشی در دسترس نیست</string>
+  <string name="menu_item_uninstall">لغو نصب</string>
   <string name="alarm_label">هشدار</string>
   <string name="notification_label">اعلان</string>
   <string name="ringtone_label">صدای زنگ</string>
@@ -48,7 +48,7 @@
   <string name="theme_installed_notification_text">تم با موفقیت نصب شد.</string>
   <string name="menu_item_get_more_themes">دریافت تم‌های بیشتر</string>
   <string name="get_more_description">شما می‌توانید از طریق لینک‌های زیر، تم‌های بیشتری دریافت کنید:</string>
-  <string name="get_more_entry_cm_themes_showcase">ویترین تم‌های سایانوژن‌مود</string>
+  <string name="get_more_app_not_available">برنامه در دسترس نیست</string>
   <string name="get_more_entry_play_store">پلی‌استور</string>
   <string name="get_more_entry_cm_wiki">اطلاعات بیشتر در CM Wiki</string>
   <string name="designed_for_cm11">طراحی شده برای CM11</string>

@@ -34,6 +34,7 @@
   <string name="default_tag">(Implicit)</string>
   <string name="apply">Aplicare</string>
   <string name="applying">Aplicare\u2026</string>
+  <string name="applied">Aplicate</string>
   <string name="available">Disponibil</string>
   <string name="update">Actualizare</string>
   <string name="no_preview_available">Nicio previzualizare disponibilă</string>
@@ -47,7 +48,7 @@
   <string name="theme_installed_notification_text">Tema a fost instalată cu succes.</string>
   <string name="menu_item_get_more_themes">Obțineți mai multe</string>
   <string name="get_more_description">Puteți obține mai multe teme de la link-urile următoare:</string>
-  <string name="get_more_entry_cm_themes_showcase">Galerie de teme CyanogenMod</string>
+  <string name="get_more_app_not_available">Aplicația nu este disponibilă</string>
   <string name="get_more_entry_play_store">Magazin Play</string>
   <string name="get_more_entry_cm_wiki">Mai multe informații pe CM Wiki</string>
   <string name="designed_for_cm11">Conceput pentru CM11</string>

@@ -48,7 +48,7 @@
   <string name="theme_installed_notification_text">Tema instalado com sucesso.</string>
   <string name="menu_item_get_more_themes">Obter mais</string>
   <string name="get_more_description">Você pode obter mais temas nos seguintes links:</string>
-  <string name="get_more_entry_cm_themes_showcase">Vitrine de Temas CyanogenMod</string>
+  <string name="get_more_app_not_available">App não disponível</string>
   <string name="get_more_entry_play_store">Play Store</string>
   <string name="get_more_entry_cm_wiki">Mais informações no CM Wiki</string>
   <string name="designed_for_cm11">Projetado para CM11</string>

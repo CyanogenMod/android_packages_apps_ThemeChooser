@@ -48,7 +48,7 @@
   <string name="theme_installed_notification_text">Téma sikeresen telepítve.</string>
   <string name="menu_item_get_more_themes">Továbbiak beszerzése</string>
   <string name="get_more_description">További témákat az alábbi linkeken találhat:</string>
-  <string name="get_more_entry_cm_themes_showcase">CyanogenMod Témák Showcase</string>
+  <string name="get_more_app_not_available">Alkalmazás nem elérhető</string>
   <string name="get_more_entry_play_store">Play Áruház</string>
   <string name="get_more_entry_cm_wiki">További információ a CM Wiki oldalán</string>
   <string name="designed_for_cm11">CM11-hez tervezett</string>
