@@ -24,6 +24,7 @@ import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -165,6 +166,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final int ADDITIONAL_CONTENT_SPACE_ID = 123456;
     private static final long SLIDE_CONTENT_ANIM_DURATION = 300L;
+
+    private static final int DEFAULT_WIFI_MARGIN = 0;
+    private static final int DEFAULT_CLOCK_COLOR = Color.WHITE;
 
     protected static final String WALLPAPER_NONE = "";
 
@@ -1480,8 +1484,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         Bitmap wifiIcon = Utils.loadBitmapBlob(c, wifiIdx);
         Bitmap signalIcon = Utils.loadBitmapBlob(c, signalIdx);
         Bitmap batteryIcon = Utils.loadBitmapBlob(c, batteryIdx);
-        int wifiMargin = c.getInt(wifiMarginIdx);
-        int clockTextColor = c.getInt(clockColorIdx);
+        int wifiMargin = wifiMarginIdx != -1 ? c.getInt(wifiMarginIdx) : DEFAULT_WIFI_MARGIN;
+        int clockTextColor = clockColorIdx != -1 ? c.getInt(clockColorIdx) : DEFAULT_CLOCK_COLOR;
 
         Drawable overlay = null;
         if (animate) {
