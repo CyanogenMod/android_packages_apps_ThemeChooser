@@ -20,7 +20,7 @@
   <string name="lockscreen_label">Шпалери екрану блокування</string>
   <string name="style_label">Елементи керування</string>
   <string name="boot_animation_label">Анімація завантаження</string>
-  <string name="alarm_label">Годинник</string>
+  <string name="alarm_label">Будильник</string>
   <string name="notification_label">Сповіщення</string>
   <string name="ringtone_label">Рінгтон</string>
   <string name="menu_author_info">Автор</string>
@@ -30,7 +30,7 @@
   <string name="apply_theme_overlay_title">Застосувати</string>
   <string name="delete_theme_overlay_title">Видалити</string>
   <string name="reset_theme_overlay_title">Скинути</string>
-  <string name="default_tag_text">Стандартний</string>
+  <string name="default_tag_text">За замовчуванням</string>
   <string name="customized_tag_text">Власний</string>
   <string name="updated_tag_text">Оновлено</string>
   <string name="add_component_text">Додати</string>
@@ -42,7 +42,7 @@
   <string name="wallpaper_none_title">Немає</string>
   <string name="processing_theme">Обробка\u2026</string>
   <string name="legacy_theme_warning">Примітка: %s було розроблено для попередньої версії CM. Використання цієї теми може спричинити проблеми.</string>
-  <string name="per_app_theming_title">Теми додатків</string>
+  <string name="per_app_theming_title">Перегляд тем</string>
   <string name="per_app_theme_removal_warning">Примітка: Застосування нової теми призведе до скидання всіх налаштувань тем в додатках.</string>
   <string name="per_app_theme_applying">Ваша тема застосовується</string>
   <string name="per_app_theme_app_not_overlaid_warning">Тема не підтримує цей додаток, деякі елементи залишаться без змін.</string>
