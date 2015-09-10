@@ -186,7 +186,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
         mThemeApplyingView = mThemeListLayout.findViewById(R.id.applying_theme_text);
 
         final Configuration config = getResources().getConfiguration();
-        mThemeConfig = config != null ? config.themeConfig : null;
+        mThemeConfig = getThemeConfig(config);
         loadThemes();
         getContentResolver().registerContentObserver(ThemesColumns.CONTENT_URI, true,
                 mThemesObserver);
@@ -315,7 +315,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mThemeConfig = newConfig.themeConfig;
+        mThemeConfig = getThemeConfig(newConfig);
     }
 
     @Override
@@ -342,6 +342,14 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
                 removeViewIfAttached(mThemeListLayout);
             }
         });
+    }
+
+    private ThemeConfig getThemeConfig(Configuration config) {
+        if (config != null && config.themeConfig != null) {
+            return config.themeConfig;
+        }
+
+        return ThemeConfig.getBootTheme(getContentResolver());
     }
 
     private void removeViewIfAttached(View view) {
