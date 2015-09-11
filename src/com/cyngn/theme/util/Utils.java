@@ -523,15 +523,19 @@ public class Utils {
     public static boolean themeHasOverlayForApp(Context context, String appPkgNane,
             String themePkgName) {
         boolean hasExplicitOverlay = false;
-        try {
-            Context themeContext = context.createPackageContext(themePkgName, 0);
-            if (themeContext != null) {
-                AssetManager assets = themeContext.getAssets();
-                String[] files = assets.list(OVERLAY_BASE_PATH + appPkgNane);
-                if (files != null && files.length > 0) hasExplicitOverlay = true;
+        if (ThemeConfig.SYSTEM_DEFAULT.equals(themePkgName)) {
+            hasExplicitOverlay = true;
+        } else {
+            try {
+                Context themeContext = context.createPackageContext(themePkgName, 0);
+                if (themeContext != null) {
+                    AssetManager assets = themeContext.getAssets();
+                    String[] files = assets.list(OVERLAY_BASE_PATH + appPkgNane);
+                    if (files != null && files.length > 0) hasExplicitOverlay = true;
+                }
+            } catch (Exception e) {
+                // don't care, we'll return false and let the caller handle things
             }
-        } catch (Exception e) {
-            // don't care, we'll return false and let the caller handle things
         }
         return hasExplicitOverlay;
     }
