@@ -194,6 +194,8 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        if (mIsBeingDestroyed) return true;
+
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (mThemeListLayout.isAttachedToWindow()) {
