@@ -41,4 +41,15 @@ public class LockableScrollView extends ScrollView {
                 return super.onTouchEvent(ev);
         }
     }
+
+    @Override
+    public void setOverScrollMode(int mode) {
+        // Some themes can cause theme chooser to crash when creating the EdgeEffects for
+        // the scroll view.  If an exception occurs we fallback to no overscroll
+        try {
+            super.setOverScrollMode(mode);
+        } catch (Exception e) {
+            super.setOverScrollMode(OVER_SCROLL_NEVER);
+        }
+    }
 }
