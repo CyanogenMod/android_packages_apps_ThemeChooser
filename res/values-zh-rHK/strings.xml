@@ -26,11 +26,17 @@
   <string name="notifications">通知</string>
   <string name="alarms">鬧鐘</string>
   <string name="style">風格</string>
+  <string name="status_bar">狀態列</string>
+  <string name="nav_bar">導覽列</string>
+  <string name="theme_packs">主題包</string>
   <string name="default_tag">(預設值)</string>
   <string name="apply">套用</string>
   <string name="applying">正在套用\u2026</string>
+  <string name="applied">已套用</string>
+  <string name="available">可用</string>
   <string name="update">更新</string>
   <string name="no_preview_available">無預覽提供</string>
+  <string name="menu_item_uninstall">解除安裝</string>
   <string name="alarm_label">鬧鐘</string>
   <string name="notification_label">通知</string>
   <string name="ringtone_label">鈴聲</string>
@@ -40,4 +46,8 @@
   <string name="theme_installed_notification_text">主題已成功安裝。</string>
   <string name="menu_item_get_more_themes">獲取更多</string>
   <string name="get_more_description">你可以從下面的連結取得更多主題：</string>
+  <string name="get_more_app_not_available">應用程式不可用</string>
+  <string name="get_more_entry_play_store">Play Store</string>
+  <string name="get_more_entry_cm_wiki">CM Wiki 上查看更多資訊</string>
+  <string name="designed_for_cm11">專為 CM11 設計</string>
 </resources>
