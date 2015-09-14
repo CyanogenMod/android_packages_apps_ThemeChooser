@@ -300,6 +300,10 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
             removeViewIfAttached(mDeleteView);
             mDeleteView = null;
         }
+        if (mThemeListLayout != null) {
+            removeViewIfAttached(mThemeListLayout);
+            mThemeListLayout = null;
+        }
         if (mAnimationTask != null) {
             mAnimationTask.cancel();
             mAnimationTask = null;
