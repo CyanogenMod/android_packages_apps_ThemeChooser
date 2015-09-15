@@ -112,6 +112,8 @@ public class CursorLoaderHelper {
                 };
                 break;
             case LOADER_ID_FONT:
+                // fonts don't have generated previews so use the ThemesColumns.CONTENT_URI
+                uri = ThemesColumns.CONTENT_URI;
                 selection = MODIFIES_FONTS + "=?";
                 break;
             case LOADER_ID_ICONS:
