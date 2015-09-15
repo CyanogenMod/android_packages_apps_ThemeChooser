@@ -577,7 +577,7 @@ public class ComponentSelector extends LinearLayout
                 @Override
                 public void onClick(View v) {
                     int type;
-                    String pkgName = (String) v.getTag(R.id.tag_key_package_name);
+                    String pkgName = (String) v.getTag();
                     if (component.equals(MODIFIES_RINGTONES)) {
                         type = RingtoneManager.TYPE_RINGTONE;
                     } else if (component.equals(MODIFIES_NOTIFICATIONS)) {
