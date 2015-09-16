@@ -293,6 +293,7 @@ public class CursorLoaderHelper {
                 };
                 break;
             case LOADER_ID_FONT:
+                uri = ThemesColumns.CONTENT_URI;
                 projection = new String[] {
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE
