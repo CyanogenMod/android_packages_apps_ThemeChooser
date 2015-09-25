@@ -148,6 +148,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final ComponentName COMPONENT_DIALER =
             new ComponentName("com.android.dialer", "com.android.dialer.DialtactsActivity");
+    private static final ComponentName COMPONENT_DIALERNEXT =
+            new ComponentName("com.cyngn.dialer", "com.cyngn.dialer.DialtactsActivity");
     private static final ComponentName COMPONENT_MESSAGING =
             new ComponentName("com.android.mms", "com.android.mms.ui.ConversationList");
     private static final ComponentName COMPONENT_CAMERANEXT =
@@ -162,7 +164,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             new ComponentName("com.android.calendar", "com.android.calendar.AllInOneActivity");
     private static final ComponentName COMPONENT_GALERY =
             new ComponentName("com.android.gallery3d", "com.android.gallery3d.app.GalleryActivity");
+
     private static final String CAMERA_NEXT_PACKAGE = "com.cyngn.cameranext";
+    private static final String DIALER_NEXT_PACKAGE = "com.cyngn.dialer";
 
     private static final int ADDITIONAL_CONTENT_SPACE_ID = 123456;
     private static final long SLIDE_CONTENT_ANIM_DURATION = 300L;
@@ -1819,6 +1823,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (!pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
                 sIconComponents[0] = COMPONENT_CALENDAR;
                 sIconComponents[1] = COMPONENT_GALERY;
+            } else {
+                // decide on which dialer icon to use
+                try {
+                    if (pm.getPackageInfo(DIALER_NEXT_PACKAGE, 0) != null) {
+                        sIconComponents[0] = COMPONENT_DIALERNEXT;
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    // default to COMPONENT_DIALER
+                }
             }
 
             if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
