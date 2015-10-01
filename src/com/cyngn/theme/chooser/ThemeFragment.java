@@ -149,7 +149,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final ComponentName COMPONENT_DIALER =
             new ComponentName("com.android.dialer", "com.android.dialer.DialtactsActivity");
     private static final ComponentName COMPONENT_DIALERNEXT =
-            new ComponentName("com.cyngn.dialer", "com.cyngn.dialer.DialtactsActivity");
+            new ComponentName("com.cyngn.dialer", "com.android.dialer.DialtactsActivity");
     private static final ComponentName COMPONENT_MESSAGING =
             new ComponentName("com.android.mms", "com.android.mms.ui.ConversationList");
     private static final ComponentName COMPONENT_CAMERANEXT =
