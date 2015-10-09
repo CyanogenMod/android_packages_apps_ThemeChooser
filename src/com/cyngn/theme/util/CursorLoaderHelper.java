@@ -18,6 +18,7 @@ import cyanogenmod.app.ThemeVersion;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
+import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
@@ -42,6 +43,7 @@ public class CursorLoaderHelper {
     public static final int LOADER_ID_RINGTONE = 9;
     public static final int LOADER_ID_NOTIFICATION = 10;
     public static final int LOADER_ID_ALARM = 11;
+    public static final int LOADER_ID_LIVE_LOCK_SCREEN = 12;
     public static final int LOADER_ID_INSTALLED_THEMES = 1000;
     public static final int LOADER_ID_APPLIED = 1001;
 
@@ -184,6 +186,14 @@ public class CursorLoaderHelper {
                     };
                 }
                 break;
+            case LOADER_ID_LIVE_LOCK_SCREEN:
+                selection = MODIFIES_LIVE_LOCK_SCREEN + "=?";
+                projection = new String[] {
+                        PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL,
+                        ThemesColumns.TITLE,
+                        ThemesColumns.PKG_NAME
+                };
+                break;
             default:
                 return null;
         }
@@ -215,7 +225,8 @@ public class CursorLoaderHelper {
                 PreviewColumns.ICON_PREVIEW_3,
                 PreviewColumns.LOCK_WALLPAPER_PREVIEW,
                 PreviewColumns.STYLE_PREVIEW,
-                PreviewColumns.NAVBAR_BACKGROUND
+                PreviewColumns.NAVBAR_BACKGROUND,
+                PreviewColumns.LIVE_LOCK_SCREEN_PREVIEW
         };
         uri = PreviewColumns.APPLIED_URI;
         return new CursorLoader(context, uri, projection, null, null, null);
@@ -274,7 +285,8 @@ public class CursorLoaderHelper {
                         PreviewColumns.ICON_PREVIEW_2,
                         PreviewColumns.ICON_PREVIEW_3,
                         PreviewColumns.LOCK_WALLPAPER_PREVIEW,
-                        PreviewColumns.STYLE_PREVIEW
+                        PreviewColumns.STYLE_PREVIEW,
+                        PreviewColumns.LIVE_LOCK_SCREEN_PREVIEW
                 };
                 break;
             case LOADER_ID_STATUS_BAR:
@@ -364,6 +376,13 @@ public class CursorLoaderHelper {
                 projection = new String[] {
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE
+                };
+                break;
+            case LOADER_ID_LIVE_LOCK_SCREEN:
+                projection = new String[] {
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE,
+                        PreviewColumns.LIVE_LOCK_SCREEN_PREVIEW
                 };
                 break;
         }
