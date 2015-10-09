@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014 Cyanogen, Inc.
+-->
+<com.cyngn.theme.chooser.ComponentCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/live_lock_screen_preview_container"
+    android:layout_width="match_parent"
+    android:layout_height="320dp"
+    android:orientation="vertical"
+    android:background="@drawable/card_bootanim_bg">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!-- Need to set a valid source so this view can generate a valid bitmap
+             from drawing cache, otherwise it's size is 0x0 and a null bitmap is returned -->
+        <ImageView
+            android:id="@+id/live_lock_screen_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/expanded_card_margin_top"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center"
+            android:src="@drawable/card_bootanim_bg"/>
+        <com.cyngn.theme.widget.LatoTextView
+            android:id="@+id/label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/live_lock_screen_label"
+            style="@style/card_label"/>
+        <LinearLayout
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_addcomponent"/>
+        </LinearLayout>
+    </FrameLayout>
+</com.cyngn.theme.chooser.ComponentCardView>

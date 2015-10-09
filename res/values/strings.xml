@@ -31,6 +31,7 @@
     <string name="navbar_label">Navigation</string>
     <string name="wallpaper_label">Wallpaper</string>
     <string name="lockscreen_label">Lockscreen wallpaper</string>
+    <string name="live_lock_screen_label">Live lock screen</string>
     <string name="style_label">Controls</string>
     <string name="boot_animation_label">Boot animation</string>
     <string name="alarm_label">Alarm</string>
