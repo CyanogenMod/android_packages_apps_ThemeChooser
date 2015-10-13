@@ -22,6 +22,7 @@
   <string name="fonts">Yazı tipləri</string>
   <string name="wallpapers">Divar kağızları</string>
   <string name="boot_anims">Açılış animasiyaları</string>
+  <string name="ringtones">Zəng səsləri</string>
   <string name="notifications">Bildirişlər</string>
   <string name="alarms">Zəngli saatlar</string>
   <string name="style">Stil</string>
@@ -40,6 +41,7 @@
   <string name="menu_item_uninstall">Sil</string>
   <string name="alarm_label">Zəngli saat</string>
   <string name="notification_label">Bildiriş</string>
+  <string name="ringtone_label">Zəng səsi</string>
   <string name="unknown_author">Sahibi bilinmir</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s quraşdırıldı</string>

@@ -38,6 +38,7 @@
   <string name="available">可用</string>
   <string name="update">更新</string>
   <string name="no_preview_available">無預覽提供</string>
+  <string name="menu_item_uninstall">解除安裝</string>
   <string name="alarm_label">鬧鐘</string>
   <string name="notification_label">通知</string>
   <string name="ringtone_label">鈴聲</string>

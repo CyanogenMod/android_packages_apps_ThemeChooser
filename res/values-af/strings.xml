@@ -48,6 +48,7 @@
   <string name="theme_installed_notification_text">Tema suksesvol geïnstalleer.</string>
   <string name="menu_item_get_more_themes">Kry meer</string>
   <string name="get_more_description">Jy kan meer temas verkry van die volgende skakels:</string>
+  <string name="get_more_app_not_available">Toep nie beskikbaar nie</string>
   <string name="get_more_entry_play_store">Play-winkel</string>
   <string name="get_more_entry_cm_wiki">Meer inligting op die CM Wiki</string>
   <string name="designed_for_cm11">Geskep vir CM11</string>
