@@ -29,6 +29,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.content.res.ThemeConfig;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -37,6 +38,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ThemesContract;
 import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.Fragment;
@@ -89,6 +91,10 @@ public class ChooserBrowseFragment extends Fragment
     public LocalPagerAdapter mAdapter;
     public ArrayList<String> mComponentFilters;
 
+    private Handler mHandler;
+    private PreviewContentObserver mPreviewObserver;
+    private boolean mCursorLoaded;
+
     private Point mMaxImageSize = new Point(); //Size of preview image in listview
 
     public static ChooserBrowseFragment newInstance(ArrayList<String> componentFilters) {
@@ -136,11 +142,27 @@ public class ChooserBrowseFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        mHandler = new Handler();
+        mPreviewObserver = new PreviewContentObserver(mHandler);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.chooser_menu, menu);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().getContentResolver().unregisterContentObserver(mPreviewObserver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().getContentResolver().registerContentObserver(
+                ThemesContract.PreviewColumns.CONTENT_URI, true, mPreviewObserver);
     }
 
     @Override
@@ -210,12 +232,14 @@ public class ChooserBrowseFragment extends Fragment
         // old cursor once we return.)
         mAdapter.swapCursor(data);
         mAdapter.notifyDataSetChanged();
+        mCursorLoaded = true;
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
         mAdapter.notifyDataSetChanged();
+        mCursorLoaded = false;
     }
 
     @Override
@@ -243,6 +267,30 @@ public class ChooserBrowseFragment extends Fragment
 
         return new CursorLoader(getActivity(), ThemesColumns.CONTENT_URI, null, selection,
                 selectionArgs, sortOrder);
+    }
+
+    private class PreviewContentObserver extends ContentObserver {
+        public PreviewContentObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            onChange(selfChange, null, 0);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            onChange(selfChange, uri, 0);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri, int userId) {
+            // Reload the previews
+            if (mCursorLoaded) {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     public class LocalPagerAdapter extends CursorAdapter {
