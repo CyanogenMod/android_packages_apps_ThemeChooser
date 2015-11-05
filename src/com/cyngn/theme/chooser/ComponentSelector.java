@@ -50,7 +50,6 @@ import com.cyngn.theme.util.Utils;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
@@ -60,7 +59,6 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
-import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_LIVE_LOCK_SCREEN;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_STATUS_BAR;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_FONT;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ICONS;
@@ -320,9 +318,6 @@ public class ComponentSelector extends LinearLayout
         if (MODIFIES_LOCKSCREEN.equals(component)) {
             return LOADER_ID_LOCKSCREEN;
         }
-        if (MODIFIES_LIVE_LOCK_SCREEN.equals(component)) {
-            return LOADER_ID_LIVE_LOCK_SCREEN;
-        }
         return -1;
     }
 
@@ -353,7 +348,6 @@ public class ComponentSelector extends LinearLayout
                 mContent.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
                 break;
             case LOADER_ID_BOOT_ANIMATION:
-            case LOADER_ID_LIVE_LOCK_SCREEN:
                 dividerPadding = res.getDimensionPixelSize(
                         R.dimen.component_divider_padding_top_bootani);
                 dividerHeight = res.getDimensionPixelSize(R.dimen.component_divider_height_bootani);
@@ -418,9 +412,6 @@ public class ComponentSelector extends LinearLayout
         if (MODIFIES_LOCKSCREEN.equals(mComponentType)) {
             return newWallpapersView(cursor, container, position,
                     cursor.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL));
-        }
-        if (MODIFIES_LIVE_LOCK_SCREEN.equals(mComponentType)) {
-            return newLiveLockScreenView(cursor, container, position);
         }
         return null;
     }
@@ -620,21 +611,6 @@ public class ComponentSelector extends LinearLayout
         }
 
         return container;
-    }
-
-    private View newLiveLockScreenView(Cursor cursor, ViewGroup parent, int position) {
-        cursor.moveToPosition(position);
-        View v = mInflater.inflate(R.layout.bootani_component_selection_item, parent,
-                false);
-        int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL);
-        int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
-
-        ((ImageView) v.findViewById(R.id.preview)).setImageBitmap(
-                Utils.loadBitmapBlob(cursor, wallpaperIndex));
-        setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-        v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
-        v.setOnClickListener(mItemClickListener);
-        return v;
     }
 
     private class LoadItemsTask extends AsyncTask<Object, Void, Void> {

@@ -65,7 +65,6 @@ import java.util.Map;
 
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
 
@@ -507,7 +506,7 @@ public class ChooserActivity extends FragmentActivity
             final Resources res = getResources();
             int itemsPerPage = res.getInteger(R.integer.default_items_per_page);
             int height = res.getDimensionPixelSize(R.dimen.component_selection_cell_height);
-            if (MODIFIES_BOOT_ANIM.equals(component) || MODIFIES_LIVE_LOCK_SCREEN.equals(component)) {
+            if (MODIFIES_BOOT_ANIM.equals(component)) {
                 itemsPerPage = res.getInteger(R.integer.bootani_items_per_page);
                 height = res.getDimensionPixelSize(
                         R.dimen.component_selection_cell_height_boot_anim);

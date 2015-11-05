@@ -102,7 +102,6 @@ import java.util.zip.ZipFile;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
@@ -127,7 +126,6 @@ import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_BOOT_ANIMATION;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_RINGTONE;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_NOTIFICATION;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ALARM;
-import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_LIVE_LOCK_SCREEN;
 
 import static android.content.pm.ThemeUtils.SYSTEM_TARGET_API;
 
@@ -217,7 +215,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected ComponentCardView mFontCard;
     protected ComponentCardView mIconCard;
     protected ComponentCardView mBootAnimationCard;
-    protected ComponentCardView mLiveLockScreenCard;
     protected BootAniImageView mBootAnimation;
 
     // Nav Bar Views
@@ -245,9 +242,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     // Style views
     protected ImageView mStylePreview;
-
-    // Live lock screen view
-    protected ImageView mLiveLockScreenView;
 
     // Sound cards
     protected ComponentCardView mRingtoneCard;
@@ -351,8 +345,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mCardIdsToComponentTypes.put(R.id.ringtone_preview_container, MODIFIES_RINGTONES);
         mCardIdsToComponentTypes.put(R.id.notification_preview_container, MODIFIES_NOTIFICATIONS);
         mCardIdsToComponentTypes.put(R.id.alarm_preview_container, MODIFIES_ALARMS);
-        mCardIdsToComponentTypes.put(R.id.live_lock_screen_preview_container,
-                MODIFIES_LIVE_LOCK_SCREEN);
 
         mMediaPlayers = new HashMap<ImageView, MediaPlayer>(3);
     }
@@ -482,9 +474,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         mWallpaperCard = (WallpaperCardView) v.findViewById(R.id.wallpaper_card);
         mLockScreenCard = (WallpaperCardView) v.findViewById(R.id.lockscreen_card);
-        mLiveLockScreenCard =
-                (ComponentCardView) v.findViewById(R.id.live_lock_screen_preview_container);
-        mLiveLockScreenView = (ImageView) v.findViewById(R.id.live_lock_screen_preview);
         int translationY = getDistanceToMoveBelowScreen(mAdditionalCards);
         mAdditionalCards.setTranslationY(translationY);
 
@@ -1297,9 +1286,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             case LOADER_ID_ALARM:
                 loadAudible(RingtoneManager.TYPE_ALARM, c, animate);
                 break;
-            case LOADER_ID_LIVE_LOCK_SCREEN:
-                loadLiveLockScreen(c, animate);
-                break;
         }
     }
 
@@ -1366,14 +1352,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 mAlarmCard.setEmptyViewEnabled(true);
                 setAddComponentTitle(mAlarmCard,
                         getAudibleLabel(RingtoneManager.TYPE_ALARM));
-            }
-        } else if (MODIFIES_LIVE_LOCK_SCREEN.equals(component)) {
-            if (hasContent) {
-                loadLiveLockScreen(c, false);
-            } else {
-                mLiveLockScreenCard.setEmptyViewEnabled(true);
-                setAddComponentTitle(mLiveLockScreenCard,
-                        getString(R.string.live_lock_screen_label));
             }
         } else {
             throw new IllegalArgumentException("Don't know how to load: " + component);
@@ -1798,33 +1776,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         thread.start();
     }
 
-    protected void loadLiveLockScreen(Cursor c, boolean animate) {
-        Drawable overlay = null;
-        if (animate) {
-            overlay = getOverlayDrawable(mLiveLockScreenView, false);
-        }
-        if (mLiveLockScreenCard.isShowingEmptyView()) {
-            mLiveLockScreenCard.setEmptyViewEnabled(false);
-        }
-
-        int pkgNameIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
-        int styleIdx = c.getColumnIndex(PreviewColumns.LIVE_LOCK_SCREEN_PREVIEW);
-        mLiveLockScreenView.setImageBitmap(Utils.loadBitmapBlob(c, styleIdx));
-        if (pkgNameIdx > -1) {
-            String pkgName = c.getString(pkgNameIdx);
-            if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                    && mBaseThemeSupportedComponents.contains(MODIFIES_LIVE_LOCK_SCREEN))) {
-                mSelectedComponentsMap.put(MODIFIES_LIVE_LOCK_SCREEN, pkgName);
-                setCardTitle(mLiveLockScreenCard, pkgName,
-                        getString(R.string.live_lock_screen_label));
-            }
-        }
-        if (animate) {
-            animateContentChange(R.id.live_lock_screen_preview_container, mLiveLockScreenView,
-                    overlay);
-        }
-    }
-
     protected Drawable getOverlayDrawable(View v, boolean requiresTransparency) {
         if (!v.isDrawingCacheEnabled()) v.setDrawingCacheEnabled(true);
         Bitmap cache = v.getDrawingCache(true).copy(
@@ -2017,8 +1968,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             loaderId = LOADER_ID_NOTIFICATION;
         } else if (MODIFIES_ALARMS.equals(component)) {
             loaderId = LOADER_ID_ALARM;
-        } else if (MODIFIES_LIVE_LOCK_SCREEN.equals(component)) {
-            loaderId = LOADER_ID_LIVE_LOCK_SCREEN;
         } else {
             return;
         }
