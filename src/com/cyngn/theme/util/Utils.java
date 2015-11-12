@@ -32,6 +32,7 @@ import android.view.WindowManager;
 
 import android.view.WindowManagerGlobal;
 import com.cyngn.theme.chooser.ChooserActivity;
+import cyanogenmod.providers.CMSettings;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -261,8 +262,8 @@ public class Utils {
         // Need to also check for devices with hardware keys where the user has chosen to use
         // the on screen navigation bar
         needsNavigationBar = needsNavigationBar ||
-                Settings.Secure.getInt(context.getContentResolver(),
-                        Settings.Secure.DEV_FORCE_SHOW_NAVBAR, 0) == 1;
+                CMSettings.Secure.getInt(context.getContentResolver(),
+                        CMSettings.Secure.DEV_FORCE_SHOW_NAVBAR, 0) == 1;
         return needsNavigationBar;
     }
 
