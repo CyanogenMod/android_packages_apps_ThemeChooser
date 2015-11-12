@@ -72,6 +72,7 @@ import android.widget.ProgressBar;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.android.internal.widget.LockPatternUtils;
 import com.cyngn.theme.chooser.ComponentSelector.OnItemClickedListener;
 import com.cyngn.theme.util.AudioUtils;
 import com.cyngn.theme.util.BootAnimationHelper;
@@ -88,6 +89,7 @@ import com.cyngn.theme.widget.LockableScrollView;
 import com.cyngn.theme.widget.ThemeTagLayout;
 
 import cyanogenmod.app.ThemeVersion;
+import org.cyanogenmod.internal.widget.CmLockPatternUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -181,6 +183,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected static final String ARG_PACKAGE_NAME = "pkgName";
     protected static final String ARG_COMPONENT_ID = "cmpntId";
     protected static final String ARG_SKIP_LOADING_ANIM = "skipLoadingAnim";
+
+    private static final String LLS_PACKAGE_NAME = "com.cyngn.lockscreen.live";
+    private static final String LLS_PROVIDER_NAME =
+            "com.cyngn.lockscreen.live.LockScreenProviderService";
 
     protected static ComponentName[] sIconComponents;
 
@@ -570,6 +576,16 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mProgress.setProgress(progress);
     }
 
+    private void setLiveLockScreenAsKeyguard() {
+        CmLockPatternUtils lockPatternUtils = new CmLockPatternUtils(getActivity());
+        try {
+            lockPatternUtils.setThirdPartyKeyguard(
+                    new ComponentName(LLS_PACKAGE_NAME, LLS_PROVIDER_NAME));
+        } catch (PackageManager.NameNotFoundException e) {
+            // we should not be here!
+        }
+    }
+
     @Override
     public void onFinish(boolean isSuccess) {
         // We post a runnable to mHandler so the client is removed from the same thread
@@ -581,6 +597,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
         if (isSuccess) {
+            Map<String, String> appliedComponents = getComponentsToApply();
+            if (appliedComponents.get(MODIFIES_LIVE_LOCK_SCREEN) != null) {
+                setLiveLockScreenAsKeyguard();
+            }
             mProgress.setProgress(100);
             animateProgressOut();
         }
