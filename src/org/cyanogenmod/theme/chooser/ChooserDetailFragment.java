@@ -186,7 +186,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
             }
         });
 
-        mPagerAdapter = new ThemeDetailPagerAdapter(getChildFragmentManager());
+        mPagerAdapter = new ThemeDetailPagerAdapter(getFragmentManager());
         mPager.setAdapter(mPagerAdapter);
 
 
