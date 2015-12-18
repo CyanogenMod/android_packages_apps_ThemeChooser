@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ThemeUtils;
 import android.content.res.AssetManager;
@@ -94,6 +95,7 @@ import org.cyanogenmod.internal.widget.CmLockPatternUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -577,6 +579,20 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void setLiveLockScreenAsKeyguard() {
+        try {
+            final String[] permissions = Utils.getDangerousPermissionsNotGranted(getActivity(),
+                    LLS_PACKAGE_NAME);
+            if (permissions.length > 0) {
+                Intent reqIntent = Utils.buildPermissionGrantRequestIntent(getActivity(),
+                        LLS_PACKAGE_NAME, permissions);
+                if (reqIntent != null) {
+                    startActivity(reqIntent);
+                }
+            }
+        } catch (InvalidParameterException e) {
+            Log.e(TAG, "Package Manager couldn't find package " + LLS_PACKAGE_NAME, e);
+            return;
+        }
         CmLockPatternUtils lockPatternUtils = new CmLockPatternUtils(getActivity());
         try {
             lockPatternUtils.setThirdPartyKeyguard(

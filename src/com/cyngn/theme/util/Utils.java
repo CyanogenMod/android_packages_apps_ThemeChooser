@@ -9,7 +9,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PermissionInfo;
+import android.content.pm.ResolveInfo;
 import android.content.pm.ThemeUtils;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
@@ -32,6 +35,7 @@ import android.view.WindowManager;
 
 import android.view.WindowManagerGlobal;
 import com.cyngn.theme.chooser.ChooserActivity;
+import cyanogenmod.externalviews.KeyguardExternalView;
 import cyanogenmod.providers.CMSettings;
 
 import java.io.File;
@@ -40,6 +44,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.security.InvalidParameterException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -580,5 +586,103 @@ public class Utils {
         }
 
         return null;
+    }
+
+    /**
+     * Retrieves the list of dangerous permissions not granted to the supplied package. This method
+     * is not capable of identifying if a given permission was previously revoked by the user or
+     * if the user decided not to be asked again.
+     *
+     * @param context
+     * @param pkgName
+     * @return Returns an array of Strings with the name of the permissions. An empty array will
+     * be returned if all dangerous permissions have been already granted.
+     */
+    public static String[] getDangerousPermissionsNotGranted(Context context, String pkgName)
+            throws InvalidParameterException {
+        LinkedList<String> permissionsNotGranted = new LinkedList<String>();
+        PackageInfo pkgInfo = null;
+        PackageManager pm = context.getPackageManager();
+        try {
+            pkgInfo = pm.getPackageInfo(pkgName, PackageManager.GET_PERMISSIONS);
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new InvalidParameterException("Package " + pkgName + " not found");
+        }
+
+        String[] requestedPermissions  = pkgInfo.requestedPermissions;
+        int[] requestedPermissionsFlags = pkgInfo.requestedPermissionsFlags;
+
+        for (int indx = 0; indx < requestedPermissions.length; indx++) {
+            if ((requestedPermissionsFlags[indx] & PackageInfo.REQUESTED_PERMISSION_GRANTED) == 0) {
+                try {
+                    PermissionInfo pi = pm.getPermissionInfo(requestedPermissions[indx],0);
+
+                    if (pi.protectionLevel == PermissionInfo.PROTECTION_DANGEROUS) {
+                        permissionsNotGranted.add(requestedPermissions[indx]);
+                        if (DEBUG) {
+                            Log.d(TAG, "Permission " + requestedPermissions[indx] + "not granted");
+                        }
+                    }
+                } catch(PackageManager.NameNotFoundException e) {
+                    //If package manager doesn't know of the permission we just continue since
+                    //this permission won't end up in the list
+                }
+            }
+        }
+        return permissionsNotGranted.toArray(new String[permissionsNotGranted.size()]);
+    }
+
+    /**
+     * Builds a ComponentName to identify the activity associated with the
+     * KeyguardExternalView.CATEGORY_KEYGUARD_GRANT_PERMISSION category in the given package
+     * @param context
+     * @param packageName
+     * @return Returns the ComponentName or null if no activity was found.
+     */
+    private static ComponentName getPermissionGranterComponentName(Context context,
+            String packageName) {
+        Intent rIntent = new Intent()
+                .setPackage(packageName)
+                .addCategory(KeyguardExternalView.CATEGORY_KEYGUARD_GRANT_PERMISSION);
+
+        List<ResolveInfo> resolveInfo = context.getPackageManager().
+                queryIntentActivities(rIntent, PackageManager.GET_RESOLVED_FILTER);
+
+        if (resolveInfo.size() >= 1) {
+            if (DEBUG) {
+                if (resolveInfo.size() >= 2) {
+                    Log.w(TAG, "Got " + resolveInfo.size() + " resolvers! Defaulting to "
+                            + resolveInfo.get(0).activityInfo.name);
+                }
+            }
+        }
+        return (resolveInfo.size() >=1 ) ?
+                new ComponentName(packageName, resolveInfo.get(0).activityInfo.name) :
+                null;
+    }
+
+    /**
+     * Builds an intent used to request the user to grant or revoke the supplied permissions.
+     * The intent will set the KeyguardExternalView.CATEGORY_KEYGUARD_GRANT_PERMISSION
+     * category and an extra containing the list of permissions identified by
+     * KeyguardExternalView.EXTRA_PERMISSION_LIST
+     * @param context
+     * @param packageName
+     * @param permissionList
+     * @return Returns the intent if an activity associated with
+     * KeyguardExternalView.CATEGORY_KEYGUARD_GRANT_PERMISSION category was found. Otherwise, it
+     * returns null
+     */
+    public static Intent buildPermissionGrantRequestIntent(Context context, String packageName,
+            String[] permissionList) {
+        ComponentName componentName = getPermissionGranterComponentName(context, packageName);
+        if (componentName == null) return null;
+
+        Intent permissionIntent = new Intent()
+                .setComponent(componentName)
+                .addCategory(KeyguardExternalView.CATEGORY_KEYGUARD_GRANT_PERMISSION)
+                .setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS|Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(KeyguardExternalView.EXTRA_PERMISSION_LIST, permissionList);
+        return permissionIntent;
     }
 }
