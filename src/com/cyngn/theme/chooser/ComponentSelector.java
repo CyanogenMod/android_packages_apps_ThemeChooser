@@ -82,6 +82,7 @@ public class ComponentSelector extends LinearLayout
     public static final String EXTERNAL_WALLPAPER = "external";
 
     private static final int EXTRA_WALLPAPER_COMPONENTS = 2;
+    private static final int EXTRA_LIVE_LOCK_COMPONENTS = 1;
 
     protected static final long DEFAULT_COMPONENT_ID = 0;
 
@@ -358,6 +359,9 @@ public class ComponentSelector extends LinearLayout
                 dividerPadding = res.getDimensionPixelSize(
                         R.dimen.component_divider_padding_top_bootani);
                 dividerHeight = res.getDimensionPixelSize(R.dimen.component_divider_height_bootani);
+                if (mCurrentLoaderId == LOADER_ID_LIVE_LOCK_SCREEN) {
+                    count += EXTRA_LIVE_LOCK_COMPONENTS;
+                }
                 // fall through to default
             default:
                 mItemParams = new LayoutParams(screenWidth / mItemsPerPage,
@@ -624,16 +628,23 @@ public class ComponentSelector extends LinearLayout
     }
 
     private View newLiveLockScreenView(Cursor cursor, ViewGroup parent, int position) {
-        cursor.moveToPosition(position);
-        View v = mInflater.inflate(R.layout.bootani_component_selection_item, parent,
+        View v = mInflater.inflate(R.layout.live_lock_component_selection_item, parent,
                 false);
-        int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL);
-        int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
+        ImageView iv = (ImageView) v.findViewById(R.id.icon);
+        if (position == 0) {
+            iv.setImageResource(R.drawable.img_wallpaper_none);
+            v.setTag(R.id.tag_key_package_name,"");
+            ((TextView) v.findViewById(R.id.title)).setText(R.string.wallpaper_none_title);
+        } else {
+            cursor.moveToPosition(position - EXTRA_LIVE_LOCK_COMPONENTS);
+            int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL);
+            int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
 
-        ((ImageView) v.findViewById(R.id.preview)).setImageBitmap(
-                Utils.loadBitmapBlob(cursor, wallpaperIndex));
-        setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-        v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
+            iv.setImageBitmap(
+                    Utils.loadBitmapBlob(cursor, wallpaperIndex));
+            setTitle(((TextView) v.findViewById(R.id.title)), cursor);
+            v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
+        }
         v.setOnClickListener(mItemClickListener);
         return v;
     }

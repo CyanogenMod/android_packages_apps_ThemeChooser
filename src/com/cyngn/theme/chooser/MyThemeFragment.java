@@ -256,6 +256,9 @@ public class MyThemeFragment extends ThemeFragment {
                 if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_STATUS_BAR)) == 1) {
                     mSelectedComponentsMap.put(ThemesColumns.MODIFIES_STATUS_BAR, pkgName);
                 }
+                if (c.getInt(c.getColumnIndex(ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN)) == 1) {
+                    mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN, pkgName);
+                }
             }
             c.close();
         }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014 Cyanogen, Inc.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/component_selection_cell_height_live_lock"
+    android:background="@drawable/component_selection_selector">
+
+    <FrameLayout
+        android:id="@+id/wp_content"
+        android:layout_width="@dimen/component_selection_live_lock_screen_content_width"
+        android:layout_height="@dimen/component_selection_live_lock_screen_content_height"
+        android:layout_marginTop="@dimen/component_margin_top"
+        android:layout_gravity="center_horizontal">
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/wallpaper_border" />
+    </FrameLayout>
+
+    <com.cyngn.theme.widget.LatoTextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        style="@style/component_title"/>
+
+</LinearLayout>
