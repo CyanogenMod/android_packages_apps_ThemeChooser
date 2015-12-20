@@ -90,7 +90,7 @@ import com.cyngn.theme.widget.LockableScrollView;
 import com.cyngn.theme.widget.ThemeTagLayout;
 
 import cyanogenmod.app.ThemeVersion;
-import org.cyanogenmod.internal.widget.CmLockPatternUtils;
+import org.cyanogenmod.internal.util.CmLockPatternUtils;
 
 import java.io.File;
 import java.io.IOException;
