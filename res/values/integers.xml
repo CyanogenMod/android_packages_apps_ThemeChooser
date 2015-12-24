@@ -5,5 +5,4 @@
 <resources>
     <integer name="default_items_per_page">4</integer>
     <integer name="bootani_items_per_page">3</integer>
-    <integer name="live_lock_screen_items_per_page">3</integer>
 </resources>

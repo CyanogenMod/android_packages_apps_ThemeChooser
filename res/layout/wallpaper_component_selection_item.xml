@@ -18,11 +18,18 @@
             android:id="@+id/icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter"/>
+            android:scaleType="centerCrop"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/wallpaper_border" />
+        <ImageView
+                android:id="@+id/live_lock_screen_ribbon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:src="@drawable/ribbon_live_lock_screen"
+                android:visibility="gone" />
     </FrameLayout>
 
     <com.cyngn.theme.widget.LatoTextView

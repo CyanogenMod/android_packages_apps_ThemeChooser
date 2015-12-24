@@ -170,29 +170,26 @@ public class CursorLoaderHelper {
                 selection = MODIFIES_ALARMS + "=?";
                 break;
             case LOADER_ID_LOCKSCREEN:
-                selection = MODIFIES_LOCKSCREEN + "=?";
+                selection = MODIFIES_LOCKSCREEN + "=? OR " + MODIFIES_LIVE_LOCK_SCREEN + "=?";
+                selectionArgs = new String[] { "1", "1" };
                 if (mThemeVersion >= 3) {
                     projection = new String[]{
                             PreviewColumns.LOCK_WALLPAPER_THUMBNAIL,
+                            PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL,
                             ThemesColumns.TITLE,
                             ThemesColumns.PKG_NAME,
+                            ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN,
                             PreviewColumns.COMPONENT_ID
                     };
                 } else {
                     projection = new String[]{
                             PreviewColumns.LOCK_WALLPAPER_THUMBNAIL,
+                            PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL,
                             ThemesColumns.TITLE,
+                            ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN,
                             ThemesColumns.PKG_NAME
                     };
                 }
-                break;
-            case LOADER_ID_LIVE_LOCK_SCREEN:
-                selection = MODIFIES_LIVE_LOCK_SCREEN + "=?";
-                projection = new String[] {
-                        PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL,
-                        ThemesColumns.TITLE,
-                        ThemesColumns.PKG_NAME
-                };
                 break;
             default:
                 return null;
@@ -354,7 +351,15 @@ public class CursorLoaderHelper {
                 projection = new String[]{
                         ThemesColumns.PKG_NAME,
                         ThemesColumns.TITLE,
-                        PreviewColumns.LOCK_WALLPAPER_PREVIEW
+                        PreviewColumns.LOCK_WALLPAPER_PREVIEW,
+                };
+                break;
+            case LOADER_ID_LIVE_LOCK_SCREEN:
+                projection = new String[]{
+                        ThemesColumns.PKG_NAME,
+                        ThemesColumns.TITLE,
+                        ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN,
+                        PreviewColumns.LIVE_LOCK_SCREEN_PREVIEW
                 };
                 break;
             case LOADER_ID_STYLE:
@@ -378,14 +383,31 @@ public class CursorLoaderHelper {
                         ThemesColumns.TITLE
                 };
                 break;
-            case LOADER_ID_LIVE_LOCK_SCREEN:
-                projection = new String[] {
-                        ThemesColumns.PKG_NAME,
-                        ThemesColumns.TITLE,
-                        PreviewColumns.LIVE_LOCK_SCREEN_PREVIEW
-                };
-                break;
         }
         return new CursorLoader(context, uri, projection, selection, selectionArgs, null);
+    }
+
+    public static Object[] getRowFromCursor(Cursor cursor) {
+        Object[] row = null;
+        if (cursor != null) {
+            int colCount = cursor.getColumnCount();
+            row = new Object[colCount];
+            for (int indx = 0; indx < colCount; indx++) {
+                row[indx] = getFieldValueFromRow(cursor, indx);
+            }
+        }
+        return row;
+    }
+
+    public static Object getFieldValueFromRow(Cursor cursor, int position) {
+        switch (cursor.getType(position)) {
+            case Cursor.FIELD_TYPE_BLOB: return cursor.getBlob(position);
+            case Cursor.FIELD_TYPE_FLOAT: return cursor.getFloat(position);
+            case Cursor.FIELD_TYPE_INTEGER: return cursor.getInt(position);
+            case Cursor.FIELD_TYPE_STRING: return cursor.getString(position);
+            case Cursor.FIELD_TYPE_NULL:
+            default:
+                return null;
+        }
     }
 }

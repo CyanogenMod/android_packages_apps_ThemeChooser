@@ -4,4 +4,5 @@
     <item type="id" name="tag_key_name"/>
     <item type="id" name="tag_key_package_name"/>
     <item type="id" name="tag_key_component_id"/>
+    <item type="id" name="tag_key_live_lock_screen"/>
 </resources>

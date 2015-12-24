@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
@@ -60,7 +61,6 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
-import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_LIVE_LOCK_SCREEN;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_STATUS_BAR;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_FONT;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ICONS;
@@ -82,7 +82,6 @@ public class ComponentSelector extends LinearLayout
     public static final String EXTERNAL_WALLPAPER = "external";
 
     private static final int EXTRA_WALLPAPER_COMPONENTS = 2;
-    private static final int EXTRA_LIVE_LOCK_COMPONENTS = 1;
 
     protected static final long DEFAULT_COMPONENT_ID = 0;
 
@@ -111,11 +110,12 @@ public class ComponentSelector extends LinearLayout
     private MediaPlayer mMediaPlayer;
     private ImageView mCurrentPlayPause;
 
-    private int mCurrentLoaderId;
-
     private TypefaceHelperCache mTypefaceCache;
 
     private ThemesObserver mThemesObserver;
+
+    public static final String IS_LIVE_LOCK_SCREEN_VIEW = "is_live_lock_screen_view";
+    private View mPrevLockScreenView;
 
     public ComponentSelector(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -322,9 +322,6 @@ public class ComponentSelector extends LinearLayout
         if (MODIFIES_LOCKSCREEN.equals(component)) {
             return LOADER_ID_LOCKSCREEN;
         }
-        if (MODIFIES_LIVE_LOCK_SCREEN.equals(component)) {
-            return LOADER_ID_LIVE_LOCK_SCREEN;
-        }
         return -1;
     }
 
@@ -335,13 +332,15 @@ public class ComponentSelector extends LinearLayout
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
-        mCurrentLoaderId = loader.getId();
+        int currentLoaderId = loader.getId();
         int count = data.getCount();
         int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
         final Resources res = getResources();
         int dividerPadding = res.getDimensionPixelSize(R.dimen.component_divider_padding_top);
         int dividerHeight = res.getDimensionPixelSize(R.dimen.component_divider_height);
-        switch (mCurrentLoaderId) {
+        MatrixCursor lockScreenMatrixCursor = null;
+
+        switch (currentLoaderId) {
             case LOADER_ID_ALARM:
             case LOADER_ID_NOTIFICATION:
             case LOADER_ID_RINGTONE:
@@ -355,21 +354,25 @@ public class ComponentSelector extends LinearLayout
                 mContent.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
                 break;
             case LOADER_ID_BOOT_ANIMATION:
-            case LOADER_ID_LIVE_LOCK_SCREEN:
                 dividerPadding = res.getDimensionPixelSize(
                         R.dimen.component_divider_padding_top_bootani);
                 dividerHeight = res.getDimensionPixelSize(R.dimen.component_divider_height_bootani);
-                if (mCurrentLoaderId == LOADER_ID_LIVE_LOCK_SCREEN) {
-                    count += EXTRA_LIVE_LOCK_COMPONENTS;
-                }
                 // fall through to default
             default:
                 mItemParams = new LayoutParams(screenWidth / mItemsPerPage,
                                                ViewGroup.LayoutParams.MATCH_PARENT);
-                if (mCurrentLoaderId == LOADER_ID_WALLPAPER ||
-                        mCurrentLoaderId == LOADER_ID_LOCKSCREEN) {
+                if (currentLoaderId == LOADER_ID_WALLPAPER ||
+                        currentLoaderId == LOADER_ID_LOCKSCREEN) {
                     count += EXTRA_WALLPAPER_COMPONENTS;
                 }
+
+                if (currentLoaderId == LOADER_ID_LOCKSCREEN) {
+                    lockScreenMatrixCursor = splitLockScreenCursor(data);
+                    if (lockScreenMatrixCursor != null) {
+                        count = lockScreenMatrixCursor.getCount() + EXTRA_WALLPAPER_COMPONENTS;
+                    }
+                }
+
                 mContent.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
                 break;
         }
@@ -377,7 +380,89 @@ public class ComponentSelector extends LinearLayout
         mContent.setDividerPadding(dividerPadding);
         mContent.setDividerHeight(dividerHeight);
 
-        new LoadItemsTask().execute(data ,count);
+        new LoadItemsTask().execute((lockScreenMatrixCursor != null)
+                ? lockScreenMatrixCursor : data, count);
+    }
+
+    /* Some themes might contain a lock wallpaper AND a live lock screen.
+     * ThemesProvider will return one single row containing both thumbnail paths
+     * (ThemesProvider groups by theme_id) so we need to create a cursor on the
+     * fly to split that row into 2 to properly generate a view for each thumbnail
+     */
+    private MatrixCursor splitLockScreenCursor(Cursor data) {
+        int lockWallPaperThumbnailIndx, llsThumbnailIndx, pkgIndx;
+        String lockWallPaperThumbnail, liveLockScreenThumbnail, pkgName;
+        MatrixCursor lockScreenMatrixCursor;
+        int needToSplitRowAt = -1;
+
+        lockWallPaperThumbnailIndx = data.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL);
+        llsThumbnailIndx = data.getColumnIndex(PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL);
+        pkgIndx = data.getColumnIndex(ThemesColumns.PKG_NAME);
+
+        if (lockWallPaperThumbnailIndx < 0 || llsThumbnailIndx < 0 || pkgIndx < 0) {
+            //An invalid cursor was provided, we can't continue processing
+            Log.e(TAG, "Failed to process cursor due to missing columns");
+            return null;
+        }
+
+        //Let's find out if we really need to allocate a MatrixCursor.
+        //If we find at least one row with valid data in lock_wallpaper_thumbnail AND
+        //live_lock_screen_thumbnail it means we do.
+        data.moveToPosition(-1);
+        while (data.moveToNext()) {
+            lockWallPaperThumbnail = data.getString(lockWallPaperThumbnailIndx);
+            liveLockScreenThumbnail = data.getString(llsThumbnailIndx);
+            if (!TextUtils.isEmpty(lockWallPaperThumbnail)
+                    && !TextUtils.isEmpty(liveLockScreenThumbnail)) {
+                needToSplitRowAt = data.getPosition();
+                break;
+            }
+        }
+
+        if (needToSplitRowAt == -1) return null;
+
+        lockScreenMatrixCursor = new MatrixCursor(data.getColumnNames());
+        //Clone all the *regular* rows up to needToSplitRowAt
+        for (int indx = 0; indx < needToSplitRowAt; indx++) {
+            data.moveToPosition(indx);
+            lockScreenMatrixCursor.addRow(CursorLoaderHelper.getRowFromCursor(data));
+        }
+        while (data.moveToNext()) {
+            lockWallPaperThumbnail = data.getString(lockWallPaperThumbnailIndx);
+            liveLockScreenThumbnail = data.getString(llsThumbnailIndx);
+            if (!TextUtils.isEmpty(lockWallPaperThumbnail)
+                    && !TextUtils.isEmpty(liveLockScreenThumbnail)) {
+                pkgName = data.getString(pkgIndx);
+
+                MatrixCursor.RowBuilder lockWallpaperRow = lockScreenMatrixCursor.newRow();
+                MatrixCursor.RowBuilder liveLockScreenRow = lockScreenMatrixCursor.newRow();
+
+                for (String col : data.getColumnNames()) {
+                    if (TextUtils.equals(col, PreviewColumns.LOCK_WALLPAPER_THUMBNAIL)) {
+                        lockWallpaperRow.add(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL,
+                                lockWallPaperThumbnail);
+                        liveLockScreenRow.add(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL, null);
+                    } else if (TextUtils.equals(col, PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL)) {
+                        lockWallpaperRow.add(PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL, null);
+                        liveLockScreenRow.add(PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL,
+                                liveLockScreenThumbnail);
+                    } else if (TextUtils.equals(col, MODIFIES_LIVE_LOCK_SCREEN)) {
+                        lockWallpaperRow.add(MODIFIES_LIVE_LOCK_SCREEN, 0);
+                        liveLockScreenRow.add(MODIFIES_LIVE_LOCK_SCREEN, 1);
+                    } else {
+                        int colIndx = data.getColumnIndex(col);
+                        lockWallpaperRow.add(col, CursorLoaderHelper.getFieldValueFromRow(data,
+                                colIndx));
+                        liveLockScreenRow.add(col, CursorLoaderHelper.getFieldValueFromRow(data,
+                                colIndx));
+                    }
+                }
+            } else {
+                //This is a regular row, so just clone it
+                lockScreenMatrixCursor.addRow(CursorLoaderHelper.getRowFromCursor(data));
+            }
+        }
+        return lockScreenMatrixCursor;
     }
 
     @Override
@@ -410,7 +495,7 @@ public class ComponentSelector extends LinearLayout
         }
         if (MODIFIES_LAUNCHER.equals(mComponentType)) {
             return newWallpapersView(cursor, container, position,
-                    cursor.getColumnIndex(PreviewColumns.WALLPAPER_THUMBNAIL));
+                    cursor.getColumnIndex(PreviewColumns.WALLPAPER_THUMBNAIL), false);
         }
         if (MODIFIES_BOOT_ANIM.equals(mComponentType)) {
             return newBootanimationView(cursor, container, position);
@@ -421,11 +506,17 @@ public class ComponentSelector extends LinearLayout
             return newSoundView(cursor, container, position, mComponentType);
         }
         if (MODIFIES_LOCKSCREEN.equals(mComponentType)) {
-            return newWallpapersView(cursor, container, position,
-                    cursor.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL));
-        }
-        if (MODIFIES_LIVE_LOCK_SCREEN.equals(mComponentType)) {
-            return newLiveLockScreenView(cursor, container, position);
+            boolean isLiveLockScreen = false;
+            if (position >= EXTRA_WALLPAPER_COMPONENTS) {
+                cursor.moveToPosition(position - EXTRA_WALLPAPER_COMPONENTS);
+                int liveLockIndex = cursor.getColumnIndex(MODIFIES_LIVE_LOCK_SCREEN);
+                isLiveLockScreen = liveLockIndex >= 0 &&
+                        cursor.getInt(liveLockIndex) == 1;
+            }
+            int index = isLiveLockScreen
+                    ? cursor.getColumnIndex(PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL)
+                    : cursor.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL);
+            return newWallpapersView(cursor, container, position, index, isLiveLockScreen);
         }
         return null;
     }
@@ -524,7 +615,7 @@ public class ComponentSelector extends LinearLayout
     }
 
     private View newWallpapersView(Cursor cursor, ViewGroup parent, int position,
-                                   int wallpaperIndex) {
+                                   int wallpaperIndex, boolean isLiveLockScreen) {
         View v = mInflater.inflate(R.layout.wallpaper_component_selection_item, parent,
                 false);
         ImageView iv = (ImageView) v.findViewById(R.id.icon);
@@ -548,6 +639,9 @@ public class ComponentSelector extends LinearLayout
             setTitle(((TextView) v.findViewById(R.id.title)), cursor);
             v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
             v.setTag(R.id.tag_key_component_id, cmpntId);
+            v.setTag(R.id.tag_key_live_lock_screen, isLiveLockScreen);
+            v.findViewById(R.id.live_lock_screen_ribbon)
+                    .setVisibility(isLiveLockScreen ? View.VISIBLE : View.GONE);
         }
         v.setOnClickListener(mItemClickListener);
         return v;
@@ -627,28 +721,6 @@ public class ComponentSelector extends LinearLayout
         return container;
     }
 
-    private View newLiveLockScreenView(Cursor cursor, ViewGroup parent, int position) {
-        View v = mInflater.inflate(R.layout.live_lock_component_selection_item, parent,
-                false);
-        ImageView iv = (ImageView) v.findViewById(R.id.icon);
-        if (position == 0) {
-            iv.setImageResource(R.drawable.img_wallpaper_none);
-            v.setTag(R.id.tag_key_package_name,"");
-            ((TextView) v.findViewById(R.id.title)).setText(R.string.wallpaper_none_title);
-        } else {
-            cursor.moveToPosition(position - EXTRA_LIVE_LOCK_COMPONENTS);
-            int wallpaperIndex = cursor.getColumnIndex(PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL);
-            int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
-
-            iv.setImageBitmap(
-                    Utils.loadBitmapBlob(cursor, wallpaperIndex));
-            setTitle(((TextView) v.findViewById(R.id.title)), cursor);
-            v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
-        }
-        v.setOnClickListener(mItemClickListener);
-        return v;
-    }
-
     private class LoadItemsTask extends AsyncTask<Object, Void, Void> {
 
         @Override
@@ -664,6 +736,11 @@ public class ComponentSelector extends LinearLayout
                     }
                 });
             }
+
+            if (c instanceof MatrixCursor) {
+                c.close();
+            }
+
             // destroy the loader now that we are done with it
             ComponentSelector.this.post(new Runnable() {
                 @Override
@@ -704,12 +781,25 @@ public class ComponentSelector extends LinearLayout
             if (cmpntIdTag != null) {
                 cmpntId = cmpntIdTag;
             }
+            Boolean isLiveLock = (Boolean) v.getTag(R.id.tag_key_live_lock_screen);
+            boolean isSamePkgButDifferentLockScreen = false;
+            Bundle params = null;
+            if (isLiveLock != null) {
+                params = new Bundle();
+                params.putBoolean(IS_LIVE_LOCK_SCREEN_VIEW, isLiveLock);
+
+                if (pkgName.equals(mSelectedComponentPkgName) && v != mPrevLockScreenView) {
+                    isSamePkgButDifferentLockScreen = true;
+                }
+                mPrevLockScreenView = v;
+            }
             if (DEBUG_SELECTOR) Toast.makeText(mContext, pkgName, Toast.LENGTH_SHORT).show();
-            if (mListener != null && (!pkgName.equals(mSelectedComponentPkgName) ||
+            if (mListener != null && (isSamePkgButDifferentLockScreen ||
+                    !pkgName.equals(mSelectedComponentPkgName) ||
                     pkgName.equals(EXTERNAL_WALLPAPER) || cmpntId != mSelectedComponentId)) {
                 mSelectedComponentPkgName = pkgName;
                 mSelectedComponentId = cmpntId;
-                mListener.onItemClicked(pkgName, cmpntId);
+                mListener.onItemClicked(pkgName, cmpntId, params);
                 final int count = mContent.getChildCount();
                 final Resources res = getResources();
                 for (int i = 0; i < count; i++) {
@@ -747,12 +837,17 @@ public class ComponentSelector extends LinearLayout
             // reload items by calling setComponentType()
             final String componentType = mComponentType;
             mComponentType = null;
-            setComponentType(componentType, mSelectedComponentPkgName);
+            mContent.post(new Runnable() {
+                @Override
+                public void run() {
+                    setComponentType(componentType, mSelectedComponentPkgName);
+                }
+            });
         }
     }
 
     public interface OnItemClickedListener {
-        public void onItemClicked(String pkgName, long componentId);
+        public void onItemClicked(String pkgName, long componentId, Bundle params);
     }
 
     public interface OnOpenCloseListener {
