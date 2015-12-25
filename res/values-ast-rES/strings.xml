@@ -38,6 +38,7 @@
   <string name="available">Disponible</string>
   <string name="update">Anovar</string>
   <string name="no_preview_available">Vista previa non disponible</string>
+  <string name="menu_item_uninstall">Desinstalar</string>
   <string name="alarm_label">Alarma</string>
   <string name="notification_label">Notificación</string>
   <string name="ringtone_label">Tonu de llamada</string>
@@ -47,6 +48,7 @@
   <string name="theme_installed_notification_text">Tema instaláu correutamente.</string>
   <string name="menu_item_get_more_themes">Consiguir más</string>
   <string name="get_more_description">Pues consiguir más temes nos siguientes enllaces:</string>
+  <string name="get_more_app_not_available">L\'aplicación nun ta disponible</string>
   <string name="get_more_entry_play_store">Play Store</string>
   <string name="get_more_entry_cm_wiki">Más información na wiki de CM</string>
   <string name="designed_for_cm11">Diseñáu pa CM11</string>

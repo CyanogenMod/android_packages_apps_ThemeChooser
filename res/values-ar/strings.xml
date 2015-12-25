@@ -16,38 +16,15 @@
      limitations under the License.
 -->
 <resources>
-  <string name="app_name">المواضيع</string>
-  <string name="lock_screen">خلفية قفل الشاشة</string>
-  <string name="icons">الأيقونات</string>
-  <string name="fonts">الخطوط</string>
-  <string name="wallpapers">خلفيات</string>
-  <string name="boot_anims">الرسوم المتحركة في التشغيل</string>
-  <string name="ringtones">نغمات</string>
   <string name="notifications">الإشعارات</string>
-  <string name="alarms">التنبيهات</string>
-  <string name="style">نمط</string>
   <string name="status_bar">شريط الحالة</string>
   <string name="nav_bar">شريط التنقل</string>
   <string name="theme_packs">حزم السمات</string>
-  <string name="sounds">أصوات</string>
+  <string name="sounds">الأصوات</string>
   <string name="system_theme_name">النظام</string>
-  <string name="default_tag">(الافتراضي)</string>
-  <string name="apply">طبّق</string>
-  <string name="applying">تطبيق\u2026</string>
   <string name="applied">تطبيق</string>
   <string name="available">متاح</string>
-  <string name="update">تحديث</string>
-  <string name="no_preview_available">لا تتوفر أية معاينة</string>
   <string name="menu_item_uninstall">إلغاء تثبيت</string>
-  <string name="alarm_label">المنبه</string>
-  <string name="notification_label">الإعلام</string>
-  <string name="ringtone_label">نغمة رنين</string>
-  <string name="unknown_author">مؤلف غير معروف</string>
-  <string name="font_preview_letters">Aaابت123١٢٣</string>
-  <string name="theme_installed_notification_title">%s مثبت</string>
-  <string name="theme_installed_notification_text">موضوع مثبت بنجاح.</string>
-  <string name="menu_item_get_more_themes">احصل على المزيد</string>
-  <string name="get_more_description">يمكنك الحصول على المزيد من المواضيع من الروابط التالية:</string>
   <string name="get_more_entry_play_store">متجر اللعب</string>
   <string name="get_more_entry_cm_wiki">مزيد من المعلومات حول Wiki CM</string>
   <string name="designed_for_cm11">مصمم ل CM11</string>
