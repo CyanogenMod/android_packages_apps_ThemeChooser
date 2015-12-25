@@ -16,5 +16,6 @@
      limitations under the License.
 -->
 <resources>
+  <string name="lock_screen">ภาพพื้นหลังหน้าจอล็อค</string>
   <string name="get_more_app_not_available">ไม่สามารถใช้งานแอพได้</string>
 </resources>
