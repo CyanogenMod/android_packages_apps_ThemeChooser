@@ -16,6 +16,40 @@
      limitations under the License.
 -->
 <resources>
+  <string name="app_name">รูปแบบธีม</string>
   <string name="lock_screen">ภาพพื้นหลังหน้าจอล็อค</string>
-  <string name="get_more_app_not_available">ไม่สามารถใช้งานแอพได้</string>
+  <string name="icons">ไอคอน</string>
+  <string name="fonts">แบบตัวอักษร</string>
+  <string name="wallpapers">ภาพพื้นหลัง</string>
+  <string name="boot_anims">ภาพเปิดเครื่อง</string>
+  <string name="ringtones">เสียงเรียกเข้า</string>
+  <string name="notifications">การแจ้งเตือน</string>
+  <string name="alarms">นาฬิกาปลุก</string>
+  <string name="style">สไตล์</string>
+  <string name="status_bar">แถบสถานะ</string>
+  <string name="nav_bar">แถบนำทาง</string>
+  <string name="theme_packs">แพ็ครูปแบบธีม</string>
+  <string name="sounds">เสียง</string>
+  <string name="system_theme_name">ระบบ</string>
+  <string name="default_tag">(ค่าเริ่มต้น)</string>
+  <string name="apply">นำไปใช้</string>
+  <string name="applying">กำลังนำไปใช้\u2026</string>
+  <string name="applied">นำไปใช้แล้ว</string>
+  <string name="available">ใช้งานได้</string>
+  <string name="update">อัปเดต</string>
+  <string name="no_preview_available">ไม่มีภาพตัวอย่าง</string>
+  <string name="menu_item_uninstall">ถอนการติดตั้ง</string>
+  <string name="alarm_label">นาฬิกาปลุก</string>
+  <string name="notification_label">การแจ้งเตือน</string>
+  <string name="ringtone_label">เสียง​เรียก​เข้า</string>
+  <string name="unknown_author">ผู้สร้างที่ไม่รู้จัก</string>
+  <string name="font_preview_letters">AaBbCcDd123</string>
+  <string name="theme_installed_notification_title">%s ติดตั้งแล้ว</string>
+  <string name="theme_installed_notification_text">ติดตั้งรูปแบบธีมเสร็จแล้ว</string>
+  <string name="menu_item_get_more_themes">เพิ่มเติม</string>
+  <string name="get_more_description">คุณสามารถรับรูปแบบธีมเพิ่มเติมได้จากลิงค์ต่อไปนี้:</string>
+  <string name="get_more_app_not_available">ไม่สามารถใช้งานแอปได้</string>
+  <string name="get_more_entry_play_store">Play Store</string>
+  <string name="get_more_entry_cm_wiki">ข้อมูลเพิ่มเติมที่ CM Wiki</string>
+  <string name="designed_for_cm11">ออกแบบมาสำหรับ CM11</string>
 </resources>
