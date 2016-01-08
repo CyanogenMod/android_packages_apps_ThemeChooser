@@ -3,6 +3,7 @@
  */
 package com.cyngn.theme.chooser;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.IntEvaluator;
@@ -73,6 +74,7 @@ import android.widget.ProgressBar;
 import android.widget.Space;
 import android.widget.TextView;
 
+import android.widget.Toast;
 import com.android.internal.widget.LockPatternUtils;
 import com.cyngn.theme.chooser.ComponentSelector.OnItemClickedListener;
 import com.cyngn.theme.util.AudioUtils;
@@ -103,6 +105,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipFile;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
@@ -189,6 +193,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final String LLS_PACKAGE_NAME = "com.cyngn.lockscreen.live";
     private static final String LLS_PROVIDER_NAME =
             "com.cyngn.lockscreen.live.LockScreenProviderService";
+
+    private static final int PERMISSION_REQUEST = 100;
 
     protected static ComponentName[] sIconComponents;
 
@@ -304,6 +310,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected boolean mApplyThemeOnPopulated;
 
     protected boolean mIsLegacyTheme;
+
+    private Runnable mAfterPermissionGrantedRunnable;
 
     private static final int mThemeVersion = ThemeVersion.getVersion();
 
@@ -561,6 +569,31 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (tm != null) {
             tm.removeClient(this);
             tm.unregisterProcessingListener(this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST) {
+            int N = permissions.length;
+            for (int i = 0; i < N; i++) {
+                if (READ_EXTERNAL_STORAGE.equals(permissions[i])) {
+                    if (grantResults[i] == PERMISSION_GRANTED) {
+                        // Run the runnable now that we have been granted permission
+                        if (mAfterPermissionGrantedRunnable != null) {
+                            mAfterPermissionGrantedRunnable.run();
+                            mAfterPermissionGrantedRunnable = null;
+                        }
+                    } else {
+                        // inform the user that they will be unable to pick an image because
+                        // we were not granted permission to do so
+                        Toast.makeText(getActivity(),
+                                R.string.read_external_permission_denied_message,
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
         }
     }
 
@@ -1993,9 +2026,25 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     setCardTitle(mWallpaperCard, WALLPAPER_NONE,
                             getString(R.string.wallpaper_label));
                 } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
-                    getChooserActivity().pickExternalWallpaper();
-                    setCardTitle(mWallpaperCard, WALLPAPER_NONE,
-                            getString(R.string.wallpaper_label));
+                    // Check if we have READ_EXTERNAL_STORAGE permission and if not request it,
+                    // otherwise let the user pick an image
+                    if (getActivity().checkSelfPermission(
+                            READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+                        mAfterPermissionGrantedRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                getChooserActivity().pickExternalWallpaper();
+                                setCardTitle(mWallpaperCard, WALLPAPER_NONE,
+                                        getString(R.string.wallpaper_label));
+                            }
+                        };
+                        requestPermissions(new String[] {READ_EXTERNAL_STORAGE},
+                                PERMISSION_REQUEST);
+                    } else {
+                        getChooserActivity().pickExternalWallpaper();
+                        setCardTitle(mWallpaperCard, WALLPAPER_NONE,
+                                getString(R.string.wallpaper_label));
+                    }
                 } else {
                     loaderId = LOADER_ID_WALLPAPER;
                 }
@@ -2008,9 +2057,25 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 setCardTitle(mLockScreenCard, WALLPAPER_NONE,
                         getString(R.string.lockscreen_label));
             } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
-                getChooserActivity().pickExternalLockscreen();
-                setCardTitle(mLockScreenCard, WALLPAPER_NONE,
-                        getString(R.string.lockscreen_label));
+                // Check if we have READ_EXTERNAL_STORAGE permission and if not request it,
+                // otherwise let the user pick an image
+                if (getActivity().checkSelfPermission(
+                        READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+                    mAfterPermissionGrantedRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            getChooserActivity().pickExternalLockscreen();
+                            setCardTitle(mLockScreenCard, WALLPAPER_NONE,
+                                    getString(R.string.lockscreen_label));
+                        }
+                    };
+                    requestPermissions(new String[] {READ_EXTERNAL_STORAGE},
+                            PERMISSION_REQUEST);
+                } else {
+                    getChooserActivity().pickExternalLockscreen();
+                    setCardTitle(mLockScreenCard, WALLPAPER_NONE,
+                            getString(R.string.lockscreen_label));
+                }
             } else {
                 if (MODIFIES_LIVE_LOCK_SCREEN.equals(component)) {
                     loaderId = LOADER_ID_LIVE_LOCK_SCREEN;

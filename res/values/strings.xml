@@ -87,4 +87,6 @@
     <string name="per_app_theme_applying">Your theme is being applied</string>
     <string name="per_app_theme_app_not_overlaid_warning">Theme does not support this app, some elements may not change.</string>
 
+    <string name="read_external_permission_denied_message">Theme chooser cannot access media and is unable to pick an image at this time.</string>
+
 </resources>
