@@ -42,7 +42,7 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Bildirim</string>
   <string name="ringtone_label">Zil sesi</string>
-  <string name="unknown_author">Sahibi bilinmiyor</string>
+  <string name="unknown_author">Yazarı bilinmiyor</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s yüklendi</string>
   <string name="theme_installed_notification_text">Tema başarıyla yüklendi.</string>
