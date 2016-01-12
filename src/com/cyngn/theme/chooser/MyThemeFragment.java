@@ -466,14 +466,19 @@ public class MyThemeFragment extends ThemeFragment {
             overlay = getOverlayDrawable(mLockScreenCard, true);
         }
 
-        int wpIdx = c.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_PREVIEW);
-        final Resources res = getResources();
-        final Context context = getActivity();
-        Drawable wp = context == null ? null :
-                WallpaperManager.getInstance(context).getFastKeyguardDrawable();
-        if (wp == null) {
+        //If the current theme includes a lock wallpaper, the WallpaperMgr will
+        //return a valid Drawable we can display in the card. However, if the user
+        //picked a LLS, we need to get the path from the provider and manually load the bitmap
+        int wpIdx = c.getColumnIndex(PreviewColumns.LIVE_LOCK_SCREEN_PREVIEW);
+        Drawable wp = null;
+        if (wpIdx >= 0) {
+            final Resources res = getResources();
             Bitmap bmp = Utils.loadBitmapBlob(c, wpIdx);
             if (bmp != null) wp = new BitmapDrawable(res, bmp);
+        } else {
+            final Context context = getActivity();
+            wp = context == null ? null :
+                    WallpaperManager.getInstance(context).getFastKeyguardDrawable();
         }
         if (wp != null) {
             mLockScreenCard.setWallpaper(wp);

@@ -1972,9 +1972,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             long selectedComponentId = (ThemesColumns.MODIFIES_LAUNCHER.equals(component)) ?
                     mSelectedWallpaperComponentId : DEFAULT_COMPONENT_ID;
             String pkgName = mSelectedComponentsMap.get(component);
-            if (component.equals(MODIFIES_LOCKSCREEN)
-                    && mSelectedComponentsMap.containsKey(MODIFIES_LIVE_LOCK_SCREEN)) {
-                pkgName = mSelectedComponentsMap.get(MODIFIES_LIVE_LOCK_SCREEN);
+            if (component.equals(MODIFIES_LOCKSCREEN) && TextUtils.isEmpty(pkgName)) {
+                String liveLockScreenPkg = mSelectedComponentsMap.get(MODIFIES_LIVE_LOCK_SCREEN);
+                if (liveLockScreenPkg != null) {
+                    pkgName = liveLockScreenPkg;
+                }
             }
             getChooserActivity().showComponentSelector(component, pkgName, selectedComponentId, v);
             fadeOutNonSelectedCards(mActiveCardId);
@@ -2671,6 +2673,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
         scrollAnimator.start();
+    }
+
+    public Map<String, String> getSelectedComponentsMap() {
+        return mSelectedComponentsMap;
     }
 
     /**

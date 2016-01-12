@@ -896,6 +896,10 @@ public class ChooserActivity extends FragmentActivity
         return CursorLoaderHelper.chooserActivityCursorLoader(this, id, mAppliedBaseTheme);
     }
 
+    public Map<String, String> getSelectedComponentsMap() {
+        return getCurrentFragment().getSelectedComponentsMap();
+    }
+
     public class ThemesAdapter extends NewFragmentStatePagerAdapter {
         private ArrayList<String> mInstalledThemes;
         private String mAppliedThemeTitle;

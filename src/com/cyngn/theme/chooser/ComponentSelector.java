@@ -48,6 +48,8 @@ import com.cyngn.theme.util.ThemedTypefaceHelper;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 
+import java.util.Map;
+
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
@@ -230,6 +232,12 @@ public class ComponentSelector extends LinearLayout
         } else if (mComponentType != null) {
             int count = mContent.getChildCount();
             final Resources res = getResources();
+            boolean highlightTitle;
+            Map<String, String> selectedComponents = null;
+            if (mComponentType.equals(MODIFIES_LOCKSCREEN)) {
+                selectedComponents = ((ChooserActivity)mContext)
+                        .getSelectedComponentsMap();
+            }
             for (int i = 0; i < count; i++) {
                 final View child = mContent.getChildAt(i);
                 final TextView tv = (TextView) child.findViewById(R.id.title);
@@ -241,7 +249,18 @@ public class ComponentSelector extends LinearLayout
                 if (cmpntId == null) {
                     cmpntId = DEFAULT_COMPONENT_ID;
                 }
-                if (pkgName.equals(selectedPkgName) && cmpntId == selectedComponentId) {
+                Boolean isLLS = (Boolean) viewWithTag.getTag(R.id.tag_key_live_lock_screen);
+                highlightTitle = false;
+                if (selectedComponents != null && isLLS != null) {
+                    if ((TextUtils.equals(selectedComponents.get(MODIFIES_LOCKSCREEN), pkgName)
+                            && !isLLS) || (TextUtils.equals(selectedComponents.get(
+                            MODIFIES_LIVE_LOCK_SCREEN), pkgName) && isLLS)) {
+                        highlightTitle = true;
+                    }
+                } else if (pkgName.equals(selectedPkgName) && cmpntId == selectedComponentId) {
+                    highlightTitle = true;
+                }
+                if (highlightTitle) {
                     tv.setTextColor(res.getColor(R.color.component_selection_current_text_color));
                 } else {
                     tv.setTextColor(res.getColor(android.R.color.white));
@@ -782,9 +801,22 @@ public class ComponentSelector extends LinearLayout
         } else {
             titleView.setText(cursor.getString(cursor.getColumnIndex(ThemesColumns.TITLE)));
         }
-        if (pkgName.equals(mSelectedComponentPkgName) && cmpntId == mSelectedComponentId) {
-            titleView.setTextColor(getResources().getColor(
-                    R.color.component_selection_current_text_color));
+        boolean highlightTitle = false;
+        if (mComponentType.equals(MODIFIES_LOCKSCREEN)) {
+            Map<String, String> selectedComponents =  ((ChooserActivity)mContext)
+                    .getSelectedComponentsMap();
+            int isLLS = cursor.getInt(cursor.getColumnIndex(MODIFIES_LIVE_LOCK_SCREEN));
+            if ((TextUtils.equals(selectedComponents.get(MODIFIES_LOCKSCREEN), pkgName)
+                    && isLLS == 0) || (TextUtils.equals(
+                    selectedComponents.get(MODIFIES_LIVE_LOCK_SCREEN), pkgName) && isLLS == 1)) {
+                highlightTitle = true;
+            }
+        } else if (pkgName.equals(mSelectedComponentPkgName) && cmpntId == mSelectedComponentId) {
+            highlightTitle = true;
+        }
+        if (highlightTitle) {
+                titleView.setTextColor(getResources().getColor(
+                        R.color.component_selection_current_text_color));
         }
     }
 
