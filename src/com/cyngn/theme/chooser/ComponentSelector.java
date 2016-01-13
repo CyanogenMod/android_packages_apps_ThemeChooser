@@ -197,6 +197,19 @@ public class ComponentSelector extends LinearLayout
         mThemesObserver.unregister();
     }
 
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+        // Window visibility transitions as follows
+        // VISIBLE -> INVISIBLE -> GONE
+        // GONE -> INVISIBLE -> VISIBLE
+        if (visibility == View.GONE) {
+            mThemesObserver.unregister();
+        } else if (visibility == View.VISIBLE) {
+            mThemesObserver.register();
+        }
+    }
+
     public void setComponentType(String component) {
         setComponentType(component, null, DEFAULT_COMPONENT_ID);
     }
