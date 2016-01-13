@@ -1959,8 +1959,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             // Only pass on mSelectedWallpaperComponentId if dealing with mods_launcher
             long selectedComponentId = (ThemesColumns.MODIFIES_LAUNCHER.equals(component)) ?
                     mSelectedWallpaperComponentId : DEFAULT_COMPONENT_ID;
-            getChooserActivity().showComponentSelector(component,
-                    mSelectedComponentsMap.get(component), selectedComponentId, v);
+            String pkgName = mSelectedComponentsMap.get(component);
+            if (component.equals(MODIFIES_LOCKSCREEN)
+                    && mSelectedComponentsMap.containsKey(MODIFIES_LIVE_LOCK_SCREEN)) {
+                pkgName = mSelectedComponentsMap.get(MODIFIES_LIVE_LOCK_SCREEN);
+            }
+            getChooserActivity().showComponentSelector(component, pkgName, selectedComponentId, v);
             fadeOutNonSelectedCards(mActiveCardId);
             stopMediaPlayers();
         }

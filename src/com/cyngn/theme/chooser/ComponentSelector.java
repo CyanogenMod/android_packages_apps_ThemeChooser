@@ -427,6 +427,9 @@ public class ComponentSelector extends LinearLayout
             data.moveToPosition(indx);
             lockScreenMatrixCursor.addRow(CursorLoaderHelper.getRowFromCursor(data));
         }
+        if (needToSplitRowAt == 0) {
+            data.moveToPosition(-1);
+        }
         while (data.moveToNext()) {
             lockWallPaperThumbnail = data.getString(lockWallPaperThumbnailIndx);
             liveLockScreenThumbnail = data.getString(llsThumbnailIndx);
