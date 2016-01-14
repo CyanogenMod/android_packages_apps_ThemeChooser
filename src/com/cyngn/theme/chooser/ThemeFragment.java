@@ -602,25 +602,29 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mProgress.setProgress(progress);
     }
 
-    private void setLiveLockScreenAsKeyguard() {
-        try {
-            final String[] permissions = Utils.getDangerousPermissionsNotGranted(getActivity(),
-                    LLS_PACKAGE_NAME);
-            if (permissions.length > 0) {
-                Intent reqIntent = Utils.buildPermissionGrantRequestIntent(getActivity(),
-                        LLS_PACKAGE_NAME, permissions);
-                if (reqIntent != null) {
-                    startActivity(reqIntent);
+    private void setLiveLockScreenAsKeyguard(boolean setLLS) {
+        ComponentName cn = null;
+        if (setLLS) {
+            try {
+                final String[] permissions = Utils.getDangerousPermissionsNotGranted(getActivity(),
+                        LLS_PACKAGE_NAME);
+                if (permissions.length > 0) {
+                    Intent reqIntent = Utils.buildPermissionGrantRequestIntent(getActivity(),
+                            LLS_PACKAGE_NAME, permissions);
+                    if (reqIntent != null) {
+                        startActivity(reqIntent);
+                    }
                 }
+                cn = new ComponentName(LLS_PACKAGE_NAME, LLS_PROVIDER_NAME);
+            } catch (InvalidParameterException e) {
+                Log.e(TAG, "Package Manager couldn't find package " + LLS_PACKAGE_NAME, e);
+                return;
             }
-        } catch (InvalidParameterException e) {
-            Log.e(TAG, "Package Manager couldn't find package " + LLS_PACKAGE_NAME, e);
-            return;
         }
+
         CmLockPatternUtils lockPatternUtils = new CmLockPatternUtils(getActivity());
         try {
-            lockPatternUtils.setThirdPartyKeyguard(
-                    new ComponentName(LLS_PACKAGE_NAME, LLS_PROVIDER_NAME));
+            lockPatternUtils.setThirdPartyKeyguard(cn);
         } catch (PackageManager.NameNotFoundException e) {
             // we should not be here!
         }
@@ -639,8 +643,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (isSuccess) {
             Map<String, String> appliedComponents = getComponentsToApply();
             String modLLS = appliedComponents.get(MODIFIES_LIVE_LOCK_SCREEN);
-            if (modLLS != null && !TextUtils.equals(modLLS, "")) {
-                setLiveLockScreenAsKeyguard();
+            if (modLLS != null) {
+                if (TextUtils.equals(modLLS, "")) {
+                    setLiveLockScreenAsKeyguard(false);
+                } else {
+                    setLiveLockScreenAsKeyguard(true);
+                }
             }
             mProgress.setProgress(100);
             animateProgressOut();
@@ -1540,13 +1548,17 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     && (mBaseThemeSupportedComponents.contains(MODIFIES_LOCKSCREEN) ||
                     mBaseThemeSupportedComponents.contains(MODIFIES_LIVE_LOCK_SCREEN)))) {
                 if (isLiveLockScreen) {
-                    mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN, "");
+                    if (mSelectedComponentsMap.containsKey(MODIFIES_LOCKSCREEN)) {
+                        mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN, "");
+                    }
                     mSelectedComponentsMap.put(MODIFIES_LIVE_LOCK_SCREEN, pkgName);
                     setCardTitle(mLockScreenCard, pkgName,
                             getString(R.string.live_lock_screen_label));
                 } else {
                     mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN, pkgName);
-                    mSelectedComponentsMap.put(MODIFIES_LIVE_LOCK_SCREEN, "");
+                    if (mSelectedComponentsMap.containsKey(MODIFIES_LIVE_LOCK_SCREEN)) {
+                        mSelectedComponentsMap.put(MODIFIES_LIVE_LOCK_SCREEN, "");
+                    }
                     setCardTitle(mLockScreenCard, pkgName, getString(R.string.lockscreen_label));
                 }
             }
@@ -2058,6 +2070,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (pkgName != null && TextUtils.isEmpty(pkgName)) {
                 mLockScreenCard.setWallpaper(null);
                 mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, WALLPAPER_NONE);
+                if(mSelectedComponentsMap.containsKey(MODIFIES_LIVE_LOCK_SCREEN)) {
+                    mSelectedComponentsMap.put(MODIFIES_LIVE_LOCK_SCREEN,WALLPAPER_NONE);
+                }
                 setCardTitle(mLockScreenCard, WALLPAPER_NONE,
                         getString(R.string.lockscreen_label));
             } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
