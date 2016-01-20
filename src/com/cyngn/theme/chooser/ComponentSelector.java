@@ -883,14 +883,16 @@ public class ComponentSelector extends LinearLayout
         @Override
         public void onChange(boolean selfChange) {
             // reload items by calling setComponentType()
-            final String componentType = mComponentType;
-            mComponentType = null;
-            mContent.post(new Runnable() {
-                @Override
-                public void run() {
-                    setComponentType(componentType, mSelectedComponentPkgName);
-                }
-            });
+            if (mComponentType != null) {
+                final String componentType = mComponentType;
+                mComponentType = null;
+                mContent.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        setComponentType(componentType, mSelectedComponentPkgName);
+                    }
+                });
+            }
         }
     }
 
