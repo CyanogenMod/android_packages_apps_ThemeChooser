@@ -482,7 +482,7 @@ public class MyThemeFragment extends ThemeFragment {
         }
         if (wp != null) {
             mLockScreenCard.setWallpaper(wp);
-        } else {
+        } else if (!mSelectedComponentsMap.containsKey(ThemesColumns.MODIFIES_LOCKSCREEN)) {
             mLockScreenCard.clearWallpaper();
             mLockScreenCard.setEmptyViewEnabled(true);
             setAddComponentTitle(mLockScreenCard, getString(R.string.lockscreen_label));

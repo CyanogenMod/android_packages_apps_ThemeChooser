@@ -2077,6 +2077,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 }
                 setCardTitle(mLockScreenCard, WALLPAPER_NONE,
                         getString(R.string.lockscreen_label));
+                if (mLockScreenCard.isShowingEmptyView()) {
+                    mLockScreenCard.setEmptyViewEnabled(false);
+                }
             } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
                 // Check if we have READ_EXTERNAL_STORAGE permission and if not request it,
                 // otherwise let the user pick an image
@@ -2622,6 +2625,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mSelectedComponentsMap.clear();
         mExternalWallpaperUri = null;
         mExternalLockscreenUri = null;
+        View none = mLockScreenCard.findViewById(R.id.none);
+        if (none != null && none.getVisibility() == View.VISIBLE) {
+            none.setVisibility(View.GONE);
+        }
+        TextView tv = (TextView) mLockScreenCard.findViewById(R.id.label);
+        if (tv != null) {
+            tv.setAlpha(1f);
+            tv.setBackgroundResource(R.drawable.wallpaper_label_bg);
+        }
         getLoaderManager().restartLoader(LOADER_ID_ALL, null, ThemeFragment.this);
     }
 
