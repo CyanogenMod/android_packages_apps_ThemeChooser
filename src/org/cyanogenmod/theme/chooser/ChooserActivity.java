@@ -22,6 +22,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -108,7 +109,7 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
         Fragment fragment = null;
         if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasExtra(EXTRA_PKGNAME)) {
             String pkgName = intent.getStringExtra(EXTRA_PKGNAME);
-            fragment = ChooserDetailFragment.newInstance(pkgName, filtersList);
+            fragment = ChooserDetailFragment.newInstance(pkgName, Color.TRANSPARENT, filtersList);
             // Handle case where Theme Store or some other app wishes to open
             // a detailed theme view for a given package
             try {
