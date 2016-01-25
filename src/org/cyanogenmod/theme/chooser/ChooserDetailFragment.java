@@ -15,14 +15,16 @@
  */
 package org.cyanogenmod.theme.chooser;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
-import android.graphics.drawable.ClipDrawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.StateListDrawable;
+import android.graphics.Outline;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,16 +36,18 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
+import android.widget.ImageButton;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -73,7 +77,8 @@ import java.util.Map;
 
 import static org.cyanogenmod.internal.util.ThemeUtils.SYSTEM_TARGET_API;
 
-public class ChooserDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, ThemeChangeListener {
+public class ChooserDetailFragment extends Fragment
+        implements LoaderManager.LoaderCallbacks<Cursor>, ThemeChangeListener {
     public static final HashMap<String, Integer> sComponentToId = new HashMap<String, Integer>();
 
     private static final String TAG = ChooserDetailFragment.class.getName();
@@ -104,7 +109,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private TextView mTitle;
     private TextView mAuthor;
     private TextView mDesignedFor;
-    private Button mApply;
+    private ImageButton mApply;
     private ViewPager mPager;
     private ThemeDetailPagerAdapter mPagerAdapter;
     private String mPkgName;
@@ -119,6 +124,9 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private boolean mLoadInitialCheckboxStates = true;
     private SparseArray<Boolean> mInitialCheckboxStates = new SparseArray<Boolean>();
     private SparseArray<Boolean> mCurrentCheckboxStates = new SparseArray<Boolean>();
+
+    private boolean mWasLastUpdating = false;
+    private int mFabBackgroundColor;
 
     // allows emphasis on a particular aspect of a theme. ex "mods_icons" would
     // uncheck all components but icons and sets the first preview image to be the icon pack
@@ -140,7 +148,8 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         sComponentToId.put(ThemesColumns.MODIFIES_ALARMS, R.id.chk_alarms);
     }
 
-    public static ChooserDetailFragment newInstance(String pkgName, ArrayList<String> componentFilters) {
+    public static ChooserDetailFragment newInstance(String pkgName,
+            ArrayList<String> componentFilters) {
         ChooserDetailFragment fragment = new ChooserDetailFragment();
         Bundle args = new Bundle();
         args.putString("pkgName", pkgName);
@@ -165,6 +174,10 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         mTitle = (TextView) v.findViewById(R.id.title);
         mAuthor = (TextView) v.findViewById(R.id.author);
         mDesignedFor = (TextView) v.findViewById(R.id.designed_for);
+
+        ChooserActivity activity = (ChooserActivity) getActivity();
+        activity.setToolbarColor(ThemeColorCache.getVibrantColorWithFallback(mPkgName,
+                getResources(), R.color.primary));
 
         mPager = (ViewPager) v.findViewById(R.id.pager);
         mPager.setOnClickListener(new OnClickListener() {
@@ -193,14 +206,20 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         mIndicator = (CirclePageIndicator) v.findViewById(R.id.titles);
         mIndicator.setViewPager(mPager);
 
-        mApply = (Button) v.findViewById(R.id.apply);
+        mApply = (ImageButton) v.findViewById(R.id.fab_icon);
         mApply.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
                 ThemeChangeRequest request = getThemeChangeRequestForSelectedComponents();
                 mService.requestThemeChange(request, true);
-                mApply.setText(R.string.applying);
+                refreshApplyButton();
             }
         });
+
+        mFabBackgroundColor = ThemeColorCache.getVibrantColorWithFallback(mPkgName,
+                getResources(), R.color.accent);
+        View fabContainer = v.findViewById(R.id.fab_container);
+        fabContainer.getBackground().setTintList(ColorStateList.valueOf(mFabBackgroundColor));
+        updateFabForegroundColor();
 
         mSlidingPanel = (ChooserDetailScrollView) v.findViewById(R.id.sliding_layout);
 
@@ -208,7 +227,9 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         for (Map.Entry<String, Integer> entry : sComponentToId.entrySet()) {
             CheckBox componentCheckbox = (CheckBox) v.findViewById(entry.getValue());
             mComponentToCheckbox.put(entry.getKey(), componentCheckbox);
+            componentCheckbox.setChecked(true);
             componentCheckbox.setOnCheckedChangeListener(mComponentCheckChangedListener);
+            componentCheckbox.setButtonTintList(ColorStateList.valueOf(mFabBackgroundColor));
         }
 
         // Remove the nav bar checkbox if the user has hardware nav keys
@@ -223,6 +244,13 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         getLoaderManager().initLoader(LOADER_ID_APPLIED_THEME, null, this);
         mService = ThemeManager.getInstance(getActivity());
         return v;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ChooserActivity activity = (ChooserActivity) getActivity();
+        activity.setToolbarColor(getResources().getColor(R.color.primary));
     }
 
     @Override
@@ -265,6 +293,49 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         builder.setRequestType(ThemeChangeRequest.RequestType.USER_REQUEST);
         return builder.build();
     }
+
+    private void updateFabForegroundColor() {
+        int foregroundColor = getResources().getColor(Utils.isColorLight(mFabBackgroundColor)
+                ? R.color.black : R.color.white);
+        mApply.getDrawable().setTintList(ColorStateList.valueOf(foregroundColor));
+    }
+
+    private void refreshApplyButton() {
+        int progress = (mService == null) ? 0 : mService.getProgress();
+        final boolean updating = progress != 0;
+
+        if (updating == mWasLastUpdating) {
+            return;
+        }
+
+        mWasLastUpdating = updating;
+
+        mApply.animate()
+            .alpha(0f)
+            .scaleX(0f)
+            .scaleY(0f)
+            .setInterpolator(new FastOutSlowInInterpolator())
+            .setStartDelay(100)
+            .start();
+        mHandler.removeCallbacks(mShowFabRunnable);
+        mHandler.postDelayed(mShowFabRunnable, 300);
+    }
+
+    private Runnable mShowFabRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mApply.animate()
+                .alpha(1f)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setStartDelay(100)
+                .start();
+            mApply.setEnabled(!mWasLastUpdating);
+            mApply.setImageResource(mWasLastUpdating
+                    ? R.drawable.ic_updating : R.drawable.ic_apply);
+        }
+    };
 
     @Override
     public void onResume() {
@@ -310,11 +381,6 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             mCurrentCheckboxStates.put(buttonView.getId(), isChecked);
-            if (componentSelectionChanged()) {
-                mApply.setEnabled(true);
-            } else {
-                mApply.setEnabled(false);
-            }
         }
     };
 
@@ -515,41 +581,6 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         //Hide available column if it is empty
         ll = (LinearLayout) getActivity().findViewById(R.id.details);
         ll.setVisibility(allApplied ? View.GONE : View.VISIBLE);
-    }
-
-    private void refreshApplyButton() {
-        //Default
-        mApply.setText(R.string.apply);
-        StateListDrawable d = (StateListDrawable) mApply.getBackground();
-        LayerDrawable bg = (LayerDrawable) d.getStateDrawable(
-                d.getStateDrawableIndex(new int[] {android.R.attr.state_enabled}));
-        final ClipDrawable clip = (ClipDrawable) bg.findDrawableByLayerId(android.R.id.progress);
-        clip.setLevel(0);
-
-        //Determine whether the apply button should show "apply" or "update"
-        if (mAppliedThemeCursor != null) {
-            mAppliedThemeCursor.moveToPosition(-1);
-            while (mAppliedThemeCursor.moveToNext()) {
-                String component = mAppliedThemeCursor.getString(mAppliedThemeCursor.getColumnIndex(MixnMatchColumns.COL_KEY));
-                String pkg = mAppliedThemeCursor.getString(mAppliedThemeCursor.getColumnIndex(MixnMatchColumns.COL_VALUE));
-
-                // At least one component is set here for this theme
-                if (pkg != null && mPkgName.equals(pkg)) {
-                    mApply.setText(R.string.update);
-                    break;
-                }
-            }
-        }
-
-        //Determine if the apply button's progress
-        int progress = (mService == null) ? 0 : mService.getProgress();
-        if (progress != 0) {
-            clip.setLevel(progress * 100);
-            mApply.setText(R.string.applying);
-            mApply.setClickable(false);
-        } else {
-            mApply.setClickable(true);
-        }
     }
 
     @Override

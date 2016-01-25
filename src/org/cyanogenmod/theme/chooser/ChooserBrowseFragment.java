@@ -15,14 +15,11 @@
  */
 package org.cyanogenmod.theme.chooser;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.os.Build;
 import android.view.Gravity;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -31,7 +28,9 @@ import android.content.res.ThemeConfig;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -43,6 +42,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -65,6 +66,7 @@ import cyanogenmod.providers.ThemesContract;
 import cyanogenmod.providers.ThemesContract.ThemesColumns;
 
 import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment.IconInfo;
+import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment;
 import org.cyanogenmod.theme.util.BootAnimationHelper;
 import org.cyanogenmod.theme.util.IconPreviewHelper;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
@@ -80,11 +82,6 @@ public class ChooserBrowseFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String TAG = ChooserBrowseFragment.class.getCanonicalName();
     public static final String DEFAULT = ThemeConfig.SYSTEM_DEFAULT;
-
-    private static final String THEME_STORE_PACKAGE_NAME = "com.cyngn.theme.store";
-    private static final String GET_THEMES_URL =
-            "http://wiki.cyanogenmod.org/w/Get_Themes?action=render";
-    private static final String THEME_STORE_ACTIVITY = "com.cyngn.theme.store.StoreActivity";
 
     public AbsListView mListView;
     public LocalPagerAdapter mAdapter;
@@ -116,8 +113,9 @@ public class ChooserBrowseFragment extends Fragment
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String pkgName = (String) mAdapter.getItem(position);
-                ChooserDetailFragment fragment =  ChooserDetailFragment.newInstance(pkgName, mComponentFilters);
+                final String pkgName = (String) mAdapter.getItem(position);
+                ChooserDetailFragment fragment =  ChooserDetailFragment.newInstance(pkgName,
+                        mComponentFilters);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.content, fragment, ChooserDetailFragment.class.toString());
                 transaction.addToBackStack(null);
@@ -146,63 +144,33 @@ public class ChooserBrowseFragment extends Fragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.get_more_themes:
-                if (isThemeStoreInstalled()) {
-                    try {
-                        launchThemeStore();
-                    } catch (ActivityNotFoundException e) {
-                        lauchGetThemesWithoutStore();
-                    }
-                } else {
-                    lauchGetThemesWithoutStore();
-                }
-                return true;
+        if (item.getItemId() == R.id.get_more_themes) {
+            lauchGetThemes();
         }
 
         return false;
     }
+    private void lauchGetThemes() {
+        Context context = getActivity();
+        String playStoreUrl = context.getResources().getString(R.string.play_store_url);
+        String wikiUrl = context.getResources().getString(R.string.wiki_url);
 
-    private boolean isThemeStoreInstalled() {
-        PackageManager pm = getActivity().getPackageManager();
-        try {
-            pm.getPackageInfo(THEME_STORE_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
-            return true;
-        } catch (NameNotFoundException e) {
-            return false;
-        }
-    }
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(playStoreUrl));
 
-    private void launchThemeStore() {
-        Intent intent = new Intent();
-        intent.setComponent(new ComponentName(THEME_STORE_PACKAGE_NAME,
-                THEME_STORE_ACTIVITY));
-        getActivity().startActivity(intent);
-    }
-
-    private void lauchGetThemesWithoutStore() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.get_more_description);
-        builder.setItems(R.array.get_more_entry_names, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Context context = getActivity();
-                if (context == null) return;
-
-                String[] entryUrls = context.getResources().getStringArray(R.array.get_more_entry_urls);
-
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(entryUrls[which]));
-
-                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    context.startActivity(intent);
-                } else {
-                    Toast.makeText(getActivity(), R.string.get_more_app_not_available,
-                            Toast.LENGTH_LONG).show();
-                }
+        // Try to launch play store
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            context.startActivity(intent);
+        } else {
+            // If no play store, try to open wiki url
+            intent.setData(Uri.parse(wikiUrl));
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                context.startActivity(intent);
+            } else {
+                Toast.makeText(getActivity(), R.string.get_more_app_not_available,
+                        Toast.LENGTH_LONG).show();
             }
-        });
-
-        builder.show();
+        }
     }
 
     @Override
@@ -262,8 +230,7 @@ public class ChooserBrowseFragment extends Fragment
         public Object getItem(int position) {
             mCursor.moveToPosition(position);
             int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
-            String pkgName = (String) mCursor.getString(pkgIdx);
-            return pkgName;
+            return mCursor.getString(pkgIdx);
         }
 
         @Override
@@ -296,6 +263,9 @@ public class ChooserBrowseFragment extends Fragment
                     (targetApi == SYSTEM_TARGET_API || targetApi > Build.VERSION_CODES.KITKAT) ?
                     View.GONE : View.VISIBLE);
 
+            item.boundPackage = pkgName;
+            item.applyThemeColor();
+
             if (mFilters.isEmpty()) {
                 bindDefaultView(item, pkgName, hsImagePath);
             } else if (mFilters.contains(ThemesColumns.MODIFIES_BOOT_ANIM)) {
@@ -319,22 +289,18 @@ public class ChooserBrowseFragment extends Fragment
             //Do not load wallpaper if we preview icons
             if (mFilters.contains(ThemesColumns.MODIFIES_ICONS)) return;
 
-            item.thumbnail.setTag(pkgName);
             item.thumbnail.setImageDrawable(null);
 
-            LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, null);
+            LoadImage loadImageTask = new LoadImage(item, pkgName, null);
             loadImageTask.execute();
         }
 
         private void bindOverlayView(ThemeItemHolder item, String pkgName,
                                      String styleImgPath) {
-            item.thumbnail.setTag(pkgName);
             item.thumbnail.setImageDrawable(null);
 
-            if (item.thumbnail.getTag() != null) {
-                LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, styleImgPath);
-                loadImageTask.execute();
-            }
+            LoadImage loadImageTask = new LoadImage(item, pkgName, styleImgPath);
+            loadImageTask.execute();
         }
 
         private void bindBootAnimView(ThemeItemHolder item, Context context, String pkgName) {
@@ -344,13 +310,10 @@ public class ChooserBrowseFragment extends Fragment
         private void bindWallpaperView(ThemeItemHolder item, String pkgName,
                                        String hsImagePath) {
 
-            item.thumbnail.setTag(pkgName);
             item.thumbnail.setImageDrawable(null);
 
-            if (item.thumbnail.getTag() != null) {
-                LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, null);
-                loadImageTask.execute();
-            }
+            LoadImage loadImageTask = new LoadImage(item, pkgName, null);
+            loadImageTask.execute();
         }
 
         public void bindFontView(View view, Context context, String pkgName) {
@@ -396,8 +359,10 @@ public class ChooserBrowseFragment extends Fragment
             item.author = (TextView) row.findViewById(R.id.author);
             item.designedFor = (TextView) row.findViewById(R.id.designed_for);
             item.mIconHolders = (ViewGroup) row.findViewById(R.id.icon_container);
+            item.card = (CardView) row.findViewById(R.id.item_card);
             row.setTag(item);
             row.findViewById(R.id.theme_card).setClipToOutline(true);
+
             return row;
         }
 
@@ -421,7 +386,25 @@ public class ChooserBrowseFragment extends Fragment
         TextView title;
         TextView author;
         TextView designedFor;
+        CardView card;
         ViewGroup mIconHolders;
+
+        String boundPackage;
+
+        void applyThemeColor() {
+            Resources res = thumbnail.getContext().getResources();
+            int cardColor = ThemeColorCache.getVibrantColorWithFallback(boundPackage,
+                    res, R.color.card_background_default);
+            boolean isLight = Utils.isColorLight(cardColor);
+
+            card.setCardBackgroundColor(cardColor);
+            title.setTextColor(res.getColor(
+                    isLight ? R.color.title_card_light : R.color.title_card_dark));
+            author.setTextColor(res.getColor(
+                    isLight ? R.color.author_card_light : R.color.author_card_dark));
+            designedFor.setTextColor(res.getColor(
+                    isLight ? R.color.designed_for_color_dark : R.color.designed_for_color_light));
+        }
     }
 
     public static class FontItemHolder extends ThemeItemHolder {
@@ -430,12 +413,12 @@ public class ChooserBrowseFragment extends Fragment
     }
 
     public class LoadImage extends AsyncTask<Object, Void, Bitmap> {
-        private ImageView imv;
+        private ThemeItemHolder holder;
         private String path;
         private String pkgName;
 
-        public LoadImage(ImageView imv, String pkgName, String path) {
-            this.imv = imv;
+        public LoadImage(ThemeItemHolder holder, String pkgName, String path) {
+            this.holder = holder;
             this.path = path;
             this.pkgName = pkgName;
         }
@@ -444,6 +427,7 @@ public class ChooserBrowseFragment extends Fragment
         protected Bitmap doInBackground(Object... params) {
             Bitmap bitmap = null;
             Context context = getActivity();
+
             if (context == null) {
                 Log.d(TAG, "Activity was detached, skipping loadImage");
                 return null;
@@ -474,19 +458,22 @@ public class ChooserBrowseFragment extends Fragment
                                  ThemesContract.PreviewColumns.WALLPAPER_PREVIEW);
                 }
             }
+
+            if (bitmap != null) {
+                ThemeColorCache.updateFromBitmap(pkgName, bitmap);
+            }
+
             return bitmap;
         }
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            if (!imv.getTag().toString().equals(pkgName)) {
+            if (!TextUtils.equals(pkgName, holder.boundPackage)) {
                 return;
             }
 
-            if (result != null && imv != null) {
-                imv.setVisibility(View.VISIBLE);
-                imv.setImageBitmap(result);
-            }
+            holder.thumbnail.setImageBitmap(result);
+            holder.applyThemeColor();
         }
     }
 
