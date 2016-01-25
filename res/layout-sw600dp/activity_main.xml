@@ -23,9 +23,10 @@
 
     <Toolbar
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
+        android:layout_height="@dimen/action_bar_height"
         android:id="@+id/toolbar"
         android:elevation="2dp"
+        android:paddingTop="24dp"
         style="@style/ChooserToolbarStyle"
         />
 
