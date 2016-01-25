@@ -43,6 +43,7 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
     private DrawerLayout mDrawerLayout;
     private ViewGroup mDrawerContainer;
     private ListView mDrawerList;
+    private Toolbar mToolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,11 +52,11 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
 
         initDrawer();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setActionBar(mToolbar);
         if (mDrawerLayout != null) {
-            toolbar.setNavigationIcon(R.drawable.ic_menu);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            mToolbar.setNavigationIcon(R.drawable.ic_menu);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (mDrawerLayout.isDrawerOpen(mDrawerContainer)) {
                         mDrawerLayout.closeDrawer(mDrawerContainer);
@@ -71,6 +72,10 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
         if (savedInstanceState == null) {
             handleIntent(getIntent());
         }
+    }
+
+    public void setToolbarColor(int color) {
+        mToolbar.setBackgroundColor(color);
     }
 
     @Override

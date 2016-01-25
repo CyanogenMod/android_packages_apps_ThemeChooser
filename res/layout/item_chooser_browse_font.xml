@@ -97,7 +97,7 @@
                 android:paddingEnd="26dp"
                 android:text="@string/designed_for_cm11"
                 android:textSize="12sp"
-                android:textColor="@color/designed_for_color"
+                android:textColor="@color/designed_for_color_light"
                 android:visibility="gone"/>
 
         </RelativeLayout>

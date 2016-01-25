@@ -23,6 +23,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -303,5 +304,14 @@ public class Utils {
 
     public static boolean hasNavigationBar(Context context) {
         return !ViewConfiguration.get(context).hasPermanentMenuKey();
+    }
+
+    public static boolean isColorLight(int color) {
+        // from http://alienryderflex.com/hsp.html
+        double r = (double) Color.red(color) / 255;
+        double g = (double) Color.green(color) / 255;
+        double b = (double) Color.blue(color) / 255;
+        double brightness = Math.sqrt(0.241 * r * r + 0.691 * g * g + 0.068 * b * b);
+        return brightness >= 0.5;
     }
 }
