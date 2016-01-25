@@ -29,9 +29,10 @@
 
         <Toolbar
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
+            android:layout_height="@dimen/action_bar_height"
             android:id="@+id/toolbar"
             android:elevation="2dp"
+            android:paddingTop="24dp"
             style="@style/ChooserToolbarStyle"
             />
 
@@ -52,13 +53,17 @@
         android:dividerHeight="15dp"
         android:elevation="2dp"
         android:background="@color/drawer_item_default">
+        <ImageView
+            android:id="@+id/drawer_banner"
+            android:layout_width="match_parent"
+            android:layout_height="171dp"
+            android:background="@drawable/nav_back"/>
         <ListView
             android:id="@+id/left_drawer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/drawer_banner"
             android:divider="@null"
-            android:dividerHeight="0dp"
-            android:layout_marginTop="20dp" />
+            android:dividerHeight="0dp" />
     </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

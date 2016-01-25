@@ -15,23 +15,23 @@
  */
 package org.cyanogenmod.theme.chooser;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.os.Build;
 import android.view.Gravity;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.content.res.ThemeConfig;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -45,7 +45,12 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.support.v7.graphics.Palette;
+import android.support.v7.graphics.Palette.Filter;
+import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -64,6 +69,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment.IconInfo;
+import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment;
 import org.cyanogenmod.theme.util.BootAnimationHelper;
 import org.cyanogenmod.theme.util.IconPreviewHelper;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
@@ -115,8 +121,13 @@ public class ChooserBrowseFragment extends Fragment
         mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String pkgName = (String) mAdapter.getItem(position);
-                ChooserDetailFragment fragment =  ChooserDetailFragment.newInstance(pkgName, mComponentFilters);
+                final Pair<String, ColorInformation> item =
+                        (Pair<String, ColorInformation>) mAdapter.getItem(position);
+                final String pkgName = item.first;
+                final int vibrantColor = item.second != null
+                        ? item.second.vibrantColor : getResources().getColor(R.color.primary);
+                ChooserDetailFragment fragment =  ChooserDetailFragment.newInstance(pkgName,
+                        vibrantColor, mComponentFilters);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.content, fragment, ChooserDetailFragment.class.toString());
                 transaction.addToBackStack(null);
@@ -180,28 +191,18 @@ public class ChooserBrowseFragment extends Fragment
     }
 
     private void lauchGetThemesWithoutStore() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.get_more_description);
-        builder.setItems(R.array.get_more_entry_names, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Context context = getActivity();
-                if (context == null) return;
+        Context context = getActivity();
+        String playStoreUrl = context.getResources().getString(R.string.play_store_url);
 
-                String[] entryUrls = context.getResources().getStringArray(R.array.get_more_entry_urls);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(playStoreUrl));
 
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(entryUrls[which]));
-
-                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    context.startActivity(intent);
-                } else {
-                    Toast.makeText(getActivity(), R.string.get_more_app_not_available,
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        builder.show();
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            context.startActivity(intent);
+        } else {
+            Toast.makeText(getActivity(), R.string.get_more_app_not_available,
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -250,6 +251,8 @@ public class ChooserBrowseFragment extends Fragment
         Context mContext;
         HashMap<String, ThemedTypefaceHelper> mTypefaceHelpers =
                 new HashMap<String, ThemedTypefaceHelper>();
+        HashMap<String, ColorInformation> mColorInformation =
+                new HashMap<String, ColorInformation>();
 
         public LocalPagerAdapter(Context context, Cursor c, List<String> filters) {
             super(context, c, 0);
@@ -262,7 +265,7 @@ public class ChooserBrowseFragment extends Fragment
             mCursor.moveToPosition(position);
             int pkgIdx = mCursor.getColumnIndex(ThemesColumns.PKG_NAME);
             String pkgName = (String) mCursor.getString(pkgIdx);
-            return pkgName;
+            return Pair.create(pkgName, mColorInformation.get(pkgName));
         }
 
         @Override
@@ -295,6 +298,15 @@ public class ChooserBrowseFragment extends Fragment
                     (targetApi == SYSTEM_TARGET_API || targetApi > Build.VERSION_CODES.KITKAT) ?
                     View.GONE : View.VISIBLE);
 
+            item.boundPackage = pkgName;
+
+            if (item.colorInfo == null) {
+                item.colorInfo = mColorInformation.get(pkgName);
+                item.colorInfo = new ColorInformation();
+            }
+
+            mColorInformation.put(pkgName, item.colorInfo);
+
             if (mFilters.isEmpty()) {
                 bindDefaultView(item, pkgName, hsImagePath);
             } else if (mFilters.contains(ThemesColumns.MODIFIES_BOOT_ANIM)) {
@@ -318,22 +330,18 @@ public class ChooserBrowseFragment extends Fragment
             //Do not load wallpaper if we preview icons
             if (mFilters.contains(ThemesColumns.MODIFIES_ICONS)) return;
 
-            item.thumbnail.setTag(pkgName);
             item.thumbnail.setImageDrawable(null);
 
-            LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, null);
+            LoadImage loadImageTask = new LoadImage(item, pkgName, null);
             loadImageTask.execute();
         }
 
         private void bindOverlayView(ThemeItemHolder item, String pkgName,
                                      String styleImgPath) {
-            item.thumbnail.setTag(pkgName);
             item.thumbnail.setImageDrawable(null);
 
-            if (item.thumbnail.getTag() != null) {
-                LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, styleImgPath);
-                loadImageTask.execute();
-            }
+            LoadImage loadImageTask = new LoadImage(item, pkgName, styleImgPath);
+            loadImageTask.execute();
         }
 
         private void bindBootAnimView(ThemeItemHolder item, Context context, String pkgName) {
@@ -343,13 +351,10 @@ public class ChooserBrowseFragment extends Fragment
         private void bindWallpaperView(ThemeItemHolder item, String pkgName,
                                        String hsImagePath) {
 
-            item.thumbnail.setTag(pkgName);
             item.thumbnail.setImageDrawable(null);
 
-            if (item.thumbnail.getTag() != null) {
-                LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, null);
-                loadImageTask.execute();
-            }
+            LoadImage loadImageTask = new LoadImage(item, pkgName, null);
+            loadImageTask.execute();
         }
 
         public void bindFontView(View view, Context context, String pkgName) {
@@ -395,8 +400,10 @@ public class ChooserBrowseFragment extends Fragment
             item.author = (TextView) row.findViewById(R.id.author);
             item.designedFor = (TextView) row.findViewById(R.id.designed_for);
             item.mIconHolders = (ViewGroup) row.findViewById(R.id.icon_container);
+            item.card = (CardView) row.findViewById(R.id.item_card);
             row.setTag(item);
             row.findViewById(R.id.theme_card).setClipToOutline(true);
+
             return row;
         }
 
@@ -420,7 +427,15 @@ public class ChooserBrowseFragment extends Fragment
         TextView title;
         TextView author;
         TextView designedFor;
+        CardView card;
         ViewGroup mIconHolders;
+
+        String boundPackage;
+        ColorInformation colorInfo;
+    }
+
+    public static class ColorInformation {
+        int vibrantColor;
     }
 
     public static class FontItemHolder extends ThemeItemHolder {
@@ -428,21 +443,22 @@ public class ChooserBrowseFragment extends Fragment
         TextView textViewBold;
     }
 
-    public class LoadImage extends AsyncTask<Object, Void, Bitmap> {
-        private ImageView imv;
+    public class LoadImage extends AsyncTask<Object, Void, Pair<Bitmap, Palette>> {
+        private ThemeItemHolder holder;
         private String path;
         private String pkgName;
 
-        public LoadImage(ImageView imv, String pkgName, String path) {
-            this.imv = imv;
+        public LoadImage(ThemeItemHolder holder, String pkgName, String path) {
+            this.holder = holder;
             this.path = path;
             this.pkgName = pkgName;
         }
 
         @Override
-        protected Bitmap doInBackground(Object... params) {
+        protected Pair<Bitmap, Palette> doInBackground(Object... params) {
             Bitmap bitmap = null;
             Context context = getActivity();
+
             if (context == null) {
                 Log.d(TAG, "Activity was detached, skipping loadImage");
                 return null;
@@ -473,19 +489,49 @@ public class ChooserBrowseFragment extends Fragment
                                  ThemesContract.PreviewColumns.WALLPAPER_PREVIEW);
                 }
             }
-            return bitmap;
+
+            if (bitmap == null) {
+                return null;
+            }
+
+            try {
+                Palette palette = Palette.from(bitmap).generate();
+                return Pair.create(bitmap, palette);
+            } catch (IllegalArgumentException e) {
+                // Theme (un)installed
+                return null;
+            }
         }
 
         @Override
-        protected void onPostExecute(Bitmap result) {
-            if (!imv.getTag().toString().equals(pkgName)) {
+        protected void onPostExecute(Pair<Bitmap, Palette> result) {
+            if (!TextUtils.equals(pkgName, holder.boundPackage)) {
                 return;
             }
 
-            if (result != null && imv != null) {
-                imv.setVisibility(View.VISIBLE);
-                imv.setImageBitmap(result);
+            final Resources res = holder.thumbnail.getContext().getResources();
+            if (result != null) {
+                holder.thumbnail.setImageBitmap(result.first);
+                holder.colorInfo.vibrantColor = result.second.getVibrantColor(Color.TRANSPARENT);
+            } else {
+                holder.thumbnail.setImageDrawable(null);
+                holder.colorInfo.vibrantColor = Color.TRANSPARENT;
             }
+
+            int cardColor = holder.colorInfo.vibrantColor == Color.TRANSPARENT
+                    ? res.getColor(R.color.card_background_default)
+                    : holder.colorInfo.vibrantColor;
+            boolean isLight = Utils.isColorLight(holder.colorInfo.vibrantColor);
+
+            holder.colorInfo.vibrantColor = cardColor;
+
+            holder.card.setCardBackgroundColor(cardColor);
+            holder.title.setTextColor(res.getColor(
+                    isLight ? R.color.title_card_light : R.color.title_card_dark));
+            holder.author.setTextColor(res.getColor(
+                    isLight ? R.color.author_card_light : R.color.author_card_dark));
+            holder.designedFor.setTextColor(res.getColor(
+                    isLight ? R.color.designed_for_color_dark : R.color.designed_for_color_light));
         }
     }
 
