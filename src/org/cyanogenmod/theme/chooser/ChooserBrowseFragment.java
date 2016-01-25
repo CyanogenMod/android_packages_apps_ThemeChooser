@@ -29,9 +29,12 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.content.res.ThemeConfig;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -45,7 +48,12 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.support.v7.graphics.Palette;
+import android.support.v7.graphics.Palette.Filter;
+import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,7 +71,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment.IconInfo;
+import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment;
 import org.cyanogenmod.theme.util.BootAnimationHelper;
 import org.cyanogenmod.theme.util.IconPreviewHelper;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
@@ -318,20 +328,20 @@ public class ChooserBrowseFragment extends Fragment
             //Do not load wallpaper if we preview icons
             if (mFilters.contains(ThemesColumns.MODIFIES_ICONS)) return;
 
-            item.thumbnail.setTag(pkgName);
+            item.boundPackage = pkgName;
             item.thumbnail.setImageDrawable(null);
 
-            LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, null);
+            LoadImage loadImageTask = new LoadImage(item, pkgName, null);
             loadImageTask.execute();
         }
 
         private void bindOverlayView(ThemeItemHolder item, String pkgName,
                                      String styleImgPath) {
-            item.thumbnail.setTag(pkgName);
+            item.boundPackage = pkgName;
             item.thumbnail.setImageDrawable(null);
 
             if (item.thumbnail.getTag() != null) {
-                LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, styleImgPath);
+                LoadImage loadImageTask = new LoadImage(item, pkgName, styleImgPath);
                 loadImageTask.execute();
             }
         }
@@ -343,11 +353,11 @@ public class ChooserBrowseFragment extends Fragment
         private void bindWallpaperView(ThemeItemHolder item, String pkgName,
                                        String hsImagePath) {
 
-            item.thumbnail.setTag(pkgName);
+            item.boundPackage = pkgName;
             item.thumbnail.setImageDrawable(null);
 
             if (item.thumbnail.getTag() != null) {
-                LoadImage loadImageTask = new LoadImage(item.thumbnail, pkgName, null);
+                LoadImage loadImageTask = new LoadImage(item, pkgName, null);
                 loadImageTask.execute();
             }
         }
@@ -395,8 +405,10 @@ public class ChooserBrowseFragment extends Fragment
             item.author = (TextView) row.findViewById(R.id.author);
             item.designedFor = (TextView) row.findViewById(R.id.designed_for);
             item.mIconHolders = (ViewGroup) row.findViewById(R.id.icon_container);
+            item.card = (CardView) row.findViewById(R.id.item_card);
             row.setTag(item);
             row.findViewById(R.id.theme_card).setClipToOutline(true);
+
             return row;
         }
 
@@ -420,7 +432,11 @@ public class ChooserBrowseFragment extends Fragment
         TextView title;
         TextView author;
         TextView designedFor;
+        CardView card;
         ViewGroup mIconHolders;
+
+        String boundPackage;
+        int vibrantColor;
     }
 
     public static class FontItemHolder extends ThemeItemHolder {
@@ -428,21 +444,23 @@ public class ChooserBrowseFragment extends Fragment
         TextView textViewBold;
     }
 
-    public class LoadImage extends AsyncTask<Object, Void, Bitmap> {
-        private ImageView imv;
+    public class LoadImage extends AsyncTask<Object, Void, Pair<Bitmap, Palette>> {
+        private ThemeItemHolder holder;
         private String path;
         private String pkgName;
 
-        public LoadImage(ImageView imv, String pkgName, String path) {
-            this.imv = imv;
+        public LoadImage(ThemeItemHolder holder, String pkgName, String path) {
+            this.holder = holder;
             this.path = path;
             this.pkgName = pkgName;
         }
 
         @Override
-        protected Bitmap doInBackground(Object... params) {
+        protected Pair<Bitmap, Palette> doInBackground(Object... params) {
             Bitmap bitmap = null;
             Context context = getActivity();
+            Palette palette = null;
+
             if (context == null) {
                 Log.d(TAG, "Activity was detached, skipping loadImage");
                 return null;
@@ -473,18 +491,48 @@ public class ChooserBrowseFragment extends Fragment
                                  ThemesContract.PreviewColumns.WALLPAPER_PREVIEW);
                 }
             }
-            return bitmap;
+
+            try {
+                palette = Palette.from(bitmap).generate();
+            } catch (Exception e) {
+                // Theme (un)installed
+            }
+
+            return Pair.create(bitmap, palette);
+        }
+
+        private boolean isVibrantColorLight(Palette palette) {
+            int color = palette.getVibrantColor(0x000000);
+            double darkness = 1 - (0.299 * Color.red(color)   +
+                                   0.587 * Color.green(color) +
+                                   0.114 * Color.blue(color)) / 255;
+            if (darkness > 0.65) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         @Override
-        protected void onPostExecute(Bitmap result) {
-            if (!imv.getTag().toString().equals(pkgName)) {
+        protected void onPostExecute(Pair<Bitmap, Palette> result) {
+            if (!TextUtils.equals(pkgName, holder.boundPackage)) {
                 return;
             }
 
-            if (result != null && imv != null) {
-                imv.setVisibility(View.VISIBLE);
-                imv.setImageBitmap(result);
+            if (result != null) {
+                holder.thumbnail.setVisibility(View.VISIBLE);
+                holder.thumbnail.setImageBitmap(result.first);
+                /*
+                 * The card layout just does not play nicely
+                 * with too much light colors,
+                 * use muted instead of vibrant to get a darker color
+                 */
+                if (isVibrantColorLight(result.second)) {
+                    holder.vibrantColor = result.second.getDarkMutedColor(0x000000);
+                } else {
+                    holder.vibrantColor = result.second.getVibrantColor(0x000000);
+                }
+                holder.card.setCardBackgroundColor(holder.vibrantColor);
             }
         }
     }
