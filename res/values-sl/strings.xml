@@ -48,7 +48,7 @@
   <string name="theme_installed_notification_text">Tema uspešno nameščena.</string>
   <string name="menu_item_get_more_themes">Dobi več</string>
   <string name="get_more_description">Več tem si lahko pridobite na naslednjih povezavah:</string>
-  <string name="get_more_app_not_available">Program ni na voljo</string>
+  <string name="get_more_app_not_available">Aplikacija ni na voljo</string>
   <string name="get_more_entry_play_store">Trgovina Play</string>
   <string name="get_more_entry_cm_wiki">Več podatkov na strani Wiki CM</string>
   <string name="designed_for_cm11">Zasnovano za CM11</string>
