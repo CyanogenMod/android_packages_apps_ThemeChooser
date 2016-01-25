@@ -24,12 +24,14 @@
         <item name="android:statusBarColor">@color/primary_dark</item>
         <item name="android:textColorPrimary">@color/primary_text_color</item>
         <item name="android:actionMenuTextColor">@android:color/white</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="AppTheme.Chooser">
         <item name="android:windowActionBarOverlay">false</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <!-- When this style was added, android:toolbarStyle was private. Therefore, this style
@@ -37,6 +39,9 @@
     <style name="ChooserToolbarStyle" parent="@android:style/Widget.Material.Toolbar">
         <item name="android:background">?android:attr/colorPrimary</item>
         <item name="android:titleTextAppearance">@style/ChooserActionBarTitleText</item>
+        <item name="android:elevation">2dp</item>
+        <!-- for status bar -->
+        <item name="android:paddingTop">24dp</item>
     </style>
 
     <!-- Text in the action bar at the top of the screen -->
@@ -44,4 +49,5 @@
            parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
         <item name="android:textColor">@color/actionbar_text_color</item>
     </style>
+
 </resources>

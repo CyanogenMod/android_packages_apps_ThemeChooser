@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:themes="http://schemas.android.com/apk/res/org.cyanogenmod.theme.chooser"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:themes="http://schemas.android.com/apk/res/org.cyanogenmod.theme.chooser"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <org.cyanogenmod.theme.util.ChooserDetailScrollView
         android:id="@+id/sliding_layout"
@@ -66,6 +67,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingTop="6dp"
+                    android:textColor="@color/title_drawer_color"
                     android:textSize="28sp"/>
 
                 <TextView
@@ -76,6 +78,7 @@
                     android:layout_below="@id/title"
                     android:layout_marginTop="-2dp"
                     android:text="@string/unknown_author"
+                    android:textColor="@color/author_drawer_color"
                     android:textSize="12sp"/>
 
                 <TextView
@@ -87,7 +90,7 @@
                     android:layout_marginTop="-2dp"
                     android:text="@string/designed_for_cm11"
                     android:textSize="12sp"
-                    android:textColor="@color/designed_for_color"
+                    android:textColor="@color/designed_for_color_light"
                     android:visibility="gone"/>
 
             </RelativeLayout>
@@ -214,16 +217,23 @@
                 />
 
         </org.cyanogenmod.theme.util.ChooserDetailLinearLayout>
-    </org.cyanogenmod.theme.util.ChooserDetailScrollView>
-    <Button
-        android:id="@+id/apply"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:enabled="false"
-        android:background="@drawable/apply_button_bg"
-        android:text="@string/apply"
-        android:textColor="@drawable/apply_button_text"
-        android:textStyle="bold"/>
 
-</RelativeLayout>
+    </org.cyanogenmod.theme.util.ChooserDetailScrollView>
+
+    <FrameLayout
+        android:id="@+id/fab_container"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_gravity="bottom|end"
+        android:background="@drawable/fab_accent"
+        android:elevation="@dimen/fab_elevation_normal">
+        <ImageButton
+            android:id="@+id/fab_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/floating_action_button"
+            android:src="@drawable/ic_apply" />
+    </FrameLayout>
+
+</FrameLayout>
