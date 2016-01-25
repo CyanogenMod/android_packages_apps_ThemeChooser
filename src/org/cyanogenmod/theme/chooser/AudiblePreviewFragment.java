@@ -21,6 +21,7 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.ThemeConfig;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import org.cyanogenmod.internal.util.ThemeUtils;
 import java.io.File;
 import java.io.IOException;
 
+import org.cyanogenmod.theme.chooser.R;
 
 public class AudiblePreviewFragment extends Fragment {
     private static final String PKG_EXTRA = "pkg_extra";
@@ -49,6 +51,12 @@ public class AudiblePreviewFragment extends Fragment {
     private String mPkgName;
     private LinearLayout mContent;
     private SparseArray<MediaPlayer> mMediaPlayers;
+
+    ImageView mAddRemoveImage;
+    private AnimatedVectorDrawable mPlayToPauseDrawable;
+    private AnimatedVectorDrawable mPauseToPlayDrawable;
+
+    private boolean mIsPlayState;
 
     static AudiblePreviewFragment newInstance(String pkgName) {
         final AudiblePreviewFragment f = new AudiblePreviewFragment();
@@ -63,6 +71,13 @@ public class AudiblePreviewFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mPkgName = getArguments().getString(PKG_EXTRA);
         mMediaPlayers = new SparseArray<MediaPlayer>(3);
+
+        mPlayToPauseDrawable = (AnimatedVectorDrawable)
+                AudiblePreviewFragment.this.getResources()
+                .getDrawable(R.drawable.avd_play_to_pause);
+        mPauseToPlayDrawable = (AnimatedVectorDrawable)
+                AudiblePreviewFragment.this.getResources()
+                .getDrawable(R.drawable.avd_pause_to_play);
     }
 
     @Override
@@ -111,12 +126,16 @@ public class AudiblePreviewFragment extends Fragment {
             MediaPlayer mp = (MediaPlayer) v.getTag();
             if (mp != null) {
                 if (mp.isPlaying()) {
-                    ((ImageView) v).setImageResource(android.R.drawable.ic_media_play);
+                    AnimatedVectorDrawable drawable = mPlayToPauseDrawable;
+                    ((ImageView) v).setImageDrawable(drawable);
+                    drawable.start();
                     mp.pause();
                     mp.seekTo(0);
                 } else {
                     stopMediaPlayers();
-                    ((ImageView) v).setImageResource(android.R.drawable.ic_media_pause);
+                    AnimatedVectorDrawable drawable = mPauseToPlayDrawable;
+                    ((ImageView) v).setImageDrawable(drawable);
+                    drawable.start();
                     mp.start();
                 }
             }
@@ -130,7 +149,7 @@ public class AudiblePreviewFragment extends Fragment {
             final int numChildern = mContent.getChildCount();
             for (int i = 0; i < numChildern; i++) {
                 ((ImageView) mContent.getChildAt(i).findViewById(R.id.btn_play_pause))
-                        .setImageResource(android.R.drawable.ic_media_play);
+                        .setImageResource(R.drawable.ic_play);
             }
         }
     };
@@ -141,7 +160,7 @@ public class AudiblePreviewFragment extends Fragment {
         for (int i = 0; i < numChildern; i++) {
             ImageView iv = (ImageView) mContent.getChildAt(i).findViewById(R.id.btn_play_pause);
             if (iv != null) {
-                iv.setImageResource(android.R.drawable.ic_media_play);
+                iv.setImageResource(R.drawable.ic_play);
                 MediaPlayer mp = (MediaPlayer) iv.getTag();
                 if (mp != null && mp.isPlaying()) {
                     mp.pause();

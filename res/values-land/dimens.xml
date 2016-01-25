@@ -16,4 +16,7 @@
 -->
 <resources>
     <dimen name="sliding_up_panel_parallax_distance">75dp</dimen>
+
+    <!-- 48dp (toolbar) + 24dp (statusbar) = 72dp -->
+    <dimen name="action_bar_height">72dp</dimen>
 </resources>

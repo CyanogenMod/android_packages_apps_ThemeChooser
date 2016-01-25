@@ -22,4 +22,13 @@
     <dimen name="drawer_item_height">48dp</dimen>
     <dimen name="drawer_item_label_text_size">14sp</dimen>
     <dimen name="icon_padding">8dp</dimen>
+
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_icon_size">24dp</dimen>
+    <dimen name="fab_elevation_normal">8dp</dimen>
+    <dimen name="fab_elevation_pressed">6dp</dimen>
+
+    <!-- 56dp (toolbar) + 24dp (statusbar) = 80dp -->
+    <dimen name="action_bar_height">80dp</dimen>
 </resources>
