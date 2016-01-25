@@ -26,6 +26,9 @@
   <string name="notifications">Obavijesti</string>
   <string name="alarms">Alarmi</string>
   <string name="style">Stil</string>
+  <string name="status_bar">Traka stanja</string>
+  <string name="nav_bar">Navigacijska traka</string>
+  <string name="theme_packs">Paketi tema</string>
   <string name="sounds">Zvukovi</string>
   <string name="system_theme_name">Sustav</string>
   <string name="default_tag">(Zadano)</string>
