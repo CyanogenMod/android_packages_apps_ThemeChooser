@@ -6,7 +6,9 @@
     android:viewportHeight="24">
 
     <path
-        android:fillColor="@color/drawer_icon"
-        android:pathData="M19.2,3H4.8C3.8,3,3,3.8,3,4.8v14.4c0,1,0.8,1.8,1.8,1.8h14.4c1,0,1.8-0.8,1.8-1.8V4.8
-C21,3.8,20.2,3,19.2,3Z M14.5,16h-5L7,12l2.5-4h5l2.5,4L14.5,16z" />
+        android:fillColor="#FFF"
+        android:pathData="M19,9 L15,9 L15,3 L9,3 L9,9 L5,9 L12,16 L19,9 Z M5,18 L5,20 L19,20 L19,18 L5,18
+Z" />
+    <path
+        android:pathData="M0,0 L24,0 L24,24 L0,24 Z" />
 </vector>
