@@ -31,6 +31,7 @@ import android.content.res.ThemeConfig;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -45,6 +46,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.support.v7.graphics.Palette;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -63,7 +66,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment.IconInfo;
+import org.cyanogenmod.theme.chooser.WallpaperAndIconPreviewFragment;
 import org.cyanogenmod.theme.util.BootAnimationHelper;
 import org.cyanogenmod.theme.util.IconPreviewHelper;
 import org.cyanogenmod.theme.util.ThemedTypefaceHelper;
@@ -88,6 +93,10 @@ public class ChooserBrowseFragment extends Fragment
     public AbsListView mListView;
     public LocalPagerAdapter mAdapter;
     public ArrayList<String> mComponentFilters;
+
+    private CardView mCard;
+    private Bitmap mBitmap;
+    private Palette mPalette;
 
     private Point mMaxImageSize = new Point(); //Size of preview image in listview
 
@@ -397,6 +406,19 @@ public class ChooserBrowseFragment extends Fragment
             item.mIconHolders = (ViewGroup) row.findViewById(R.id.icon_container);
             row.setTag(item);
             row.findViewById(R.id.theme_card).setClipToOutline(true);
+
+            // Take wallpaper from ImageView as a bitmap
+            ImageView mWallpaper = (ImageView) item.thumbnail;
+            mCard = (CardView) row.findViewById(R.id.item_card);
+            mWallpaper.setDrawingCacheEnabled(true);
+            mWallpaper.buildDrawingCache(true);
+            mBitmap = Bitmap.createBitmap(mWallpaper.getDrawingCache());
+            mWallpaper.setDrawingCacheEnabled(false);
+
+            // Get vibrant color from wallpaper bitmap
+            mPalette = Palette.generate(mBitmap);
+            mCard.setCardBackgroundColor(mPalette.getVibrantColor(0x000000));
+
             return row;
         }
 
