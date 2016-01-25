@@ -15,6 +15,7 @@
  */
 package org.cyanogenmod.theme.chooser;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -41,6 +42,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -50,7 +52,7 @@ import android.view.ViewGroup;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -104,7 +106,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private TextView mTitle;
     private TextView mAuthor;
     private TextView mDesignedFor;
-    private Button mApply;
+    private ImageButton mApply;
     private ViewPager mPager;
     private ThemeDetailPagerAdapter mPagerAdapter;
     private String mPkgName;
@@ -119,6 +121,8 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     private boolean mLoadInitialCheckboxStates = true;
     private SparseArray<Boolean> mInitialCheckboxStates = new SparseArray<Boolean>();
     private SparseArray<Boolean> mCurrentCheckboxStates = new SparseArray<Boolean>();
+
+    private int mStatus;
 
     // allows emphasis on a particular aspect of a theme. ex "mods_icons" would
     // uncheck all components but icons and sets the first preview image to be the icon pack
@@ -193,12 +197,12 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         mIndicator = (CirclePageIndicator) v.findViewById(R.id.titles);
         mIndicator.setViewPager(mPager);
 
-        mApply = (Button) v.findViewById(R.id.apply);
+        mApply = (ImageButton) v.findViewById(R.id.fab_icon);
         mApply.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
                 ThemeChangeRequest request = getThemeChangeRequestForSelectedComponents();
                 mService.requestThemeChange(request, true);
-                mApply.setText(R.string.applying);
+                refreshApplyButton();
             }
         });
 
@@ -208,6 +212,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         for (Map.Entry<String, Integer> entry : sComponentToId.entrySet()) {
             CheckBox componentCheckbox = (CheckBox) v.findViewById(entry.getValue());
             mComponentToCheckbox.put(entry.getKey(), componentCheckbox);
+            componentCheckbox.setChecked(true);
             componentCheckbox.setOnCheckedChangeListener(mComponentCheckChangedListener);
         }
 
@@ -266,6 +271,41 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         return builder.build();
     }
 
+    private void animateFAB() {
+        mApply.animate()
+            .alpha(0f)
+            .scaleX(0f)
+            .scaleY(0f)
+            .rotationX(360)
+            .translationZ(00f)
+            .setInterpolator(new FastOutSlowInInterpolator())
+            .setStartDelay(100)
+            .start();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                mApply.animate()
+                    .alpha(1f)
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .translationZ(10f)
+                    .setInterpolator(new FastOutSlowInInterpolator())
+                    .setStartDelay(100)
+                    .start();
+                switch (mStatus) {
+                    case 0:
+                        mApply.setImageResource(R.drawable.ic_apply);
+                        mApply.setEnabled(true);
+                        break;
+                    case 1:
+                        mApply.setImageResource(R.drawable.ic_updating);
+                        mApply.setEnabled(false);
+                        break;
+                }
+            }
+        }, 300);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -310,11 +350,11 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             mCurrentCheckboxStates.put(buttonView.getId(), isChecked);
-            if (componentSelectionChanged()) {
+            /*if (componentSelectionChanged()) {
                 mApply.setEnabled(true);
             } else {
                 mApply.setEnabled(false);
-            }
+            }*/
         }
     };
 
@@ -518,15 +558,6 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
     }
 
     private void refreshApplyButton() {
-        //Default
-        mApply.setText(R.string.apply);
-        StateListDrawable d = (StateListDrawable) mApply.getBackground();
-        LayerDrawable bg = (LayerDrawable) d.getStateDrawable(
-                d.getStateDrawableIndex(new int[] {android.R.attr.state_enabled}));
-        final ClipDrawable clip = (ClipDrawable) bg.findDrawableByLayerId(android.R.id.progress);
-        clip.setLevel(0);
-
-        //Determine whether the apply button should show "apply" or "update"
         if (mAppliedThemeCursor != null) {
             mAppliedThemeCursor.moveToPosition(-1);
             while (mAppliedThemeCursor.moveToNext()) {
@@ -535,7 +566,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
                 // At least one component is set here for this theme
                 if (pkg != null && mPkgName.equals(pkg)) {
-                    mApply.setText(R.string.update);
+                    mStatus = 0;
                     break;
                 }
             }
@@ -544,12 +575,11 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
         //Determine if the apply button's progress
         int progress = (mService == null) ? 0 : mService.getProgress();
         if (progress != 0) {
-            clip.setLevel(progress * 100);
-            mApply.setText(R.string.applying);
-            mApply.setClickable(false);
+            mStatus = 1;
         } else {
-            mApply.setClickable(true);
+            mStatus = 0;
         }
+        animateFAB();
     }
 
     @Override
