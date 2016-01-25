@@ -30,10 +30,10 @@
 
     <ImageView
         android:id="@+id/btn_play_pause"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:padding="5dp"
         android:scaleType="fitCenter"
-        android:src="@android:drawable/ic_media_play" />
+        android:src="@drawable/ic_play" />
 </LinearLayout>

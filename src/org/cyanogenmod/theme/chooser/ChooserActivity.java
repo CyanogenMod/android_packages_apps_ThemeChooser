@@ -22,6 +22,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -43,6 +44,7 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
     private DrawerLayout mDrawerLayout;
     private ViewGroup mDrawerContainer;
     private ListView mDrawerList;
+    private Toolbar mToolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,11 +53,11 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
 
         initDrawer();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setActionBar(mToolbar);
         if (mDrawerLayout != null) {
-            toolbar.setNavigationIcon(R.drawable.ic_menu);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            mToolbar.setNavigationIcon(R.drawable.ic_menu);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (mDrawerLayout.isDrawerOpen(mDrawerContainer)) {
                         mDrawerLayout.closeDrawer(mDrawerContainer);
@@ -71,6 +73,13 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
         if (savedInstanceState == null) {
             handleIntent(getIntent());
         }
+    }
+
+    public void setToolbarColor(int color) {
+        if (color == Color.TRANSPARENT) {
+            color = getResources().getColor(R.color.primary);
+        }
+        mToolbar.setBackgroundColor(color);
     }
 
     @Override
@@ -108,7 +117,7 @@ public class ChooserActivity extends FragmentActivity implements DrawerAdapter.D
         Fragment fragment = null;
         if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasExtra(EXTRA_PKGNAME)) {
             String pkgName = intent.getStringExtra(EXTRA_PKGNAME);
-            fragment = ChooserDetailFragment.newInstance(pkgName, filtersList);
+            fragment = ChooserDetailFragment.newInstance(pkgName, Color.TRANSPARENT, filtersList);
             // Handle case where Theme Store or some other app wishes to open
             // a detailed theme view for a given package
             try {

@@ -25,7 +25,7 @@
         <org.cyanogenmod.theme.util.FittedTextView
             android:id="@+id/text1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:gravity="center_horizontal"
             android:singleLine="true"
             android:ellipsize="none"
@@ -34,7 +34,7 @@
             android:id="@+id/text2"
             android:singleLine="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:gravity="center_horizontal"
             android:ellipsize="none"
             android:text="@string/font_preview_letters" />
@@ -42,7 +42,7 @@
             android:id="@+id/text3"
             android:singleLine="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:gravity="center_horizontal"
             android:ellipsize="none"
             android:text="@string/font_preview_letters" />
@@ -50,7 +50,7 @@
             android:id="@+id/text4"
             android:singleLine="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:gravity="center_horizontal"
             android:ellipsize="none"
             android:text="@string/font_preview_letters" />
