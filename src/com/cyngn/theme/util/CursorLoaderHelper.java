@@ -191,6 +191,27 @@ public class CursorLoaderHelper {
                     };
                 }
                 break;
+            case LOADER_ID_LIVE_LOCK_SCREEN:
+                selection = MODIFIES_LIVE_LOCK_SCREEN + "=?";
+                selectionArgs = new String[] { "1" };
+                if (mThemeVersion >= 3) {
+                    projection = new String[]{
+                            PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL,
+                            ThemesColumns.TITLE,
+                            ThemesColumns.PKG_NAME,
+                            ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN,
+                            PreviewColumns.COMPONENT_ID
+                    };
+                } else {
+                    projection = new String[]{
+                            PreviewColumns.LOCK_WALLPAPER_THUMBNAIL,
+                            PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL,
+                            ThemesColumns.TITLE,
+                            ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN,
+                            ThemesColumns.PKG_NAME
+                    };
+                }
+                break;
             default:
                 return null;
         }

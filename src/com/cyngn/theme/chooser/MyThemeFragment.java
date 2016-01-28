@@ -67,7 +67,8 @@ public class MyThemeFragment extends ThemeFragment {
     private SurfaceView mSurfaceView;
 
     static MyThemeFragment newInstance(String baseThemePkgName, String baseThemeName,
-                                       String baseThemeAuthor, boolean skipLoadingAnim) {
+                                       String baseThemeAuthor, boolean skipLoadingAnim,
+                                       boolean showAnimatedLockScreensOnly) {
         MyThemeFragment f = new MyThemeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PACKAGE_NAME, CURRENTLY_APPLIED_THEME);
@@ -75,6 +76,7 @@ public class MyThemeFragment extends ThemeFragment {
         args.putString(ARG_BASE_THEME_NAME, baseThemeName);
         args.putString(ARG_BASE_THEME_AUTHOR, baseThemeAuthor);
         args.putBoolean(ARG_SKIP_LOADING_ANIM, skipLoadingAnim);
+        args.putBoolean(ARG_SHOW_ANIMATED_LOCK_SCREEN_ONLY, showAnimatedLockScreensOnly);
         f.setArguments(args);
         return f;
     }
@@ -89,6 +91,7 @@ public class MyThemeFragment extends ThemeFragment {
         mBaseThemePkgName = getArguments().getString(ARG_BASE_THEME_PACKAGE_NAME);
         mBaseThemeName = getArguments().getString(ARG_BASE_THEME_NAME);
         mBaseThemeAuthor = getArguments().getString(ARG_BASE_THEME_AUTHOR);
+        mShowAnimatedLockScreenSelectorAfterContentLoaded = getArguments().getBoolean(ARG_SHOW_ANIMATED_LOCK_SCREEN_ONLY);
         mSurfaceView = createSurfaceView();
     }
 

@@ -66,6 +66,10 @@
                 <action android:name="android.intent.action.APPLY_THEME"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.cyngn.intent.action.PICK_ANIMATED_LOCK_SCREEN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <activity-alias android:name="com.cyngn.theme.chooser.ChooserLauncher"

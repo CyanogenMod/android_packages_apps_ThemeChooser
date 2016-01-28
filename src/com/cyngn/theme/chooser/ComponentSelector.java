@@ -63,6 +63,7 @@ import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
 import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
+import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_LIVE_LOCK_SCREEN;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_STATUS_BAR;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_FONT;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ICONS;
@@ -212,6 +213,10 @@ public class ComponentSelector extends LinearLayout
         }
     }
 
+    public void resetComponentType() {
+        mComponentType = null;
+    }
+
     public void setComponentType(String component) {
         setComponentType(component, null, DEFAULT_COMPONENT_ID);
     }
@@ -352,7 +357,8 @@ public class ComponentSelector extends LinearLayout
             return LOADER_ID_ALARM;
         }
         if (MODIFIES_LOCKSCREEN.equals(component)) {
-            return LOADER_ID_LOCKSCREEN;
+            return (showAnimatedLockScreenOnly()) ? LOADER_ID_LIVE_LOCK_SCREEN
+                    : LOADER_ID_LOCKSCREEN;
         }
         return -1;
     }
@@ -541,6 +547,10 @@ public class ComponentSelector extends LinearLayout
             return newSoundView(cursor, container, position, mComponentType);
         }
         if (MODIFIES_LOCKSCREEN.equals(mComponentType)) {
+            if (showAnimatedLockScreenOnly()) {
+                return newWallpapersView(cursor, container, position + EXTRA_WALLPAPER_COMPONENTS,
+                        cursor.getColumnIndex(PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL), true);
+            }
             boolean isLiveLockScreen = false;
             if (position >= EXTRA_WALLPAPER_COMPONENTS) {
                 cursor.moveToPosition(position - EXTRA_WALLPAPER_COMPONENTS);
@@ -865,6 +875,10 @@ public class ComponentSelector extends LinearLayout
             }
         }
     };
+
+    private boolean showAnimatedLockScreenOnly() {
+        return ((ChooserActivity)mContext).getShowAnimatedLockScreeOnly();
+    }
 
     private class ThemesObserver extends ContentObserver {
         public ThemesObserver() {

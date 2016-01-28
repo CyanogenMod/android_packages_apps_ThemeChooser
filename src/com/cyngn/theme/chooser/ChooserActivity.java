@@ -98,6 +98,9 @@ public class ChooserActivity extends FragmentActivity
             "com.cyngn.themes.action.THEME_REMOVED_FROM_CHOOSER";
     private static final String EXTRA_PACKAGE = "package";
 
+    private static final String ACTION_PICK_ANIMATED_LOCK_SCREEN =
+            "com.cyngn.intent.action.PICK_ANIMATED_LOCK_SCREEN";
+
     /**
      * Request code for picking an external wallpaper
      */
@@ -115,6 +118,8 @@ public class ChooserActivity extends FragmentActivity
     private static final long ANIMATE_SHOP_THEMES_SHOW_DURATION = 500;
     private static final long FINISH_ANIMATION_DELAY = ThemeFragment.ANIMATE_DURATION
             + ThemeFragment.ANIMATE_START_DELAY + 250;
+
+    private static final long ANIMATE_CARDS_IN_DURATION = 250;
 
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
@@ -146,6 +151,7 @@ public class ChooserActivity extends FragmentActivity
     private boolean mIsPickingImage = false;
     private boolean mRestartLoaderOnCollapse = false;
     private boolean mActivityResuming = false;
+    private boolean mShowAnimatedLockScreensOnly = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -344,7 +350,13 @@ public class ChooserActivity extends FragmentActivity
                                             getCallingPackage())) {
                 mThemeToApply = intent.getStringExtra(EXTRA_PKGNAME);
             }
+        } else if (action.equals(ACTION_PICK_ANIMATED_LOCK_SCREEN)) {
+            mShowAnimatedLockScreensOnly = true;
         }
+    }
+
+    public boolean getShowAnimatedLockScreeOnly() {
+        return mShowAnimatedLockScreensOnly;
     }
 
     private String getSelectedTheme(String requestedTheme) {
@@ -632,6 +644,10 @@ public class ChooserActivity extends FragmentActivity
                 mContainerYOffset = 0;
             }
             if (f != null) f.fadeInCards();
+            if (mShowAnimatedLockScreensOnly) {
+                mShowAnimatedLockScreensOnly = false;
+                mSelector.resetComponentType();
+            }
         } else if (mExpanded) {
             if (mIsAnimating) {
                 return;
@@ -717,18 +733,23 @@ public class ChooserActivity extends FragmentActivity
             ((TransitionDrawable) d).startTransition((int) ANIMATE_CONTENT_IN_BLUR_DURATION);
         }
 
-        AnimatorSet set = new AnimatorSet();
-        set.play(ObjectAnimator.ofFloat(mContainer, "alpha", 0f, 1f)
-                .setDuration(ANIMATE_CONTENT_IN_ALPHA_DURATION))
-                .with(ObjectAnimator.ofFloat(mContainer, "scaleX", 2f, 1f)
-                .setDuration(ANIMATE_CONTENT_IN_SCALE_DURATION))
-                .with(ObjectAnimator.ofFloat(mContainer, "scaleY", 2f, 1f)
-                .setDuration(ANIMATE_CONTENT_IN_SCALE_DURATION));
-        set.setStartDelay(mAnimateContentInDelay);
-        set.start();
-        mBottomActionsLayout.setAlpha(0f);
-        mBottomActionsLayout.animate().alpha(1f).setStartDelay(mAnimateContentInDelay)
-                .setDuration(ANIMATE_CONTENT_IN_ALPHA_DURATION);
+        if (!mShowAnimatedLockScreensOnly) {
+            AnimatorSet set = new AnimatorSet();
+            set.play(ObjectAnimator.ofFloat(mContainer, "alpha", 0f, 1f)
+                    .setDuration(ANIMATE_CONTENT_IN_ALPHA_DURATION))
+                    .with(ObjectAnimator.ofFloat(mContainer, "scaleX", 2f, 1f)
+                    .setDuration(ANIMATE_CONTENT_IN_SCALE_DURATION))
+                    .with(ObjectAnimator.ofFloat(mContainer, "scaleY", 2f, 1f)
+                    .setDuration(ANIMATE_CONTENT_IN_SCALE_DURATION));
+            set.setStartDelay(mAnimateContentInDelay);
+            set.start();
+            mBottomActionsLayout.setAlpha(0f);
+            mBottomActionsLayout.animate().alpha(1f).setStartDelay(mAnimateContentInDelay)
+                    .setDuration(ANIMATE_CONTENT_IN_ALPHA_DURATION);
+        } else {
+            mContainer.setAlpha(0f);
+            mContainer.setVisibility(View.GONE);
+        }
         mAnimateContentIn = false;
     }
 
@@ -919,7 +940,7 @@ public class ChooserActivity extends FragmentActivity
                 final String pkgName = mInstalledThemes.get(position);
                 if (pkgName.equals(mAppliedBaseTheme)) {
                     f = MyThemeFragment.newInstance(mAppliedBaseTheme, mAppliedThemeTitle,
-                            mAppliedThemeAuthor, mAnimateContentIn);
+                            mAppliedThemeAuthor, mAnimateContentIn, mShowAnimatedLockScreensOnly);
                     wallpaperCmpntId = mCurrentWallpaperCmpntId;
                 } else {
                     f = ThemeFragment.newInstance(pkgName, mAnimateContentIn);
@@ -1056,5 +1077,26 @@ public class ChooserActivity extends FragmentActivity
                 Log.e(TAG, "Delete failed with returnCode " + returnCode);
             }
         }
+    }
+
+    public void expandContentAndAnimateLockScreenCardIn() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                expand();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AnimatorSet set = new AnimatorSet();
+                        set.play(ObjectAnimator.ofFloat(mContainer, "alpha", 0f, 1f)
+                                .setDuration(ANIMATE_CARDS_IN_DURATION));
+                        set.setStartDelay(mAnimateContentInDelay);
+                        set.start();
+                        mContainer.setVisibility(View.VISIBLE);
+                        getCurrentFragment().showAnimatedLockScreenCard();
+                    }
+                }, ANIMATE_CARDS_IN_DURATION);
+            }
+        });
     }
 }
