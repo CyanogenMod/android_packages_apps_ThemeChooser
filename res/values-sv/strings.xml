@@ -48,6 +48,7 @@
   <string name="theme_installed_notification_text">Temat installerades.</string>
   <string name="menu_item_get_more_themes">Hitta fler</string>
   <string name="get_more_description">Du kan få fler teman från följande länkar:</string>
+  <string name="get_more_app_not_available">Appen är inte tillgänglig</string>
   <string name="get_more_entry_play_store">Play Butik</string>
   <string name="get_more_entry_cm_wiki">Mer info på CyanogenMods Wiki</string>
   <string name="designed_for_cm11">Designad för CM11</string>
