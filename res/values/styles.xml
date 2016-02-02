@@ -128,4 +128,14 @@
         <item name="android:textColor">@color/tag_text_color</item>
         <item name="android:textAllCaps">true</item>
     </style>
+
+    <style name="animated_lock_screen_badge_text_style">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:alpha">0.54</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.2</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
 </resources>

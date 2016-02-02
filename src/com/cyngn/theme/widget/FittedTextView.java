@@ -5,6 +5,8 @@ package com.cyngn.theme.widget;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.text.method.TransformationMethod;
+import android.text.method.AllCapsTransformationMethod;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.TextView;
@@ -37,7 +39,11 @@ public class FittedTextView extends TextView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         final float THRESHOLD = 0.5f;
         final float TARGET_WIDTH = getMeasuredWidth();
-        final String text = getText().toString();
+        String text = getText().toString();
+        TransformationMethod tm = getTransformationMethod();
+        if (tm != null && tm instanceof AllCapsTransformationMethod) {
+            text = getText().toString().toUpperCase();
+        }
         mPaint.set(getPaint());
 
         float max = 200;

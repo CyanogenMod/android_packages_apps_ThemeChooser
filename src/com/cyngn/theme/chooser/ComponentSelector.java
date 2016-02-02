@@ -685,7 +685,7 @@ public class ComponentSelector extends LinearLayout
             v.setTag(R.id.tag_key_package_name, cursor.getString(pkgNameIndex));
             v.setTag(R.id.tag_key_component_id, cmpntId);
             v.setTag(R.id.tag_key_live_lock_screen, isLiveLockScreen);
-            v.findViewById(R.id.live_lock_screen_ribbon)
+            v.findViewById(R.id.live_lock_screen_badge)
                     .setVisibility(isLiveLockScreen ? View.VISIBLE : View.GONE);
         }
         v.setOnClickListener(mItemClickListener);
