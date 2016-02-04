@@ -18,9 +18,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/item_browse_height"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:paddingBottom="16dp"
+    android:paddingStart="@dimen/cards_padding"
+    android:paddingEnd="@dimen/cards_padding"
+    android:paddingTop="@dimen/cards_top_bottom_padding"
+    android:paddingBottom="@dimen/cards_top_bottom_padding"
     android:clipToPadding="false">
 
     <LinearLayout
@@ -29,7 +30,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@drawable/card_background"
-        android:elevation="5dp">
+        android:elevation="@dimen/cards_elevation">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -46,8 +47,8 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp">
+                android:paddingLeft="@dimen/cards_internal_padding"
+                android:paddingRight="@dimen/cards_internal_padding">
             </LinearLayout>
         </FrameLayout>
 
@@ -65,9 +66,9 @@
                 android:layout_alignParentTop="true"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:paddingStart="24dp"
-                android:paddingTop="6dp"
-                android:textSize="28sp" />
+                android:paddingStart="@dimen/cards_texts_padding"
+                android:paddingTop="@dimen/cards_texts_padding"
+                android:textSize="@dimen/cards_titles_size" />
 
             <TextView
                 android:id="@+id/author"
@@ -75,9 +76,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/title"
-                android:layout_marginTop="-2dp"
-                android:paddingStart="26dp"
-                android:textSize="12sp" />
+                android:layout_marginTop="@dimen/cards_subtitles_top_margin"
+                android:paddingStart="@dimen/cards_texts_padding"
+                android:paddingBottom="@dimen/cards_subtitles_bottom_padding"
+                android:textSize="@dimen/cards_subtitles_size" />
 
             <TextView
                 android:id="@+id/designed_for"
@@ -85,10 +87,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/title"
-                android:layout_marginTop="-2dp"
-                android:paddingEnd="26dp"
+                android:layout_marginTop="@dimen/cards_subtitles_top_margin"
+                android:paddingEnd="@dimen/cards_texts_padding"
+                android:paddingBottom="@dimen/cards_subtitles_bottom_padding"
                 android:text="@string/designed_for_cm11"
-                android:textSize="12sp"
+                android:textSize="@dimen/cards_subtitles_size"
                 android:textColor="@color/designed_for_color"
                 android:visibility="gone"/>
         </RelativeLayout>
