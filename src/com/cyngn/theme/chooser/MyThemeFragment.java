@@ -26,7 +26,6 @@ import android.os.Bundle;
 import android.provider.ThemesContract;
 import android.provider.ThemesContract.PreviewColumns;
 import android.provider.ThemesContract.ThemesColumns;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.util.MutableLong;
@@ -39,6 +38,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.cyngn.theme.util.AudioUtils;
 import com.cyngn.theme.util.CursorLoaderHelper;
 import com.cyngn.theme.util.PreferenceUtils;
@@ -93,6 +93,7 @@ public class MyThemeFragment extends ThemeFragment {
         mBaseThemeAuthor = getArguments().getString(ARG_BASE_THEME_AUTHOR);
         mShowAnimatedLockScreenSelectorAfterContentLoaded = getArguments().getBoolean(ARG_SHOW_ANIMATED_LOCK_SCREEN_ONLY);
         mSurfaceView = createSurfaceView();
+        populateBaseThemeSupportedComponents(mBaseThemePkgName);
     }
 
     @Override
@@ -106,9 +107,8 @@ public class MyThemeFragment extends ThemeFragment {
         if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mBaseThemePkgName)) {
             mThemeTagLayout.setUpdatedTagEnabled(true);
         }
-        setCustomizedTagIfCustomized();
         mDelete.setVisibility(View.GONE);
-        mReset.setVisibility(View.VISIBLE);
+        setCustomized(isThemeCustomized());
         return v;
     }
 
@@ -309,33 +309,9 @@ public class MyThemeFragment extends ThemeFragment {
         }
     };
 
-    private void setCustomizedTagIfCustomized() {
-        boolean isDefault =
-                mBaseThemePkgName.equals(Utils.getDefaultThemePackageName(getActivity()));
-        if (isDefault) {
-            // The default theme could be a mix of the system default theme and holo so lets check
-            // that.  i.e. Hexo with holo for the components not found in Hexo
-            Map<String, String> defaultComponents = ThemeUtils.getDefaultComponents(getActivity());
-            for (String component : mCurrentTheme.keySet()) {
-                String componentPkgName = mCurrentTheme.get(component);
-                if (defaultComponents.containsKey(component)) {
-                    if (!componentPkgName.equals(defaultComponents.get(component))) {
-                        mThemeTagLayout.setCustomizedTagEnabled(true);
-                        break;
-                    }
-                } else {
-                    mThemeTagLayout.setCustomizedTagEnabled(true);
-                    break;
-                }
-            }
-        } else {
-            for (String pkgName : mCurrentTheme.values()) {
-                if (!pkgName.equals(mBaseThemePkgName)) {
-                    mThemeTagLayout.setCustomizedTagEnabled(true);
-                    break;
-                }
-            }
-        }
+    private void setCustomized(boolean customized) {
+        mReset.setVisibility(customized ? View.VISIBLE : View.GONE);
+        mThemeTagLayout.setCustomizedTagEnabled(customized);
     }
 
     @Override
@@ -391,14 +367,23 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     protected Map<String, String> getComponentsToApply() {
-        Map<String, String> componentsToApply = new HashMap<String, String>();
-        // Only apply components that actually changed
-        for (String component : mSelectedComponentsMap.keySet()) {
-            String currentPkg = mCurrentTheme.get(component);
-            String selectedPkg = mSelectedComponentsMap.get(component);
-            if (currentPkg == null || mThemeResetting || !currentPkg.equals(selectedPkg) ||
-                    mCurrentWallpaperComponentId.value != mSelectedWallpaperComponentId) {
-                componentsToApply.put(component, selectedPkg);
+        Map<String, String> componentsToApply = mThemeResetting
+                ? getEmptyComponentsMap()
+                : new HashMap<String, String>();
+        if (mThemeResetting) {
+            final String pkgName = getThemePackageName();
+            for (String component : mBaseThemeSupportedComponents) {
+                componentsToApply.put(component, pkgName);
+            }
+        } else {
+            // Only apply components that actually changed
+            for (String component : mSelectedComponentsMap.keySet()) {
+                String currentPkg = mCurrentTheme.get(component);
+                String selectedPkg = mSelectedComponentsMap.get(component);
+                if (currentPkg == null || mThemeResetting || !currentPkg.equals(selectedPkg) ||
+                        mCurrentWallpaperComponentId.value != mSelectedWallpaperComponentId) {
+                    componentsToApply.put(component, selectedPkg);
+                }
             }
         }
         return componentsToApply;
@@ -664,6 +649,34 @@ public class MyThemeFragment extends ThemeFragment {
     private void removeSurfaceView(SurfaceView sv) {
         if (mShadowFrame.indexOfChild(mSurfaceView) >= 0) {
             mShadowFrame.removeView(sv);
+        }
+    }
+
+    /**
+     * Populates mBaseThemeSupportedComponents.
+     * @param pkgName Package name of the base theme used
+     */
+    private void populateBaseThemeSupportedComponents(String pkgName) {
+        String selection = ThemesColumns.PKG_NAME + "=?";
+        String[] selectionArgs = { pkgName };
+        Cursor c = getActivity().getContentResolver().query(ThemesColumns.CONTENT_URI,
+                null, selection, selectionArgs, null);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                List<String> components = ThemeUtils.getAllComponents();
+                final String baseThemePackageName = getThemePackageName();
+                for (String component : components) {
+                    int pkgIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
+                    int modifiesCompIdx = c.getColumnIndex(component);
+
+                    String pkg = pkgIdx >= 0 ? c.getString(pkgIdx) : null;
+                    boolean supported = (modifiesCompIdx >= 0) && (c.getInt(modifiesCompIdx) == 1);
+                    if (supported && baseThemePackageName.equals(pkg)) {
+                        mBaseThemeSupportedComponents.add(component);
+                    }
+                }
+            }
+            c.close();
         }
     }
 }

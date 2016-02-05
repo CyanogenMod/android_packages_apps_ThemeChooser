@@ -884,9 +884,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         content.setPadding(leftRightPadding, 0, leftRightPadding, 0);
 
         if (applyTheme) {
-            final boolean changed = componentsChanged();
-            mThemeTagLayout.setCustomizedTagEnabled(changed);
-            mReset.setVisibility(changed ? View.VISIBLE : View.GONE);
+            final boolean customized = isThemeCustomized();
+            mThemeTagLayout.setCustomizedTagEnabled(customized);
+            mReset.setVisibility(customized ? View.VISIBLE : View.GONE);
         }
 
         //Move the theme preview so that it is near the center of page per spec
@@ -2207,7 +2207,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             Map<String, String> originalMap) {
         HashMap newMap = new HashMap<String, String>();
         newMap.putAll(originalMap);
-        Map<String, String> defaultMap = ThemeUtils.getDefaultComponents(getActivity());
+        Map<String, String> defaultMap = getEmptyComponentsMap();
         for(Map.Entry<String, String> entry : defaultMap.entrySet()) {
             String component = entry.getKey();
             String defaultPkg = entry.getValue();
@@ -2216,6 +2216,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         }
         return newMap;
+    }
+
+    protected Map<String, String> getEmptyComponentsMap() {
+        List<String> componentsList = ThemeUtils.getAllComponents();
+        Map<String, String> defaultMap = new HashMap<>(componentsList.size());
+        for (String component : componentsList) {
+            defaultMap.put(component, "");
+        }
+        return defaultMap;
     }
 
     /**
@@ -2727,6 +2736,25 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     mCurrentWallpaperComponentId.value != mSelectedWallpaperComponentId) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    protected boolean isThemeCustomized() {
+        final String themePkgName = getThemePackageName();
+        for (String key : mSelectedComponentsMap.keySet()) {
+            final String selectedPkgName = mSelectedComponentsMap.get(key);
+            if (!themePkgName.equals(selectedPkgName)) {
+                return true;
+            }
+            if (mBaseThemeSupportedComponents.size() > 0 &&
+                    !mBaseThemeSupportedComponents.contains(key)) {
+                return true;
+            }
+        }
+        // finally check if we're missing anything from mBaseThemeSupportedComponents
+        for (String component : mBaseThemeSupportedComponents) {
+            if (!mSelectedComponentsMap.containsKey(component)) return true;
         }
         return false;
     }

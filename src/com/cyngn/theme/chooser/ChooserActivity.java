@@ -804,6 +804,8 @@ public class ChooserActivity extends FragmentActivity
         c.moveToPosition(-1);
         //Default to first wallpaper
         mCurrentWallpaperCmpntId.value = DEFAULT_COMPONENT_ID;
+        // clear out the previous map
+        mCurrentTheme.clear();
         while(c.moveToNext()) {
             int mixkeyIdx = c.getColumnIndex(ThemesContract.MixnMatchColumns.COL_KEY);
             int pkgIdx = c.getColumnIndex(ThemesContract.MixnMatchColumns.COL_VALUE);
