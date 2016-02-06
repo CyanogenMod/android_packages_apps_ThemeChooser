@@ -14,6 +14,7 @@ import android.provider.ThemesContract;
 import android.text.TextUtils;
 import com.cyngn.theme.util.NotificationHelper;
 import com.cyngn.theme.util.PreferenceUtils;
+import com.cyngn.theme.util.Utils;
 
 public class AppReceiver extends BroadcastReceiver {
 
@@ -24,7 +25,7 @@ public class AppReceiver extends BroadcastReceiver {
         String action = intent.getAction();
 
         if (ThemesContract.Intent.ACTION_THEME_INSTALLED.equals(action)) {
-            if (!pkgName.equals(ThemeUtils.getDefaultThemePackageName(context))) {
+            if (!pkgName.equals(Utils.getDefaultThemePackageName(context))) {
                 NotificationHelper.postThemeInstalledNotification(context, pkgName);
             }
         } else if (ThemesContract.Intent.ACTION_THEME_REMOVED.equals(action)) {
@@ -36,7 +37,7 @@ public class AppReceiver extends BroadcastReceiver {
             String appliedBaseTheme = PreferenceUtils.getAppliedBaseTheme(context);
             if (!TextUtils.isEmpty(appliedBaseTheme) && appliedBaseTheme.equals(pkgName)) {
                 PreferenceUtils.setAppliedBaseTheme(context,
-                ThemeUtils.getDefaultThemePackageName(context));
+                Utils.getDefaultThemePackageName(context));
             }
             NotificationHelper.cancelNotifications(context);
         } else if (ThemesContract.Intent.ACTION_THEME_UPDATED.equals(action)) {

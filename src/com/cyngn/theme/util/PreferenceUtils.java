@@ -37,7 +37,7 @@ public class PreferenceUtils {
         String appliedTheme = config != null ? config.getOverlayPkgName() : null;
         return prefs.getString(PREF_APPLIED_BASE_THEME,
                 (!TextUtils.isEmpty(appliedTheme)) ? appliedTheme :
-                ThemeUtils.getDefaultThemePackageName(context));
+                Utils.getDefaultThemePackageName(context));
     }
 
     public static void setAppliedBaseTheme(Context context, String pkgName) {

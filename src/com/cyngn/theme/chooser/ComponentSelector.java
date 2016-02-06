@@ -805,7 +805,7 @@ public class ComponentSelector extends LinearLayout
         if (cmpntIdIndex >= 0) {
             cmpntId = cursor.getLong(cmpntIdIndex);
         }
-        if (ThemeUtils.getDefaultThemePackageName(mContext).equals(pkgName)) {
+        if (Utils.getDefaultThemePackageName(mContext).equals(pkgName)) {
             titleView.setText(mContext.getString(R.string.default_tag_text));
             titleView.setTypeface(titleView.getTypeface(), Typeface.BOLD);
         } else {

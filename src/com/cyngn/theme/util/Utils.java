@@ -49,6 +49,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static android.content.res.ThemeConfig.SYSTEM_DEFAULT;
+
 public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
     private static final boolean DEBUG = false;
@@ -684,5 +686,23 @@ public class Utils {
                 .setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS|Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(KeyguardExternalView.EXTRA_PERMISSION_LIST, permissionList);
         return permissionIntent;
+    }
+
+    public static String getDefaultThemePackageName(Context context) {
+        final String defaultThemePkg = CMSettings.Secure.getString(context.getContentResolver(),
+                CMSettings.Secure.DEFAULT_THEME_PACKAGE);
+        if (!TextUtils.isEmpty(defaultThemePkg)) {
+            PackageManager pm = context.getPackageManager();
+            try {
+                if (pm.getPackageInfo(defaultThemePkg, 0) != null) {
+                    return defaultThemePkg;
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                // doesn't exist so system will be default
+                Log.w(TAG, "Default theme " + defaultThemePkg + " not found", e);
+            }
+        }
+
+        return SYSTEM_DEFAULT;
     }
 }

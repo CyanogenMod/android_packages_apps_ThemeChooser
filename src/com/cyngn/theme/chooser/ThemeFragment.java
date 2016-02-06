@@ -442,7 +442,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
                 Menu menu = popupmenu.getMenu();
                 if (CURRENTLY_APPLIED_THEME.equals(mPkgName) ||
-                        mPkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity())) ||
+                        mPkgName.equals(Utils.getDefaultThemePackageName(getActivity())) ||
                         mPkgName.equals(ThemeConfig.SYSTEM_DEFAULT)) {
                     menu.findItem(R.id.menu_delete).setEnabled(false);
                 }
@@ -475,7 +475,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 showDeleteThemeOverlay();
             }
         });
-        if (ThemeUtils.getDefaultThemePackageName(getActivity()).equals(mPkgName) ||
+        if (Utils.getDefaultThemePackageName(getActivity()).equals(mPkgName) ||
                 ThemeConfig.SYSTEM_DEFAULT.equals(mPkgName)) {
             mDelete.setVisibility(View.GONE);
         }
@@ -515,7 +515,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
         mProcessingThemeLayout = v.findViewById(R.id.processing_theme_layout);
 
-        if (mPkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()))) {
+        if (mPkgName.equals(Utils.getDefaultThemePackageName(getActivity()))) {
             mThemeTagLayout.setDefaultTagEnabled(true);
         }
         if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mPkgName)) {
@@ -1910,7 +1910,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected void setCardTitle(ComponentCardView card, String pkgName, String title) {
         TextView tv = (TextView) card.findViewById(R.id.label);
-        if (ThemeUtils.getDefaultThemePackageName(getActivity()).equals(pkgName)) {
+        if (Utils.getDefaultThemePackageName(getActivity()).equals(pkgName)) {
             tv.setText(getString(R.string.default_tag_text) + " " + title);
         } else {
             tv.setText(title);

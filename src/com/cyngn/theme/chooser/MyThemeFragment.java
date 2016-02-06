@@ -100,7 +100,7 @@ public class MyThemeFragment extends ThemeFragment {
                              Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
         mThemeTagLayout.setAppliedTagEnabled(true);
-        if (mBaseThemePkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()))) {
+        if (mBaseThemePkgName.equals(Utils.getDefaultThemePackageName(getActivity()))) {
             mThemeTagLayout.setDefaultTagEnabled(true);
         }
         if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mBaseThemePkgName)) {
@@ -311,7 +311,7 @@ public class MyThemeFragment extends ThemeFragment {
 
     private void setCustomizedTagIfCustomized() {
         boolean isDefault =
-                mBaseThemePkgName.equals(ThemeUtils.getDefaultThemePackageName(getActivity()));
+                mBaseThemePkgName.equals(Utils.getDefaultThemePackageName(getActivity()));
         if (isDefault) {
             // The default theme could be a mix of the system default theme and holo so lets check
             // that.  i.e. Hexo with holo for the components not found in Hexo
