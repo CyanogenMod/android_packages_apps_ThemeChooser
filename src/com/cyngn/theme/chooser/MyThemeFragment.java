@@ -360,11 +360,18 @@ public class MyThemeFragment extends ThemeFragment {
         super.onLoadFinished(loader, c);
         // if the theme is resetting, we need to apply these changes now that the supported
         // theme components have been properly set.
-        if (mThemeResetting && loader.getId() == LOADER_ID_ALL) {
-            applyTheme();
-        } else if (loader.getId() == LOADER_ID_ALL && mApplyThemeOnPopulated) {
-            loadComponentsToApply();
-            applyTheme();
+        if (loader.getId() == LOADER_ID_ALL) {
+            if (mThemeResetting) {
+                applyTheme();
+            } else if (mApplyThemeOnPopulated) {
+                loadComponentsToApply();
+                applyTheme();
+            } else if (mSelectedComponentsMap.size() == 0) {
+                //Re-populates selected components with current theme. Why?
+                //We got here because the cursor was reloaded after the user pressed back and no
+                //changes were applied, causing the selected components map to be wiped out
+                mSelectedComponentsMap.putAll(mCurrentTheme);
+            }
         }
     }
 
