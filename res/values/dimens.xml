@@ -22,4 +22,14 @@
     <dimen name="drawer_item_height">48dp</dimen>
     <dimen name="drawer_item_label_text_size">14sp</dimen>
     <dimen name="icon_padding">8dp</dimen>
+    <dimen name="cards_corners_radius">2dp</dimen>
+    <dimen name="cards_padding">8dp</dimen>
+    <dimen name="cards_top_bottom_padding">4dp</dimen>
+    <dimen name="cards_elevation">2dp</dimen>
+    <dimen name="cards_internal_padding">24dp</dimen>
+    <dimen name="cards_texts_padding">24dp</dimen>
+    <dimen name="cards_subtitles_top_margin">12dp</dimen>
+    <dimen name="cards_subtitles_bottom_padding">16dp</dimen>
+    <dimen name="cards_titles_size">24sp</dimen>
+    <dimen name="cards_subtitles_size">14sp</dimen>
 </resources>
