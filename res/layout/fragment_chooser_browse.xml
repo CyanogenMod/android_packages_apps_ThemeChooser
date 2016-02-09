@@ -25,7 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@null"
-        android:paddingTop="16dp"
+        android:paddingTop="@dimen/cards_top_bottom_padding"
+        android:paddingBottom="@dimen/cards_top_bottom_padding"
         android:clipToPadding="false"/>
 
     <ProgressBar
