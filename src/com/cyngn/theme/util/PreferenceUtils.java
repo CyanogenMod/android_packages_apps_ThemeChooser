@@ -34,10 +34,10 @@ public class PreferenceUtils {
 
         final Resources res = context.getResources();
         final ThemeConfig config = res.getConfiguration().themeConfig;
-        String appliedTheme = config != null ? config.getOverlayPkgName() : null;
-        return prefs.getString(PREF_APPLIED_BASE_THEME,
-                (!TextUtils.isEmpty(appliedTheme)) ? appliedTheme :
-                Utils.getDefaultThemePackageName(context));
+        String appliedTheme = config != null
+                              ? config.getOverlayPkgName()
+                              : ThemeConfig.SYSTEM_DEFAULT;
+        return prefs.getString(PREF_APPLIED_BASE_THEME, appliedTheme);
     }
 
     public static void setAppliedBaseTheme(Context context, String pkgName) {
