@@ -90,4 +90,7 @@
     <string name="read_external_permission_denied_message">Theme chooser cannot access media and is unable to pick an image at this time.</string>
 
     <string name="animated_lock_screen_badge_text">Anim</string>
+    <string name="enable_live_lock_screen_dialog_title">Enable Live lock screen</string>
+    <string name="enable_live_lock_screen_dialog_message">Animated lock screens require the Live lock screen feature. You can change this later by opening Settings and visiting the Live lock screen page under Lock screen options.</string>
+    <string name="enable_live_lock_screen_dialog_positive_btn_text">Enable</string>
 </resources>

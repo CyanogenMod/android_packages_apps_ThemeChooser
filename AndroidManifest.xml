@@ -35,6 +35,9 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
 
+    <!-- Used to toggle Live Lock Screen setting -->
+    <uses-permission android:name="cyanogenmod.permission.WRITE_SECURE_SETTINGS" />
+
     <permission android:name="com.cyngn.themes.permission.THEMES_APP"
         android:protectionLevel="signatureOrSystem" />
 

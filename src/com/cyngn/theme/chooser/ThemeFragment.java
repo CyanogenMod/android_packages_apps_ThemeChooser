@@ -11,9 +11,11 @@ import android.animation.IntEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ThemeUtils;
@@ -93,6 +95,7 @@ import com.cyngn.theme.widget.LockableScrollView;
 import com.cyngn.theme.widget.ThemeTagLayout;
 
 import cyanogenmod.app.ThemeVersion;
+import cyanogenmod.providers.CMSettings;
 import org.cyanogenmod.internal.util.CmLockPatternUtils;
 
 import java.io.File;
@@ -137,6 +140,8 @@ import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_RINGTONE;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_NOTIFICATION;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ALARM;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_LIVE_LOCK_SCREEN;
+
+import static cyanogenmod.providers.CMSettings.Secure.LIVE_LOCK_SCREEN_ENABLED;
 
 import static android.content.pm.ThemeUtils.SYSTEM_TARGET_API;
 
@@ -2286,13 +2291,108 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     };
 
+    class RestoreLockScreenCardRunnable implements Runnable {
+
+        final private boolean mWasShowingNone;
+        private String mCurrentLockScreenPkgName;
+
+        public RestoreLockScreenCardRunnable(boolean w, String pkgName) {
+            mWasShowingNone = w;
+            mCurrentLockScreenPkgName = pkgName;
+        }
+
+        @Override
+        public void run() {
+            if (!TextUtils.isEmpty(mCurrentLockScreenPkgName)) {
+                loadComponentFromPackage(mCurrentLockScreenPkgName,
+                        MODIFIES_LOCKSCREEN, 0);
+            } else if (mWasShowingNone) {
+                mLockScreenCard.setWallpaper(null);
+                TextView none = (TextView) mLockScreenCard.findViewById(
+                        R.id.none);
+                if (none != null) {
+                    none.setVisibility(View.VISIBLE);
+                }
+                mLockScreenCard.setEmptyViewEnabled(false);
+            } else {
+                mLockScreenCard.clearWallpaper();
+                TextView none = (TextView) mLockScreenCard.findViewById(
+                        R.id.none);
+                if (none != null) {
+                    none.setVisibility(View.GONE);
+                }
+                mLockScreenCard.setEmptyViewEnabled(true);
+                setAddComponentTitle(mLockScreenCard, getString(R.string.lockscreen_label));
+            }
+        }
+    }
+
     protected void applyTheme() {
         if (mExternalWallpaperUri == null && mExternalLockscreenUri == null &&
                 (mSelectedComponentsMap == null || mSelectedComponentsMap.size() <= 0)) {
             return;
         }
-        getChooserActivity().themeChangeStart();
-        animateProgressIn(mApplyThemeRunnable);
+        final Map<String,String> componentsToApply = getComponentsToApply();
+        boolean isLLSEnabled = CMSettings.Secure.getInt(getActivity().getContentResolver(),
+                LIVE_LOCK_SCREEN_ENABLED, 0) == 1;
+        if (!TextUtils.isEmpty(componentsToApply.get(MODIFIES_LIVE_LOCK_SCREEN)) && !isLLSEnabled) {
+            AlertDialog d = new AlertDialog.Builder(getActivity(),
+                    android.R.style.Theme_Material_Dialog)
+                    .setTitle(R.string.enable_live_lock_screen_dialog_title)
+                    .setMessage(R.string.enable_live_lock_screen_dialog_message)
+                    .setPositiveButton(R.string.enable_live_lock_screen_dialog_positive_btn_text,
+                            new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            CMSettings.Secure.putInt(getActivity().getContentResolver(),
+                                    LIVE_LOCK_SCREEN_ENABLED, 1);
+                            getChooserActivity().themeChangeStart();
+                            animateProgressIn(mApplyThemeRunnable);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mSelectedComponentsMap.remove(MODIFIES_LIVE_LOCK_SCREEN);
+                            boolean wasNone = false;
+                            if (TextUtils.equals("", mSelectedComponentsMap.get(
+                                    MODIFIES_LOCKSCREEN))) {
+                                if (!TextUtils.isEmpty(mCurrentTheme.get(MODIFIES_LOCKSCREEN))) {
+                                    //The map entry was set to empty string because there's a
+                                    //lockscreen currently applied and setting this entry to empty
+                                    //would instruct the ThemeManager to clear the currently applied
+                                    //lockscreen, but the user decided not to enable LLS so we need
+                                    //to abort this change
+                                    mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN,
+                                            mCurrentTheme.get(MODIFIES_LOCKSCREEN));
+                                } else {
+                                    wasNone = true;
+                                }
+                            }
+                            //Restore the lockscreen card to its previous state
+                            mHandler.post(new RestoreLockScreenCardRunnable(wasNone,
+                                    mCurrentTheme.get(MODIFIES_LOCKSCREEN)));
+
+                            //Did the user make more changes?
+                            boolean modLLS = componentsToApply.containsKey(
+                                    MODIFIES_LIVE_LOCK_SCREEN);
+                            boolean modLockscreen = componentsToApply.containsKey(
+                                    MODIFIES_LOCKSCREEN);
+                            if (modLLS && ((modLockscreen && componentsToApply.size() > 2) ||
+                                    (!modLockscreen && componentsToApply.size() > 1))) {
+                                getChooserActivity().themeChangeStart();
+                                animateProgressIn(mApplyThemeRunnable);
+                            }
+                        }
+                    })
+                    .setCancelable(false)
+                    .create();
+            d.setCanceledOnTouchOutside(false);
+            d.show();
+        } else {
+            getChooserActivity().themeChangeStart();
+            animateProgressIn(mApplyThemeRunnable);
+        }
     }
 
     /**
