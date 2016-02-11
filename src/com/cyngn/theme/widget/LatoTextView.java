@@ -10,6 +10,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
+import com.cyngn.theme.chooser.R;
 import com.cyngn.theme.util.Utils;
 
 import java.io.File;
@@ -17,7 +18,7 @@ import java.io.File;
 /**
  * A custom TextView that always uses the Lato font
  */
-public class LatoTextView extends TextView {
+public class LatoTextView extends FittedTextView {
     private static final int NUM_TYPEFACE_PER_FAMILY = 4;
 
     private static final String FONT_ASSSET_DIR = "fonts";
@@ -135,6 +136,16 @@ public class LatoTextView extends TextView {
             }
 
             setTypefaceFromAttrs(fontFamily, styleIndex);
+            TypedArray styledAttrs = context.obtainStyledAttributes(attrs,
+                    R.styleable.FittedTextView, 0, 0);
+            try {
+                //Although we extend FittedTextView, we don't want all instances to auto fit the
+                //text, so we check if autoFitText has been set in the attributes. Default to false
+                boolean fit = styledAttrs.getBoolean(R.styleable.FittedTextView_autoFitText, false);
+                setAutoFitText(fit);
+            } finally {
+                styledAttrs.recycle();
+            }
         }
     }
 

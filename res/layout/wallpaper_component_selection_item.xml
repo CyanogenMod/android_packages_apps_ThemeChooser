@@ -3,6 +3,7 @@
      Copyright (C) 2014 Cyanogen, Inc.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cyngn="http://schemas.android.com/apk/res/com.cyngn.theme.chooser"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/component_selection_cell_height"
@@ -31,16 +32,17 @@
                 android:background="@android:color/white"
                 android:layout_gravity="center_horizontal|bottom"
                 android:visibility="gone">
-            <com.cyngn.theme.widget.FittedTextView
+            <com.cyngn.theme.widget.LatoTextView
                     android:layout_width="@dimen/animated_lock_screen_text_width"
                     android:layout_height="@dimen/animated_lock_screen_text_height"
                     android:includeFontPadding="false"
-                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="@dimen/animated_lock_screen_text_margin_left"
                     android:layout_marginRight="@dimen/animated_lock_screen_text_margin_right"
                     android:layout_marginTop="@dimen/animated_lock_screen_text_margin_top"
                     android:layout_marginBottom="@dimen/animated_lock_screen_text_margin_bottom"
                     style="@style/animated_lock_screen_badge_text_style"
+                    cyngn:autoFitText="true"
                     android:text="@string/animated_lock_screen_badge_text"/>
         </LinearLayout>
     </FrameLayout>

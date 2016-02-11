@@ -18,15 +18,14 @@ import android.widget.TextView;
  */
 public class FittedTextView extends TextView {
     private Paint mPaint;
+    private boolean mAutoFitText = true;
 
     public FittedTextView(Context context) {
-        super(context);
-        mPaint = new Paint();
+        this(context, null);
     }
 
     public FittedTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        mPaint = new Paint();
+        this(context, attrs, 0);
     }
 
     public FittedTextView(Context context, AttributeSet attrs, int defStyle) {
@@ -34,9 +33,19 @@ public class FittedTextView extends TextView {
         mPaint = new Paint();
     }
 
+    protected void setAutoFitText(boolean autoFit) {
+        mAutoFitText = autoFit;
+    }
+
+    protected boolean getAutoFitText() {
+        return mAutoFitText;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (!mAutoFitText) return;
+
         final float THRESHOLD = 0.5f;
         final float TARGET_WIDTH = getMeasuredWidth();
         String text = getText().toString();
@@ -45,6 +54,9 @@ public class FittedTextView extends TextView {
             text = getText().toString().toUpperCase();
         }
         mPaint.set(getPaint());
+
+        //If it fits as is, don't touch it
+        if (mPaint.measureText(text) <= TARGET_WIDTH) return;
 
         float max = 200;
         float min = 2;
