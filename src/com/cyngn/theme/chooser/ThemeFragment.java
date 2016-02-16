@@ -2875,8 +2875,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                final ValueAnimator scrollAnimator =
-                        ValueAnimator.ofInt(0, mStyleCard.getBottom());
+                final int scrollToY = mStatusBarCard.getMeasuredHeight()
+                        + mFontCard.getMeasuredHeight() + mIconCard.getMeasuredHeight()
+                        + mNavBarCard.getMeasuredHeight() + mWallpaperCard.getMeasuredHeight() / 2;
+                final ValueAnimator scrollAnimator = ValueAnimator.ofInt(0, scrollToY);
                 scrollAnimator.setDuration(LOCK_SCREEN_CARD_SCROLL_ANIMATION_DURATION);
                 scrollAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
