@@ -18,7 +18,11 @@ import android.widget.TextView;
  */
 public class FittedTextView extends TextView {
     private Paint mPaint;
+    //If set to true, the text will be resized to fit the view.
     private boolean mAutoFitText = true;
+    //Used to instruct whether the text should be expanded to fill out the view, even if the text
+    //fits without being resized
+    private boolean mAutoExpand = true;
 
     public FittedTextView(Context context) {
         this(context, null);
@@ -41,6 +45,10 @@ public class FittedTextView extends TextView {
         return mAutoFitText;
     }
 
+    protected void setAutoExpand(boolean autoExpand) {
+        mAutoExpand = autoExpand;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -55,8 +63,7 @@ public class FittedTextView extends TextView {
         }
         mPaint.set(getPaint());
 
-        //If it fits as is, don't touch it
-        if (mPaint.measureText(text) <= TARGET_WIDTH) return;
+        if (mPaint.measureText(text) <= TARGET_WIDTH && !mAutoExpand) return;
 
         float max = 200;
         float min = 2;

@@ -136,6 +136,7 @@ public class LatoTextView extends FittedTextView {
             }
 
             setTypefaceFromAttrs(fontFamily, styleIndex);
+            setAutoExpand(false);
             TypedArray styledAttrs = context.obtainStyledAttributes(attrs,
                     R.styleable.FittedTextView, 0, 0);
             try {
