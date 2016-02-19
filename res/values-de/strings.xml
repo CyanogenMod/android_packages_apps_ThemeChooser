@@ -48,7 +48,7 @@
   <string name="theme_installed_notification_text">Design erfolgreich installiert</string>
   <string name="menu_item_get_more_themes">Mehr beziehen</string>
   <string name="get_more_description">Weitere Designs erhalten Sie unter den folgenden Links:</string>
-  <string name="get_more_app_not_available">APP nicht verfügbar</string>
+  <string name="get_more_app_not_available">App nicht verfügbar</string>
   <string name="get_more_entry_play_store">Play Store</string>
   <string name="get_more_entry_cm_wiki">Weitere Informationen im CM-Wiki</string>
   <string name="designed_for_cm11">Entworfen für CM11</string>
