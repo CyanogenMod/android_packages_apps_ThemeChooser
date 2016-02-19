@@ -50,6 +50,7 @@ import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 
 import android.widget.ImageView;
 import com.cyngn.theme.perapptheming.PerAppThemingWindow;
@@ -120,6 +121,9 @@ public class ChooserActivity extends FragmentActivity
             + ThemeFragment.ANIMATE_START_DELAY + 250;
 
     private static final long ANIMATE_CARDS_IN_DURATION = 250;
+    private static final long ANIMATE_SAVE_APPLY_LAYOUT_DURATION = 300;
+    private static final float ANIMATE_SAVE_APPLY_DECELERATE_INTERPOLATOR_FACTOR = 3;
+    private static final long ONCLICK_SAVE_APPLY_FINISH_ANIMATION_DELAY = 400;
 
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
@@ -201,7 +205,26 @@ public class ChooserActivity extends FragmentActivity
                         if (mIsAnimating) return;
                         hideSaveApplyButton();
                         mContainer.setClickable(false);
-                        collapse(true);
+                        final ThemeFragment f = getCurrentFragment();
+                        if (mSelector.isEnabled()) {
+                            mSelector.hide();
+                            if (mContainerYOffset != 0) {
+                                slideContentBack(-mContainerYOffset);
+                                mContainerYOffset = 0;
+                            }
+                            if (f != null) f.fadeInCards();
+                            if (mShowAnimatedLockScreensOnly) {
+                                mShowAnimatedLockScreensOnly = false;
+                                mSelector.resetComponentType();
+                            }
+                        }
+
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                collapse(true);
+                            }
+                        }, ONCLICK_SAVE_APPLY_FINISH_ANIMATION_DELAY);
                     }
                 });
 
@@ -236,23 +259,50 @@ public class ChooserActivity extends FragmentActivity
         }
     }
 
+    public void showSaveApplyButton() {
+        if (mSaveApplyLayout != null && mSaveApplyLayout.getVisibility() != View.VISIBLE) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    int navBarHeight = 0;
+                    if (Utils.hasNavigationBar(ChooserActivity.this.getApplicationContext())) {
+                        navBarHeight = ChooserActivity.this.getResources()
+                                .getDimensionPixelSize(R.dimen.navigation_bar_height);
+                    }
+                    mSaveApplyLayout.setTranslationY(mSaveApplyLayout.getMeasuredHeight());
+                    mSaveApplyLayout.setVisibility(View.VISIBLE);
+                    mSaveApplyLayout.animate()
+                            .setDuration(ANIMATE_SAVE_APPLY_LAYOUT_DURATION)
+                            .setInterpolator(
+                                    new DecelerateInterpolator(
+                                            ANIMATE_SAVE_APPLY_DECELERATE_INTERPOLATOR_FACTOR))
+                            .translationY(-mSelector.getMeasuredHeight()
+                                    + navBarHeight);
+                }
+            });
+        }
+    }
+
     public void hideSaveApplyButton() {
-        Animation anim = AnimationUtils.loadAnimation(this, R.anim.component_selection_animate_out);
-        mSaveApplyLayout.startAnimation(anim);
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
+        if (mSaveApplyLayout.getVisibility() != View.GONE) {
+            Animation anim = AnimationUtils.loadAnimation(this,
+                    R.anim.component_selection_animate_out);
+            mSaveApplyLayout.startAnimation(anim);
+            anim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mSaveApplyLayout.setVisibility(View.GONE);
-            }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mSaveApplyLayout.setVisibility(View.GONE);
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+        }
     }
 
     private void hideBottomActionsLayout() {
@@ -529,7 +579,16 @@ public class ChooserActivity extends FragmentActivity
                 height = res.getDimensionPixelSize(
                         R.dimen.component_selection_cell_height_sounds);
             }
-            if (mSaveApplyLayout.getVisibility() == View.VISIBLE) hideSaveApplyButton();
+            if (mSaveApplyLayout.getVisibility() == View.VISIBLE) {
+                if (mSaveApplyLayout.getTranslationY() + height != 0) {
+                    mSaveApplyLayout.animate()
+                            .translationY(-height)
+                            .setInterpolator(
+                                    new DecelerateInterpolator(
+                                            ANIMATE_SAVE_APPLY_DECELERATE_INTERPOLATOR_FACTOR))
+                            .setDuration(ANIMATE_SAVE_APPLY_LAYOUT_DURATION);
+                }
+            }
             mSelector.show(component, selectedPkgName, selectedCmpntId, itemsPerPage, height);
 
             // determine if we need to shift the cards up
@@ -777,11 +836,17 @@ public class ChooserActivity extends FragmentActivity
 
         @Override
         public void onSelectorClosed() {
+        }
+
+        @Override
+        public void onSelectorClosing() {
             ThemeFragment f = getCurrentFragment();
-            if (f != null && f.componentsChanged()) {
-                mSaveApplyLayout.setVisibility(View.VISIBLE);
-                mSaveApplyLayout.startAnimation(AnimationUtils.loadAnimation(ChooserActivity.this,
-                        R.anim.component_selection_animate_in));
+            if (f != null && f.componentsChanged()
+                    && mSaveApplyLayout.getVisibility() == View.VISIBLE) {
+                mSaveApplyLayout.animate()
+                        .translationY(0)
+                        .setInterpolator(new DecelerateInterpolator())
+                        .setDuration(ANIMATE_SAVE_APPLY_LAYOUT_DURATION);
             }
         }
     };

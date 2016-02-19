@@ -155,12 +155,12 @@ public class ComponentSelector extends LinearLayout
         mAnimateOut.setAnimationListener(new AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+                if (mOpenCloseListener != null) mOpenCloseListener.onSelectorClosing();
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
                 setVisibility(View.GONE);
-                if (mOpenCloseListener != null) mOpenCloseListener.onSelectorClosed();
             }
 
             @Override
@@ -917,5 +917,6 @@ public class ComponentSelector extends LinearLayout
     public interface OnOpenCloseListener {
         public void onSelectorOpened();
         public void onSelectorClosed();
+        public void onSelectorClosing();
     }
 }

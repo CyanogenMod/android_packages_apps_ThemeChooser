@@ -1384,6 +1384,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 loadAudible(RingtoneManager.TYPE_ALARM, c, animate);
                 break;
         }
+        if (mCurrentLoaderId != LOADER_ID_ALL) {
+            if (!componentsChanged()) {
+                getChooserActivity().hideSaveApplyButton();
+            } else {
+                getChooserActivity().showSaveApplyButton();
+            }
+        }
     }
 
     @Override
