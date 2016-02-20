@@ -2813,11 +2813,20 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
      * @param selectorHeight
      */
     public void slideContentIntoView(final int yDelta, int selectorHeight) {
-        Space space = new Space(getActivity());
-        space.setId(ADDITIONAL_CONTENT_SPACE_ID);
-        mAdditionalCards.addView(space,
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                        selectorHeight));
+        Space space = (Space) mAdditionalCards.findViewById(ADDITIONAL_CONTENT_SPACE_ID);
+        if (space == null) {
+            // No space view yet so lets create it one
+            space = new Space(getActivity());
+            space.setId(ADDITIONAL_CONTENT_SPACE_ID);
+            mAdditionalCards.addView(space,
+                    new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            selectorHeight));
+        } else {
+            // Space view already exists so just update the LayoutParams
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) space.getLayoutParams();
+            params.height = selectorHeight;
+            space.setLayoutParams(params);
+        }
         final int startY = mScrollView.getScrollY();
         final ValueAnimator scrollAnimator =
                 ValueAnimator.ofInt(startY, startY + yDelta);
