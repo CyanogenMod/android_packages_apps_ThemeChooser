@@ -45,7 +45,7 @@
   <string name="unknown_author">Автор не указан</string>
   <string name="font_preview_letters">АаБбCcDd123</string>
   <string name="theme_installed_notification_title">Добавлена тема «%s»</string>
-  <string name="theme_installed_notification_text">Тема успешно установлена.</string>
+  <string name="theme_installed_notification_text">Тема установлена.</string>
   <string name="menu_item_get_more_themes">Скачать ещё</string>
   <string name="get_more_description">Вы можете скачать темы по следующим ссылкам:</string>
   <string name="get_more_app_not_available">Приложение недоступно</string>
