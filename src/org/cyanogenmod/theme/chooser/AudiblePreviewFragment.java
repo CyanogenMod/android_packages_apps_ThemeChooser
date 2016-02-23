@@ -18,7 +18,6 @@ package org.cyanogenmod.theme.chooser;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ThemeUtils;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.ThemeConfig;
@@ -33,6 +32,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.cyanogenmod.internal.util.ThemeUtils;
 
 import java.io.File;
 import java.io.IOException;

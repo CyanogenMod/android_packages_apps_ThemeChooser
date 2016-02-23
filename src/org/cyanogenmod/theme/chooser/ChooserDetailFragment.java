@@ -31,9 +31,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ThemesContract;
-import android.provider.ThemesContract.MixnMatchColumns;
-import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -59,6 +56,10 @@ import android.widget.TextView;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
+import cyanogenmod.providers.ThemesContract;
+import cyanogenmod.providers.ThemesContract.MixnMatchColumns;
+import cyanogenmod.providers.ThemesContract.ThemesColumns;
+
 import org.cyanogenmod.theme.util.ChooserDetailScrollView;
 import org.cyanogenmod.theme.util.Utils;
 
@@ -71,7 +72,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static android.content.pm.ThemeUtils.SYSTEM_TARGET_API;
+import static org.cyanogenmod.internal.util.ThemeUtils.SYSTEM_TARGET_API;
 
 public class ChooserDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, ThemeChangeListener {
     public static final HashMap<String, Integer> sComponentToId = new HashMap<String, Integer>();
