@@ -19,10 +19,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.res.ThemeChangeRequest;
-import android.content.res.ThemeChangeRequest.RequestType;
-import android.content.res.ThemeManager;
-import android.content.res.ThemeManager.ThemeChangeListener;
 import android.database.Cursor;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -31,9 +27,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ThemesContract;
-import android.provider.ThemesContract.MixnMatchColumns;
-import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -59,6 +52,13 @@ import android.widget.TextView;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
+import cyanogenmod.providers.ThemesContract;
+import cyanogenmod.providers.ThemesContract.MixnMatchColumns;
+import cyanogenmod.providers.ThemesContract.ThemesColumns;
+import cyanogenmod.themes.ThemeChangeRequest;
+import cyanogenmod.themes.ThemeManager;
+import cyanogenmod.themes.ThemeManager.ThemeChangeListener;
+
 import org.cyanogenmod.theme.util.ChooserDetailScrollView;
 import org.cyanogenmod.theme.util.Utils;
 
@@ -71,7 +71,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static android.content.pm.ThemeUtils.SYSTEM_TARGET_API;
+import static org.cyanogenmod.internal.util.ThemeUtils.SYSTEM_TARGET_API;
 
 public class ChooserDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, ThemeChangeListener {
     public static final HashMap<String, Integer> sComponentToId = new HashMap<String, Integer>();
@@ -221,7 +221,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
         getLoaderManager().initLoader(LOADER_ID_THEME_INFO, null, this);
         getLoaderManager().initLoader(LOADER_ID_APPLIED_THEME, null, this);
-        mService = (ThemeManager) getActivity().getSystemService(Context.THEME_SERVICE);
+        mService = ThemeManager.getInstance();
         return v;
     }
 
@@ -262,7 +262,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
                 builder.setComponent(component, mPkgName);
             }
         }
-        builder.setRequestType(RequestType.USER_REQUEST);
+        builder.setRequestType(ThemeChangeRequest.RequestType.USER_REQUEST);
         return builder.build();
     }
 
