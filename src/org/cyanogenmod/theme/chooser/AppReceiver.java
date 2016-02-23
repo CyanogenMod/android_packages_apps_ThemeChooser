@@ -19,8 +19,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.ThemesContract;
 import org.cyanogenmod.theme.util.NotificationHelper;
+
+import cyanogenmod.providers.ThemesContract;
 
 import java.util.Set;
 

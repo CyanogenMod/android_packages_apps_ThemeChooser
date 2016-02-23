@@ -17,10 +17,6 @@ package org.cyanogenmod.theme.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.ThemeUtils;
-import android.content.res.Resources;
-import android.content.res.ThemeConfig;
-import android.text.TextUtils;
 
 import java.util.HashSet;
 import java.util.Set;

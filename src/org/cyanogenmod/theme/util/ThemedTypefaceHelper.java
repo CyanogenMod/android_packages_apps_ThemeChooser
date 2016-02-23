@@ -16,12 +16,13 @@
 package org.cyanogenmod.theme.util;
 
 import android.content.Context;
-import android.content.pm.ThemeUtils;
 import android.content.res.AssetManager;
 import android.graphics.FontListParser;
 import android.graphics.FontListParser.Family;
 import android.graphics.Typeface;
 import android.util.Log;
+
+import org.cyanogenmod.internal.util.ThemeUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
