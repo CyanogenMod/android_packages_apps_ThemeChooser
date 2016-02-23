@@ -3,7 +3,6 @@
  */
 package com.cyngn.theme.chooser;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -18,14 +17,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ThemeUtils;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.content.res.ThemeChangeRequest;
-import android.content.res.ThemeChangeRequest.RequestType;
 import android.content.res.ThemeConfig;
-import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -44,13 +39,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUtils;
 import android.os.Handler;
-import android.provider.Settings;
-import android.provider.ThemesContract;
-import android.provider.ThemesContract.PreviewColumns;
-import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.util.Log;
@@ -76,9 +66,8 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Space;
 import android.widget.TextView;
-
 import android.widget.Toast;
-import com.android.internal.widget.LockPatternUtils;
+
 import com.cyngn.theme.chooser.ComponentSelector.OnItemClickedListener;
 import com.cyngn.theme.util.AudioUtils;
 import com.cyngn.theme.util.BootAnimationHelper;
@@ -96,7 +85,14 @@ import com.cyngn.theme.widget.ThemeTagLayout;
 
 import cyanogenmod.app.ThemeVersion;
 import cyanogenmod.providers.CMSettings;
+import cyanogenmod.providers.ThemesContract.PreviewColumns;
+import cyanogenmod.providers.ThemesContract.ThemesColumns;
+import cyanogenmod.themes.ThemeChangeRequest;
+import cyanogenmod.themes.ThemeChangeRequest.RequestType;
+import cyanogenmod.themes.ThemeManager;
+
 import org.cyanogenmod.internal.util.CmLockPatternUtils;
+import org.cyanogenmod.internal.util.ThemeUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -111,18 +107,19 @@ import java.util.zip.ZipFile;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
+
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ICONS;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
 import static com.cyngn.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
 
@@ -143,7 +140,7 @@ import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_LIVE_LOCK_SCREEN
 
 import static cyanogenmod.providers.CMSettings.Secure.LIVE_LOCK_SCREEN_ENABLED;
 
-import static android.content.pm.ThemeUtils.SYSTEM_TARGET_API;
+import static org.cyanogenmod.internal.util.ThemeUtils.SYSTEM_TARGET_API;
 
 public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
         ThemeManager.ThemeChangeListener, ThemeManager.ThemeProcessingListener {
@@ -1242,12 +1239,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 ThemeConfig.getSystemTheme().getFontPkgName();
     }
 
-    private ThemeManager getThemeManager() {
-        final Context context = getActivity();
-        if (context != null) {
-            return (ThemeManager) context.getSystemService(Context.THEME_SERVICE);
-        }
-        return null;
+    protected ThemeManager getThemeManager() {
+        return ThemeManager.getInstance();
     }
 
     private void freeMediaPlayers() {

@@ -6,7 +6,6 @@ package com.cyngn.theme.util;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ThemeUtils;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.ThemeConfig;
@@ -14,6 +13,8 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
+
+import org.cyanogenmod.internal.util.ThemeUtils;
 
 import java.io.File;
 import java.io.IOException;

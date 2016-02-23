@@ -6,27 +6,26 @@ package com.cyngn.theme.util;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.ThemesContract;
-import android.provider.ThemesContract.MixnMatchColumns;
-import android.provider.ThemesContract.PreviewColumns;
-import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
 import cyanogenmod.app.ThemeVersion;
+import cyanogenmod.providers.ThemesContract;
+import cyanogenmod.providers.ThemesContract.PreviewColumns;
+import cyanogenmod.providers.ThemesContract.ThemesColumns;
 
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ICONS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_FONTS;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ICONS;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
 public class CursorLoaderHelper {
 

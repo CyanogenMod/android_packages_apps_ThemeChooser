@@ -8,13 +8,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ThemeUtils;
 import android.net.Uri;
-import android.provider.ThemesContract;
 import android.text.TextUtils;
+
 import com.cyngn.theme.util.NotificationHelper;
 import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.Utils;
+
+import cyanogenmod.providers.ThemesContract;
 
 public class AppReceiver extends BroadcastReceiver {
 
@@ -24,11 +25,11 @@ public class AppReceiver extends BroadcastReceiver {
         String pkgName = uri != null ? uri.getSchemeSpecificPart() : null;
         String action = intent.getAction();
 
-        if (ThemesContract.Intent.ACTION_THEME_INSTALLED.equals(action)) {
+        if (cyanogenmod.content.Intent.ACTION_THEME_INSTALLED.equals(action)) {
             if (!pkgName.equals(Utils.getDefaultThemePackageName(context))) {
                 NotificationHelper.postThemeInstalledNotification(context, pkgName);
             }
-        } else if (ThemesContract.Intent.ACTION_THEME_REMOVED.equals(action)) {
+        } else if (cyanogenmod.content.Intent.ACTION_THEME_REMOVED.equals(action)) {
             // remove updated status for this theme (if one exists)
             PreferenceUtils.removeUpdatedTheme(context, pkgName);
 
@@ -40,7 +41,7 @@ public class AppReceiver extends BroadcastReceiver {
                 Utils.getDefaultThemePackageName(context));
             }
             NotificationHelper.cancelNotifications(context);
-        } else if (ThemesContract.Intent.ACTION_THEME_UPDATED.equals(action)) {
+        } else if (cyanogenmod.content.Intent.ACTION_THEME_UPDATED.equals(action)) {
             try {
                 if (isTheme(context, pkgName)) {
                     PreferenceUtils.addUpdatedTheme(context, pkgName);

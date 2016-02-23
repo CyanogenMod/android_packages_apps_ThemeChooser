@@ -28,8 +28,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
-import android.provider.ThemesContract;
-import android.provider.ThemesContract.ThemesColumns;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -51,8 +49,8 @@ import android.view.ViewPropertyAnimator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
-
 import android.widget.ImageView;
+
 import com.cyngn.theme.perapptheming.PerAppThemingWindow;
 import com.cyngn.theme.util.CursorLoaderHelper;
 import com.cyngn.theme.util.NotificationHelper;
@@ -60,14 +58,17 @@ import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 
+import cyanogenmod.providers.ThemesContract;
+import cyanogenmod.providers.ThemesContract.ThemesColumns;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
-import static android.provider.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
 
 import static com.cyngn.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
 

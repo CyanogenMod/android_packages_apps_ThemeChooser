@@ -11,16 +11,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.content.res.ThemeChangeRequest;
 import android.content.res.ThemeConfig;
-import android.content.res.ThemeManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
-import android.provider.ThemesContract.ThemesColumns;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,7 +28,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -39,10 +35,14 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import android.widget.Toast;
+
 import com.cyngn.theme.chooser.R;
 import com.cyngn.theme.util.Utils;
+
+import cyanogenmod.providers.ThemesContract.ThemesColumns;
+import cyanogenmod.themes.ThemeChangeRequest;
+import cyanogenmod.themes.ThemeManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -330,7 +330,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
 
     @Override
     public void onFinish(boolean isSuccess) {
-        ThemeManager tm = (ThemeManager) getSystemService(Context.THEME_SERVICE);
+        ThemeManager tm = ThemeManager.getInstance();
         tm.removeClient(this);
         mThemeListLayout.postDelayed(new Runnable() {
             @Override
@@ -772,7 +772,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
                 hideThemeList(true, new Runnable() {
                     @Override
                     public void run() {
-                        ThemeManager tm = (ThemeManager) getSystemService(Context.THEME_SERVICE);
+                        ThemeManager tm = ThemeManager.getInstance();
                         ThemeChangeRequest.Builder builder = new ThemeChangeRequest.Builder();
                         builder.setAppOverlay(appPkgName, themePkgName);
                         tm.addClient(PerAppThemingWindow.this);

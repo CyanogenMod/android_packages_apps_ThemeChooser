@@ -13,7 +13,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionInfo;
 import android.content.pm.ResolveInfo;
-import android.content.pm.ThemeUtils;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -26,17 +25,20 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.RemoteException;
 import android.provider.Settings;
-import android.provider.ThemesContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.IWindowManager;
 import android.view.WindowManager;
-
 import android.view.WindowManagerGlobal;
+
 import com.cyngn.theme.chooser.ChooserActivity;
+
 import cyanogenmod.externalviews.KeyguardExternalView;
 import cyanogenmod.providers.CMSettings;
+import cyanogenmod.providers.ThemesContract;
+
+import org.cyanogenmod.internal.util.ThemeUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

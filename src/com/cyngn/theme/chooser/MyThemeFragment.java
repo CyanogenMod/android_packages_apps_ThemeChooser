@@ -8,11 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ThemeUtils;
 import android.content.res.Resources;
-import android.content.res.ThemeChangeRequest;
-import android.content.res.ThemeChangeRequest.RequestType;
-import android.content.res.ThemeManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -23,9 +19,6 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ThemesContract;
-import android.provider.ThemesContract.PreviewColumns;
-import android.provider.ThemesContract.ThemesColumns;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.util.MutableLong;
@@ -45,6 +38,15 @@ import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.ThemedTypefaceHelper;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
+
+import cyanogenmod.providers.ThemesContract;
+import cyanogenmod.providers.ThemesContract.PreviewColumns;
+import cyanogenmod.providers.ThemesContract.ThemesColumns;
+import cyanogenmod.themes.ThemeChangeRequest;
+import cyanogenmod.themes.ThemeChangeRequest.RequestType;
+import cyanogenmod.themes.ThemeManager;
+
+import org.cyanogenmod.internal.util.ThemeUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -291,7 +293,7 @@ public class MyThemeFragment extends ThemeFragment {
         public void onReceive(Context context, Intent intent) {
             // only update if we are the current visible fragment or if there is no theme
             // being applied.
-            ThemeManager tm = (ThemeManager) context.getSystemService(Context.THEME_SERVICE);
+            ThemeManager tm = getThemeManager();
             if (!tm.isThemeApplying() || getUserVisibleHint()) {
                 final WallpaperManager wm = WallpaperManager.getInstance(context);
                 if (wm.getWallpaperInfo() != null) {
