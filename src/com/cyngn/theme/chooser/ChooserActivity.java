@@ -761,6 +761,7 @@ public class ChooserActivity extends FragmentActivity
                 ThemeFragment f = getCurrentFragment();
                 if (f != null) {
                     f.setWallpaperImageUri(uri);
+                    showSaveApplyButton();
                 }
             }
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_PICK_LOCKSCREEN_IMAGE) {
@@ -769,6 +770,7 @@ public class ChooserActivity extends FragmentActivity
                 ThemeFragment f = getCurrentFragment();
                 if (f != null) {
                     f.setLockscreenImageUri(uri);
+                    showSaveApplyButton();
                 }
             }
         } else {

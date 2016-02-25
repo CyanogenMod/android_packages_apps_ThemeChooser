@@ -385,6 +385,14 @@ public class MyThemeFragment extends ThemeFragment {
                     componentsToApply.put(component, selectedPkg);
                 }
             }
+            if (mExternalLockscreenUri != null) {
+                if (mCurrentTheme.containsKey(ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN)) {
+                    componentsToApply.put(ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN, LOCKSCREEN_NONE);
+                }
+                if (mCurrentTheme.containsKey(ThemesColumns.MODIFIES_LOCKSCREEN)) {
+                    componentsToApply.put(ThemesColumns.MODIFIES_LOCKSCREEN, LOCKSCREEN_NONE);
+                }
+            }
         }
         return componentsToApply;
     }

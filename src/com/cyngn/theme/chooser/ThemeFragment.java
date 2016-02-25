@@ -193,6 +193,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final int DEFAULT_CLOCK_COLOR = Color.WHITE;
 
     protected static final String WALLPAPER_NONE = "";
+    protected static final String LOCKSCREEN_NONE = "";
 
     protected static final String ARG_PACKAGE_NAME = "pkgName";
     protected static final String ARG_COMPONENT_ID = "cmpntId";
@@ -652,10 +653,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
         if (isSuccess) {
+            if (mExternalLockscreenUri != null) {
+                // Handle setting an external wallpaper in a separate thread
+                // Need to do this AFTER ThemeMgr is done processing our change request.
+                // The external lock screen that we just applied would be removed when
+                // the change request is setting/clearing the lock screen
+                new Thread(mApplyExternalLockscreenRunnable).start();
+            }
             Map<String, String> appliedComponents = getComponentsToApply();
-            String modLLS = appliedComponents.get(MODIFIES_LIVE_LOCK_SCREEN);
-            if (modLLS != null) {
-                if (TextUtils.equals(modLLS, "")) {
+            boolean modLLS = appliedComponents.containsKey(MODIFIES_LIVE_LOCK_SCREEN);
+            if (modLLS) {
+                String pkgName = appliedComponents.get(MODIFIES_LIVE_LOCK_SCREEN);
+                if (pkgName.equals(LOCKSCREEN_NONE)) {
                     setLiveLockScreenAsKeyguard(false);
                 } else {
                     setLiveLockScreenAsKeyguard(true);
@@ -707,8 +716,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mExternalLockscreenUri = uri;
         final Point size = new Point(mLockScreenCard.getWidth(), mLockScreenCard.getHeight());
         final Drawable wp = getWallpaperDrawableFromUri(uri, size);
+        if (mLockScreenCard.isShowingEmptyView()) {
+            mLockScreenCard.setEmptyViewEnabled(false);
+        }
         mLockScreenCard.setWallpaper(wp);
         // remove the entry from mSelectedComponentsMap
+        mSelectedComponentsMap.remove(ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN);
         mSelectedComponentsMap.remove(ThemesColumns.MODIFIES_LOCKSCREEN);
     }
 
@@ -982,10 +995,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (mExternalWallpaperUri != null) {
                 // Handle setting an external wallpaper in a separate thread
                 new Thread(mApplyExternalWallpaperRunnable).start();
-            }
-            if (mExternalLockscreenUri != null) {
-                // Handle setting an external wallpaper in a separate thread
-                new Thread(mApplyExternalLockscreenRunnable).start();
             }
         }
         mExpanded = false;
@@ -1570,16 +1579,20 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     && (mBaseThemeSupportedComponents.contains(MODIFIES_LOCKSCREEN) ||
                     mBaseThemeSupportedComponents.contains(MODIFIES_LIVE_LOCK_SCREEN)))) {
                 if (isLiveLockScreen) {
-                    if (mSelectedComponentsMap.containsKey(MODIFIES_LOCKSCREEN)) {
-                        mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN, "");
-                    }
                     mSelectedComponentsMap.put(MODIFIES_LIVE_LOCK_SCREEN, pkgName);
+                    if (mCurrentTheme.containsKey(MODIFIES_LOCKSCREEN)) {
+                        mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN, LOCKSCREEN_NONE);
+                    } else {
+                        mSelectedComponentsMap.remove(MODIFIES_LOCKSCREEN);
+                    }
                     setCardTitle(mLockScreenCard, pkgName,
                             getString(R.string.live_lock_screen_label));
                 } else {
                     mSelectedComponentsMap.put(MODIFIES_LOCKSCREEN, pkgName);
-                    if (mSelectedComponentsMap.containsKey(MODIFIES_LIVE_LOCK_SCREEN)) {
-                        mSelectedComponentsMap.put(MODIFIES_LIVE_LOCK_SCREEN, "");
+                    if (mCurrentTheme.containsKey(MODIFIES_LIVE_LOCK_SCREEN)) {
+                        mSelectedComponentsMap.put(MODIFIES_LIVE_LOCK_SCREEN, LOCKSCREEN_NONE);
+                    } else {
+                        mSelectedComponentsMap.remove(MODIFIES_LIVE_LOCK_SCREEN);
                     }
                     setCardTitle(mLockScreenCard, pkgName, getString(R.string.lockscreen_label));
                 }
@@ -2065,6 +2078,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LAUNCHER, WALLPAPER_NONE);
                     setCardTitle(mWallpaperCard, WALLPAPER_NONE,
                             getString(R.string.wallpaper_label));
+                    getChooserActivity().showSaveApplyButton();
                 } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
                     // Check if we have READ_EXTERNAL_STORAGE permission and if not request it,
                     // otherwise let the user pick an image
@@ -2093,15 +2107,17 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 || MODIFIES_LIVE_LOCK_SCREEN.equals(component)) {
             if (pkgName != null && TextUtils.isEmpty(pkgName)) {
                 mLockScreenCard.setWallpaper(null);
-                mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, WALLPAPER_NONE);
+                mSelectedComponentsMap.put(ThemesColumns.MODIFIES_LOCKSCREEN, LOCKSCREEN_NONE);
+
                 if(mSelectedComponentsMap.containsKey(MODIFIES_LIVE_LOCK_SCREEN)) {
-                    mSelectedComponentsMap.put(MODIFIES_LIVE_LOCK_SCREEN,WALLPAPER_NONE);
+                    mSelectedComponentsMap.put(MODIFIES_LIVE_LOCK_SCREEN, LOCKSCREEN_NONE);
                 }
                 setCardTitle(mLockScreenCard, WALLPAPER_NONE,
                         getString(R.string.lockscreen_label));
                 if (mLockScreenCard.isShowingEmptyView()) {
                     mLockScreenCard.setEmptyViewEnabled(false);
                 }
+                getChooserActivity().showSaveApplyButton();
             } else if (ComponentSelector.EXTERNAL_WALLPAPER.equals(pkgName)) {
                 // Check if we have READ_EXTERNAL_STORAGE permission and if not request it,
                 // otherwise let the user pick an image
