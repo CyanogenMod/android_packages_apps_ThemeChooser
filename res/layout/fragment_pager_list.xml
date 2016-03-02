@@ -112,9 +112,21 @@
                             android:textSize="14dp" />
                     </LinearLayout>
                     <ImageView
-                        android:id="@+id/customize"
-                        android:layout_width="47dp"
+                        android:id="@+id/save"
+                        android:layout_width="36dp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="1dp"
+                        android:layout_marginEnd="8dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_theme_save"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:id="@+id/customize"
+                        android:layout_width="36dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="1dp"
+                        android:layout_marginEnd="8dp"
                         android:scaleType="center"
                         android:src="@drawable/ic_theme_customize"/>
 
