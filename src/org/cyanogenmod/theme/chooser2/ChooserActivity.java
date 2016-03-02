@@ -22,6 +22,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -38,22 +39,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.RemoteException;
+import android.os.*;
 import android.provider.Settings;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager;
+import android.support.v4.app.*;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ThemeViewPager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.MutableLong;
@@ -91,6 +88,7 @@ import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_RINGTO
 import static org.cyanogenmod.theme.chooser2.ComponentSelector.DEFAULT_COMPONENT_ID;
 import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_INSTALLED_THEMES;
 import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_APPLIED;
+import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_THEME_MIXES;
 
 public class ChooserActivity extends FragmentActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -139,6 +137,8 @@ public class ChooserActivity extends FragmentActivity
     private static final float ANIMATE_SAVE_APPLY_DECELERATE_INTERPOLATOR_FACTOR = 3;
     private static final long ONCLICK_SAVE_APPLY_FINISH_ANIMATION_DELAY = 400;
 
+    private static boolean mSetThemeMix = false;
+
     private PagerContainer mContainer;
     private ThemeViewPager mPager;
 
@@ -153,12 +153,14 @@ public class ChooserActivity extends FragmentActivity
     private View mBottomActionsLayout;
 
     private String mSelectedTheme;
-    private String mAppliedBaseTheme;
+    private static String mAppliedBaseTheme;
     private boolean mThemeChanging = false;
     private boolean mAnimateContentIn = false;
     private long mAnimateContentInDelay;
     private String mThemeToApply;
     private ArrayList mComponentsToApply;
+
+    private int mAppliedThemeIndex = -1;
 
     ImageView mCustomBackground;
 
@@ -520,10 +522,25 @@ public class ChooserActivity extends FragmentActivity
             // We currently need to recreate the adapter in order to load
             // the changes otherwise the adapter returns the original fragments
             // TODO: We'll need a better way to handle this to provide a good UX
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            if(fm.getFragments()!=null) {
+                for (Fragment frag : fm.getFragments()) {
+                    if(ft.show(frag)!=null) {
+                        ft.remove(frag);
+                    }
+                }
+                ft.commit();
+            }
             if (!(f instanceof MyThemeFragment)) {
+               //Before the FragmentManager used to retain some previous fragments
+               //which was causing some wierd behaviour like different tags being
+                // applied to different theme fragments. This code removes any
+              //fragments retained by the FragmentManager before creating the adapter.
                 mAdapter = new ThemesAdapter();
                 mPager.setAdapter(mAdapter);
             }
+
             if (!isSuccess) {
                 mAppliedBaseTheme = null;
             }
@@ -631,6 +648,14 @@ public class ChooserActivity extends FragmentActivity
     public void uninstallTheme(String pkgName) {
         PackageManager pm = getPackageManager();
         pm.deletePackage(pkgName, new PackageDeleteObserver(), PackageManager.DELETE_ALL_USERS);
+    }
+
+    public void deleteThemeMix(int id) {
+        mAdapter.removeThemeMix(id);
+        ContentResolver resolver = getContentResolver();
+        String selection = ThemesContract.ThemeMixColumns._ID + "=?";
+        String[] selectionArgs = {Integer.toString(id)};
+        resolver.delete(ThemesContract.ThemeMixColumns.CONTENT_URI, selection, selectionArgs);
     }
 
     private void slideContentIntoView(int yDelta, int selectorHeight) {
@@ -775,6 +800,24 @@ public class ChooserActivity extends FragmentActivity
                     .with(ObjectAnimator.ofFloat(mContainer, "scaleY", 2f, 1f)
                     .setDuration(ANIMATE_CONTENT_IN_SCALE_DURATION));
             set.setStartDelay(mAnimateContentInDelay);
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mAnimateContentIn = false;
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
             set.start();
             mBottomActionsLayout.setAlpha(0f);
             mBottomActionsLayout.animate().alpha(1f).setStartDelay(mAnimateContentInDelay)
@@ -783,7 +826,6 @@ public class ChooserActivity extends FragmentActivity
             mContainer.setAlpha(0f);
             mContainer.setVisibility(View.GONE);
         }
-        mAnimateContentIn = false;
     }
 
     private View.OnClickListener mPagerClickListener = new View.OnClickListener() {
@@ -803,7 +845,8 @@ public class ChooserActivity extends FragmentActivity
         }
     };
 
-    private ComponentSelector.OnOpenCloseListener mOpenCloseListener = new ComponentSelector.OnOpenCloseListener() {
+    private ComponentSelector.OnOpenCloseListener mOpenCloseListener =
+            new ComponentSelector.OnOpenCloseListener() {
         @Override
         public void onSelectorOpened() {
         }
@@ -918,6 +961,11 @@ public class ChooserActivity extends FragmentActivity
         }
     }
 
+    public void setAppliedBaseTheme(String value) {
+        mAppliedBaseTheme = value;
+        mSetThemeMix = true;
+    }
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (mThemeChanging) return;
@@ -927,34 +975,50 @@ public class ChooserActivity extends FragmentActivity
             return;
         }
 
+        if(mSetThemeMix) {
+            PreferenceUtils.setAppliedBaseTheme(this, mAppliedBaseTheme);
+            startLoader(LOADER_ID_INSTALLED_THEMES);
+            mSetThemeMix = false;
+        }
+
         switch (loader.getId()) {
             case LOADER_ID_INSTALLED_THEMES:
                 // Swap the new cursor in. (The framework will take care of closing the
                 // old cursor once we return.)
-                int selectedThemeIndex = -1;
                 if (TextUtils.isEmpty(mSelectedTheme)) mSelectedTheme = mAppliedBaseTheme;
                 while(data.moveToNext()) {
                     if (mSelectedTheme.equals(data.getString(
                             data.getColumnIndex(ThemesColumns.PKG_NAME)))) {
                         // we need to add one here since the first card is "My theme"
-                        selectedThemeIndex = data.getPosition();
+                        mAppliedThemeIndex = data.getPosition();
+                        mPager.setCurrentItem(mAppliedThemeIndex);
                         mSelectedTheme = null;
                         break;
                     }
                 }
                 data.moveToFirst();
-                mAdapter.swapCursor(data);
+                mAdapter.setLoading(true);
+                mAdapter.updateInstalledThemes(data);
+                startLoader(LOADER_ID_THEME_MIXES);
+                break;
+            case LOADER_ID_THEME_MIXES:
+                mAdapter.updateThemeMixes(data);
+                mAdapter.setLoading(false);
                 mAdapter.notifyDataSetChanged();
-                if (selectedThemeIndex >= 0) {
-                    mPager.setCurrentItem(selectedThemeIndex, false);
+                if (mAppliedThemeIndex >= 0) {
+                    mPager.setCurrentItem(mAppliedThemeIndex, false);
 
                     if (mThemeToApply != null) {
                         ThemeFragment f = getCurrentFragment();
                         f.applyThemeWhenPopulated(mThemeToApply, mComponentsToApply);
                         mThemeToApply = null;
                     }
+                    mAppliedThemeIndex = -1;
                 }
-                if (mAnimateContentIn) animateContentIn();
+                if (mAnimateContentIn) {
+                    animateContentIn();
+                    mAnimateContentIn = false;
+                }
                 mActivityResuming = true;
                 break;
             case LOADER_ID_APPLIED:
@@ -966,12 +1030,6 @@ public class ChooserActivity extends FragmentActivity
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        switch (loader.getId()) {
-            case LOADER_ID_INSTALLED_THEMES:
-                mAdapter.swapCursor(null);
-                mAdapter.notifyDataSetChanged();
-                break;
-        }
     }
 
     @Override
@@ -991,122 +1049,237 @@ public class ChooserActivity extends FragmentActivity
         return getCurrentFragment().getSelectedComponentsMap();
     }
 
-    public class ThemesAdapter extends NewFragmentStatePagerAdapter {
-        private ArrayList<String> mInstalledThemes;
+    public class ThemesAdapter extends FragmentPagerAdapter {
+        private ArrayList<ThemeItemInfo> mInstalledThemes;
+        private ArrayList<ThemeItemInfo> mThemeMixes;
+        private ArrayList<ThemeItemInfo> mOrderedThemes;
+        private ArrayMap<Long, ThemeFragment> mFragments;
         private String mAppliedThemeTitle;
         private String mAppliedThemeAuthor;
-        private HashMap<String, Integer> mRepositionedFragments;
+        private boolean mLoading = true;
 
         public ThemesAdapter() {
             super(getSupportFragmentManager());
-            mRepositionedFragments = new HashMap<String, Integer>();
+            mInstalledThemes = new ArrayList<>();
+            mThemeMixes = new ArrayList<>();
+            mOrderedThemes = new ArrayList<>();
+            mFragments = new ArrayMap<>();
         }
 
         @Override
         public Fragment getItem(int position) {
             ThemeFragment f = null;
             MutableLong wallpaperCmpntId;
-            if (mInstalledThemes != null) {
-                final String pkgName = mInstalledThemes.get(position);
-                if (pkgName.equals(mAppliedBaseTheme)) {
-                    f = MyThemeFragment.newInstance(mAppliedBaseTheme, mAppliedThemeTitle,
-                            mAppliedThemeAuthor, mAnimateContentIn, mShowLockScreenWallpaper);
-                    wallpaperCmpntId = mCurrentWallpaperCmpntId;
+            if (mOrderedThemes != null) {
+                long id = getItemId(position);
+                if (mFragments.get(id) != null) {
+                    f = mFragments.get(id);
                 } else {
-                    f = ThemeFragment.newInstance(pkgName, mAnimateContentIn);
-                    wallpaperCmpntId = new MutableLong(DEFAULT_COMPONENT_ID);
+                    final ThemeItemInfo themeItemInfo = mOrderedThemes.get(position);
+                    if (!themeItemInfo.isThemeMix) {
+                        if (themeItemInfo.packageName.equals(mAppliedBaseTheme)) {
+                            f = MyThemeFragment.newInstance(mAppliedBaseTheme, mAppliedThemeTitle,
+                                    mAppliedThemeAuthor, mAnimateContentIn,
+                                    mShowLockScreenWallpaper, false);
+                            wallpaperCmpntId = mCurrentWallpaperCmpntId;
+                        } else {
+                            f = ThemeFragment.newInstance(themeItemInfo.packageName,
+                                    mAnimateContentIn);
+                            wallpaperCmpntId = new MutableLong(DEFAULT_COMPONENT_ID);
+                        }
+                    } else {
+                        if(themeItemInfo.packageName.equals(mAppliedBaseTheme)) {
+                            f = MyThemeFragment.newInstance(mAppliedBaseTheme, mAppliedThemeTitle,
+                                    getString(R.string.theme_mix_name), mAnimateContentIn,
+                                    mShowLockScreenWallpaper, true);
+                            wallpaperCmpntId = mCurrentWallpaperCmpntId;
+                        }
+                        else {
+                            f = ThemeMixFragment.newInstance(themeItemInfo.themeName,
+                                    themeItemInfo.packageName, getString(R.string.theme_mix_name),
+                                    themeItemInfo.id, true);
+                            wallpaperCmpntId = new MutableLong(DEFAULT_COMPONENT_ID);
+                        }
+                    }
+                    f.setCurrentTheme(mCurrentTheme, wallpaperCmpntId);
+                    mFragments.put(id, f);
                 }
-                f.setCurrentTheme(mCurrentTheme, wallpaperCmpntId);
             }
             return f;
         }
 
         @Override
-        public long getItemId(int position) {
-            if (mInstalledThemes != null) {
-                final String pkgName = mInstalledThemes.get(position);
-                return pkgName.hashCode();
+        public int getItemPosition(Object object) {
+            // Check if the fragment is still in our dataset and if so, return it's index
+            ThemeFragment f = (ThemeFragment) object;
+            for (int i = 0; i < getCount(); i++) {
+                ThemeFragment item = (ThemeFragment) getItem(i);
+                if (item.equals(f)) {
+                    // item still exists in dataset so return position
+                    return i;
+                }
             }
-            return 0;
+
+            // if we arrive here then the item is no longer in the dataset so remove fragment
+            for (Map.Entry<Long, ThemeFragment> entry : mFragments.entrySet()) {
+                if (entry.getValue().equals(f)) {
+                    mFragments.remove(entry.getKey());
+                    break;
+                }
+            }
+
+            return POSITION_NONE;
         }
 
         @Override
-        public int getItemPosition(Object object) {
-            final ThemeFragment f = (ThemeFragment) object;
-            final String pkgName = f != null ? f.getThemePackageName() : null;
-            if (pkgName != null && mRepositionedFragments.containsKey(pkgName)) {
-                final int position = mRepositionedFragments.get(pkgName);
-                mRepositionedFragments.remove(pkgName);
-                return position;
-            }
-            return super.getItemPosition(object);
+        public long getItemId(int position) {
+            return mOrderedThemes.get(position).hashCode();
         }
 
-        /**
-         * The first card should be the user's currently applied theme components so we
-         * will always return at least 1 or mCursor.getCount() + 1
-         * @return
-         */
+
+        @Override
         public int getCount() {
-            return mInstalledThemes == null ? 0 : mInstalledThemes.size();
+            return (mLoading || mOrderedThemes == null) ? 0 : mOrderedThemes.size();
         }
 
-        public void swapCursor(Cursor c) {
+        public void updateInstalledThemes(Cursor c) {
+            mInstalledThemes.clear();
             if (c != null && c.getCount() != 0) {
-                ArrayList<String> previousOrder = mInstalledThemes == null ? null
-                        : new ArrayList<String>(mInstalledThemes);
-                mInstalledThemes = new ArrayList<String>(c.getCount());
-                mRepositionedFragments.clear();
                 c.moveToPosition(-1);
                 while (c.moveToNext()) {
                     final int pkgIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
+                    final int titleIdx = c.getColumnIndex(ThemesColumns.TITLE);
+                    final int authorIdx = c.getColumnIndex(ThemesColumns.AUTHOR);
                     final String pkgName = c.getString(pkgIdx);
-                    if (pkgName.equals(mAppliedBaseTheme)) {
-                        final int titleIdx = c.getColumnIndex(ThemesColumns.TITLE);
-                        final int authorIdx = c.getColumnIndex(ThemesColumns.AUTHOR);
-                        mAppliedThemeTitle = c.getString(titleIdx);
-                        mAppliedThemeAuthor = c.getString(authorIdx);
-                    }
-                    mInstalledThemes.add(pkgName);
+                    final String title = c.getString(titleIdx);
+                    final String author = c.getString(authorIdx);
+                    mInstalledThemes.add(new ThemeItemInfo(pkgName, title, author, false));
+                }
+            }
+            orderThemes();
+            notifyDataSetChanged();
+        }
 
-                    // track any themes that may have changed position
-                    if (previousOrder != null && previousOrder.contains(pkgName)) {
-                        int index = previousOrder.indexOf(pkgName);
-                        if (index != c.getPosition()) {
-                            mRepositionedFragments.put(pkgName, c.getPosition());
-                        }
-                    } else {
-                        mRepositionedFragments.put(pkgName, c.getPosition());
-                    }
+        public void updateThemeMixes(Cursor c) {
+            mThemeMixes.clear();
+
+            if (c != null && c.getCount() != 0) {
+                c.moveToPosition(-1);
+                while (c.moveToNext()) {
+                    final int titleIdx = c.getColumnIndex(ThemesContract.ThemeMixColumns.TITLE);
+                    final int idIdx = c.getColumnIndex(ThemesContract.ThemeMixColumns._ID);
+                    final String title = c.getString(titleIdx);
+                    mThemeMixes.add(new ThemeItemInfo(title, title, null, true, c.getInt(idIdx)));
                 }
-                // check if any themes are no longer in the new list
-                if (previousOrder != null) {
-                    for (String pkgName : previousOrder) {
-                        if (!mInstalledThemes.contains(pkgName)) {
-                            mRepositionedFragments.put(pkgName, POSITION_NONE);
-                        }
-                    }
+            }
+            orderThemes();
+            notifyDataSetChanged();
+        }
+
+        public void removeInstalledTheme(String pkgName) {
+            if (pkgName == null) return;
+
+            for (ThemeItemInfo info : mOrderedThemes) {
+                if (pkgName.equals(info.packageName)) {
+                    mOrderedThemes.remove(info);
+                    mInstalledThemes.remove(info);
+                    // now we can call notifyDataSetChanged()
+                    notifyDataSetChanged();
+                    break;
                 }
-            } else {
-                mInstalledThemes = null;
             }
         }
 
-        public void removeTheme(String pkgName) {
-            if (mInstalledThemes == null) return;
+        public void removeThemeMix(int id) {
+            if (id < 0) return;
 
-            if (mInstalledThemes.contains(pkgName)) {
-                final int count = mInstalledThemes.size();
-                final int index = mInstalledThemes.indexOf(pkgName);
-                // reposition all the fragments after the one being removed
-                for (int i = index + 1; i < count; i++) {
-                    mRepositionedFragments.put(mInstalledThemes.get(i), i - 1);
+            for (ThemeItemInfo info : mOrderedThemes) {
+                if (id == info.id) {
+                    mOrderedThemes.remove(info);
+                    mThemeMixes.remove(info);
+                    // now we can call notifyDataSetChanged()
+                    notifyDataSetChanged();
+                    break;
                 }
-                // Now remove this theme and add it to mRepositionedFragments with POSITION_NONE
-                mInstalledThemes.remove(pkgName);
-                mRepositionedFragments.put(pkgName, POSITION_NONE);
-                // now we can call notifyDataSetChanged()
-                notifyDataSetChanged();
+            }
+        }
+
+        public void setLoading(boolean loading) {
+            mLoading = loading;
+        }
+
+        private void orderThemes() {
+            mOrderedThemes.clear();
+            mAppliedThemeIndex = 1;
+
+            //First add theme mixes
+            int N = mThemeMixes.size();
+            for (int i = 0; i < N; i++) {
+                ThemeItemInfo themeItemInfo = mThemeMixes.get(i);
+                if(themeItemInfo.packageName.equals(mAppliedBaseTheme)) {
+                    mAppliedThemeTitle = themeItemInfo.themeName;
+                    mAppliedThemeAuthor = themeItemInfo.authorName;
+                    mOrderedThemes.add(0,themeItemInfo);
+                }
+                else {
+                    mOrderedThemes.add(themeItemInfo);
+                }
+            }
+            // Then add installed themes
+            N = mInstalledThemes.size();
+            for (int i = 0; i < N; i++) {
+                ThemeItemInfo themeItemInfo = mInstalledThemes.get(i);
+                if (themeItemInfo.packageName.equals(mAppliedBaseTheme) &&
+                        themeItemInfo.packageName.equals(ThemeConfig.SYSTEM_DEFAULT)) {
+                    mAppliedThemeTitle = themeItemInfo.themeName;
+                    mAppliedThemeAuthor = themeItemInfo.authorName;
+                    mAppliedThemeIndex = 0;
+                    mOrderedThemes.add(0,themeItemInfo);
+                }
+                else if(themeItemInfo.packageName.equals(ThemeConfig.SYSTEM_DEFAULT)) {
+                    mOrderedThemes.add(0,themeItemInfo);
+                }
+                else if(themeItemInfo.packageName.equals(mAppliedBaseTheme)) {
+                    mAppliedThemeTitle = themeItemInfo.themeName;
+                    mAppliedThemeAuthor = themeItemInfo.authorName;
+                    mOrderedThemes.add(1,themeItemInfo);
+                }
+                else {
+                    mOrderedThemes.add(themeItemInfo);
+                }
+            }
+        }
+
+        private class ThemeItemInfo {
+            String packageName;
+            String themeName;
+            String authorName;
+            boolean isThemeMix;
+            int id;
+
+            public ThemeItemInfo(String packageName, String themeName, String authorName,
+                                 boolean isThemeMix) {
+                this(packageName, themeName, authorName, isThemeMix, -1);
+            }
+
+            public ThemeItemInfo(String packageName, String themeName, String authorName,
+                                 boolean isThemeMix, int id) {
+                this.packageName = packageName;
+                this.themeName = themeName;
+                this.authorName = authorName;
+                this.isThemeMix = isThemeMix;
+                this.id = id;
+            }
+
+            @Override
+            public int hashCode() {
+                int hash = 17;
+                hash = 31 * hash + (packageName != null ? packageName.hashCode() : 0);
+                hash = 31 * hash + (themeName != null ? themeName.hashCode() : 0);
+                hash = 31 * hash + (authorName != null ? authorName.hashCode() : 0);
+                hash = 31 * hash + (isThemeMix ? 1 : 0);
+                hash = 31 * hash + (id > 0 ? id : 0);
+                return hash;
             }
         }
     }
@@ -1134,13 +1307,14 @@ public class ChooserActivity extends FragmentActivity
      * Internal delete callback from the system
      */
     class PackageDeleteObserver extends IPackageDeleteObserver.Stub {
-        public void packageDeleted(final String packageName, int returnCode) throws RemoteException {
+        public void packageDeleted(final String packageName, int returnCode)
+                throws RemoteException {
             if (returnCode == PackageManager.DELETE_SUCCEEDED) {
                 Log.d(TAG, "Delete succeeded");
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mAdapter.removeTheme(packageName);
+                        mAdapter.removeInstalledTheme(packageName);
                     }
                 });
             } else {
