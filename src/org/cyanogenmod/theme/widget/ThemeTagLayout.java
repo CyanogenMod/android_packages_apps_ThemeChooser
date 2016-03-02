@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.cyanogenmod.theme.chooser2.MyThemeFragment;
 import org.cyanogenmod.theme.chooser2.R;
 
 public class ThemeTagLayout extends LinearLayout {
@@ -33,6 +34,7 @@ public class ThemeTagLayout extends LinearLayout {
     private TextView mUpdatedTag;
     private TextView mDefaultTag;
     private TextView mLegacyTag;
+    private TextView mMixedTag;
 
     public ThemeTagLayout(Context context) {
         this(context, null);
@@ -56,6 +58,7 @@ public class ThemeTagLayout extends LinearLayout {
         mUpdatedTag = (TextView) inflater.inflate(R.layout.tag_updated, this, false);
         mDefaultTag = (TextView) inflater.inflate(R.layout.tag_default, this, false);
         mLegacyTag = (TextView) inflater.inflate(R.layout.tag_legacy, this, false);
+        mMixedTag = (TextView) inflater.inflate(R.layout.tag_mixed,this,false);
     }
 
     public void setAppliedTagEnabled(boolean enabled) {
@@ -72,6 +75,27 @@ public class ThemeTagLayout extends LinearLayout {
         return findViewById(R.id.tag_applied) != null;
     }
 
+    public void setMixedTagEnabled(boolean enabled) {
+        if (enabled) {
+            if (findViewById(R.id.tag_mixed) != null) return;
+            final int childCount = getChildCount();
+            if (childCount > 1) {
+                for (int i = 0; i < childCount; i++) {
+                    final View child = getChildAt(i);
+                    if (child != mAppliedTag) {
+                        addView(mMixedTag, i+1);
+                        break;
+                    }
+                }
+            } else {
+                addView(mMixedTag);
+            }
+        } else {
+            if (findViewById(R.id.tag_mixed) == null) return;
+            removeView(mMixedTag);
+        }
+    }
+
     public void setCustomizedTagEnabled(boolean enabled) {
         if (enabled) {
             if (findViewById(R.id.tag_customized) != null) return;
@@ -80,7 +104,7 @@ public class ThemeTagLayout extends LinearLayout {
                 for (int i = 0; i < childCount; i++) {
                     final View child = getChildAt(i);
                     if (child != mAppliedTag) {
-                        addView(mCustomizedTag, i);
+                        addView(mCustomizedTag, i+1);
                         break;
                     }
                 }
@@ -133,11 +157,29 @@ public class ThemeTagLayout extends LinearLayout {
     }
 
     public void setLegacyTagEnabled(boolean enabled) {
+//        if (enabled) {
+//            if (findViewById(R.id.tag_legacy) != null) return;
+//            addView(mLegacyTag);
+//        } else {
+//            if (findViewById(R.id.tag_legacy) == null) return;
+//            removeView(mLegacyTag);
+//        }
         if (enabled) {
             if (findViewById(R.id.tag_legacy) != null) return;
-            addView(mLegacyTag);
+            final int childCount = getChildCount();
+            if (childCount > 1) {
+                for (int i = 0; i < childCount; i++) {
+                    final View child = getChildAt(i);
+                    if (child != mAppliedTag) {
+                        addView(mLegacyTag, i+1);
+                        break;
+                    }
+                }
+            } else {
+                addView(mLegacyTag);
+            }
         } else {
-            if (findViewById(R.id.tag_legacy) == null) return;
+            if (findViewById(R.id.tag_customized) == null) return;
             removeView(mLegacyTag);
         }
     }
