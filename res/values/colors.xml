@@ -91,4 +91,6 @@
     <color name="theme_card_action_item_background_mask_color">#ffffff</color>
     <color name="theme_card_action_item_background_color">#888888</color>
 
+    <color name="theme_card_icon_tint_color">#7f7f7f</color>
+
 </resources>

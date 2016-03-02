@@ -56,6 +56,7 @@
     <string name="menu_customize">Customize</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_reset">Reset theme</string>
+    <string name="menu_save">Save</string>
 
     <!-- Shop themes -->
     <string name="shop_themes">Shop themes</string>
@@ -110,4 +111,11 @@
     <string name="wiki_url" translatable="false">http://wiki.cyanogenmod.org/w/Themes</string>
 
     <string name="new_feature_label">New</string>
+
+    <!-- Save theme -->
+    <string name="dialog_save_theme_title">Save theme mix</string>
+    <string name="dialog_save_theme_name_hint">Name</string>
+    <string name="dialog_save_theme_save_button_text">Save</string>
+    <string name="dialog_save_theme_cancel_button_text">Cancel</string>
+    <string name="save_theme_name_format">My %1$s</string>
 </resources>
