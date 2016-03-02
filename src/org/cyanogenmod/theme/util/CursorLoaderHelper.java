@@ -17,6 +17,7 @@
 
 package org.cyanogenmod.theme.util;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -27,6 +28,8 @@ import cyanogenmod.app.ThemeVersion;
 import cyanogenmod.providers.ThemesContract;
 import cyanogenmod.providers.ThemesContract.PreviewColumns;
 import cyanogenmod.providers.ThemesContract.ThemesColumns;
+import cyanogenmod.providers.ThemesContract.ThemeMixColumns;
+import cyanogenmod.providers.ThemesContract.ThemeMixEntryColumns;
 
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
@@ -59,6 +62,8 @@ public class CursorLoaderHelper {
     public static final int LOADER_ID_LIVE_LOCK_SCREEN = 12;
     public static final int LOADER_ID_INSTALLED_THEMES = 1000;
     public static final int LOADER_ID_APPLIED = 1001;
+    public static final int LOADER_ID_THEME_MIXES = 1002;
+    public static final int LOADER_ID_THEME_MIX_ENTRIES = 1003;
 
     private static final long DEFAULT_COMPONENT_ID = 0;
 
@@ -90,6 +95,9 @@ public class CursorLoaderHelper {
                 contentUri = ThemesContract.MixnMatchColumns.CONTENT_URI;
                 selection = null;
                 selectionArgs = null;
+                break;
+            case LOADER_ID_THEME_MIXES:
+                contentUri = ThemesContract.ThemeMixColumns.CONTENT_URI;
                 break;
         }
 
@@ -263,6 +271,34 @@ public class CursorLoaderHelper {
         return new CursorLoader(context, uri, projection, null, null, null);
     }
 
+    public static Loader<Cursor> themeMixFragmentCursorLoader(Context context, int id) {
+        Uri uri;
+        String[] projection = new String[]{
+                PreviewColumns.WALLPAPER_PREVIEW,
+                PreviewColumns.STATUSBAR_BACKGROUND,
+                PreviewColumns.STATUSBAR_WIFI_ICON,
+                PreviewColumns.STATUSBAR_WIFI_COMBO_MARGIN_END,
+                PreviewColumns.STATUSBAR_BLUETOOTH_ICON,
+                PreviewColumns.STATUSBAR_SIGNAL_ICON,
+                PreviewColumns.STATUSBAR_CLOCK_TEXT_COLOR,
+                PreviewColumns.STATUSBAR_BATTERY_CIRCLE,
+                PreviewColumns.STATUSBAR_BATTERY_LANDSCAPE,
+                PreviewColumns.STATUSBAR_BATTERY_PORTRAIT,
+                PreviewColumns.NAVBAR_BACK_BUTTON,
+                PreviewColumns.NAVBAR_HOME_BUTTON,
+                PreviewColumns.NAVBAR_RECENT_BUTTON,
+                PreviewColumns.ICON_PREVIEW_1,
+                PreviewColumns.ICON_PREVIEW_2,
+                PreviewColumns.ICON_PREVIEW_3,
+                PreviewColumns.LOCK_WALLPAPER_PREVIEW,
+                PreviewColumns.STYLE_PREVIEW,
+                PreviewColumns.NAVBAR_BACKGROUND,
+                PreviewColumns.LIVE_LOCK_SCREEN_PREVIEW
+        };
+        uri = ContentUris.withAppendedId(ThemeMixColumns.PREVIEWS_URI, id);
+        return new CursorLoader(context, uri, projection, null, null, null);
+    }
+
     public static Loader<Cursor> themeFragmentCursorLoader(Context context, int id, String pkgName,
             long componentId) {
         Uri uri = PreviewColumns.CONTENT_URI;
@@ -419,6 +455,17 @@ public class CursorLoaderHelper {
                 break;
         }
         return new CursorLoader(context, uri, projection, selection, selectionArgs, null);
+    }
+
+    public static Loader<Cursor> themeMixEntriesCursorLoader(Context context, int id) {
+        String[] projection = new String[] {
+                ThemeMixEntryColumns.COMPONENT_TYPE,
+                ThemeMixEntryColumns.PACKAGE_NAME,
+                ThemeMixEntryColumns.THEME_NAME
+        };
+        String selection = ThemeMixEntryColumns.THEME_MIX_ID + "=?";
+        String[] selectionArgs = {Integer.toString(id)};
+        return new CursorLoader(context, ThemeMixEntryColumns.CONTENT_URI, projection, selection, selectionArgs, null);
     }
 
     public static Object[] getRowFromCursor(Cursor cursor) {

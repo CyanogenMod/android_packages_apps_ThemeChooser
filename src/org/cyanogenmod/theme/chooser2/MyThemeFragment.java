@@ -68,6 +68,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.cyanogenmod.theme.chooser2.ComponentSelector.DEFAULT_COMPONENT_ID;
 import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_ALL;
 
 public class MyThemeFragment extends ThemeFragment {
@@ -80,7 +81,12 @@ public class MyThemeFragment extends ThemeFragment {
     private String mBaseThemeName;
     private String mBaseThemeAuthor;
 
+    private static final String ARG_THEME_MIX_NAME = "theme_mix_name";
+    private static final String ARG_THEME_MIX_ID = "theme_mix_id";
+
     private SurfaceView mSurfaceView;
+
+    private static Map<String,String> map;
 
     static MyThemeFragment newInstance(String baseThemePkgName, String baseThemeName,
                                        String baseThemeAuthor, boolean skipLoadingAnim,
@@ -124,8 +130,71 @@ public class MyThemeFragment extends ThemeFragment {
         if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mBaseThemePkgName)) {
             mThemeTagLayout.setUpdatedTagEnabled(true);
         }
-        setCustomized(isThemeCustomized());
+
+        String name = mBaseThemeAuthor;
+        if(name.equals("Theme Mix")) {
+            setMixed(true);
+            setCustomized(isThemeCustomized());
+        }
+        else {
+            setCustomized(isThemeCustomized());
+        }
         return v;
+    }
+
+    @Override
+    public boolean isThemeCustomized() {
+        if(mBaseThemeAuthor.equals("Theme Mix")) {
+            int id = 0;
+            String selection = "title=?";
+            String[] selectionArgs = {getThemePackageName()};
+            Cursor c = getActivity().getContentResolver().query(ThemesContract.ThemeMixColumns.CONTENT_URI,
+                    null,selection,selectionArgs,null);
+            if(c.getCount()==1) {
+                while(c.moveToFirst()) {
+                    id = c.getInt(0);
+                    break;
+                }
+            }
+            c.close();
+
+            String selection_theme = "theme_mix_id=?";
+            String[] selectionArgs_theme = {Integer.toString(id)};
+            Cursor cur = getActivity().getContentResolver().query(ThemesContract.
+                            ThemeMixEntryColumns.CONTENT_URI,
+                    null,selection_theme,selectionArgs_theme,null);
+            int count = cur.getCount();
+            Map<String,String> original_map = new HashMap<>();
+            map = new HashMap<>();
+            cur.moveToPosition(-1);
+            while(cur.moveToNext()) {
+                String str = cur.getString(2);
+                String s = cur.getString(4);
+                original_map.put(cur.getString(2),cur.getString(4));
+            }
+            cur.close();
+
+            map=getSelectedComponentsMap();
+            if(map.keySet().size()==original_map.keySet().size()) {
+                for (String s : map.keySet()) {
+                    if (!(original_map.containsKey(s)) || !(map.containsKey(s)))
+                        return true;
+                    if (!(original_map.get(s).equals(map.get(s)))) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            else {
+                return true;
+            }
+
+
+        }
+        else {
+            return super.isThemeCustomized();
+        }
     }
 
     @Override
@@ -316,6 +385,10 @@ public class MyThemeFragment extends ThemeFragment {
 
     private void setCustomized(boolean customized) {
         mThemeTagLayout.setCustomizedTagEnabled(customized);
+    }
+
+    private void setMixed(boolean mixed) {
+        mThemeTagLayout.setMixedTagEnabled(true);
     }
 
     @Override
