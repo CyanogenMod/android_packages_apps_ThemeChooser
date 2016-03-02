@@ -68,6 +68,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.cyanogenmod.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
 import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_ALL;
 
 public class MyThemeFragment extends ThemeFragment {
@@ -79,6 +80,9 @@ public class MyThemeFragment extends ThemeFragment {
 
     private String mBaseThemeName;
     private String mBaseThemeAuthor;
+
+    private static final String ARG_THEME_MIX_NAME = "theme_mix_name";
+    private static final String ARG_THEME_MIX_ID = "theme_mix_id";
 
     private SurfaceView mSurfaceView;
 
@@ -125,6 +129,7 @@ public class MyThemeFragment extends ThemeFragment {
             mThemeTagLayout.setUpdatedTagEnabled(true);
         }
         mDelete.setVisibility(View.GONE);
+        mSave.setVisibility(View.VISIBLE);
         setCustomized(isThemeCustomized());
         return v;
     }
