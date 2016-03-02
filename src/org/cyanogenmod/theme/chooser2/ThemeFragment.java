@@ -54,6 +54,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUtils;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -83,6 +84,7 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cyanogenmod.providers.ThemesContract;
 import org.cyanogenmod.theme.chooser2.ComponentSelector.OnItemClickedListener;
 import org.cyanogenmod.theme.util.AudioUtils;
 import org.cyanogenmod.theme.util.BootAnimationHelper;
@@ -123,39 +125,13 @@ import java.util.zip.ZipFile;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ICONS;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_FONTS;
-
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.*;
 import static org.cyanogenmod.theme.chooser2.ComponentSelector.DEFAULT_COMPONENT_ID;
-
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_INVALID;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_ALL;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_STATUS_BAR;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_FONT;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_ICONS;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_WALLPAPER;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_NAVIGATION_BAR;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_LOCKSCREEN;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_STYLE;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_BOOT_ANIMATION;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_RINGTONE;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_NOTIFICATION;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_ALARM;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_LIVE_LOCK_SCREEN;
 
 import static cyanogenmod.providers.CMSettings.Secure.LIVE_LOCK_SCREEN_ENABLED;
 
 import static org.cyanogenmod.internal.util.ThemeUtils.SYSTEM_TARGET_API;
+import static org.cyanogenmod.theme.util.CursorLoaderHelper.*;
 
 public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
         ThemeManager.ThemeChangeListener, ThemeManager.ThemeProcessingListener {
@@ -298,7 +274,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected Map<String, String> mCurrentTheme = new HashMap<String, String>();
     protected MutableLong mCurrentWallpaperComponentId = new MutableLong(DEFAULT_COMPONENT_ID);
     // Set of components available in the base theme
-    protected HashSet<String> mBaseThemeSupportedComponents = new HashSet<String>();
+    protected Map<String,String> mBaseThemeSupportedComponents = new HashMap<String,String>();
     protected Cursor mCurrentCursor;
     protected int mCurrentLoaderId;
     protected boolean mThemeResetting;
@@ -464,25 +440,34 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     menu.findItem(R.id.menu_delete).setVisible(false);
                     if(mThemeTagLayout.isCustomizedTagEnabled()) {
                         menu.findItem(R.id.menu_reset).setVisible(true);
+                        menu.findItem(R.id.menu_save).setVisible(true);
+                        menu.findItem(R.id.menu_reset).setEnabled(true);
                         menu.findItem(R.id.menu_reset).setEnabled(true);
                     }
                     else {
                         menu.findItem(R.id.menu_reset).setVisible(false);
+                        menu.findItem(R.id.menu_save).setVisible(false);
                         menu.findItem(R.id.menu_reset).setEnabled(false);
+                        menu.findItem(R.id.menu_save).setEnabled(false);
                     }
                 }
                 if(!mThemeTagLayout.isAppliedTagEnabled()) {
                     menu.findItem(R.id.menu_delete).setEnabled(true);
                     menu.findItem(R.id.menu_reset).setVisible(false);
+                    menu.findItem(R.id.menu_save).setVisible(false);
                 }
                 if(mThemeTagLayout.isAppliedTagEnabled()) {
                     if(mThemeTagLayout.isCustomizedTagEnabled()) {
                         menu.findItem(R.id.menu_reset).setVisible(true);
+                        menu.findItem(R.id.menu_save).setVisible(true);
                         menu.findItem(R.id.menu_reset).setEnabled(true);
+                        menu.findItem(R.id.menu_save).setEnabled(true);
                     }
                     else {
                         menu.findItem(R.id.menu_reset).setVisible(true);
+                        menu.findItem(R.id.menu_save).setVisible(true);
                         menu.findItem(R.id.menu_reset).setEnabled(false);
+                        menu.findItem(R.id.menu_save).setEnabled(false);
                     }
 
                 }
@@ -496,6 +481,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 popupmenu.show();
             }
         });
+
 
         if (!Utils.hasNavigationBar(getActivity())) {
             adjustScrollViewPaddingTop();
@@ -757,6 +743,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected boolean onPopupMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         switch(item.getItemId()) {
+            case R.id.menu_save:
+                SaveThemeDialogFragment dialog = SaveThemeDialogFragment.newInstance(
+                        getString(R.string.save_theme_name_format, mTitle.getText().toString()),
+                        getThemePackageName(), mCurrentTheme, mCurrentWallpaperComponentId.value);
+                dialog.show(getFragmentManager(), "save_theme");
+                break;
             case R.id.menu_delete:
                 showDeleteThemeOverlay();
                 break;
@@ -870,7 +862,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         // Don't do anything if the theme is being processed
         if (mProcessingThemeLayout.getVisibility() == View.VISIBLE) return;
 
-        if (clickedOnContent) {
+        if (clickedOnContent && !mIsLegacyTheme) {
             showApplyThemeOverlay();
         } else {
             if (isShowingConfirmCancelOverlay()) {
@@ -1468,14 +1460,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected void populateSupportedComponents(Cursor c) {
         List<String> components = ThemeUtils.getAllComponents();
-        for(String component : components) {
+        for (String component : components) {
             int pkgIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
             int modifiesCompIdx = c.getColumnIndex(component);
-
             String pkg = c.getString(pkgIdx);
             boolean supported = (modifiesCompIdx >= 0) && (c.getInt(modifiesCompIdx) == 1);
             if (supported) {
-                mBaseThemeSupportedComponents.add(component);
+                mBaseThemeSupportedComponents.put(component,pkg);
                 mSelectedComponentsMap.put(component, pkg);
             }
         }
@@ -1530,14 +1521,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (bitmap != null) {
             mWallpaper.setImageBitmap(bitmap);
             mWallpaperCard.setWallpaper(new BitmapDrawable(res, bitmap));
-            String pkgName = c.getString(pkgNameIdx);
-            Long cmpntId = (cmpntIdIdx >= 0) ? c.getLong(cmpntIdIdx) : DEFAULT_COMPONENT_ID;
-            if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                    && mBaseThemeSupportedComponents.contains(MODIFIES_LAUNCHER))) {
-                mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
-                mSelectedWallpaperComponentId = cmpntId;
-                setCardTitle(mWallpaperCard, pkgName, getString(R.string.wallpaper_label));
+            if(pkgNameIdx > -1) {
+                String pkgName = pkgNameIdx >= 0 ? c.getString(pkgNameIdx) : null;
+                Long cmpntId = (cmpntIdIdx >= 0) ? c.getLong(cmpntIdIdx) : DEFAULT_COMPONENT_ID;
+                if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
+                        && mBaseThemeSupportedComponents.containsKey(MODIFIES_LAUNCHER))) {
+                    mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
+                    mSelectedWallpaperComponentId = cmpntId;
+                    setCardTitle(mWallpaperCard, pkgName, getString(R.string.wallpaper_label));
+                }
             }
+            Long cmpntId = (cmpntIdIdx >= 0) ? c.getLong(cmpntIdIdx) : DEFAULT_COMPONENT_ID;
+            mSelectedWallpaperComponentId = cmpntId;
         } else {
             // Set the wallpaper to "None"
             mWallpaperCard.setWallpaper(null);
@@ -1571,8 +1566,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             mLockScreenCard.setWallpaper(new BitmapDrawable(res, bitmap));
             String pkgName = c.getString(pkgNameIdx);
             if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                    && (mBaseThemeSupportedComponents.contains(MODIFIES_LOCKSCREEN) ||
-                    mBaseThemeSupportedComponents.contains(MODIFIES_LIVE_LOCK_SCREEN)))) {
+                    && (mBaseThemeSupportedComponents.containsKey(MODIFIES_LOCKSCREEN) ||
+                    mBaseThemeSupportedComponents.containsKey(MODIFIES_LIVE_LOCK_SCREEN)))) {
                 if (isLiveLockScreen) {
                     mSelectedComponentsMap.put(MODIFIES_LIVE_LOCK_SCREEN, pkgName);
                     if (mCurrentTheme.containsKey(MODIFIES_LOCKSCREEN)) {
@@ -1653,7 +1648,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (pkgNameIdx > -1) {
             String pkgName = c.getString(pkgNameIdx);
             if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                    && mBaseThemeSupportedComponents.contains(MODIFIES_STATUS_BAR))) {
+                    && mBaseThemeSupportedComponents.containsKey(MODIFIES_STATUS_BAR))) {
                 mSelectedComponentsMap.put(MODIFIES_STATUS_BAR, pkgName);
                 setCardTitle(mStatusBarCard, pkgName,
                         getString(R.string.statusbar_label));
@@ -1720,7 +1715,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (pkgNameIdx > -1) {
             String pkgName = c.getString(pkgNameIdx);
             if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                    && mBaseThemeSupportedComponents.contains(MODIFIES_ICONS))) {
+                    && mBaseThemeSupportedComponents.containsKey(MODIFIES_ICONS))) {
                 mSelectedComponentsMap.put(MODIFIES_ICONS, pkgName);
                 setCardTitle(mIconCard, pkgName,
                         getString(R.string.icon_label));
@@ -1757,7 +1752,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (pkgNameIdx > -1) {
             String pkgName = c.getString(pkgNameIdx);
             if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                    && mBaseThemeSupportedComponents.contains(MODIFIES_NAVIGATION_BAR))) {
+                    && mBaseThemeSupportedComponents.containsKey(MODIFIES_NAVIGATION_BAR))) {
                 mSelectedComponentsMap.put(MODIFIES_NAVIGATION_BAR, pkgName);
                 setCardTitle(mNavBarCard, pkgName, getString(R.string.navbar_label));
             }
@@ -1781,7 +1776,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mTypefaceNormal = helper.getTypeface(Typeface.NORMAL);
         mFontPreview.setTypeface(mTypefaceNormal);
         if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                && mBaseThemeSupportedComponents.contains(MODIFIES_FONTS))) {
+                && mBaseThemeSupportedComponents.containsKey(MODIFIES_FONTS))) {
             mSelectedComponentsMap.put(MODIFIES_FONTS, pkgName);
             setCardTitle(mFontCard, pkgName, getString(R.string.font_label));
         }
@@ -1806,7 +1801,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (pkgNameIdx > -1) {
             String pkgName = c.getString(pkgNameIdx);
             if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                    && mBaseThemeSupportedComponents.contains(MODIFIES_OVERLAYS))) {
+                    && mBaseThemeSupportedComponents.containsKey(MODIFIES_OVERLAYS))) {
                 mSelectedComponentsMap.put(MODIFIES_OVERLAYS, pkgName);
                 setCardTitle(mStyleCard, pkgName,
                         getString(R.string.style_label));
@@ -1827,7 +1822,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (pkgNameIdx > -1) {
                 pkgName = c.getString(pkgNameIdx);
                 if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                        && mBaseThemeSupportedComponents.contains(MODIFIES_BOOT_ANIM))) {
+                        && mBaseThemeSupportedComponents.containsKey(MODIFIES_BOOT_ANIM))) {
                     mSelectedComponentsMap.put(MODIFIES_BOOT_ANIM, pkgName);
                     setCardTitle(mBootAnimationCard, pkgName,
                             getString(R.string.boot_animation_label));
@@ -1891,7 +1886,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         AudibleLoadingThread thread = new AudibleLoadingThread(getActivity(), type, pkgName, mp);
         title.setText(c.getString(titleIdx));
         if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                && mBaseThemeSupportedComponents.contains(component))) {
+                && mBaseThemeSupportedComponents.containsKey(component))) {
             mSelectedComponentsMap.put(component, pkgName);
         }
 
@@ -2532,7 +2527,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         return mConfirmCancelOverlay.getVisibility() == View.VISIBLE;
     }
 
-    public void showApplyThemeOverlay() {
+    protected void showApplyThemeOverlay() {
         if (mConfirmCancelOverlay.getVisibility() == View.VISIBLE) return;
         mConfirmCancelOverlay.setTitle(R.string.apply_theme_overlay_title);
         mConfirmCancelOverlay.setBackgroundColor(getActivity().getResources()
@@ -2751,12 +2746,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 return true;
             }
             if (mBaseThemeSupportedComponents.size() > 0 &&
-                    !mBaseThemeSupportedComponents.contains(key)) {
+                    !mBaseThemeSupportedComponents.containsKey(key)) {
                 return true;
             }
         }
         // finally check if we're missing anything from mBaseThemeSupportedComponents
-        for (String component : mBaseThemeSupportedComponents) {
+        for (String component : mBaseThemeSupportedComponents.keySet()) {
             if (!mSelectedComponentsMap.containsKey(component)) return true;
         }
         return false;
@@ -2789,7 +2784,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         return mPkgName;
     }
 
-    private void uninstallTheme() {
+    protected void uninstallTheme() {
         getChooserActivity().uninstallTheme(mPkgName);
     }
 
