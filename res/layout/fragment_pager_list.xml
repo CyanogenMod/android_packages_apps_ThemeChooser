@@ -63,6 +63,7 @@
                 <include layout="@layout/confirm_cancel_overlay"/>
                 <include layout="@layout/customize_reset_theme_layout"/>
                 <include layout="@layout/processing_layout"/>
+                <include layout="@layout/missing_theme_overlay"/>
                 <View
                     android:id="@+id/clickable_view"
                     android:layout_width="match_parent"
