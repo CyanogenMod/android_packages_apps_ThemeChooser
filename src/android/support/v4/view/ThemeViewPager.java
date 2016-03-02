@@ -70,6 +70,7 @@ public class ThemeViewPager extends ViewPager {
                             && !isTouching(R.id.overflow, ev)
                             && !isTouching(R.id.reset, ev)
                             && !isTouching(R.id.delete, ev)
+                            && !isTouching(R.id.save, ev)
                             && !isTouching(R.id.confirm_cancel_overlay, ev)
                             && !isTouching(R.id.customize_reset_theme_layout, ev);
                     break;
