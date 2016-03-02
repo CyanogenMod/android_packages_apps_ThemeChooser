@@ -54,6 +54,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUtils;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -271,6 +272,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected ImageView mOverflow;
     protected ImageView mDelete;
     protected ImageView mReset;
+    protected ImageView mSave;
     protected ProgressBar mProgress;
 
     // Additional Card Views
@@ -506,6 +508,17 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
         mReset.setVisibility(View.GONE);
+
+        mSave = (ImageView) v.findViewById(R.id.save);
+        mSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SaveThemeDialogFragment dialog = SaveThemeDialogFragment.newInstance(
+                        getString(R.string.save_theme_name_format, mTitle.getText().toString()), getThemePackageName(),
+                        mCurrentTheme, mCurrentWallpaperComponentId.value);
+                dialog.show(getFragmentManager(), "save_theme");
+            }
+        });
 
         if (!Utils.hasNavigationBar(getActivity())) {
             adjustScrollViewPaddingTop();
@@ -1543,14 +1556,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (bitmap != null) {
             mWallpaper.setImageBitmap(bitmap);
             mWallpaperCard.setWallpaper(new BitmapDrawable(res, bitmap));
-            String pkgName = c.getString(pkgNameIdx);
-            Long cmpntId = (cmpntIdIdx >= 0) ? c.getLong(cmpntIdIdx) : DEFAULT_COMPONENT_ID;
-            if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                    && mBaseThemeSupportedComponents.contains(MODIFIES_LAUNCHER))) {
-                mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
-                mSelectedWallpaperComponentId = cmpntId;
-                setCardTitle(mWallpaperCard, pkgName, getString(R.string.wallpaper_label));
+            if(pkgNameIdx>-1) {
+                String pkgName = pkgNameIdx >= 0 ? c.getString(pkgNameIdx) : null;
+                Long cmpntId = (cmpntIdIdx >= 0) ? c.getLong(cmpntIdIdx) : DEFAULT_COMPONENT_ID;
+                if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
+                        && mBaseThemeSupportedComponents.contains(MODIFIES_LAUNCHER))) {
+                    mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
+                    mSelectedWallpaperComponentId = cmpntId;
+                    setCardTitle(mWallpaperCard, pkgName, getString(R.string.wallpaper_label));
+                }
             }
+            Long cmpntId = (cmpntIdIdx >= 0) ? c.getLong(cmpntIdIdx) : DEFAULT_COMPONENT_ID;
+            mSelectedWallpaperComponentId = cmpntId;
         } else {
             // Set the wallpaper to "None"
             mWallpaperCard.setWallpaper(null);
@@ -2546,12 +2563,14 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mCustomize.setEnabled(false);
         mDelete.setEnabled(false);
         mReset.setEnabled(false);
+        mSave.setEnabled(false);
     }
 
     private void enableActionButtons() {
         mCustomize.setEnabled(true);
         mDelete.setEnabled(true);
         mReset.setEnabled(true);
+        mSave.setEnabled(true);
     }
 
     public boolean isShowingConfirmCancelOverlay() {
@@ -2831,7 +2850,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         return mPkgName;
     }
 
-    private void uninstallTheme() {
+    protected void uninstallTheme() {
         getChooserActivity().uninstallTheme(mPkgName);
     }
 
