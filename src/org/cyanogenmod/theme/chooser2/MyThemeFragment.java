@@ -17,6 +17,7 @@
 
 package org.cyanogenmod.theme.chooser2;
 
+import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -68,6 +69,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.cyanogenmod.theme.chooser2.ComponentSelector.DEFAULT_COMPONENT_ID;
 import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_ALL;
 
 public class MyThemeFragment extends ThemeFragment {
@@ -80,11 +82,17 @@ public class MyThemeFragment extends ThemeFragment {
     private String mBaseThemeName;
     private String mBaseThemeAuthor;
 
+    private static final String ARG_THEME_MIX_NAME = "theme_mix_name";
+    private static final String ARG_THEME_MIX_ID = "theme_mix_id";
+
     private SurfaceView mSurfaceView;
+
+    private static boolean mIsThemeMix;
 
     static MyThemeFragment newInstance(String baseThemePkgName, String baseThemeName,
                                        String baseThemeAuthor, boolean skipLoadingAnim,
-                                       boolean animateToLockScreenCard) {
+                                       boolean animateToLockScreenCard,
+                                       boolean isThemeMix) {
         MyThemeFragment f = new MyThemeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PACKAGE_NAME, CURRENTLY_APPLIED_THEME);
@@ -93,6 +101,7 @@ public class MyThemeFragment extends ThemeFragment {
         args.putString(ARG_BASE_THEME_AUTHOR, baseThemeAuthor);
         args.putBoolean(ARG_SKIP_LOADING_ANIM, skipLoadingAnim);
         args.putBoolean(ARG_ANIMATE_TO_LOCK_SCREEN_CARD, animateToLockScreenCard);
+        mIsThemeMix = isThemeMix;
         f.setArguments(args);
         return f;
     }
@@ -124,8 +133,31 @@ public class MyThemeFragment extends ThemeFragment {
         if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mBaseThemePkgName)) {
             mThemeTagLayout.setUpdatedTagEnabled(true);
         }
-        setCustomized(isThemeCustomized());
+
+        String name = mBaseThemeAuthor;
+        if(mIsThemeMix) {
+            setMixed(true);
+            setCustomized(isThemeCustomized());
+        }
+        else {
+            setCustomized(isThemeCustomized());
+        }
         return v;
+    }
+
+    @Override
+    public boolean isThemeCustomized() {
+        if(mIsThemeMix) {
+            if(mBaseThemeSupportedComponents.equals(mSelectedComponentsMap)) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return super.isThemeCustomized();
+        }
     }
 
     @Override
@@ -318,6 +350,10 @@ public class MyThemeFragment extends ThemeFragment {
         mThemeTagLayout.setCustomizedTagEnabled(customized);
     }
 
+    private void setMixed(boolean mixed) {
+        mThemeTagLayout.setMixedTagEnabled(true);
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
@@ -342,6 +378,9 @@ public class MyThemeFragment extends ThemeFragment {
         // theme components have been properly set.
         if (loader.getId() == LOADER_ID_ALL) {
             if (mThemeResetting) {
+                if(mSelectedComponentsMap.size()==0) {
+                    mSelectedComponentsMap = mBaseThemeSupportedComponents;
+                }
                 applyTheme();
             } else if (mApplyThemeOnPopulated) {
                 loadComponentsToApply();
@@ -360,7 +399,9 @@ public class MyThemeFragment extends ThemeFragment {
             Map<String, String> originalMap) {
         // Only the ThemeFragment should be altering this, for the MyThemeFragment this is not
         // desirable as it changes components the user did not even touch.
+
         return originalMap;
+
     }
 
     @Override
@@ -371,14 +412,14 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     protected Map<String, String> getComponentsToApply() {
+        if(!mThemeResetting) {
+            return super.getComponentsToApply();
+        }
         Map<String, String> componentsToApply = mThemeResetting
                 ? getEmptyComponentsMap()
                 : new HashMap<String, String>();
         if (mThemeResetting) {
-            final String pkgName = getThemePackageName();
-            for (String component : mBaseThemeSupportedComponents) {
-                componentsToApply.put(component, pkgName);
-            }
+            componentsToApply = mBaseThemeSupportedComponents;
         } else {
             // Only apply components that actually changed
             for (String component : mSelectedComponentsMap.keySet()) {
@@ -389,6 +430,7 @@ public class MyThemeFragment extends ThemeFragment {
                     componentsToApply.put(component, selectedPkg);
                 }
             }
+
             if (mExternalLockscreenUri != null) {
                 if (mCurrentTheme.containsKey(ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN)) {
                     componentsToApply.put(ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN, LOCKSCREEN_NONE);
@@ -403,6 +445,39 @@ public class MyThemeFragment extends ThemeFragment {
 
     @Override
     protected void populateSupportedComponents(Cursor c) {
+        if (mIsThemeMix) {
+            int id = 0;
+            String selection = ThemesContract.ThemeMixColumns.TITLE + "=?";
+            String[] selection_Args = {getThemePackageName()};
+            Cursor cur = getActivity().getContentResolver().query
+                    (ThemesContract.ThemeMixColumns.CONTENT_URI,
+                    null, selection, selection_Args, null);
+            if(cur.getCount()==1) {
+                cur.moveToPosition(-1);
+                while(cur.moveToNext()) {
+                    id = cur.getInt(0);
+                }
+            }
+            cur.close();
+
+            String[] projection = {"component_type","package_name"};
+            String selection_theme = ThemesContract.ThemeMixEntryColumns.THEME_MIX_ID + "=?";
+            String[] selectionArgs_theme = {Integer.toString(id)};
+
+            Cursor cu = getActivity().getContentResolver().query(ThemesContract.
+                            ThemeMixEntryColumns.CONTENT_URI,
+                    projection,selection_theme,selectionArgs_theme,null);
+            cu.moveToPosition(-1);
+            while(cu.moveToNext()) {
+                String component_type = cu.getString
+                        (cu.getColumnIndex(ThemesContract.ThemeMixEntryColumns.COMPONENT_TYPE));
+                String package_name = cu.getString
+                        (cu.getColumnIndex(ThemesContract.ThemeMixEntryColumns.PACKAGE_NAME));
+                //mBaseThemeSupportedComponents.put(component_type,package_name);
+            }
+            cu.close();
+        }
+
     }
 
     @Override
@@ -669,26 +744,60 @@ public class MyThemeFragment extends ThemeFragment {
      * @param pkgName Package name of the base theme used
      */
     private void populateBaseThemeSupportedComponents(String pkgName) {
-        String selection = ThemesColumns.PKG_NAME + "=?";
-        String[] selectionArgs = { pkgName };
-        Cursor c = getActivity().getContentResolver().query(ThemesColumns.CONTENT_URI,
-                null, selection, selectionArgs, null);
-        if (c != null) {
-            if (c.moveToFirst()) {
-                List<String> components = ThemeUtils.getAllComponents();
-                final String baseThemePackageName = getThemePackageName();
-                for (String component : components) {
-                    int pkgIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
-                    int modifiesCompIdx = c.getColumnIndex(component);
-
-                    String pkg = pkgIdx >= 0 ? c.getString(pkgIdx) : null;
-                    boolean supported = (modifiesCompIdx >= 0) && (c.getInt(modifiesCompIdx) == 1);
-                    if (supported && baseThemePackageName.equals(pkg)) {
-                        mBaseThemeSupportedComponents.add(component);
-                    }
+        if (mIsThemeMix && mBaseThemeSupportedComponents.size() == 0) {
+            int id = 0;
+            String selection = ThemesContract.ThemeMixColumns.TITLE + "=?";
+            String[] selection_Args = {getThemePackageName()};
+            Cursor cur = getActivity().getContentResolver().query
+                    (ThemesContract.ThemeMixColumns.CONTENT_URI,
+                    null, selection, selection_Args, null);
+            if(cur.getCount()==1) {
+                cur.moveToPosition(-1);
+                while(cur.moveToNext()) {
+                    id = cur.getInt(0);
                 }
             }
-            c.close();
+            cur.close();
+
+            String[] projection = {"component_type","package_name"};
+            String selection_theme = "theme_mix_id=?";
+            String[] selectionArgs_theme = {Integer.toString(id)};
+
+            Cursor cu = getActivity().getContentResolver().query(ThemesContract.
+                            ThemeMixEntryColumns.CONTENT_URI,
+                    projection,selection_theme,selectionArgs_theme,null);
+            cu.moveToPosition(-1);
+            while(cu.moveToNext()) {
+                String component_type = cu.getString
+                        (cu.getColumnIndex(ThemesContract.ThemeMixEntryColumns.COMPONENT_TYPE));
+                String package_name = cu.getString
+                        (cu.getColumnIndex(ThemesContract.ThemeMixEntryColumns.PACKAGE_NAME));
+                mBaseThemeSupportedComponents.put(component_type,package_name);
+            }
+            cu.close();
+        } else {
+            String selection = ThemesColumns.PKG_NAME + "=?";
+            String[] selectionArgs = {pkgName};
+            Cursor c = getActivity().getContentResolver().query(ThemesColumns.CONTENT_URI,
+                    null, selection, selectionArgs, null);
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    List<String> components = ThemeUtils.getAllComponents();
+                    final String baseThemePackageName = getThemePackageName();
+                    for (String component : components) {
+                        int pkgIdx = c.getColumnIndex(ThemesColumns.PKG_NAME);
+                        int modifiesCompIdx = c.getColumnIndex(component);
+
+                        String pkg = pkgIdx >= 0 ? c.getString(pkgIdx) : null;
+                        boolean supported = (modifiesCompIdx >= 0) &&
+                                (c.getInt(modifiesCompIdx) == 1);
+                        if (supported && baseThemePackageName.equals(pkg)) {
+                            mBaseThemeSupportedComponents.put(component, pkg);
+                        }
+                    }
+                }
+                c.close();
+            }
         }
     }
 }
