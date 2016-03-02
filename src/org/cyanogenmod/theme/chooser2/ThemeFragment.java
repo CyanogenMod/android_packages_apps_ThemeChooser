@@ -54,6 +54,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUtils;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -123,39 +124,13 @@ import java.util.zip.ZipFile;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ALARMS;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LAUNCHER;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LIVE_LOCK_SCREEN;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_LOCKSCREEN;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_OVERLAYS;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_STATUS_BAR;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NAVIGATION_BAR;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ICONS;
-import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_FONTS;
-
+import static cyanogenmod.providers.ThemesContract.ThemesColumns.*;
 import static org.cyanogenmod.theme.chooser2.ComponentSelector.DEFAULT_COMPONENT_ID;
-
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_INVALID;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_ALL;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_STATUS_BAR;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_FONT;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_ICONS;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_WALLPAPER;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_NAVIGATION_BAR;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_LOCKSCREEN;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_STYLE;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_BOOT_ANIMATION;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_RINGTONE;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_NOTIFICATION;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_ALARM;
-import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_LIVE_LOCK_SCREEN;
 
 import static cyanogenmod.providers.CMSettings.Secure.LIVE_LOCK_SCREEN_ENABLED;
 
 import static org.cyanogenmod.internal.util.ThemeUtils.SYSTEM_TARGET_API;
+import static org.cyanogenmod.theme.util.CursorLoaderHelper.*;
 
 public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
         ThemeManager.ThemeChangeListener, ThemeManager.ThemeProcessingListener {
@@ -462,25 +437,34 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     menu.findItem(R.id.menu_delete).setVisible(false);
                     if(mThemeTagLayout.isCustomizedTagEnabled()) {
                         menu.findItem(R.id.menu_reset).setVisible(true);
+                        menu.findItem(R.id.menu_save).setVisible(true);
+                        menu.findItem(R.id.menu_reset).setEnabled(true);
                         menu.findItem(R.id.menu_reset).setEnabled(true);
                     }
                     else {
                         menu.findItem(R.id.menu_reset).setVisible(false);
+                        menu.findItem(R.id.menu_save).setVisible(false);
                         menu.findItem(R.id.menu_reset).setEnabled(false);
+                        menu.findItem(R.id.menu_save).setEnabled(false);
                     }
                 }
                 if(!mThemeTagLayout.isAppliedTagEnabled()) {
                     menu.findItem(R.id.menu_delete).setEnabled(true);
                     menu.findItem(R.id.menu_reset).setVisible(false);
+                    menu.findItem(R.id.menu_save).setVisible(false);
                 }
                 if(mThemeTagLayout.isAppliedTagEnabled()) {
                     if(mThemeTagLayout.isCustomizedTagEnabled()) {
                         menu.findItem(R.id.menu_reset).setVisible(true);
+                        menu.findItem(R.id.menu_save).setVisible(true);
                         menu.findItem(R.id.menu_reset).setEnabled(true);
+                        menu.findItem(R.id.menu_save).setEnabled(true);
                     }
                     else {
                         menu.findItem(R.id.menu_reset).setVisible(true);
+                        menu.findItem(R.id.menu_save).setVisible(true);
                         menu.findItem(R.id.menu_reset).setEnabled(false);
+                        menu.findItem(R.id.menu_save).setEnabled(false);
                     }
 
                 }
@@ -494,6 +478,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 popupmenu.show();
             }
         });
+
 
         if (!Utils.hasNavigationBar(getActivity())) {
             adjustScrollViewPaddingTop();
@@ -748,6 +733,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected boolean onPopupMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         switch(item.getItemId()) {
+            case R.id.menu_save:
+                SaveThemeDialogFragment dialog = SaveThemeDialogFragment.newInstance(
+                        getString(R.string.save_theme_name_format, mTitle.getText().toString()), getThemePackageName(),
+                        mCurrentTheme, mCurrentWallpaperComponentId.value);
+                dialog.show(getFragmentManager(), "save_theme");
+                break;
             case R.id.menu_delete:
                 showDeleteThemeOverlay();
                 break;
@@ -1521,14 +1512,18 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (bitmap != null) {
             mWallpaper.setImageBitmap(bitmap);
             mWallpaperCard.setWallpaper(new BitmapDrawable(res, bitmap));
-            String pkgName = c.getString(pkgNameIdx);
-            Long cmpntId = (cmpntIdIdx >= 0) ? c.getLong(cmpntIdIdx) : DEFAULT_COMPONENT_ID;
-            if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
-                    && mBaseThemeSupportedComponents.contains(MODIFIES_LAUNCHER))) {
-                mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
-                mSelectedWallpaperComponentId = cmpntId;
-                setCardTitle(mWallpaperCard, pkgName, getString(R.string.wallpaper_label));
+            if(pkgNameIdx>-1) {
+                String pkgName = pkgNameIdx >= 0 ? c.getString(pkgNameIdx) : null;
+                Long cmpntId = (cmpntIdIdx >= 0) ? c.getLong(cmpntIdIdx) : DEFAULT_COMPONENT_ID;
+                if (!mPkgName.equals(pkgName) || (mPkgName.equals(pkgName)
+                        && mBaseThemeSupportedComponents.contains(MODIFIES_LAUNCHER))) {
+                    mSelectedComponentsMap.put(MODIFIES_LAUNCHER, pkgName);
+                    mSelectedWallpaperComponentId = cmpntId;
+                    setCardTitle(mWallpaperCard, pkgName, getString(R.string.wallpaper_label));
+                }
             }
+            Long cmpntId = (cmpntIdIdx >= 0) ? c.getLong(cmpntIdIdx) : DEFAULT_COMPONENT_ID;
+            mSelectedWallpaperComponentId = cmpntId;
         } else {
             // Set the wallpaper to "None"
             mWallpaperCard.setWallpaper(null);
@@ -2780,7 +2775,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         return mPkgName;
     }
 
-    private void uninstallTheme() {
+    protected void uninstallTheme() {
         getChooserActivity().uninstallTheme(mPkgName);
     }
 
