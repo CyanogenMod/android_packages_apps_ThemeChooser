@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/save_progress_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        style="@android:style/Widget.Material.Light.ProgressBar.Horizontal"
+        android:visibility="invisible" />
+
+    <EditText
+        android:id="@+id/theme_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:selectAllOnFocus="true"
+        android:hint="@string/dialog_save_theme_name_hint" />
+</FrameLayout>
