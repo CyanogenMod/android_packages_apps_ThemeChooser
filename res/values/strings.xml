@@ -112,4 +112,11 @@
     <string name="get_more_app_not_available">App not available</string>
     <string name="play_store_url" translatable="false">https://play.google.com/store/search?q=theme+engine&amp;c=apps</string>
     <string name="wiki_url" translatable="false">http://wiki.cyanogenmod.org/w/Themes</string>
+
+    <!-- Save theme -->
+    <string name="dialog_save_theme_title">Save theme mix</string>
+    <string name="dialog_save_theme_name_hint">Name</string>
+    <string name="dialog_save_theme_save_button_text">Save</string>
+    <string name="dialog_save_theme_cancel_button_text">Cancel</string>
+    <string name="save_theme_name_format">My %1$s</string>
 </resources>
