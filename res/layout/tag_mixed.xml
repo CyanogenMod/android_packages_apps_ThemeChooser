@@ -16,18 +16,11 @@
      limitations under the License.
  -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:id="@+id/group_popupmenu">
-        <item android:id="@+id/menu_customize"
-              android:title="@string/menu_customize"/>
-
-        <item android:id="@+id/menu_delete"
-              android:title="@string/menu_delete"/>
-
-        <item android:id="@+id/menu_reset"
-            android:title="@string/menu_reset"/>
-
-        <item android:id="@+id/menu_save"
-              android:title="@string/menu_save"/>
-    </group>
-</menu>
+<org.cyanogenmod.theme.widget.LatoTextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/tag_mixed"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:background="@drawable/bg_tag_legacy"
+        android:text="@string/mixed_tag_text"
+        style="@style/tag_style"/>
