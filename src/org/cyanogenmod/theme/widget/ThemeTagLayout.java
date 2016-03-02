@@ -33,6 +33,7 @@ public class ThemeTagLayout extends LinearLayout {
     private TextView mUpdatedTag;
     private TextView mDefaultTag;
     private TextView mLegacyTag;
+    private TextView mMixedTag;
 
     public ThemeTagLayout(Context context) {
         this(context, null);
@@ -56,6 +57,7 @@ public class ThemeTagLayout extends LinearLayout {
         mUpdatedTag = (TextView) inflater.inflate(R.layout.tag_updated, this, false);
         mDefaultTag = (TextView) inflater.inflate(R.layout.tag_default, this, false);
         mLegacyTag = (TextView) inflater.inflate(R.layout.tag_legacy, this, false);
+        mMixedTag = (TextView) inflater.inflate(R.layout.tag_mixed,this,false);
     }
 
     public void setAppliedTagEnabled(boolean enabled) {
@@ -72,6 +74,10 @@ public class ThemeTagLayout extends LinearLayout {
         return findViewById(R.id.tag_applied) != null;
     }
 
+    public void setMixedTagEnabled(boolean enabled) {
+        addView(mMixedTag,1);
+    }
+
     public void setCustomizedTagEnabled(boolean enabled) {
         if (enabled) {
             if (findViewById(R.id.tag_customized) != null) return;
@@ -80,7 +86,7 @@ public class ThemeTagLayout extends LinearLayout {
                 for (int i = 0; i < childCount; i++) {
                     final View child = getChildAt(i);
                     if (child != mAppliedTag) {
-                        addView(mCustomizedTag, i);
+                        addView(mCustomizedTag, i+1);
                         break;
                     }
                 }
