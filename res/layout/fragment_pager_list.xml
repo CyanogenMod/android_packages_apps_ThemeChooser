@@ -60,6 +60,7 @@
                     <include layout="@layout/icon_card"/>
                     <include layout="@layout/navbar_card"/>
                 </LinearLayout>
+                <include layout="@layout/missing_theme_overlay"/>
                 <include layout="@layout/confirm_cancel_overlay"/>
                 <include layout="@layout/customize_reset_theme_layout"/>
                 <include layout="@layout/processing_layout"/>
