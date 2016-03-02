@@ -86,4 +86,6 @@
     <color name="bottom_action_background_color">#ffffff</color>
     <color name="bottom_action_selected_background_color">#e9e8e8</color>
 
+    <color name="theme_card_icon_tint_color">#7f7f7f</color>
+
 </resources>
