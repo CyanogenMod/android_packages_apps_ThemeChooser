@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">테마</string>
+  <!-- Themable items -->
   <string name="lock_screen">잠금화면 배경</string>
   <string name="icons">아이콘</string>
   <string name="fonts">글꼴</string>
@@ -28,6 +29,7 @@
   <string name="style">스타일</string>
   <string name="status_bar">상태 표시줄</string>
   <string name="nav_bar">내비게이션 바</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">테마 팩</string>
   <string name="sounds">사운드 팩</string>
   <string name="system_theme_name">시스템</string>
@@ -39,6 +41,7 @@
   <string name="update">업데이트</string>
   <string name="no_preview_available">미리보기 없음</string>
   <string name="menu_item_uninstall">제거</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">알람</string>
   <string name="notification_label">알림</string>
   <string name="ringtone_label">벨소리</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s이(가) 설치되었습니다</string>
   <string name="theme_installed_notification_text">테마가 성공적으로 설치되었습니다.</string>
   <string name="menu_item_get_more_themes">더 많은 테마 얻기</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">아래 링크에서 더 많은 테마를 얻을 수 있습니다:</string>
   <string name="get_more_app_not_available">앱을 사용할 수 없음</string>
   <string name="get_more_entry_play_store">Play 스토어</string>
