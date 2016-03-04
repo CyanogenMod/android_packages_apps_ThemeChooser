@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">السمات</string>
+  <!-- Themable items -->
   <string name="lock_screen">تأمين خلفيات الشاشة</string>
   <string name="icons">الأيقونات</string>
   <string name="fonts">الخطوط</string>
@@ -28,6 +29,7 @@
   <string name="style">نمط</string>
   <string name="status_bar">شريط الحالة</string>
   <string name="nav_bar">شريط التنقل</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">حزم السمات</string>
   <string name="sounds">الأصوات</string>
   <string name="system_theme_name">النظام</string>
@@ -39,6 +41,7 @@
   <string name="update">تحديث</string>
   <string name="no_preview_available">لا تتوفر معاينة</string>
   <string name="menu_item_uninstall">إلغاء تثبيت</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">تنبيه</string>
   <string name="notification_label">الإشعار</string>
   <string name="ringtone_label">نغمة رنين</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s مثبت</string>
   <string name="theme_installed_notification_text">تم تثبيت السمة بنجاح.</string>
   <string name="menu_item_get_more_themes">الحصول على المزيد</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">يمكنك الحصول على المزيد من السمات من الروابط التالية:</string>
   <string name="get_more_app_not_available">تطبيق غير متاح</string>
   <string name="get_more_entry_play_store">متجر اللعب</string>

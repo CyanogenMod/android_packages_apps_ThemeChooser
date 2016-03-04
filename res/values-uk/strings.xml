@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Теми</string>
+  <!-- Themable items -->
   <string name="lock_screen">Шпалери екрану блокування</string>
   <string name="icons">Iконки</string>
   <string name="fonts">Шрифти</string>
@@ -28,6 +29,7 @@
   <string name="style">Стиль</string>
   <string name="status_bar">Рядок стану</string>
   <string name="nav_bar">Рядок навігації</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Пакети тем</string>
   <string name="sounds">Звуки</string>
   <string name="system_theme_name">Система</string>
@@ -39,6 +41,7 @@
   <string name="update">Оновити</string>
   <string name="no_preview_available">Перегляд недоступний</string>
   <string name="menu_item_uninstall">Видалити</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">Будильник</string>
   <string name="notification_label">Сповіщення</string>
   <string name="ringtone_label">Дзвінок</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">Тема «%s» встановлена</string>
   <string name="theme_installed_notification_text">Тема успішно встановлена.</string>
   <string name="menu_item_get_more_themes">Більше</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Додаткові теми можна отримати тут:</string>
   <string name="get_more_app_not_available">Додаток недоступний</string>
   <string name="get_more_entry_play_store">Play Маркет</string>
