@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Тэмы</string>
+  <!-- Themable items -->
   <string name="lock_screen">Шпалеры экрана блакавання</string>
   <string name="icons">Значкі</string>
   <string name="fonts">Шрыфты</string>
@@ -28,6 +29,7 @@
   <string name="style">Стыль</string>
   <string name="status_bar">Радок стану</string>
   <string name="nav_bar">Радок навігацыі</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Наборы тэм</string>
   <string name="sounds">Гукі</string>
   <string name="system_theme_name">Сістэма</string>
@@ -39,6 +41,7 @@
   <string name="update">Абнавіць</string>
   <string name="no_preview_available">Перадпрагляд недаступны</string>
   <string name="menu_item_uninstall">Выдаліць</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">Будзільнік</string>
   <string name="notification_label">Апавяшчэнне</string>
   <string name="ringtone_label">Рынгтон</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s усталявана</string>
   <string name="theme_installed_notification_text">Тэма паспяхова ўсталявана.</string>
   <string name="menu_item_get_more_themes">Спампаваць яшчэ</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Вы можаце спампаваць тэмы па наступных спасылках:</string>
   <string name="get_more_app_not_available">Дадатак недаступны</string>
   <string name="get_more_entry_play_store">Play Маркет</string>

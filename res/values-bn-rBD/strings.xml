@@ -17,8 +17,12 @@
 -->
 <resources>
   <string name="app_name">থিমস</string>
+  <!-- Themable items -->
   <string name="lock_screen">লক ওয়ালপেপার</string>
   <string name="icons">প্রতিমূর্তি</string>
   <string name="fonts">হরফ</string>
   <string name="wallpapers">ওয়ালপেপার গুলি</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
+  <!-- Audibles preview -->
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
 </resources>

@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Chủ đề</string>
+  <!-- Themable items -->
   <string name="lock_screen">Hình nền màn hình khoá</string>
   <string name="icons">Biểu tượng</string>
   <string name="fonts">Phông chữ</string>
@@ -28,6 +29,7 @@
   <string name="style">Kiểu</string>
   <string name="status_bar">Thanh trạng thái</string>
   <string name="nav_bar">Thanh điều hướng</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Gói chủ đề</string>
   <string name="sounds">Âm thanh</string>
   <string name="system_theme_name">Hệ thống</string>
@@ -39,6 +41,7 @@
   <string name="update">Cập nhật</string>
   <string name="no_preview_available">Không có bản xem trước</string>
   <string name="menu_item_uninstall">Gỡ cài đặt</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">Báo thức</string>
   <string name="notification_label">Thông báo</string>
   <string name="ringtone_label">Nhạc chuông</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s đã được cài đặt</string>
   <string name="theme_installed_notification_text">Chủ đề đã được cài đặt thành công.</string>
   <string name="menu_item_get_more_themes">Tải thêm</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Bạn có thể tải thêm chủ đề từ các liên kết sau đây:</string>
   <string name="get_more_app_not_available">Ứng dụng không sẵn có</string>
   <string name="get_more_entry_play_store">Play Store</string>

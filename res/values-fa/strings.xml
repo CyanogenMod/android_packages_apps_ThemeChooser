@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">تم‌ها</string>
+  <!-- Themable items -->
   <string name="lock_screen">کاغذدیواری‌های قفل</string>
   <string name="icons">آیکون‌ها</string>
   <string name="fonts">فونت‌ها</string>
@@ -28,6 +29,7 @@
   <string name="style">سبک</string>
   <string name="status_bar">نوار وضعیت</string>
   <string name="nav_bar">نوار پیمایش</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">بسته‌های تم</string>
   <string name="sounds">صداها</string>
   <string name="system_theme_name">سیستمی</string>
@@ -39,6 +41,7 @@
   <string name="update">بروزرسانی</string>
   <string name="no_preview_available">پیش نمایشی در دسترس نیست</string>
   <string name="menu_item_uninstall">لغو نصب</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">هشدار</string>
   <string name="notification_label">اعلان</string>
   <string name="ringtone_label">صدای زنگ</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s نصب شد</string>
   <string name="theme_installed_notification_text">تم با موفقیت نصب شد.</string>
   <string name="menu_item_get_more_themes">دریافت تم‌های بیشتر</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">شما می‌توانید از طریق لینک‌های زیر، تم‌های بیشتری دریافت کنید:</string>
   <string name="get_more_app_not_available">برنامه در دسترس نیست</string>
   <string name="get_more_entry_play_store">پلی‌استور</string>

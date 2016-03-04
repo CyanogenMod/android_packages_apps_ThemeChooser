@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Temalar</string>
+  <!-- Themable items -->
   <string name="lock_screen">Kilit ekranı duvar kağıtları</string>
   <string name="icons">Simgeler</string>
   <string name="fonts">Yazı tipleri</string>
@@ -28,6 +29,7 @@
   <string name="style">Stil</string>
   <string name="status_bar">Durum çubuğu</string>
   <string name="nav_bar">Dolaşım çubuğu</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Tema paketleri</string>
   <string name="sounds">Sesler</string>
   <string name="system_theme_name">Sistem</string>
@@ -39,6 +41,7 @@
   <string name="update">Güncelle</string>
   <string name="no_preview_available">Mevcut önizleme yok</string>
   <string name="menu_item_uninstall">Kaldır</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Bildirim</string>
   <string name="ringtone_label">Zil sesi</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s yüklendi</string>
   <string name="theme_installed_notification_text">Tema başarıyla yüklendi.</string>
   <string name="menu_item_get_more_themes">Daha fazlasını edinin</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Aşağıdaki bağlantılardan daha fazla temaya ulaşabilirsiniz:</string>
   <string name="get_more_app_not_available">Uyg. kullanılabilir değil</string>
   <string name="get_more_entry_play_store">Play Store</string>

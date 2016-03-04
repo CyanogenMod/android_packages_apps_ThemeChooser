@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Tēmas</string>
+  <!-- Themable items -->
   <string name="lock_screen">Noslēgt tapetes</string>
   <string name="icons">Ikonas</string>
   <string name="fonts">Fonti</string>
@@ -28,6 +29,7 @@
   <string name="style">Stils</string>
   <string name="status_bar">Statusa josla</string>
   <string name="nav_bar">Navigācijas josla</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Motīvu pakas</string>
   <string name="sounds">Skaņas</string>
   <string name="system_theme_name">Sistēma</string>
@@ -39,6 +41,7 @@
   <string name="update">Atjaunot</string>
   <string name="no_preview_available">Priekšskatījums nav pieejams</string>
   <string name="menu_item_uninstall">Noņemt</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">Modinātājs</string>
   <string name="notification_label">Paziņojums</string>
   <string name="ringtone_label">Zvana melodija</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s uzstādīts</string>
   <string name="theme_installed_notification_text">Tēma veiksmīgi uzstādīta.</string>
   <string name="menu_item_get_more_themes">Iegūt vairāk</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Jūs varat iegūt vairāk tēmas no šīm saitēm:</string>
   <string name="get_more_app_not_available">Lietotne nav pieejama</string>
   <string name="get_more_entry_play_store">Play Store</string>

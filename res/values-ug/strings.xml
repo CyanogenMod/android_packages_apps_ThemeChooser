@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">ئۆرنەكلەر</string>
+  <!-- Themable items -->
   <string name="lock_screen">قۇلۇپ ئېكران تام قەغەزلەر</string>
   <string name="icons">سىنبەلگەلەر</string>
   <string name="fonts">خەت نۇسخا</string>
@@ -28,6 +29,7 @@
   <string name="style">ئۇسلۇب</string>
   <string name="status_bar">ھالەت بالداق</string>
   <string name="nav_bar">يولباشچى بالداق</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">ئۆرنەك بوغچىسى</string>
   <string name="sounds">ئاۋازلار</string>
   <string name="system_theme_name">سىستېما</string>
@@ -38,6 +40,7 @@
   <string name="available">ئىشلىتىلىشچان</string>
   <string name="update">يېڭىلا</string>
   <string name="no_preview_available">ئالدىن كۆزىتىش يوق</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">قوڭغۇراق</string>
   <string name="notification_label">ئۇقتۇرۇش</string>
   <string name="ringtone_label">زىل ئاۋازى</string>
@@ -46,6 +49,7 @@
   <string name="theme_installed_notification_title">%s ئورنىتىلدى</string>
   <string name="theme_installed_notification_text">ئۆرنەك مۇۋەپپەقىيەتلىك ئورنىتىلدى.</string>
   <string name="menu_item_get_more_themes">تېخىمۇ كۆپ ئېرىشىش</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">تۆۋەندىكى ئۇلانمىلاردىن تېخىمۇ كۆپ ئۆرنەكلەرگە ئېرىشەلەيسىز:</string>
   <string name="get_more_entry_play_store">Play دۇكىنى</string>
   <string name="get_more_entry_cm_wiki">CM ۋىكىدىكى تېخىمۇ كۆپ ئۇچۇرلار</string>
