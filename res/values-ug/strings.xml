@@ -40,6 +40,7 @@
   <string name="available">ئىشلىتىلىشچان</string>
   <string name="update">يېڭىلا</string>
   <string name="no_preview_available">ئالدىن كۆزىتىش يوق</string>
+  <string name="menu_item_uninstall">ئۆچۈرۈش</string>
   <!-- Audibles preview -->
   <string name="alarm_label">قوڭغۇراق</string>
   <string name="notification_label">ئۇقتۇرۇش</string>
@@ -51,6 +52,7 @@
   <string name="menu_item_get_more_themes">تېخىمۇ كۆپ ئېرىشىش</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">تۆۋەندىكى ئۇلانمىلاردىن تېخىمۇ كۆپ ئۆرنەكلەرگە ئېرىشەلەيسىز:</string>
+  <string name="get_more_app_not_available">ئەپنى ئىشلەتكىلى بولمايدۇ</string>
   <string name="get_more_entry_play_store">Play دۇكىنى</string>
   <string name="get_more_entry_cm_wiki">CM ۋىكىدىكى تېخىمۇ كۆپ ئۇچۇرلار</string>
   <string name="designed_for_cm11">CM11 ئۈچۈن لايىھەلەنگەن</string>

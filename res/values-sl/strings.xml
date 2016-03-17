@@ -18,7 +18,7 @@
 <resources>
   <string name="app_name">Teme</string>
   <!-- Themable items -->
-  <string name="lock_screen">Slike ozadja zaslona za zaklepanje</string>
+  <string name="lock_screen">Slike ozadja zaklenjenega zaslona</string>
   <string name="icons">Ikone</string>
   <string name="fonts">Pisave</string>
   <string name="wallpapers">Slike ozadja</string>

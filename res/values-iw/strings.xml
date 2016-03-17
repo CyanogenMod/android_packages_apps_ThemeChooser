@@ -23,7 +23,7 @@
   <string name="fonts">גופנים</string>
   <string name="wallpapers">טפטים</string>
   <string name="boot_anims">אנימציות אתחול</string>
-  <string name="ringtones">צלצולים</string>
+  <string name="ringtones">רינגטונים</string>
   <string name="notifications">התראות</string>
   <string name="alarms">שעונים מעוררים</string>
   <string name="style">סגנון</string>
@@ -44,14 +44,14 @@
   <!-- Audibles preview -->
   <string name="alarm_label">שעון מעורר</string>
   <string name="notification_label">התראות</string>
-  <string name="ringtone_label">צלצול</string>
+  <string name="ringtone_label">רינגטון</string>
   <string name="unknown_author">מחבר לא ידוע</string>
   <string name="font_preview_letters">אבגדAaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s הותקן</string>
-  <string name="theme_installed_notification_text">הערכה הותקנה בהצלחה.</string>
+  <string name="theme_installed_notification_text">ערכת העיצוב הותקנה בהצלחה.</string>
   <string name="menu_item_get_more_themes">קבל עוד</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">אתה יכול לקבל עוד ערכות עיצוב מהקישורים הבאים:</string>
+  <string name="get_more_description">באפשרותך לקבל ערכות עיצוב נוספות מהקישורים הבאים:</string>
   <string name="get_more_app_not_available">יישום לא זמין</string>
   <string name="get_more_entry_play_store">חנות Play</string>
   <string name="get_more_entry_cm_wiki">מידע נוסף ב-CM Wiki</string>
