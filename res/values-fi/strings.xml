@@ -8,43 +8,58 @@
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s asennettu</string>
   <string name="theme_installed_notification_text">Teema asennettu onnistuneesti.</string>
+  <!-- Note: These are for "themes", meaning multiple themes -->
   <string name="themes_installed_notification_title">%d teemaa asennettu</string>
   <string name="themes_installed_notification_text_one">%1$s ja %2$d muu asennettu.</string>
   <string name="themes_installed_notification_text_other">%1$s ja %2$d muuta asennettu.</string>
   <string name="font_component_item_text">Aa</string>
+  <!-- Labels for each theme component card -->
   <string name="icon_label">Kuvakkeet</string>
   <string name="font_label">Fontit</string>
   <string name="statusbar_label">Tila</string>
   <string name="navbar_label">Navigointi</string>
   <string name="wallpaper_label">Taustakuva</string>
   <string name="lockscreen_label">Lukitusnäytön taustakuva</string>
+  <string name="live_lock_screen_label">Live-lukitusnäyttö</string>
   <string name="style_label">Ohjaus</string>
   <string name="boot_animation_label">Käynnistysanimaatio</string>
   <string name="alarm_label">Hälytys</string>
   <string name="notification_label">Ilmoitus</string>
   <string name="ringtone_label">Soittoääni</string>
+  <!-- Overflow menu -->
   <string name="menu_author_info">Tekijä</string>
   <string name="menu_delete">Poista</string>
   <string name="menu_reset">Palauta teema</string>
+  <!-- Shop themes -->
   <string name="shop_themes">Osta teemoja</string>
+  <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Hyväksy</string>
   <string name="delete_theme_overlay_title">Poista</string>
   <string name="reset_theme_overlay_title">Palauta oletukset</string>
+  <!-- TAG text -->
   <string name="default_tag_text">Oletus</string>
   <string name="customized_tag_text">Mukautettu</string>
   <string name="updated_tag_text">Päivitetty</string>
   <string name="add_component_text">Lisää</string>
   <string name="wallpaper_none">Ei mitään</string>
   <string name="audible_title_none">Ei mitään</string>
+  <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">Palauta oletukset</string>
   <string name="customize_theme">Mukauta</string>
+  <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Valitse kuva</string>
   <string name="wallpaper_none_title">Ei mitään</string>
   <string name="processing_theme">Otetaan käyttöön\u2026</string>
+  <!-- Legacy themes -->
   <string name="legacy_theme_warning">HUOMAUTUS: Teema \'%s\' on suunniteltu vanhemmalle CM:n versiolle. Teeman kanssa voi ilmetä yhteensopivuusongelmia.</string>
+  <!-- Per app theming -->
   <string name="per_app_theming_title">Sovelluksen teema</string>
   <string name="per_app_theme_removal_warning">HUOMAUTUS: Uuden teeman käyttöönotto poistaa sovelluskohtaiset mukautukset.</string>
   <string name="per_app_theme_applying">Teemaa otetaan käyttöön</string>
   <string name="per_app_theme_app_not_overlaid_warning">Teema ei tue tätä sovellusta, joitain osia ei voi muuttaa.</string>
-  <string name="file_type_not_supported">Tiedostotyyppiä ei tueta</string>
+  <string name="read_external_permission_denied_message">Teemavalitsin ei voi käyttää mediatiedostoja eli kuvan valitseminen ei onnistu tällä hetkellä.</string>
+  <string name="animated_lock_screen_badge_text">Anim</string>
+  <string name="enable_live_lock_screen_dialog_title">Ota live-lukitusnäytön taustakuva käyttöön</string>
+  <string name="enable_live_lock_screen_dialog_message">Animoidut lukitusnäytöt vaativat live-lukitusnäytön taustakuvaominasuuden. Voit muuttaa tämän myöhemmin Asetuksista käymällä live-lukitusnäytön taustakuva-asetuksissa Lukitusnäyttö-valinnan alla.</string>
+  <string name="enable_live_lock_screen_dialog_positive_btn_text">Ota käyttöön</string>
 </resources>

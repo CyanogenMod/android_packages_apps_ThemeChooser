@@ -4,6 +4,8 @@
      Copyright (C) 2014-2015 Cyanogen, Inc.
 -->
 <resources>
+  <!-- Note: These are for "themes", meaning multiple themes -->
+  <!-- Labels for each theme component card -->
   <string name="icon_label">وێنۆچکە</string>
   <string name="font_label">فۆنته‌کان</string>
   <string name="statusbar_label">دۆخ</string>
@@ -14,20 +16,27 @@
   <string name="alarm_label">بیرخه‌ره‌وه‌</string>
   <string name="notification_label">تێبینی</string>
   <string name="ringtone_label">زه‌نگ</string>
+  <!-- Overflow menu -->
   <string name="menu_author_info">دانه‌ر</string>
   <string name="menu_delete">سڕینەوە</string>
+  <!-- Shop themes -->
+  <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">لێدان</string>
   <string name="delete_theme_overlay_title">سڕینه‌وه‌</string>
   <string name="reset_theme_overlay_title">ڕێکخستنەوە</string>
+  <!-- TAG text -->
   <string name="default_tag_text">بنه‌ڕه‌ت</string>
   <string name="customized_tag_text">کورتکراوە</string>
   <string name="updated_tag_text">تازەکرایەوە</string>
   <string name="add_component_text">زیادکردن</string>
   <string name="wallpaper_none">هیچ</string>
   <string name="audible_title_none">هیچ</string>
+  <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">ڕێکخستنەوە</string>
   <string name="customize_theme">خواستی خۆت</string>
+  <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">هه‌ڵگرتنی وێنه‌</string>
   <string name="wallpaper_none_title">هیچ</string>
-  <string name="file_type_not_supported">جۆری فایلەکە پاڵپشتی ناکا</string>
+  <!-- Legacy themes -->
+  <!-- Per app theming -->
 </resources>

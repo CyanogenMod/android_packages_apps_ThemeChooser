@@ -8,10 +8,12 @@
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s yüklendi</string>
   <string name="theme_installed_notification_text">Tema başarıyla yüklendi.</string>
+  <!-- Note: These are for "themes", meaning multiple themes -->
   <string name="themes_installed_notification_title">%d temaları yüklendi</string>
   <string name="themes_installed_notification_text_one">%1$s ve %2$d diğer tema yüklendi.</string>
   <string name="themes_installed_notification_text_other">%1$s ve %2$d diğer tema yüklendi.</string>
   <string name="font_component_item_text">Aa</string>
+  <!-- Labels for each theme component card -->
   <string name="icon_label">Simgeler</string>
   <string name="font_label">Yazı tipleri</string>
   <string name="statusbar_label">Durum</string>
@@ -23,28 +25,35 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Bildirim</string>
   <string name="ringtone_label">Zil sesi</string>
+  <!-- Overflow menu -->
   <string name="menu_author_info">Hazırlayan</string>
   <string name="menu_delete">Sil</string>
   <string name="menu_reset">Temayı sıfırla</string>
+  <!-- Shop themes -->
   <string name="shop_themes">Tema alın</string>
+  <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Uygula</string>
   <string name="delete_theme_overlay_title">Sil</string>
   <string name="reset_theme_overlay_title">Sıfırla</string>
+  <!-- TAG text -->
   <string name="default_tag_text">Varsayılan</string>
   <string name="customized_tag_text">Özelleştirilmiş</string>
   <string name="updated_tag_text">Güncellenmiş</string>
   <string name="add_component_text">Ekle</string>
   <string name="wallpaper_none">Yok</string>
   <string name="audible_title_none">Yok</string>
+  <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">Sıfırla</string>
   <string name="customize_theme">Özelleştir</string>
+  <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Görsel seç</string>
   <string name="wallpaper_none_title">Yok</string>
   <string name="processing_theme">İşleniyor\u2026</string>
+  <!-- Legacy themes -->
   <string name="legacy_theme_warning">NOT: %s CM\'nin daha eski bir sürümü için tasarlanmıştır. Bu tema ile uyumluluk sorunlarıyla karşılaşabilirsiniz.</string>
+  <!-- Per app theming -->
   <string name="per_app_theming_title">Uyg. Temacısı</string>
-  <string name="per_app_theme_removal_warning">NOT: Yeni bir tema uygulanınca tüm uygulama tema özelleştirmeleri kaldırılacaktır.</string>
+  <string name="per_app_theme_removal_warning">NOT: Yeni bir tema uygulanınca tüm uygulama teması özelleştirmeleri kaldırılacaktır.</string>
   <string name="per_app_theme_applying">Temanız uygulanıyor</string>
   <string name="per_app_theme_app_not_overlaid_warning">Tema bu uygulamayı desteklemiyor, bazı ögeler değişmeyebilir.</string>
-  <string name="file_type_not_supported">Dosya türü desteklenmiyor</string>
 </resources>

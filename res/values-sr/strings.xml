@@ -8,10 +8,12 @@
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s инсталирано</string>
   <string name="theme_installed_notification_text">Тема је успешно инсталирана.</string>
+  <!-- Note: These are for "themes", meaning multiple themes -->
   <string name="themes_installed_notification_title">%d теме инсталиране</string>
   <string name="themes_installed_notification_text_one">%1$s и %2$d друга инсталирана.</string>
   <string name="themes_installed_notification_text_other">%1$s и %2$d друге инсталиране.</string>
   <string name="font_component_item_text">Aa</string>
+  <!-- Labels for each theme component card -->
   <string name="icon_label">Иконе</string>
   <string name="font_label">Фонтови</string>
   <string name="statusbar_label">Статус</string>
@@ -23,28 +25,35 @@
   <string name="alarm_label">Аларм</string>
   <string name="notification_label">Обавештење</string>
   <string name="ringtone_label">Тон звона</string>
+  <!-- Overflow menu -->
   <string name="menu_author_info">Аутор</string>
   <string name="menu_delete">Избриши</string>
   <string name="menu_reset">Ресетовање теме</string>
+  <!-- Shop themes -->
   <string name="shop_themes">Продавница тема</string>
+  <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Примени</string>
   <string name="delete_theme_overlay_title">Избриши</string>
   <string name="reset_theme_overlay_title">Ресетуј</string>
+  <!-- TAG text -->
   <string name="default_tag_text">Подразумевано</string>
   <string name="customized_tag_text">Прилагођено</string>
   <string name="updated_tag_text">Ажурирано</string>
   <string name="add_component_text">Додај</string>
   <string name="wallpaper_none">Ниједан</string>
   <string name="audible_title_none">Ниједан</string>
+  <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">Ресетуј</string>
   <string name="customize_theme">Прилагоди</string>
+  <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Изабери слику</string>
   <string name="wallpaper_none_title">Ниједан</string>
   <string name="processing_theme">Обрада\u2026</string>
+  <!-- Legacy themes -->
   <string name="legacy_theme_warning">НАПОМЕНА:%s је дизајниран за старије верзије CM. Можеш искусити проблеме компатибилности са овом темом.</string>
+  <!-- Per app theming -->
   <string name="per_app_theming_title">Тему направио</string>
   <string name="per_app_theme_removal_warning">НАПОМЕНА: Постављање нове теме ће уклонити сва прилагођавања теме.</string>
   <string name="per_app_theme_applying">Твоја тема је примењена</string>
   <string name="per_app_theme_app_not_overlaid_warning">Тема не подржава ову апликацију, неки елементи се неће променити.</string>
-  <string name="file_type_not_supported">Тип фајла није подржан</string>
 </resources>

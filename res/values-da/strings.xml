@@ -8,10 +8,12 @@
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s installeret</string>
   <string name="theme_installed_notification_text">Tema installeret.</string>
+  <!-- Note: These are for "themes", meaning multiple themes -->
   <string name="themes_installed_notification_title">%d temaer installeret</string>
   <string name="themes_installed_notification_text_one">%1$s og %2$d andre installeret.</string>
   <string name="themes_installed_notification_text_other">%1$s og %2$d andre installeret.</string>
   <string name="font_component_item_text">Aa</string>
+  <!-- Labels for each theme component card -->
   <string name="icon_label">Ikoner</string>
   <string name="font_label">Skrifttyper</string>
   <string name="statusbar_label">Status</string>
@@ -23,28 +25,35 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Notifikation</string>
   <string name="ringtone_label">Ringetone</string>
+  <!-- Overflow menu -->
   <string name="menu_author_info">Forfatter</string>
   <string name="menu_delete">Slet</string>
   <string name="menu_reset">Nulstil tema</string>
+  <!-- Shop themes -->
   <string name="shop_themes">Køb temaer</string>
+  <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Anvend</string>
   <string name="delete_theme_overlay_title">Slet</string>
   <string name="reset_theme_overlay_title">Nulstil</string>
+  <!-- TAG text -->
   <string name="default_tag_text">Standard</string>
   <string name="customized_tag_text">Tilpasset</string>
   <string name="updated_tag_text">Opdateret</string>
   <string name="add_component_text">Tilføj</string>
   <string name="wallpaper_none">Ingen</string>
   <string name="audible_title_none">Ingen</string>
+  <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">Nulstil</string>
   <string name="customize_theme">Tilpas</string>
+  <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Vælg billede</string>
   <string name="wallpaper_none_title">Ingen</string>
   <string name="processing_theme">Behandler\u2026</string>
+  <!-- Legacy themes -->
   <string name="legacy_theme_warning">BEMÆRK: %s var designet til en ældre version af CM. Du kan opleve kompatibilitetsproblemer med dette tema.</string>
+  <!-- Per app theming -->
   <string name="per_app_theming_title">Temaer til app</string>
   <string name="per_app_theme_removal_warning">BEMÆRK: Når du anvender et nyt tema, vil enhver tilpasning af app temaer blive fjernet.</string>
   <string name="per_app_theme_applying">Dit tema anvendes</string>
   <string name="per_app_theme_app_not_overlaid_warning">Temaet understøtter ikke denne app, nogle elementer ændrer sig muligvis ikke.</string>
-  <string name="file_type_not_supported">Filtypen understøttes ikke</string>
 </resources>

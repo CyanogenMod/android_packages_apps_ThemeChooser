@@ -8,10 +8,12 @@
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s installéiert</string>
   <string name="theme_installed_notification_text">Design erfollegräich installéiert.</string>
+  <!-- Note: These are for "themes", meaning multiple themes -->
   <string name="themes_installed_notification_title">%d Designen installéiert</string>
   <string name="themes_installed_notification_text_one">%1$s an %2$d anerer installéiert.</string>
   <string name="themes_installed_notification_text_other">%1$s an %2$d anerer installéiert.</string>
   <string name="font_component_item_text">Aa</string>
+  <!-- Labels for each theme component card -->
   <string name="icon_label">Symboler</string>
   <string name="font_label">Schrëftaarten</string>
   <string name="statusbar_label">Status</string>
@@ -23,22 +25,30 @@
   <string name="alarm_label">Wecker</string>
   <string name="notification_label">Notifikatioun</string>
   <string name="ringtone_label">Schelltoun</string>
+  <!-- Overflow menu -->
   <string name="menu_author_info">Auteur</string>
   <string name="menu_delete">Läschen</string>
   <string name="menu_reset">Design zrécksetzen</string>
+  <!-- Shop themes -->
   <string name="shop_themes">Designe kafen</string>
+  <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Applizéieren</string>
   <string name="delete_theme_overlay_title">Läschen</string>
   <string name="reset_theme_overlay_title">Zrécksetzen</string>
+  <!-- TAG text -->
   <string name="default_tag_text">Standard</string>
   <string name="customized_tag_text">Personaliséiert</string>
   <string name="updated_tag_text">Aktualiséiert</string>
   <string name="add_component_text">Dobäisetzen</string>
   <string name="wallpaper_none">Keen</string>
   <string name="audible_title_none">Keen</string>
+  <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">Zrécksetzen</string>
   <string name="customize_theme">Personaliséieren</string>
+  <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Bild auswielen</string>
   <string name="wallpaper_none_title">Keen</string>
+  <!-- Legacy themes -->
+  <!-- Per app theming -->
   <string name="per_app_theme_applying">Däin Design gëtt applizéiert</string>
 </resources>

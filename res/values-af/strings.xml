@@ -8,43 +8,58 @@
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s geïnstalleer</string>
   <string name="theme_installed_notification_text">Tema suksesvol geïnstalleer.</string>
+  <!-- Note: These are for "themes", meaning multiple themes -->
   <string name="themes_installed_notification_title">%d temas geïnstalleerd</string>
   <string name="themes_installed_notification_text_one">%1$s en %2$d ander geïnstalleerd.</string>
   <string name="themes_installed_notification_text_other">%1$s en %2$d ander geïnstalleerd.</string>
   <string name="font_component_item_text">Aa</string>
+  <!-- Labels for each theme component card -->
   <string name="icon_label">Ikone</string>
   <string name="font_label">Lettertipes</string>
   <string name="statusbar_label">Status</string>
   <string name="navbar_label">Navigasie</string>
   <string name="wallpaper_label">Muurpapier</string>
   <string name="lockscreen_label">Slot skerm muurpapier</string>
+  <string name="live_lock_screen_label">Lewendige slotskerm</string>
   <string name="style_label">Kontroles</string>
   <string name="boot_animation_label">Begin animasie</string>
   <string name="alarm_label">Wekker</string>
   <string name="notification_label">Kennisgewing</string>
   <string name="ringtone_label">Luitoon</string>
+  <!-- Overflow menu -->
   <string name="menu_author_info">Skrywer</string>
   <string name="menu_delete">Verwyder</string>
   <string name="menu_reset">Herstel tema</string>
+  <!-- Shop themes -->
   <string name="shop_themes">Koop temas</string>
+  <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Pas toe</string>
   <string name="delete_theme_overlay_title">Verwyder</string>
   <string name="reset_theme_overlay_title">Stel terug</string>
+  <!-- TAG text -->
   <string name="default_tag_text">Normaal</string>
   <string name="customized_tag_text">Pasmaak</string>
   <string name="updated_tag_text">Opgedateer</string>
   <string name="add_component_text">Voeg by</string>
   <string name="wallpaper_none">Geen</string>
   <string name="audible_title_none">Geen</string>
+  <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">Stel terug</string>
   <string name="customize_theme">Pasmaak</string>
+  <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Kies prent</string>
   <string name="wallpaper_none_title">Geen</string>
   <string name="processing_theme">Vverwerking\u2026</string>
+  <!-- Legacy themes -->
   <string name="legacy_theme_warning">KENNISGEWING: %s is ontwerp vir \'n ouer weergawe van CM. Jy mag versoenbaarheid probleme met hierdie tema ervaar.</string>
+  <!-- Per app theming -->
   <string name="per_app_theming_title">Program Temas</string>
   <string name="per_app_theme_removal_warning">KENNISGEWING: Toepassing van \'n nuwe tema sal enige pasgemaakte tema vir enige program verwyder.</string>
   <string name="per_app_theme_applying">Jou tema word toegepas</string>
   <string name="per_app_theme_app_not_overlaid_warning">Tema ondersteun nie die program nie, sommige elemente mag nie verander nie.</string>
-  <string name="file_type_not_supported">Lêer tipe word nie ondersteun nie</string>
+  <string name="read_external_permission_denied_message">Tema kies opsie is nie beskikbaar nie omdat geen media toegang beskikbaar is om \'n foto te kies nie.</string>
+  <string name="animated_lock_screen_badge_text">Anim</string>
+  <string name="enable_live_lock_screen_dialog_title">Aktiveer lewendige slotskerm</string>
+  <string name="enable_live_lock_screen_dialog_message">Geanimeerde slot skerms vereis dat Lewendige skerm slot funksie aktief is. Jy kan dit later aktiveer met die opening van instellings, slot skerm opsies en dan op die bladsy die lewendige slot skerm opsie aktiveer.</string>
+  <string name="enable_live_lock_screen_dialog_positive_btn_text">Aktiveer</string>
 </resources>

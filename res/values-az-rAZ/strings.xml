@@ -4,6 +4,49 @@
      Copyright (C) 2014-2015 Cyanogen, Inc.
 -->
 <resources>
+  <string name="app_name">Tema Seçici</string>
+  <string name="font_preview_letters">AaBbCcDd</string>
+  <string name="theme_installed_notification_title">%s quraşdırıldı</string>
+  <string name="theme_installed_notification_text">Tema uğurla quraşdırıldı.</string>
+  <!-- Note: These are for "themes", meaning multiple themes -->
+  <string name="themes_installed_notification_title">%d tema quraşdırıldı</string>
+  <string name="themes_installed_notification_text_one">%1$s və %2$d digər tema quraşdırıldı.</string>
+  <string name="themes_installed_notification_text_other">%1$s və %2$d digər tema quraşdırıldı.</string>
+  <string name="font_component_item_text">Aa</string>
+  <!-- Labels for each theme component card -->
+  <string name="icon_label">Nişanlar</string>
+  <string name="statusbar_label">Durum</string>
   <string name="navbar_label">Hərəkət</string>
+  <string name="wallpaper_label">Divar kağızı</string>
+  <string name="lockscreen_label">Kilit ekranı divar kağızları</string>
+  <string name="style_label">Nəzarət</string>
+  <string name="boot_animation_label">Açılış animasiyası</string>
+  <string name="alarm_label">Zəngli saat</string>
+  <string name="notification_label">Bildiriş</string>
   <string name="ringtone_label">Zəng səsi</string>
+  <!-- Overflow menu -->
+  <string name="menu_author_info">Müəllif</string>
+  <string name="menu_delete">Sil</string>
+  <string name="menu_reset">Temanı sıfırla</string>
+  <!-- Shop themes -->
+  <string name="shop_themes">Tema alın</string>
+  <!-- Overlay titles -->
+  <string name="apply_theme_overlay_title">Tətbiq et</string>
+  <string name="delete_theme_overlay_title">Sil</string>
+  <string name="reset_theme_overlay_title">Sıfırla</string>
+  <!-- TAG text -->
+  <string name="default_tag_text">İlkin</string>
+  <string name="updated_tag_text">Yenilənib</string>
+  <string name="add_component_text">Əlavə et</string>
+  <string name="wallpaper_none">Yoxdur</string>
+  <string name="audible_title_none">Yoxdur</string>
+  <!-- Labels for the customize/reset theme layout -->
+  <string name="reset_theme">Sıfırla</string>
+  <!-- Extra wallpaper components for selector -->
+  <string name="wallpaper_external_title">Təsvir seç</string>
+  <string name="wallpaper_none_title">Yoxdur</string>
+  <string name="processing_theme">Emal edilir\u2026</string>
+  <!-- Legacy themes -->
+  <string name="legacy_theme_warning">QEYD: %s CM\'in köhnə versiyaları üçün tərtib edilib. Bu tema ilə uyğunluq problemləriylə qarşılaşa bilərsiniz.</string>
+  <!-- Per app theming -->
 </resources>

@@ -8,10 +8,12 @@
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s instalată</string>
   <string name="theme_installed_notification_text">Tema a fost instalată cu succes.</string>
+  <!-- Note: These are for "themes", meaning multiple themes -->
   <string name="themes_installed_notification_title">%d teme instalate</string>
   <string name="themes_installed_notification_text_one">%1$s și încă %2$d instalate.</string>
   <string name="themes_installed_notification_text_other">%1$s și încă %2$d instalate.</string>
   <string name="font_component_item_text">Aa</string>
+  <!-- Labels for each theme component card -->
   <string name="icon_label">Pictograme</string>
   <string name="font_label">Fonturi</string>
   <string name="statusbar_label">Stare</string>
@@ -23,26 +25,34 @@
   <string name="alarm_label">Alarmă</string>
   <string name="notification_label">Notificare</string>
   <string name="ringtone_label">Ton de apel</string>
+  <!-- Overflow menu -->
   <string name="menu_author_info">Autor</string>
   <string name="menu_delete">Ștergeți</string>
   <string name="menu_reset">Reinițializare temă</string>
+  <!-- Shop themes -->
   <string name="shop_themes">Magazin de teme</string>
+  <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Activare</string>
   <string name="delete_theme_overlay_title">Ștergeți</string>
   <string name="reset_theme_overlay_title">Resetare</string>
+  <!-- TAG text -->
   <string name="default_tag_text">Implicit</string>
   <string name="customized_tag_text">Personalizate</string>
   <string name="updated_tag_text">Actualizat</string>
   <string name="add_component_text">Adăugare</string>
   <string name="wallpaper_none">Nimic</string>
   <string name="audible_title_none">Nimic</string>
+  <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">Resetare</string>
   <string name="customize_theme">Personalizare</string>
+  <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Alege imaginea</string>
   <string name="wallpaper_none_title">Nimic</string>
   <string name="processing_theme">Procesând\u2026</string>
+  <!-- Legacy themes -->
+  <!-- Per app theming -->
   <string name="per_app_theme_removal_warning">NOTĂ: Aplicarea unei noi teme va elimina toate particularizările de temă ale aplicațiilor.</string>
   <string name="per_app_theme_applying">Tema se aplică</string>
   <string name="per_app_theme_app_not_overlaid_warning">Tema nu are suport pentru acestă aplicație, unele elemente nu se pot schimba.</string>
-  <string name="file_type_not_supported">Tip de fișier neacceptat</string>
+  <string name="enable_live_lock_screen_dialog_positive_btn_text">Activare</string>
 </resources>

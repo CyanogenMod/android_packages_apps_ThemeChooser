@@ -5,46 +5,61 @@
 -->
 <resources>
   <string name="app_name">Темы</string>
-  <string name="font_preview_letters">АаБбCcDd</string>
+  <string name="font_preview_letters">АаБбВвГг</string>
   <string name="theme_installed_notification_title">%s установлено</string>
-  <string name="theme_installed_notification_text">Тема успешно установлена.</string>
+  <string name="theme_installed_notification_text">Тема установлена.</string>
+  <!-- Note: These are for "themes", meaning multiple themes -->
   <string name="themes_installed_notification_title">Установлено %d тем</string>
   <string name="themes_installed_notification_text_one">%1$s и ещё %2$d тема установлены.</string>
-  <string name="themes_installed_notification_text_other">%1$s и %2$d других тем установлено.</string>
+  <string name="themes_installed_notification_text_other">Тема %1$s и ещё %2$d установлены.</string>
   <string name="font_component_item_text">Аа</string>
+  <!-- Labels for each theme component card -->
   <string name="icon_label">Значки</string>
   <string name="font_label">Шрифты</string>
   <string name="statusbar_label">Строка состояния</string>
   <string name="navbar_label">Панель навигации</string>
   <string name="wallpaper_label">Обои</string>
   <string name="lockscreen_label">Обои экрана блокировки</string>
+  <string name="live_lock_screen_label">Живой экран блокировки</string>
   <string name="style_label">Элементы управления</string>
   <string name="boot_animation_label">Анимация загрузки</string>
   <string name="alarm_label">Будильник</string>
   <string name="notification_label">Уведомление</string>
   <string name="ringtone_label">Рингтон</string>
+  <!-- Overflow menu -->
   <string name="menu_author_info">Автор</string>
   <string name="menu_delete">Удалить</string>
-  <string name="menu_reset">Сброс настроек</string>
+  <string name="menu_reset">Сбросить тему</string>
+  <!-- Shop themes -->
   <string name="shop_themes">Магазин тем</string>
+  <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Применить</string>
   <string name="delete_theme_overlay_title">Удалить</string>
   <string name="reset_theme_overlay_title">Сброс</string>
+  <!-- TAG text -->
   <string name="default_tag_text">Стандартный</string>
   <string name="customized_tag_text">Настроено</string>
   <string name="updated_tag_text">Обновлено</string>
   <string name="add_component_text">Добавить</string>
   <string name="wallpaper_none">Нет</string>
   <string name="audible_title_none">Нет</string>
-  <string name="reset_theme">Сброс</string>
+  <!-- Labels for the customize/reset theme layout -->
+  <string name="reset_theme">Сбросить</string>
   <string name="customize_theme">Настройка</string>
+  <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Выбрать изображение</string>
   <string name="wallpaper_none_title">Нет</string>
   <string name="processing_theme">Применение\u2026</string>
+  <!-- Legacy themes -->
   <string name="legacy_theme_warning">Примечание: тема %s была создана для старых версий CM. У вас могут появиться проблемы совместимости c данной темой.</string>
+  <!-- Per app theming -->
   <string name="per_app_theming_title">Темы приложений</string>
   <string name="per_app_theme_removal_warning">Примечание: установка новой темы удалит все индивидуальные настройки тем для приложений.</string>
   <string name="per_app_theme_applying">Ваша тема применяется</string>
   <string name="per_app_theme_app_not_overlaid_warning">Тема не поддерживает данное приложение, некоторые элементы могут остаться прежними.</string>
-  <string name="file_type_not_supported">Тип файла не поддерживается</string>
+  <string name="read_external_permission_denied_message">Диспетчер тем не может получить доступ, поэтому сейчас невозможно выбрать изображение.</string>
+  <string name="animated_lock_screen_badge_text">Анимация</string>
+  <string name="enable_live_lock_screen_dialog_title">Включить живой экран блокировки</string>
+  <string name="enable_live_lock_screen_dialog_message">Для анимированного экрана блокировки нужно включить функцию живого экрана блокировки. Это можно сделать позже в Настройках, открыв раздел «Параметры экрана блокировки».</string>
+  <string name="enable_live_lock_screen_dialog_positive_btn_text">Включить</string>
 </resources>
