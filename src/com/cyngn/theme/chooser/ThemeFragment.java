@@ -195,7 +195,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected static final String ARG_PACKAGE_NAME = "pkgName";
     protected static final String ARG_COMPONENT_ID = "cmpntId";
     protected static final String ARG_SKIP_LOADING_ANIM = "skipLoadingAnim";
-    protected static final String ARG_SHOW_ANIMATED_LOCK_SCREEN_ONLY = "showAnimatedLockScreenOnly";
+    protected static final String ARG_ANIMATE_TO_LOCK_SCREEN_CARD = "animateToLockScreenCard";
 
     private static final String LLS_PACKAGE_NAME = "com.cyngn.lockscreen.live";
     private static final String LLS_PROVIDER_NAME =
@@ -322,7 +322,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final int mThemeVersion = ThemeVersion.getVersion();
 
-    protected boolean mShowAnimatedLockScreenSelectorAfterContentLoaded;
+    protected boolean mShowLockScreenSelectorAfterContentLoaded;
 
     protected enum CustomizeResetAction {
         Customize,
@@ -1346,9 +1346,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                         animateContentIn();
                     }
                 });
-                if (mShowAnimatedLockScreenSelectorAfterContentLoaded) {
+                if (mShowLockScreenSelectorAfterContentLoaded) {
                     getChooserActivity().expandContentAndAnimateLockScreenCardIn();
-                    mShowAnimatedLockScreenSelectorAfterContentLoaded = false;
+                    mShowLockScreenSelectorAfterContentLoaded = false;
                 }
                 break;
             case LOADER_ID_STATUS_BAR:
@@ -2896,7 +2896,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         scrollAnimator.start();
     }
 
-    public void showAnimatedLockScreenCard() {
+    public void showLockScreenCard() {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {

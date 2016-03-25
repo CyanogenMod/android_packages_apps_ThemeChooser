@@ -70,7 +70,7 @@ public class MyThemeFragment extends ThemeFragment {
 
     static MyThemeFragment newInstance(String baseThemePkgName, String baseThemeName,
                                        String baseThemeAuthor, boolean skipLoadingAnim,
-                                       boolean showAnimatedLockScreensOnly) {
+                                       boolean animateToLockScreenCard) {
         MyThemeFragment f = new MyThemeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PACKAGE_NAME, CURRENTLY_APPLIED_THEME);
@@ -78,7 +78,7 @@ public class MyThemeFragment extends ThemeFragment {
         args.putString(ARG_BASE_THEME_NAME, baseThemeName);
         args.putString(ARG_BASE_THEME_AUTHOR, baseThemeAuthor);
         args.putBoolean(ARG_SKIP_LOADING_ANIM, skipLoadingAnim);
-        args.putBoolean(ARG_SHOW_ANIMATED_LOCK_SCREEN_ONLY, showAnimatedLockScreensOnly);
+        args.putBoolean(ARG_ANIMATE_TO_LOCK_SCREEN_CARD, animateToLockScreenCard);
         f.setArguments(args);
         return f;
     }
@@ -93,7 +93,8 @@ public class MyThemeFragment extends ThemeFragment {
         mBaseThemePkgName = getArguments().getString(ARG_BASE_THEME_PACKAGE_NAME);
         mBaseThemeName = getArguments().getString(ARG_BASE_THEME_NAME);
         mBaseThemeAuthor = getArguments().getString(ARG_BASE_THEME_AUTHOR);
-        mShowAnimatedLockScreenSelectorAfterContentLoaded = getArguments().getBoolean(ARG_SHOW_ANIMATED_LOCK_SCREEN_ONLY);
+        mShowLockScreenSelectorAfterContentLoaded = getArguments().getBoolean(
+                ARG_ANIMATE_TO_LOCK_SCREEN_CARD);
         mSurfaceView = createSurfaceView();
         populateBaseThemeSupportedComponents(mBaseThemePkgName);
     }

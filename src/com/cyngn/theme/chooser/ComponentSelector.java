@@ -3,7 +3,6 @@
  */
 package com.cyngn.theme.chooser;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -15,13 +14,10 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -63,7 +59,6 @@ import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NAVIGA
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ICONS;
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
-import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_LIVE_LOCK_SCREEN;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_STATUS_BAR;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_FONT;
 import static com.cyngn.theme.util.CursorLoaderHelper.LOADER_ID_ICONS;
@@ -357,8 +352,7 @@ public class ComponentSelector extends LinearLayout
             return LOADER_ID_ALARM;
         }
         if (MODIFIES_LOCKSCREEN.equals(component)) {
-            return (showAnimatedLockScreenOnly()) ? LOADER_ID_LIVE_LOCK_SCREEN
-                    : LOADER_ID_LOCKSCREEN;
+            return LOADER_ID_LOCKSCREEN;
         }
         return -1;
     }
@@ -547,10 +541,6 @@ public class ComponentSelector extends LinearLayout
             return newSoundView(cursor, container, position, mComponentType);
         }
         if (MODIFIES_LOCKSCREEN.equals(mComponentType)) {
-            if (showAnimatedLockScreenOnly()) {
-                return newWallpapersView(cursor, container, position + EXTRA_WALLPAPER_COMPONENTS,
-                        cursor.getColumnIndex(PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL), true);
-            }
             boolean isLiveLockScreen = false;
             if (position >= EXTRA_WALLPAPER_COMPONENTS) {
                 cursor.moveToPosition(position - EXTRA_WALLPAPER_COMPONENTS);
@@ -875,10 +865,6 @@ public class ComponentSelector extends LinearLayout
             }
         }
     };
-
-    private boolean showAnimatedLockScreenOnly() {
-        return ((ChooserActivity)mContext).getShowAnimatedLockScreeOnly();
-    }
 
     private class ThemesObserver extends ContentObserver {
         public ThemesObserver() {

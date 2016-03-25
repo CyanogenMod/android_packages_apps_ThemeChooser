@@ -169,8 +169,8 @@ public class CursorLoaderHelper {
                 selection = MODIFIES_ALARMS + "=?";
                 break;
             case LOADER_ID_LOCKSCREEN:
-                selection = MODIFIES_LOCKSCREEN + "=? OR " + MODIFIES_LIVE_LOCK_SCREEN + "=?";
-                selectionArgs = new String[] { "1", "1" };
+                selection = MODIFIES_LOCKSCREEN + "=?";
+                selectionArgs = new String[] { "1" };
                 if (mThemeVersion >= 3) {
                     projection = new String[]{
                             PreviewColumns.LOCK_WALLPAPER_THUMBNAIL,

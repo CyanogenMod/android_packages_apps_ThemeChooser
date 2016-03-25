@@ -70,7 +70,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.cyngn.intent.action.PICK_ANIMATED_LOCK_SCREEN" />
+                <action android:name="com.cyngn.intent.action.PICK_LOCK_SCREEN_WALLPAPER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

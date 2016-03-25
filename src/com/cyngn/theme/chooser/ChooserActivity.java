@@ -35,7 +35,6 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ThemeViewPager;
 import android.support.v4.view.ViewPager;
@@ -100,8 +99,8 @@ public class ChooserActivity extends FragmentActivity
             "com.cyngn.themes.action.THEME_REMOVED_FROM_CHOOSER";
     private static final String EXTRA_PACKAGE = "package";
 
-    private static final String ACTION_PICK_ANIMATED_LOCK_SCREEN =
-            "com.cyngn.intent.action.PICK_ANIMATED_LOCK_SCREEN";
+    private static final String ACTION_PICK_LOCK_SCREEN_WALLPAPER =
+            "com.cyngn.intent.action.PICK_LOCK_SCREEN_WALLPAPER";
 
     /**
      * Request code for picking an external wallpaper
@@ -156,7 +155,7 @@ public class ChooserActivity extends FragmentActivity
     private boolean mIsPickingImage = false;
     private boolean mRestartLoaderOnCollapse = false;
     private boolean mActivityResuming = false;
-    private boolean mShowAnimatedLockScreensOnly = false;
+    private boolean mShowLockScreenWallpaper = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,8 +213,8 @@ public class ChooserActivity extends FragmentActivity
                                 mContainerYOffset = 0;
                             }
                             if (f != null) f.fadeInCards();
-                            if (mShowAnimatedLockScreensOnly) {
-                                mShowAnimatedLockScreensOnly = false;
+                            if (mShowLockScreenWallpaper) {
+                                mShowLockScreenWallpaper = false;
                                 mSelector.resetComponentType();
                             }
                         }
@@ -401,13 +400,9 @@ public class ChooserActivity extends FragmentActivity
                                             getCallingPackage())) {
                 mThemeToApply = intent.getStringExtra(EXTRA_PKGNAME);
             }
-        } else if (action.equals(ACTION_PICK_ANIMATED_LOCK_SCREEN)) {
-            mShowAnimatedLockScreensOnly = true;
+        } else if (action.equals(ACTION_PICK_LOCK_SCREEN_WALLPAPER)) {
+            mShowLockScreenWallpaper = true;
         }
-    }
-
-    public boolean getShowAnimatedLockScreeOnly() {
-        return mShowAnimatedLockScreensOnly;
     }
 
     private String getSelectedTheme(String requestedTheme) {
@@ -704,8 +699,8 @@ public class ChooserActivity extends FragmentActivity
                 mContainerYOffset = 0;
             }
             if (f != null) f.fadeInCards();
-            if (mShowAnimatedLockScreensOnly) {
-                mShowAnimatedLockScreensOnly = false;
+            if (mShowLockScreenWallpaper) {
+                mShowLockScreenWallpaper = false;
                 mSelector.resetComponentType();
             }
         } else if (mExpanded) {
@@ -795,7 +790,7 @@ public class ChooserActivity extends FragmentActivity
             ((TransitionDrawable) d).startTransition((int) ANIMATE_CONTENT_IN_BLUR_DURATION);
         }
 
-        if (!mShowAnimatedLockScreensOnly) {
+        if (!mShowLockScreenWallpaper) {
             AnimatorSet set = new AnimatorSet();
             set.play(ObjectAnimator.ofFloat(mContainer, "alpha", 0f, 1f)
                     .setDuration(ANIMATE_CONTENT_IN_ALPHA_DURATION))
@@ -1010,7 +1005,7 @@ public class ChooserActivity extends FragmentActivity
                 final String pkgName = mInstalledThemes.get(position);
                 if (pkgName.equals(mAppliedBaseTheme)) {
                     f = MyThemeFragment.newInstance(mAppliedBaseTheme, mAppliedThemeTitle,
-                            mAppliedThemeAuthor, mAnimateContentIn, mShowAnimatedLockScreensOnly);
+                            mAppliedThemeAuthor, mAnimateContentIn, mShowLockScreenWallpaper);
                     wallpaperCmpntId = mCurrentWallpaperCmpntId;
                 } else {
                     f = ThemeFragment.newInstance(pkgName, mAnimateContentIn);
@@ -1163,7 +1158,7 @@ public class ChooserActivity extends FragmentActivity
                         set.setStartDelay(mAnimateContentInDelay);
                         set.start();
                         mContainer.setVisibility(View.VISIBLE);
-                        getCurrentFragment().showAnimatedLockScreenCard();
+                        getCurrentFragment().showLockScreenCard();
                     }
                 }, ANIMATE_CARDS_IN_DURATION);
             }
