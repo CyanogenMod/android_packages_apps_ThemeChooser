@@ -221,7 +221,7 @@ public class ChooserDetailFragment extends Fragment implements LoaderManager.Loa
 
         getLoaderManager().initLoader(LOADER_ID_THEME_INFO, null, this);
         getLoaderManager().initLoader(LOADER_ID_APPLIED_THEME, null, this);
-        mService = ThemeManager.getInstance();
+        mService = ThemeManager.getInstance(getActivity());
         return v;
     }
 
