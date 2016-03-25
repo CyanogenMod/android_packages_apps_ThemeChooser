@@ -330,7 +330,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
 
     @Override
     public void onFinish(boolean isSuccess) {
-        ThemeManager tm = ThemeManager.getInstance();
+        ThemeManager tm = ThemeManager.getInstance(getContext());
         tm.removeClient(this);
         mThemeListLayout.postDelayed(new Runnable() {
             @Override
@@ -772,7 +772,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
                 hideThemeList(true, new Runnable() {
                     @Override
                     public void run() {
-                        ThemeManager tm = ThemeManager.getInstance();
+                        ThemeManager tm = ThemeManager.getInstance(getContext());
                         ThemeChangeRequest.Builder builder = new ThemeChangeRequest.Builder();
                         builder.setAppOverlay(appPkgName, themePkgName);
                         tm.addClient(PerAppThemingWindow.this);

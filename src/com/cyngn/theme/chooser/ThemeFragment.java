@@ -1240,7 +1240,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     protected ThemeManager getThemeManager() {
-        return ThemeManager.getInstance();
+        return ThemeManager.getInstance(getActivity());
     }
 
     private void freeMediaPlayers() {
