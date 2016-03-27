@@ -16,43 +16,8 @@
      limitations under the License.
 -->
 <resources>
-  <string name="app_name">Tema</string>
   <!-- Themable items -->
-  <string name="lock_screen">Kunci wallpaper</string>
-  <string name="icons">Ikon</string>
-  <string name="fonts">Font</string>
-  <string name="wallpapers">Wallpaper</string>
-  <string name="boot_anims">Animasi boot</string>
-  <string name="ringtones">Nada dering</string>
-  <string name="notifications">Pemberitahuan</string>
-  <string name="alarms">Alarm</string>
-  <string name="style">Gaya</string>
-  <string name="status_bar">Status bar</string>
-  <string name="nav_bar">Bar navigasi</string>
   <!-- Drawer items (some items in drawer are part of themeable items) -->
-  <string name="theme_packs">Paket tema</string>
-  <string name="sounds">Suara</string>
-  <string name="system_theme_name">Sistem</string>
-  <string name="default_tag">(Default)</string>
-  <string name="apply">Terapkan</string>
-  <string name="applying">Menerapkan\u2026</string>
-  <string name="applied">Diterapkan</string>
-  <string name="available">Tersedia</string>
-  <string name="update">Perbarui</string>
-  <string name="no_preview_available">Tidak ada pratinjau tersedia</string>
-  <string name="menu_item_uninstall">Hapus instal</string>
   <!-- Audibles preview -->
-  <string name="alarm_label">Alarm</string>
-  <string name="notification_label">Pemberitahuan</string>
-  <string name="ringtone_label">Nada dering</string>
-  <string name="unknown_author">Pembuat tidak dikenal</string>
-  <string name="font_preview_letters">AaBbCcDd123</string>
-  <string name="theme_installed_notification_title">%s terinstal</string>
-  <string name="theme_installed_notification_text">Tema berhasil dipasang.</string>
-  <string name="menu_item_get_more_themes">Dapatkan lebih</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Anda bisa mendapatkan lebih banyak tema dari link berikut:</string>
-  <string name="get_more_entry_play_store">Play Store</string>
-  <string name="get_more_entry_cm_wiki">Info lebih lanjut di CM Wiki</string>
-  <string name="designed_for_cm11">Dirancang untuk CM11</string>
 </resources>

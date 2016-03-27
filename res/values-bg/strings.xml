@@ -52,7 +52,7 @@
   <string name="menu_item_get_more_themes">Добави още</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Можете да добавите още теми от следните връзки:</string>
-  <string name="get_more_app_not_available">Няма налични приложения</string>
+  <string name="get_more_app_not_available">Приложението не е налично</string>
   <string name="get_more_entry_play_store">Play Магазин</string>
   <string name="get_more_entry_cm_wiki">За повече информация CM Wiki</string>
   <string name="designed_for_cm11">Проектиран за CM11</string>
