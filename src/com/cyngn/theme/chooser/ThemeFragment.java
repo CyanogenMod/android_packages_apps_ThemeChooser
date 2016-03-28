@@ -12,6 +12,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -2085,7 +2086,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                                         getString(R.string.wallpaper_label));
                             }
                         };
-                        requestPermissions(new String[] {READ_EXTERNAL_STORAGE},
+                        requestPermissions(new String[]{READ_EXTERNAL_STORAGE},
                                 PERMISSION_REQUEST);
                     } else {
                         getChooserActivity().pickExternalWallpaper();
@@ -2131,6 +2132,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                     setCardTitle(mLockScreenCard, WALLPAPER_NONE,
                             getString(R.string.lockscreen_label));
                 }
+            } else if (ComponentSelector.MOD_LOCK.equals(pkgName)) {
+                startLiveLockScreenSettings();
             } else {
                 if (MODIFIES_LIVE_LOCK_SCREEN.equals(component)) {
                     loaderId = LOADER_ID_LIVE_LOCK_SCREEN;
@@ -2922,6 +2925,15 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 scrollAnimator.start();
             }
         }, SHOW_LOCK_SCREEN_CARD_DELAY);
+    }
+
+    protected void startLiveLockScreenSettings() {
+        Intent intent = new Intent(cyanogenmod.content.Intent.ACTION_OPEN_LIVE_LOCKSCREEN_SETTINGS);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            // TODO: inform user that this action failed (Toast?)
+        }
     }
 
     class AnimationLoader extends AsyncTask<Void, Void, Boolean> {

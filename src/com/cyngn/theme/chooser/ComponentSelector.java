@@ -79,7 +79,11 @@ public class ComponentSelector extends LinearLayout
 
     public static final String EXTERNAL_WALLPAPER = "external";
 
+    public static final String MOD_LOCK = "mod_lock";
+
     private static final int EXTRA_WALLPAPER_COMPONENTS = 2;
+
+    private static final int EXTRA_LOCK_SCREEN_WALLPAPER_COMPONENTS = 3;
 
     protected static final long DEFAULT_COMPONENT_ID = 0;
 
@@ -530,7 +534,8 @@ public class ComponentSelector extends LinearLayout
         }
         if (MODIFIES_LAUNCHER.equals(mComponentType)) {
             return newWallpapersView(cursor, container, position,
-                    cursor.getColumnIndex(PreviewColumns.WALLPAPER_THUMBNAIL), false);
+                    cursor.getColumnIndex(PreviewColumns.WALLPAPER_THUMBNAIL), false,
+                    EXTRA_WALLPAPER_COMPONENTS);
         }
         if (MODIFIES_BOOT_ANIM.equals(mComponentType)) {
             return newBootanimationView(cursor, container, position);
@@ -542,8 +547,8 @@ public class ComponentSelector extends LinearLayout
         }
         if (MODIFIES_LOCKSCREEN.equals(mComponentType)) {
             boolean isLiveLockScreen = false;
-            if (position >= EXTRA_WALLPAPER_COMPONENTS) {
-                cursor.moveToPosition(position - EXTRA_WALLPAPER_COMPONENTS);
+            if (position >= EXTRA_LOCK_SCREEN_WALLPAPER_COMPONENTS) {
+                cursor.moveToPosition(position - EXTRA_LOCK_SCREEN_WALLPAPER_COMPONENTS);
                 int liveLockIndex = cursor.getColumnIndex(MODIFIES_LIVE_LOCK_SCREEN);
                 isLiveLockScreen = liveLockIndex >= 0 &&
                         cursor.getInt(liveLockIndex) == 1;
@@ -551,7 +556,8 @@ public class ComponentSelector extends LinearLayout
             int index = isLiveLockScreen
                     ? cursor.getColumnIndex(PreviewColumns.LIVE_LOCK_SCREEN_THUMBNAIL)
                     : cursor.getColumnIndex(PreviewColumns.LOCK_WALLPAPER_THUMBNAIL);
-            return newWallpapersView(cursor, container, position, index, isLiveLockScreen);
+            return newWallpapersView(cursor, container, position, index, isLiveLockScreen,
+                    EXTRA_LOCK_SCREEN_WALLPAPER_COMPONENTS);
         }
         return null;
     }
@@ -650,7 +656,7 @@ public class ComponentSelector extends LinearLayout
     }
 
     private View newWallpapersView(Cursor cursor, ViewGroup parent, int position,
-                                   int wallpaperIndex, boolean isLiveLockScreen) {
+            int wallpaperIndex, boolean isLiveLockScreen, int numExtraComponents) {
         View v = mInflater.inflate(R.layout.wallpaper_component_selection_item, parent,
                 false);
         ImageView iv = (ImageView) v.findViewById(R.id.icon);
@@ -663,8 +669,14 @@ public class ComponentSelector extends LinearLayout
             v.setTag(R.id.tag_key_package_name, EXTERNAL_WALLPAPER);
             ((TextView) v.findViewById(R.id.title))
                     .setText(R.string.wallpaper_external_title);
+        } else if (numExtraComponents == EXTRA_LOCK_SCREEN_WALLPAPER_COMPONENTS && position == 2) {
+            // TODO: update drawable once the asset is provided by design
+            iv.setImageResource(android.R.drawable.ic_lock_lock);
+            v.setTag(R.id.tag_key_package_name, MOD_LOCK);
+            ((TextView) v.findViewById(R.id.title))
+                    .setText(R.string.mod_lock_title);
         } else {
-            cursor.moveToPosition(position - EXTRA_WALLPAPER_COMPONENTS);
+            cursor.moveToPosition(position - numExtraComponents);
             int pkgNameIndex = cursor.getColumnIndex(ThemesContract.ThemesColumns.PKG_NAME);
             int cmpntIdIndex = cursor.getColumnIndex(PreviewColumns.COMPONENT_ID);
             long cmpntId = (cmpntIdIndex >= 0) ?

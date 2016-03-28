@@ -69,6 +69,7 @@
     <!-- Extra wallpaper components for selector -->
     <string name="wallpaper_external_title">Pick image</string>
     <string name="wallpaper_none_title">None</string>
+    <string name="mod_lock_title">MOD Lock</string>
 
     <string name="processing_theme">Processing</string>
 
