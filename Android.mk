@@ -12,7 +12,8 @@ endif
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
-LOCAL_PACKAGE_NAME := ThemeChooser
+LOCAL_OVERRIDES_PACKAGES := ThemeChooser
+LOCAL_PACKAGE_NAME := ModThemeChooser
 LOCAL_CERTIFICATE := platform
 LOCAL_PRIVILEGED_MODULE := true
 
