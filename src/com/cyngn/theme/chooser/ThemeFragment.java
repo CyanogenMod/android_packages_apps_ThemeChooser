@@ -2265,7 +2265,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             builder.setComponent(component, componentMap.get(component));
         }
         builder.setRequestType(requestType);
-        if (mThemeVersion >= 3) builder.setWallpaperId(mSelectedWallpaperComponentId);
+        if (mThemeVersion >= 3)  {
+            builder.setWallpaperId(mSelectedWallpaperComponentId != null
+                    ? mSelectedWallpaperComponentId
+                    : DEFAULT_COMPONENT_ID);
+        }
         return builder.build();
     }
 
