@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">รูปแบบธีม</string>
+  <!-- Themable items -->
   <string name="lock_screen">ภาพพื้นหลังหน้าจอล็อค</string>
   <string name="icons">ไอคอน</string>
   <string name="fonts">แบบตัวอักษร</string>
@@ -28,6 +29,7 @@
   <string name="style">สไตล์</string>
   <string name="status_bar">แถบสถานะ</string>
   <string name="nav_bar">แถบนำทาง</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">แพ็ครูปแบบธีม</string>
   <string name="sounds">เสียง</string>
   <string name="system_theme_name">ระบบ</string>
@@ -39,6 +41,7 @@
   <string name="update">อัปเดต</string>
   <string name="no_preview_available">ไม่มีภาพตัวอย่าง</string>
   <string name="menu_item_uninstall">ถอนการติดตั้ง</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">นาฬิกาปลุก</string>
   <string name="notification_label">การแจ้งเตือน</string>
   <string name="ringtone_label">เสียง​เรียก​เข้า</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s ติดตั้งแล้ว</string>
   <string name="theme_installed_notification_text">ติดตั้งรูปแบบธีมเสร็จแล้ว</string>
   <string name="menu_item_get_more_themes">เพิ่มเติม</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">คุณสามารถรับรูปแบบธีมเพิ่มเติมได้จากลิงค์ต่อไปนี้:</string>
   <string name="get_more_app_not_available">ไม่สามารถใช้งานแอปได้</string>
   <string name="get_more_entry_play_store">Play Store</string>

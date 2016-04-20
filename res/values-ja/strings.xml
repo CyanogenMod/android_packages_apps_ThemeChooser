@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">テーマ</string>
+  <!-- Themable items -->
   <string name="lock_screen">ロック画面の壁紙</string>
   <string name="icons">アイコン</string>
   <string name="fonts">フォント</string>
@@ -28,6 +29,7 @@
   <string name="style">スタイル</string>
   <string name="status_bar">ステータスバー</string>
   <string name="nav_bar">ナビゲーションバー</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">テーマパック</string>
   <string name="sounds">サウンド</string>
   <string name="system_theme_name">システム</string>
@@ -39,6 +41,7 @@
   <string name="update">更新</string>
   <string name="no_preview_available">プレビューは利用できません</string>
   <string name="menu_item_uninstall">アンインストール</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">アラーム</string>
   <string name="notification_label">通知</string>
   <string name="ringtone_label">着信音</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%sがインストールされました</string>
   <string name="theme_installed_notification_text">テーマのインストールが完了しました。</string>
   <string name="menu_item_get_more_themes">他のテーマ</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">以下のリンクから他のテーマを手に入れることができます:</string>
   <string name="get_more_app_not_available">アプリが利用できません</string>
   <string name="get_more_entry_play_store">Playストア</string>

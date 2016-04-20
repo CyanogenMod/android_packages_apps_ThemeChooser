@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Temaer</string>
+  <!-- Themable items -->
   <string name="lock_screen">Baggrunde til skærmlås</string>
   <string name="icons">Ikoner</string>
   <string name="fonts">Fonte</string>
@@ -28,6 +29,7 @@
   <string name="style">Stil</string>
   <string name="status_bar">Statuslinje</string>
   <string name="nav_bar">Navigationslinje</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Temapakker</string>
   <string name="sounds">Lyde</string>
   <string name="system_theme_name">System</string>
@@ -39,6 +41,7 @@
   <string name="update">Opdatér</string>
   <string name="no_preview_available">Intet eksempel tilgængeligt</string>
   <string name="menu_item_uninstall">Afinstallér</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Meddelelse</string>
   <string name="ringtone_label">Ringetone</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s installeret</string>
   <string name="theme_installed_notification_text">Tema installeret.</string>
   <string name="menu_item_get_more_themes">Hent mere</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Du kan få flere temaer fra følgende links:</string>
   <string name="get_more_app_not_available">App ikke tilgængelig</string>
   <string name="get_more_entry_play_store">Play Butik</string>

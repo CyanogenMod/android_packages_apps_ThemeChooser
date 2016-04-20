@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Temas</string>
+  <!-- Themable items -->
   <string name="lock_screen">Imagem do ecrã de bloqueio</string>
   <string name="icons">Ícones</string>
   <string name="fonts">Tipos de letra</string>
@@ -28,6 +29,7 @@
   <string name="style">Estilo</string>
   <string name="status_bar">Barra de estado</string>
   <string name="nav_bar">Barra de navegação</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Pacotes de temas</string>
   <string name="sounds">Sons</string>
   <string name="system_theme_name">Sistema</string>
@@ -39,6 +41,7 @@
   <string name="update">Atualizar</string>
   <string name="no_preview_available">Sem pré-visualização disponível</string>
   <string name="menu_item_uninstall">Desinstalar</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">Alarme</string>
   <string name="notification_label">Notificação</string>
   <string name="ringtone_label">Toque</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s instalado</string>
   <string name="theme_installed_notification_text">Tema instalado com êxito.</string>
   <string name="menu_item_get_more_themes">Obter mais</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Pode obter mais temas nos seguintes links:</string>
   <string name="get_more_app_not_available">A aplicação não está disponível</string>
   <string name="get_more_entry_play_store">Play Store</string>

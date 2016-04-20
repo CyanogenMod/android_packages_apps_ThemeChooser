@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Teman</string>
+  <!-- Themable items -->
   <string name="lock_screen">Lås bakgrundsbilder</string>
   <string name="icons">Ikoner</string>
   <string name="fonts">Typsnitt</string>
@@ -28,17 +29,19 @@
   <string name="style">Stil</string>
   <string name="status_bar">Statusfält</string>
   <string name="nav_bar">Navigeringsfält</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Temapaket</string>
   <string name="sounds">Ljud</string>
   <string name="system_theme_name">System</string>
   <string name="default_tag">(Standard)</string>
   <string name="apply">Verkställ</string>
   <string name="applying">Tillämpar\u2026</string>
-  <string name="applied">Tillämpas</string>
+  <string name="applied">Tillämpades</string>
   <string name="available">Tillgänglig</string>
   <string name="update">Uppdatera</string>
   <string name="no_preview_available">Ingen förhandsgranskning tillgänglig</string>
   <string name="menu_item_uninstall">Avinstallera</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Avisering</string>
   <string name="ringtone_label">Ringsignal</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s installerad</string>
   <string name="theme_installed_notification_text">Temat installerades.</string>
   <string name="menu_item_get_more_themes">Hitta fler</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Du kan få fler teman från följande länkar:</string>
   <string name="get_more_app_not_available">Appen är inte tillgänglig</string>
   <string name="get_more_entry_play_store">Play Butik</string>
