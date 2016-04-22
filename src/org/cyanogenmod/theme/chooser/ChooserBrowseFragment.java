@@ -264,7 +264,10 @@ public class ChooserBrowseFragment extends Fragment
                     View.GONE : View.VISIBLE);
 
             item.boundPackage = pkgName;
-            item.applyThemeColor();
+
+            if (!mFilters.contains(ThemesColumns.MODIFIES_FONTS)) {
+                item.applyThemeColor();
+            }
 
             if (mFilters.isEmpty()) {
                 bindDefaultView(item, pkgName, hsImagePath);
