@@ -25,15 +25,9 @@
     <color name="detailedview_pager_background">#eeeeee</color>
     <color name="title_author_background">@color/white</color>
     <color name="offwhite">#e9e8e8</color>
-    <color name="author_grey">#e0e0e0</color>
-    <color name="card_text">@color/white</color>
 
     <color name="actionbar_text_color">@color/white</color>
     <color name="primary_text_color">@color/black</color>
-
-    <color name="apply_button_progress_color">#6bd1e9</color>
-    <color name="apply_button_default_color">#00b1e5</color>
-    <color name="apply_button_pressed_color">#008ef2</color>
 
     <color name="card_background_default">#333333</color>
     <color name="designed_for_color_dark">#ff8888</color>
@@ -55,5 +49,4 @@
     <color name="drawer_item_textcolor">@color/black</color>
     <color name="drawer_item_default">@color/white</color>
     <color name="drawer_item_pressed">#e0e0e0</color>
-    <color name="drawer_divider_line">@color/white</color>
 </resources>

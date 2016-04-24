@@ -23,8 +23,6 @@
 
     <integer name="play_pause_pivot_x">12</integer>
     <integer name="play_pause_pivot_y">12</integer>
-    <integer name="play_pause_viewport_center_x">12</integer>
-    <integer name="play_pause_viewport_center_y">12</integer>
     <integer name="play_pause_duration">450</integer>
 
 </resources>
