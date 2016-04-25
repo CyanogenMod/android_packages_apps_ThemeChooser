@@ -264,7 +264,10 @@ public class ChooserBrowseFragment extends Fragment
                     View.GONE : View.VISIBLE);
 
             item.boundPackage = pkgName;
-            item.applyThemeColor();
+
+            if (item.thumbnail != null) {
+                item.applyThemeColor();
+            }
 
             if (mFilters.isEmpty()) {
                 bindDefaultView(item, pkgName, hsImagePath);
