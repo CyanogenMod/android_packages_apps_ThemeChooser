@@ -57,6 +57,7 @@ import com.cyngn.theme.util.PreferenceUtils;
 import com.cyngn.theme.util.TypefaceHelperCache;
 import com.cyngn.theme.util.Utils;
 
+import cyanogenmod.platform.Manifest;
 import cyanogenmod.providers.ThemesContract;
 import cyanogenmod.providers.ThemesContract.ThemesColumns;
 
@@ -87,7 +88,6 @@ public class ChooserActivity extends FragmentActivity
 
     private static final String THEME_STORE_ACTIVITY = THEME_STORE_PACKAGE + ".ui.StoreActivity";
     private static final String ACTION_APPLY_THEME = "android.intent.action.APPLY_THEME";
-    private static final String PERMISSION_WRITE_THEME = "android.permission.WRITE_THEMES";
 
     private static final String TYPE_IMAGE = "image/*";
 
@@ -396,7 +396,7 @@ public class ChooserActivity extends FragmentActivity
                     getCallingPackage() != null &&
                     PackageManager.PERMISSION_GRANTED ==
                             getPackageManager()
-                                    .checkPermission(PERMISSION_WRITE_THEME,
+                                    .checkPermission(Manifest.permission.WRITE_THEMES,
                                             getCallingPackage())) {
                 mThemeToApply = intent.getStringExtra(EXTRA_PKGNAME);
             }
