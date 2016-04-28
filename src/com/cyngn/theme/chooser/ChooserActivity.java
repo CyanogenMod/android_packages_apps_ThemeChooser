@@ -400,7 +400,7 @@ public class ChooserActivity extends FragmentActivity
                                             getCallingPackage())) {
                 mThemeToApply = intent.getStringExtra(EXTRA_PKGNAME);
             }
-        } else if (action.equals(ACTION_PICK_LOCK_SCREEN_WALLPAPER)) {
+        } else if (ACTION_PICK_LOCK_SCREEN_WALLPAPER.equals(action)) {
             mShowLockScreenWallpaper = true;
         }
     }
