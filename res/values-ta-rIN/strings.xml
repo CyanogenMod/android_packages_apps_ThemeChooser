@@ -45,15 +45,9 @@
   <string name="alarm_label">அலாரம்</string>
   <string name="notification_label">அறிவிப்பு</string>
   <string name="ringtone_label">ரிங்டோன்</string>
-  <string name="unknown_author">ஆசிரியர் அறியப்படவில்லை</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s நிறுவப்பட்டது</string>
   <string name="theme_installed_notification_text">கருப்பொருள் வெற்றிகரமாக நிறுவப்பட்டது.</string>
-  <string name="menu_item_get_more_themes">மேலும் பெறு</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">கீழ்காணும் இணைப்புகளில் நீங்கள் அதிக கருப்பொருட்களைப் பெறலாம்:</string>
   <string name="get_more_app_not_available">பயன்பாடு கிடைக்கவில்லை</string>
-  <string name="get_more_entry_play_store">ப்ளே ஸ்டோர்</string>
-  <string name="get_more_entry_cm_wiki">மேலும் தகவல்கள் CM Wikiஇல்</string>
   <string name="designed_for_cm11">CM11க்காக வடிவமைக்கப்பட்டது</string>
 </resources>

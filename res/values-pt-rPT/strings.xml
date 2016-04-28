@@ -49,11 +49,6 @@
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s instalado</string>
   <string name="theme_installed_notification_text">Tema instalado com êxito.</string>
-  <string name="menu_item_get_more_themes">Obter mais</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Pode obter mais temas nos seguintes links:</string>
   <string name="get_more_app_not_available">A aplicação não está disponível</string>
-  <string name="get_more_entry_play_store">Play Store</string>
-  <string name="get_more_entry_cm_wiki">Mais informações na CM Wiki</string>
   <string name="designed_for_cm11">Projetado para CM11</string>
 </resources>

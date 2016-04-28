@@ -38,12 +38,7 @@
   <string name="alarm_label">ئاگادارکه‌ر</string>
   <string name="notification_label">تێبینیه‌کان</string>
   <string name="ringtone_label">زه‌نگ</string>
-  <string name="unknown_author">دانه‌ری نه‌ناسراو</string>
   <string name="font_preview_letters">AaBbCcDd١٢٣</string>
   <string name="theme_installed_notification_title">%s دامه‌زراوه‌</string>
   <string name="theme_installed_notification_text">تێم به‌سه‌رکه‌وتوی دامه‌زرا.</string>
-  <string name="menu_item_get_more_themes">وه‌رگرتنی زیاتر</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">ئه‌توانی ڕووکاری زیاتر وه‌ربگری له‌م به‌سته‌رانه‌وه‌:</string>
-  <string name="get_more_entry_cm_wiki">زانیاری زیاتر لە CM Wiki</string>
 </resources>

@@ -45,15 +45,9 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Avisering</string>
   <string name="ringtone_label">Ringsignal</string>
-  <string name="unknown_author">Okänd upphovsman</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s installerad</string>
   <string name="theme_installed_notification_text">Temat installerades.</string>
-  <string name="menu_item_get_more_themes">Hitta fler</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Du kan få fler teman från följande länkar:</string>
   <string name="get_more_app_not_available">Appen är inte tillgänglig</string>
-  <string name="get_more_entry_play_store">Play Butik</string>
-  <string name="get_more_entry_cm_wiki">Mer info på CyanogenMods Wiki</string>
   <string name="designed_for_cm11">Designad för CM11</string>
 </resources>

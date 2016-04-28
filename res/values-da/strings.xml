@@ -45,15 +45,9 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Meddelelse</string>
   <string name="ringtone_label">Ringetone</string>
-  <string name="unknown_author">Forfatter ukendt</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s installeret</string>
   <string name="theme_installed_notification_text">Tema installeret.</string>
-  <string name="menu_item_get_more_themes">Hent mere</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Du kan få flere temaer fra følgende links:</string>
   <string name="get_more_app_not_available">App ikke tilgængelig</string>
-  <string name="get_more_entry_play_store">Play Butik</string>
-  <string name="get_more_entry_cm_wiki">Mere info på CM Wikien</string>
   <string name="designed_for_cm11">Designet til CM11</string>
 </resources>

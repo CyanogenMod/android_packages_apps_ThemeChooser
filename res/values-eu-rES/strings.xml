@@ -45,15 +45,10 @@
   <string name="alarm_label">Alarma</string>
   <string name="notification_label">Jakinarazpena</string>
   <string name="ringtone_label">Dei doinua</string>
-  <string name="unknown_author">Autore ezezaguna</string>
+  <string name="unknown_author">Egile ezezaguna</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s instalatu da</string>
   <string name="theme_installed_notification_text">Gaia ondo instalatu da.</string>
-  <string name="menu_item_get_more_themes">Lortu gehiago</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Gai gehiago lor ditzakezu hurrengo esteketan:</string>
   <string name="get_more_app_not_available">Aplikazioa ez dago eskuragarri</string>
-  <string name="get_more_entry_play_store">Play Store</string>
-  <string name="get_more_entry_cm_wiki">informazio gehiago CM Wikian</string>
   <string name="designed_for_cm11">CM11rako diseinatuta</string>
 </resources>

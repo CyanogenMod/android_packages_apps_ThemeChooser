@@ -45,15 +45,9 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Kennisgewing</string>
   <string name="ringtone_label">Luitoon</string>
-  <string name="unknown_author">Onbekende verskaffer</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s geïnstalleer</string>
   <string name="theme_installed_notification_text">Tema suksesvol geïnstalleer.</string>
-  <string name="menu_item_get_more_themes">Kry meer</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Jy kan meer temas verkry van die volgende skakels:</string>
   <string name="get_more_app_not_available">Toep nie beskikbaar nie</string>
-  <string name="get_more_entry_play_store">Play-winkel</string>
-  <string name="get_more_entry_cm_wiki">Meer inligting op die CM Wiki</string>
   <string name="designed_for_cm11">Geskep vir CM11</string>
 </resources>

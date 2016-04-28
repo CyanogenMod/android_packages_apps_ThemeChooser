@@ -45,15 +45,10 @@
   <string name="alarm_label">Budilka</string>
   <string name="notification_label">Obvestilo</string>
   <string name="ringtone_label">Melodija zvonjenja</string>
-  <string name="unknown_author">Avtor neznan</string>
+  <string name="unknown_author">Neznan avtor</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s nameščena</string>
   <string name="theme_installed_notification_text">Tema uspešno nameščena.</string>
-  <string name="menu_item_get_more_themes">Dobi več</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Več tem si lahko pridobite na naslednjih povezavah:</string>
   <string name="get_more_app_not_available">Aplikacija ni na voljo</string>
-  <string name="get_more_entry_play_store">Trgovina Play</string>
-  <string name="get_more_entry_cm_wiki">Več podatkov na strani Wiki CM</string>
   <string name="designed_for_cm11">Zasnovano za CM11</string>
 </resources>

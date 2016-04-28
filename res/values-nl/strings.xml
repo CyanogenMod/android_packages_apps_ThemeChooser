@@ -45,15 +45,9 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Melding</string>
   <string name="ringtone_label">Beltoon</string>
-  <string name="unknown_author">Auteur onbekend</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s geïnstalleerd</string>
   <string name="theme_installed_notification_text">Thema installeren geslaagd.</string>
-  <string name="menu_item_get_more_themes">Meer thema\'s</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Via de volgende links kunt u meer thema\'s verkrijgen:</string>
   <string name="get_more_app_not_available">App niet beschikbaar</string>
-  <string name="get_more_entry_play_store">Play Store</string>
-  <string name="get_more_entry_cm_wiki">Meer info op de CM-wiki</string>
   <string name="designed_for_cm11">Ontworpen voor CM11</string>
 </resources>

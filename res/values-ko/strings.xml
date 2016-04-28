@@ -45,15 +45,9 @@
   <string name="alarm_label">알람</string>
   <string name="notification_label">알림</string>
   <string name="ringtone_label">벨소리</string>
-  <string name="unknown_author">알 수 없는 작자</string>
   <string name="font_preview_letters">가나다AaBbCc123</string>
   <string name="theme_installed_notification_title">%s이(가) 설치되었습니다</string>
   <string name="theme_installed_notification_text">테마가 성공적으로 설치되었습니다.</string>
-  <string name="menu_item_get_more_themes">더 많은 테마 얻기</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">아래 링크에서 더 많은 테마를 얻을 수 있습니다:</string>
   <string name="get_more_app_not_available">앱을 사용할 수 없음</string>
-  <string name="get_more_entry_play_store">Play 스토어</string>
-  <string name="get_more_entry_cm_wiki">CM 위키에서 자세히 알아보기</string>
   <string name="designed_for_cm11">CM11용</string>
 </resources>

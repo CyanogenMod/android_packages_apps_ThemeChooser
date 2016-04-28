@@ -45,15 +45,9 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Notification</string>
   <string name="ringtone_label">Ringtone</string>
-  <string name="unknown_author">Author unknown</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s installed</string>
   <string name="theme_installed_notification_text">Theme successfully installed.</string>
-  <string name="menu_item_get_more_themes">Get more</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">You can get more themes from the following links:</string>
   <string name="get_more_app_not_available">App not available</string>
-  <string name="get_more_entry_play_store">Play Store</string>
-  <string name="get_more_entry_cm_wiki">More info on the CM Wiki</string>
   <string name="designed_for_cm11">Designed for CM11</string>
 </resources>

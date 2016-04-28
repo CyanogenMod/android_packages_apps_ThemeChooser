@@ -45,15 +45,9 @@
   <string name="alarm_label">Будильник</string>
   <string name="notification_label">Сповіщення</string>
   <string name="ringtone_label">Дзвінок</string>
-  <string name="unknown_author">Автор невідомий</string>
   <string name="font_preview_letters">АаБбCcDd123</string>
   <string name="theme_installed_notification_title">Тема «%s» встановлена</string>
   <string name="theme_installed_notification_text">Тема успішно встановлена.</string>
-  <string name="menu_item_get_more_themes">Більше</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Додаткові теми можна отримати тут:</string>
   <string name="get_more_app_not_available">Додаток недоступний</string>
-  <string name="get_more_entry_play_store">Play Маркет</string>
-  <string name="get_more_entry_cm_wiki">Детальнішу інформацію можна отримати на Wiki CM</string>
   <string name="designed_for_cm11">Призначений для CM11</string>
 </resources>

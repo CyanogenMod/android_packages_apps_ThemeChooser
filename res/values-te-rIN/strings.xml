@@ -45,15 +45,9 @@
   <string name="alarm_label">అలారం</string>
   <string name="notification_label">నోటిఫికేషన్</string>
   <string name="ringtone_label">రింగ్‌టోన్</string>
-  <string name="unknown_author">తెలియని రచయిత</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s వ్యవస్థాపించబడింది</string>
   <string name="theme_installed_notification_text">థీమ్ విజయవంతంగా వ్యవస్థాపించబడింది.</string>
-  <string name="menu_item_get_more_themes">ఎక్కువ పొందండి</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">క్రింది లింకుల నుండి మీరు మరిన్ని థీములను పొందవచ్చు:</string>
   <string name="get_more_app_not_available">ప్రోగ్రాం అందుబాటులో లేదు</string>
-  <string name="get_more_entry_play_store">ప్లే స్టోర్</string>
-  <string name="get_more_entry_cm_wiki">CM Wiki ను గూర్చిన మరింత సమాచారం</string>
   <string name="designed_for_cm11">CM11 కొరకు రూపొందించబడింది</string>
 </resources>

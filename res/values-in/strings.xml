@@ -45,15 +45,9 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Pemberitahuan</string>
   <string name="ringtone_label">Nada dering</string>
-  <string name="unknown_author">Pembuat tidak dikenal</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s terinstal</string>
   <string name="theme_installed_notification_text">Tema berhasil diinstal.</string>
-  <string name="menu_item_get_more_themes">Dapatkan lebih</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Anda bisa mendapatkan lebih banyak tema dari tautan berikut:</string>
   <string name="get_more_app_not_available">Aplikasi tidak tersedia</string>
-  <string name="get_more_entry_play_store">Play Store</string>
-  <string name="get_more_entry_cm_wiki">Informasi lebih lanjut pada CM Wiki</string>
   <string name="designed_for_cm11">Dirancang untuk CM11</string>
 </resources>

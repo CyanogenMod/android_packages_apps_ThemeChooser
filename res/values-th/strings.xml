@@ -49,11 +49,6 @@
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s ติดตั้งแล้ว</string>
   <string name="theme_installed_notification_text">ติดตั้งรูปแบบธีมเสร็จแล้ว</string>
-  <string name="menu_item_get_more_themes">เพิ่มเติม</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">คุณสามารถรับรูปแบบธีมเพิ่มเติมได้จากลิงค์ต่อไปนี้:</string>
   <string name="get_more_app_not_available">ไม่สามารถใช้งานแอปได้</string>
-  <string name="get_more_entry_play_store">Play Store</string>
-  <string name="get_more_entry_cm_wiki">ข้อมูลเพิ่มเติมที่ CM Wiki</string>
   <string name="designed_for_cm11">ออกแบบมาสำหรับ CM11</string>
 </resources>

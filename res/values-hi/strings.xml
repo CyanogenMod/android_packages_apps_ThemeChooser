@@ -45,14 +45,8 @@
   <string name="alarm_label">अलार्म</string>
   <string name="notification_label">अधिसूचना</string>
   <string name="ringtone_label">रिंगटोन</string>
-  <string name="unknown_author">लेखक अज्ञात</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s स्थापित</string>
   <string name="theme_installed_notification_text">थीम सफलतापूर्वक स्थापित हो गया।</string>
-  <string name="menu_item_get_more_themes">और प्राप्त करें</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">आप नीचे दिए गए लिंकों से और भी अधिक थीम प्राप्त कर सकते हैं:</string>
-  <string name="get_more_entry_play_store">प्ले स्टोर</string>
-  <string name="get_more_entry_cm_wiki">सीएम विकी में और जानकारी है</string>
   <string name="designed_for_cm11">सीएम11 के लिए अभिकल्पित</string>
 </resources>

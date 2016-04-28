@@ -45,15 +45,9 @@
   <string name="alarm_label">अलार्म</string>
   <string name="notification_label">सूचना</string>
   <string name="ringtone_label">रिंगटोन</string>
-  <string name="unknown_author">लेखक अज्ञात</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s स्थापित केले</string>
   <string name="theme_installed_notification_text">थीम यशस्वीपणे स्थापित केली.</string>
-  <string name="menu_item_get_more_themes">अधिक मिळवा</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">खालील लिंक्सवरून अधिक थीम्स मिळवा:</string>
   <string name="get_more_app_not_available">अनुप्रयोग उपलब्ध नाही</string>
-  <string name="get_more_entry_play_store">प्ले स्टोअर</string>
-  <string name="get_more_entry_cm_wiki">अधिक माहिती CM Wiki वर</string>
   <string name="designed_for_cm11">CM11 साठी डिझाईन केलेले</string>
 </resources>

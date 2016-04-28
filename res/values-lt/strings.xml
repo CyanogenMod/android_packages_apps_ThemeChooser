@@ -45,15 +45,9 @@
   <string name="alarm_label">Signalas</string>
   <string name="notification_label">Pranešimas</string>
   <string name="ringtone_label">Skambėjimo tonas</string>
-  <string name="unknown_author">Autorius nežinomas</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s įdiegta</string>
   <string name="theme_installed_notification_text">Tema sėkmingai įdiegta.</string>
-  <string name="menu_item_get_more_themes">Gauti daugiau</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Galite gauti daugiau temų iš šių nuorodų:</string>
   <string name="get_more_app_not_available">Programa nepasiekiama</string>
-  <string name="get_more_entry_play_store">„Play“ parduotuvė</string>
-  <string name="get_more_entry_cm_wiki">Daugiau informacijos CM vikipedijoje</string>
   <string name="designed_for_cm11">Sukurta CM 11</string>
 </resources>

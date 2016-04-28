@@ -45,15 +45,10 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Obavijest</string>
   <string name="ringtone_label">Zvuk</string>
-  <string name="unknown_author">Autor nepoznat</string>
+  <string name="unknown_author">Nepoznati autor</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s instalirano</string>
   <string name="theme_installed_notification_text">Tema je uspješno instalirana.</string>
-  <string name="menu_item_get_more_themes">Više</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Možete preuzeti više tema sa sljedećih poveznica:</string>
   <string name="get_more_app_not_available">Aplikacija nije dostupna</string>
-  <string name="get_more_entry_play_store">Play Trgovina</string>
-  <string name="get_more_entry_cm_wiki">Više informacija na CM wiki</string>
   <string name="designed_for_cm11">Napravljeno za CM11</string>
 </resources>

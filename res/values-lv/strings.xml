@@ -45,15 +45,9 @@
   <string name="alarm_label">Modinātājs</string>
   <string name="notification_label">Paziņojums</string>
   <string name="ringtone_label">Zvana melodija</string>
-  <string name="unknown_author">Nezināms autors</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s uzstādīts</string>
   <string name="theme_installed_notification_text">Tēma veiksmīgi uzstādīta.</string>
-  <string name="menu_item_get_more_themes">Iegūt vairāk</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Jūs varat iegūt vairāk tēmas no šīm saitēm:</string>
   <string name="get_more_app_not_available">Lietotne nav pieejama</string>
-  <string name="get_more_entry_play_store">Play Store</string>
-  <string name="get_more_entry_cm_wiki">Vairāk informācijas CM wiki</string>
   <string name="designed_for_cm11">Paredzēts priekš CM11</string>
 </resources>

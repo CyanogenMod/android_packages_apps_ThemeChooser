@@ -45,15 +45,9 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Teade</string>
   <string name="ringtone_label">Helin</string>
-  <string name="unknown_author">Autor teadmata</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s installitud</string>
   <string name="theme_installed_notification_text">Teema edukalt installitud.</string>
-  <string name="menu_item_get_more_themes">Saa rohkem</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Sa saad rohkem teemasid järgnevatelt linkidelt:</string>
   <string name="get_more_app_not_available">Rakendus pole saadaval</string>
-  <string name="get_more_entry_play_store">Play Pood</string>
-  <string name="get_more_entry_cm_wiki">Rohkem teavet CM Wiki\'st</string>
   <string name="designed_for_cm11">Mõeldud CM11-le</string>
 </resources>

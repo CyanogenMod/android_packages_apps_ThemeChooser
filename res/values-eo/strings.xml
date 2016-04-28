@@ -45,14 +45,8 @@
   <string name="alarm_label">Alarmo</string>
   <string name="notification_label">Atentigo</string>
   <string name="ringtone_label">Sonoro</string>
-  <string name="unknown_author">Nekonata aŭtoro</string>
   <string name="font_preview_letters">AaBbCcDd123 ĉĈĝĜĥĤŝŜŭŬ</string>
   <string name="theme_installed_notification_title">%s instalita</string>
   <string name="theme_installed_notification_text">Etoso sukcese instalita.</string>
-  <string name="menu_item_get_more_themes">Havu pliajn</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Vi povas akiri pliajn etosojn per tiuj ligiloj:</string>
-  <string name="get_more_entry_play_store">Play Store</string>
-  <string name="get_more_entry_cm_wiki">Pliaj informoj pri la CM Vikio</string>
   <string name="designed_for_cm11">Fasonita por CM11</string>
 </resources>

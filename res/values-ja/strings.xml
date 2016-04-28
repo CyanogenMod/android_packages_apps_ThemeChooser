@@ -45,15 +45,9 @@
   <string name="alarm_label">アラーム</string>
   <string name="notification_label">通知</string>
   <string name="ringtone_label">着信音</string>
-  <string name="unknown_author">作成者不明</string>
   <string name="font_preview_letters">あア漢字AaBbCc123</string>
   <string name="theme_installed_notification_title">%sがインストールされました</string>
   <string name="theme_installed_notification_text">テーマのインストールが完了しました。</string>
-  <string name="menu_item_get_more_themes">他のテーマ</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">以下のリンクから他のテーマを手に入れることができます:</string>
   <string name="get_more_app_not_available">アプリが利用できません</string>
-  <string name="get_more_entry_play_store">Playストア</string>
-  <string name="get_more_entry_cm_wiki">CM Wikiで詳細情報を表示</string>
   <string name="designed_for_cm11">CM11用</string>
 </resources>

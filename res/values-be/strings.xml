@@ -45,15 +45,9 @@
   <string name="alarm_label">Будзільнік</string>
   <string name="notification_label">Апавяшчэнне</string>
   <string name="ringtone_label">Рынгтон</string>
-  <string name="unknown_author">Аўтар невядомы</string>
   <string name="font_preview_letters">АаБбCcDd123</string>
   <string name="theme_installed_notification_title">%s усталявана</string>
   <string name="theme_installed_notification_text">Тэма паспяхова ўсталявана.</string>
-  <string name="menu_item_get_more_themes">Спампаваць яшчэ</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Вы можаце спампаваць тэмы па наступных спасылках:</string>
   <string name="get_more_app_not_available">Дадатак недаступны</string>
-  <string name="get_more_entry_play_store">Play Маркет</string>
-  <string name="get_more_entry_cm_wiki">Дадатковыя звесткі ў Wiki CM</string>
   <string name="designed_for_cm11">Аптымізавана доўжачы CM11</string>
 </resources>

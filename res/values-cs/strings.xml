@@ -49,11 +49,6 @@
   <string name="font_preview_letters">AaBbCcDd123 ěščřžýáíé</string>
   <string name="theme_installed_notification_title">%s instalován</string>
   <string name="theme_installed_notification_text">Motiv byl úspěšně nainstalován.</string>
-  <string name="menu_item_get_more_themes">Získat více</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Další motivy můžete získat z následujících odkazů:</string>
   <string name="get_more_app_not_available">Aplikace není k dispozici</string>
-  <string name="get_more_entry_play_store">Obchod Play</string>
-  <string name="get_more_entry_cm_wiki">Další informace na CM Wiki</string>
   <string name="designed_for_cm11">Určené pro CM11</string>
 </resources>

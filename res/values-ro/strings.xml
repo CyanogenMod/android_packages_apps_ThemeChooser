@@ -45,15 +45,9 @@
   <string name="alarm_label">Alarmă</string>
   <string name="notification_label">Notificare</string>
   <string name="ringtone_label">Ton de apel</string>
-  <string name="unknown_author">Autor necunoscut</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s instalată</string>
   <string name="theme_installed_notification_text">Tema a fost instalată cu succes.</string>
-  <string name="menu_item_get_more_themes">Obțineți mai multe</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Puteți obține mai multe teme de la link-urile următoare:</string>
   <string name="get_more_app_not_available">Aplicația nu este disponibilă</string>
-  <string name="get_more_entry_play_store">Magazin Play</string>
-  <string name="get_more_entry_cm_wiki">Mai multe informații pe CM Wiki</string>
   <string name="designed_for_cm11">Conceput pentru CM11</string>
 </resources>

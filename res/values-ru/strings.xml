@@ -45,15 +45,10 @@
   <string name="alarm_label">Будильник</string>
   <string name="notification_label">Уведомление</string>
   <string name="ringtone_label">Рингтон</string>
-  <string name="unknown_author">Автор не указан</string>
+  <string name="unknown_author">Неизвестный автор</string>
   <string name="font_preview_letters">АаБбCcDd123</string>
   <string name="theme_installed_notification_title">Добавлена тема «%s»</string>
   <string name="theme_installed_notification_text">Тема установлена.</string>
-  <string name="menu_item_get_more_themes">Скачать ещё</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">Вы можете скачать темы по следующим ссылкам:</string>
   <string name="get_more_app_not_available">Приложение недоступно</string>
-  <string name="get_more_entry_play_store">Play Маркет</string>
-  <string name="get_more_entry_cm_wiki">Дополнительные сведения в Wiki CM</string>
   <string name="designed_for_cm11">Оптимизировано для CM11</string>
 </resources>

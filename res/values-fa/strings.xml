@@ -45,15 +45,9 @@
   <string name="alarm_label">هشدار</string>
   <string name="notification_label">اعلان</string>
   <string name="ringtone_label">صدای زنگ</string>
-  <string name="unknown_author">سازنده نامعلوم</string>
   <string name="font_preview_letters">ا ب‌ پ‌ ت‌ ث ۱ ۲ ۳</string>
   <string name="theme_installed_notification_title">%s نصب شد</string>
   <string name="theme_installed_notification_text">تم با موفقیت نصب شد.</string>
-  <string name="menu_item_get_more_themes">دریافت تم‌های بیشتر</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">شما می‌توانید از طریق لینک‌های زیر، تم‌های بیشتری دریافت کنید:</string>
   <string name="get_more_app_not_available">برنامه در دسترس نیست</string>
-  <string name="get_more_entry_play_store">پلی‌استور</string>
-  <string name="get_more_entry_cm_wiki">اطلاعات بیشتر در CM Wiki</string>
   <string name="designed_for_cm11">طراحی شده برای CM11</string>
 </resources>

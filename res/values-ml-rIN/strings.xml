@@ -45,15 +45,9 @@
   <string name="alarm_label">അലാറം</string>
   <string name="notification_label">അറിയിപ്പുകൾ</string>
   <string name="ringtone_label">റിംഗ്ടോൺ</string>
-  <string name="unknown_author">അറിയപ്പെടാത്ത രചയിതാവ്</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s ഇൻസ്റ്റാൾ ചെയ്തു</string>
   <string name="theme_installed_notification_text">തീം വിജയകരമായി ഇൻസ്റ്റാൾ ചെയ്തു.</string>
-  <string name="menu_item_get_more_themes">കൂടുതൽ നേടുക</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">ഇനിപ്പറയുന്ന ലിങ്കുകൾ നിന്ന് കൂടുതൽ തീമുകൾ നേടാനാകും:</string>
   <string name="get_more_app_not_available">അപ്ലിക്കേഷൻ ലഭ്യമല്ല</string>
-  <string name="get_more_entry_play_store">പ്ലേ സ്റ്റോർ</string>
-  <string name="get_more_entry_cm_wiki">More info on the CM Wiki</string>
   <string name="designed_for_cm11">CM11 രൂപകൽപ്പന</string>
 </resources>

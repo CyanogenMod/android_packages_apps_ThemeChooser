@@ -45,14 +45,8 @@
   <string name="alarm_label">鬧鐘</string>
   <string name="notification_label">通知</string>
   <string name="ringtone_label">鈴聲</string>
-  <string name="unknown_author">作者不明</string>
   <string name="font_preview_letters">AaBbCcDd123中文字</string>
   <string name="theme_installed_notification_title">%s 已安裝</string>
   <string name="theme_installed_notification_text">已成功主題安裝。</string>
-  <string name="menu_item_get_more_themes">獲得更多主題</string>
-  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
-  <string name="get_more_description">您可以從下面的連結獲取更多主題：</string>
-  <string name="get_more_entry_play_store">Play 商店</string>
-  <string name="get_more_entry_cm_wiki">CM Wiki 上更多的資訊</string>
   <string name="designed_for_cm11">專為 CM11 設計</string>
 </resources>
