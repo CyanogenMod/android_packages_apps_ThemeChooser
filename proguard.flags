@@ -1,3 +1,8 @@
 #Keep it simeple ;)
+
+#Keep Line Numbers
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable
+
 -keep class android.support.**
 -keep class cyanogenmod.themes.** { *; }
