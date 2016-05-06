@@ -60,6 +60,7 @@ import com.cyngn.theme.util.Utils;
 import cyanogenmod.platform.Manifest;
 import cyanogenmod.providers.ThemesContract;
 import cyanogenmod.providers.ThemesContract.ThemesColumns;
+import cyanogenmod.themes.ThemeManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -677,7 +678,8 @@ public class ChooserActivity extends FragmentActivity
         // clear out any notifications that are being displayed.
         NotificationHelper.cancelNotifications(this);
 
-        mThemeChanging = false;
+        ThemeManager tm = ThemeManager.getInstance(this);
+        mThemeChanging = tm.isThemeApplying();
 
         if (!mIsPickingImage) {
             startLoader(LOADER_ID_APPLIED);
