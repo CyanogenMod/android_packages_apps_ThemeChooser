@@ -45,6 +45,7 @@
   <string name="alarm_label">تنبيه</string>
   <string name="notification_label">الإشعار</string>
   <string name="ringtone_label">نغمة رنين</string>
+  <string name="unknown_author">مؤلف غير معروف</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s مثبت</string>
   <string name="theme_installed_notification_text">تم تثبيت السمة بنجاح.</string>

@@ -45,6 +45,7 @@
   <string name="alarm_label">Alarme</string>
   <string name="notification_label">Notification</string>
   <string name="ringtone_label">Sonnerie</string>
+  <string name="unknown_author">Auteur inconnu</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s installé</string>
   <string name="theme_installed_notification_text">Thème installé avec succès.</string>

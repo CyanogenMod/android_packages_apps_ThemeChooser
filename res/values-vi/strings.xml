@@ -45,6 +45,7 @@
   <string name="alarm_label">Báo thức</string>
   <string name="notification_label">Thông báo</string>
   <string name="ringtone_label">Nhạc chuông</string>
+  <string name="unknown_author">Không rõ tác giả</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s đã được cài đặt</string>
   <string name="theme_installed_notification_text">Chủ đề đã được cài đặt thành công.</string>

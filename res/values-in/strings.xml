@@ -45,6 +45,7 @@
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Pemberitahuan</string>
   <string name="ringtone_label">Nada dering</string>
+  <string name="unknown_author">Penulis tidak dikenal</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s terinstal</string>
   <string name="theme_installed_notification_text">Tema berhasil diinstal.</string>
