@@ -16,8 +16,44 @@
      limitations under the License.
 -->
 <resources>
+  <string name="app_name">થીમ્સ</string>
   <!-- Themable items -->
+  <string name="lock_screen">વૉલપેપર્સ લૉક કરો</string>
+  <string name="icons">આઇકૉન્સ</string>
+  <string name="fonts">ફોન્ટ</string>
+  <string name="wallpapers">વૉલપેપર્સ</string>
+  <string name="boot_anims">બૂટ ઍનિમેશન્સ</string>
+  <string name="ringtones">રિંગટોન્સ</string>
+  <string name="notifications">સૂચનાઓ</string>
+  <string name="alarms">એલાર્મ્સ</string>
+  <string name="style">શૈલી</string>
+  <string name="status_bar">સ્ટેટ્સ બાર</string>
+  <string name="nav_bar">નેવિગેશન પટ્ટી</string>
   <!-- Drawer items (some items in drawer are part of themeable items) -->
+  <string name="theme_packs">થીમ પૅક્સ</string>
+  <string name="sounds">ધ્વનિ</string>
+  <string name="system_theme_name">સિસ્ટમ</string>
+  <string name="default_tag">(ડિફોલ્ટ)</string>
+  <string name="apply">લાગુ કરો</string>
+  <string name="applying">લાગું કરીએ છીએ\u2026</string>
+  <string name="applied">લાગુ થયું</string>
+  <string name="available">ઉપલબ્ધ</string>
+  <string name="update">અપડેટ કરો</string>
+  <string name="no_preview_available">કોઇ પૂર્વદર્શન ઉપલબ્ધ નથી</string>
+  <string name="menu_item_uninstall">અનઇન્સ્ટોલ કરો</string>
   <!-- Audibles preview -->
+  <string name="alarm_label">એલાર્મ</string>
+  <string name="notification_label">સૂચના</string>
+  <string name="ringtone_label">રિંગટોન</string>
+  <string name="unknown_author">લેખક જાણીતાં નથી</string>
+  <string name="font_preview_letters">AaBbCcDd123</string>
+  <string name="theme_installed_notification_title">%s ઇન્સ્ટૉલ કર્યું</string>
+  <string name="theme_installed_notification_text">થીમ સફળતાપૂર્વક ઇન્સ્ટૉલ કરી.</string>
+  <string name="menu_item_get_more_themes">વધુ મેળવો</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
+  <string name="get_more_description">તમે નીચેની લિંક પરથી વધુ થીમ્સ મેળવી શકશો:</string>
+  <string name="get_more_app_not_available">એપ્લિકેશન ઉપલબ્ધ નથી</string>
+  <string name="get_more_entry_play_store">Play Store</string>
+  <string name="get_more_entry_cm_wiki">CM Wiki પર વધુ માહિતી મેળવો</string>
+  <string name="designed_for_cm11">CM11 માટે ડિઝાઇન કર્યું</string>
 </resources>

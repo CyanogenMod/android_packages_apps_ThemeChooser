@@ -16,8 +16,44 @@
      limitations under the License.
 -->
 <resources>
+  <string name="app_name">தீம்கள்</string>
   <!-- Themable items -->
+  <string name="lock_screen">பூட்டு வால்பேப்பர்கள்</string>
+  <string name="icons">படவுருக்கள்</string>
+  <string name="fonts">எழுத்துருக்கள்</string>
+  <string name="wallpapers">வால்பேப்பர்கள்</string>
+  <string name="boot_anims">இயக்க அனிமேஷன்</string>
+  <string name="ringtones">ரிங்டோன்கள்</string>
+  <string name="notifications">அறிவிப்புகள்</string>
+  <string name="alarms">அலாரங்கள்</string>
+  <string name="style">நடை</string>
+  <string name="status_bar">நிலை பட்டி</string>
+  <string name="nav_bar">வழிசெல்லுதல் பட்டி</string>
   <!-- Drawer items (some items in drawer are part of themeable items) -->
+  <string name="theme_packs">கருப்பொருள் தொகுப்புகள்</string>
+  <string name="sounds">ஒலிகள்</string>
+  <string name="system_theme_name">முறைமை</string>
+  <string name="default_tag">(இயல்பு)</string>
+  <string name="apply">பயன்படுத்து</string>
+  <string name="applying">பயன்படுத்துகிறது\u2026</string>
+  <string name="applied">பயன்படுத்தப்பட்டது</string>
+  <string name="available">மீதமுள்ளது</string>
+  <string name="update">புதுப்பி</string>
+  <string name="no_preview_available">முன்னோட்டம் எதுவும் கிடைக்கவில்லை</string>
+  <string name="menu_item_uninstall">நிறுவல்நீக்கு</string>
   <!-- Audibles preview -->
+  <string name="alarm_label">அலாரம்</string>
+  <string name="notification_label">அறிவிப்பு</string>
+  <string name="ringtone_label">ரிங்டோன்</string>
+  <string name="unknown_author">ஆசிரியர் அறியப்படவில்லை</string>
+  <string name="font_preview_letters">AaBbCcDd123</string>
+  <string name="theme_installed_notification_title">%s நிறுவப்பட்டது</string>
+  <string name="theme_installed_notification_text">கருப்பொருள் வெற்றிகரமாக நிறுவப்பட்டது.</string>
+  <string name="menu_item_get_more_themes">மேலும் பெறு</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
+  <string name="get_more_description">கீழ்காணும் இணைப்புகளில் நீங்கள் அதிக கருப்பொருட்களைப் பெறலாம்:</string>
+  <string name="get_more_app_not_available">பயன்பாடு கிடைக்கவில்லை</string>
+  <string name="get_more_entry_play_store">ப்ளே ஸ்டோர்</string>
+  <string name="get_more_entry_cm_wiki">மேலும் தகவல்கள் CM Wikiஇல்</string>
+  <string name="designed_for_cm11">CM11க்காக வடிவமைக்கப்பட்டது</string>
 </resources>
