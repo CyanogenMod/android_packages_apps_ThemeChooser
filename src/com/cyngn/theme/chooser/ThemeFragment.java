@@ -2208,7 +2208,11 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                                     = fillMissingComponentsWithDefault(componentsToApply);
                             ThemeManager tm = getThemeManager();
                             if (tm != null) {
-                                tm.addClient(ThemeFragment.this);
+                                try {
+                                    tm.addClient(ThemeFragment.this);
+                                } catch (IllegalArgumentException e) {
+                                    /* ignore since this means we already have a listener added */
+                                }
                                 tm.requestThemeChange(getThemeChangeRequestForComponents(fullMap),
                                         true);
                             }

@@ -775,7 +775,11 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
                         ThemeManager tm = ThemeManager.getInstance(getContext());
                         ThemeChangeRequest.Builder builder = new ThemeChangeRequest.Builder();
                         builder.setAppOverlay(appPkgName, themePkgName);
-                        tm.addClient(PerAppThemingWindow.this);
+                        try {
+                            tm.addClient(PerAppThemingWindow.this);
+                        } catch (IllegalArgumentException e) {
+                            /* ignore since this means we already have a listener added */
+                        }
                         tm.requestThemeChange(builder.build(), false);
                     }
                 });
