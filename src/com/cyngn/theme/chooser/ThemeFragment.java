@@ -1390,7 +1390,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (mCurrentLoaderId != LOADER_ID_ALL) {
             if (!componentsChanged()) {
                 getChooserActivity().hideSaveApplyButton();
-            } else {
+            } else if (!mApplyThemeOnPopulated) {
                 getChooserActivity().showSaveApplyButton();
             }
         }
