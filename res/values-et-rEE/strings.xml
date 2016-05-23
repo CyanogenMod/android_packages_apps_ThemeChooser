@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Teemad</string>
+  <!-- Themable items -->
   <string name="lock_screen">Lukusta taustapildid</string>
   <string name="icons">Ikoonid</string>
   <string name="fonts">Fondid</string>
@@ -28,6 +29,7 @@
   <string name="style">Stiil</string>
   <string name="status_bar">Olekuriba</string>
   <string name="nav_bar">Navigeerimisriba</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Teemade pakid</string>
   <string name="sounds">Helid</string>
   <string name="system_theme_name">Süsteem</string>
@@ -39,6 +41,7 @@
   <string name="update">Värskenda</string>
   <string name="no_preview_available">Eelvaade pole saadaval</string>
   <string name="menu_item_uninstall">Eemalda</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Teade</string>
   <string name="ringtone_label">Helin</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s installitud</string>
   <string name="theme_installed_notification_text">Teema edukalt installitud.</string>
   <string name="menu_item_get_more_themes">Saa rohkem</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Sa saad rohkem teemasid järgnevatelt linkidelt:</string>
   <string name="get_more_app_not_available">Rakendus pole saadaval</string>
   <string name="get_more_entry_play_store">Play Pood</string>

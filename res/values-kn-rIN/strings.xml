@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">ಥೀಮ್ಸ್</string>
+  <!-- Themable items -->
   <string name="lock_screen">ಲಾಕ್ ವಾಲ್‍ಪೇಪರ್‍ಗಳು</string>
   <string name="icons">ಐಕಾನ್‍ಗಳು</string>
   <string name="fonts">ಫಾಂಟ್‍ಗಳು</string>
@@ -28,6 +29,7 @@
   <string name="style">ಶೈಲಿ</string>
   <string name="status_bar">ಸ್ಟೇಟಸ್ ಬಾರ್</string>
   <string name="nav_bar">ನಾವಿಗೇಶನ್ ಬಾರ್</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">ಥೀಮ್ ಪ್ಯಾಕ್‍ಗಳು</string>
   <string name="sounds">ಶಬ್ಧಗಳು</string>
   <string name="system_theme_name">ಸಿಸ್ಟಂ</string>
@@ -39,6 +41,7 @@
   <string name="update">ನವೀಕರಿಸು</string>
   <string name="no_preview_available">ಯಾವುದೇ ಮುನ್ನೋಟ ಲಭ್ಯವಿಲ್ಲ</string>
   <string name="menu_item_uninstall">ಅಸ್ಥಾಪಿಸಿ</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">ಅಲಾರಂ</string>
   <string name="notification_label">ಅಧಿಸೂಚನೆ</string>
   <string name="ringtone_label">ರಿಂಗ್‍ಟೋನ್</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s ಸ್ಥಾಪಿತಗೊಂಡಿದೆ</string>
   <string name="theme_installed_notification_text">ಥೀಮ್ ಯಶಸ್ವಿಯಾಗಿ ಸ್ಥಾಪಿತಗೊಂಡಿದೆ.</string>
   <string name="menu_item_get_more_themes">ಮತ್ತಷ್ಟು ಪಡೆಯಿರಿ</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">ನೀವು ಕೆಳಗಿರುವ ಲಿಂಕ್‍ಗಳಿಂದ ಮತ್ತಷ್ಟು ಥೀಮ್‍ಗಳನ್ನು ಪಡೆಯಬಹುದು:</string>
   <string name="get_more_app_not_available">ಆಪ್ ಲಭ್ಯವಿಲ್ಲ</string>
   <string name="get_more_entry_play_store">ಪ್ಲೇ ಸ್ಟೋರ್</string>

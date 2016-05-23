@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Motywy</string>
+  <!-- Themable items -->
   <string name="lock_screen">Tapety ekranu blokady</string>
   <string name="icons">Ikony</string>
   <string name="fonts">Czcionki</string>
@@ -28,6 +29,7 @@
   <string name="style">Styl</string>
   <string name="status_bar">Pasek stanu</string>
   <string name="nav_bar">Pasek nawigacji</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Paczki motywów</string>
   <string name="sounds">Dźwięki</string>
   <string name="system_theme_name">Systemowy</string>
@@ -39,6 +41,7 @@
   <string name="update">Zaktualizuj</string>
   <string name="no_preview_available">Podgląd niedostępny</string>
   <string name="menu_item_uninstall">Odinstaluj</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Powiadomienie</string>
   <string name="ringtone_label">Dzwonek</string>
@@ -47,6 +50,7 @@
   <string name="theme_installed_notification_title">%s zainstalowany</string>
   <string name="theme_installed_notification_text">Motyw został pomyślnie zainstalowany.</string>
   <string name="menu_item_get_more_themes">Uzyskaj więcej</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Więcej motywów można znaleźć na stronach:</string>
   <string name="get_more_app_not_available">Aplikacja niedostępna</string>
   <string name="get_more_entry_play_store">Sklep Play</string>
