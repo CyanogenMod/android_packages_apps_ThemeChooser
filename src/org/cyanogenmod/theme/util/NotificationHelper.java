@@ -28,7 +28,8 @@ import org.cyanogenmod.theme.chooser.ChooserActivity;
 import org.cyanogenmod.theme.chooser.R;
 
 public class NotificationHelper {
-    public static void postThemeInstalledNotification(Context context, String pkgName) {
+    public static void postThemeInstalledNotification(Context context,
+            String pkgName) {
         String themeName = null;
         try {
             PackageInfo pi = context.getPackageManager().getPackageInfo(pkgName, 0);

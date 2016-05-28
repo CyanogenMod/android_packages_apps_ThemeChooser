@@ -19,19 +19,23 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import org.cyanogenmod.theme.util.NotificationHelper;
 
 public class AppReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d("OHAI", "onReceive");
         Uri uri = intent.getData();
         String pkgName = uri != null ? uri.getSchemeSpecificPart() : null;
         String action = intent.getAction();
 
         if (cyanogenmod.content.Intent.ACTION_THEME_INSTALLED.equals(action)) {
+            Log.d("OHAI", "Theme installed!");
             NotificationHelper.postThemeInstalledNotification(context, pkgName);
         } else if (cyanogenmod.content.Intent.ACTION_THEME_REMOVED.equals(action)) {
+            Log.d("OHAI", "Theme removed!");
             NotificationHelper.cancelNotificationForPackage(context, pkgName);
         }
     }
