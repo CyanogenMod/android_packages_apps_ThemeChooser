@@ -23,12 +23,15 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.text.TextUtils;
 import org.cyanogenmod.theme.chooser.ChooserActivity;
 import org.cyanogenmod.theme.chooser.R;
 
 public class NotificationHelper {
-    public static void postThemeInstalledNotification(Context context, String pkgName) {
+    public static void postThemeInstalledNotification(Context context,
+            String pkgName) {
+        Log.d("OHAI", "postThemeInstalledNotification started");
         String themeName = null;
         try {
             PackageInfo pi = context.getPackageManager().getPackageInfo(pkgName, 0);
@@ -37,9 +40,11 @@ public class NotificationHelper {
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+            Log.e("OHAI", "NameNotFoundException");
             return;
         }
         if (TextUtils.isEmpty(themeName)) {
+            Log.e("OHAI", "themeName: " +  themeName);
             return;
         }
 
@@ -62,6 +67,7 @@ public class NotificationHelper {
                 .setWhen(System.currentTimeMillis())
                 .build();
         nm.notify(pkgName.hashCode(), notice);
+        Log.d("OHAI", "Notification created!");
     }
 
     public static void cancelNotificationForPackage(Context context, String pkgName) {

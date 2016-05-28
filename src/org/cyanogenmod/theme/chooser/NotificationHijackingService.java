@@ -24,7 +24,10 @@ import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 import android.text.TextUtils;
+
+import org.cyanogenmod.theme.util.NotificationHelper;
 
 public class NotificationHijackingService extends NotificationListenerService {
     private static final String TAG = NotificationHijackingService.class.getName();
@@ -47,7 +50,10 @@ public class NotificationHijackingService extends NotificationListenerService {
                     PackageInfo pi = getPackageManager().getPackageInfo(pkgName, 0);
                     if (pi != null) {
                         if (pi.themeInfo != null) {
-                            cancelNotification(GOOGLE_PLAY_PACKAGE_NAME, sbn.getTag(), sbn.getId());
+                            cancelNotification(sbn.getKey());
+                            Log.d("OHAI", "onNotificationPosted: removed");
+                            NotificationHelper.postThemeInstalledNotification(
+                                    getApplicationContext(), sbn.getPackageName());
                         }
                     }
                 } catch (PackageManager.NameNotFoundException e) {
@@ -58,6 +64,7 @@ public class NotificationHijackingService extends NotificationListenerService {
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
+        Log.d("OHAI", "onNotificationRemoved");
     }
 
     // ensure that this notification listener is enabled.
