@@ -47,8 +47,8 @@
 
         <receiver android:name="org.cyanogenmod.theme.chooser.AppReceiver" >
             <intent-filter>
-                <action android:name="themescontract.intent.action.THEME_INSTALLED" />
-                <action android:name="themescontract.intent.action.THEME_REMOVED" />
+                <action android:name="cyanogenmod.intent.action.THEME_INSTALLED" />
+                <action android:name="cyanogenmod.intent.action.THEME_REMOVED" />
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
