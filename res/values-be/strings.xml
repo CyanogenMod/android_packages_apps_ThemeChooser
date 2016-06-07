@@ -45,6 +45,7 @@
   <string name="alarm_label">Будзільнік</string>
   <string name="notification_label">Апавяшчэнне</string>
   <string name="ringtone_label">Рынгтон</string>
+  <string name="unknown_author">Невядомы аўтар</string>
   <string name="font_preview_letters">АаБбCcDd123</string>
   <string name="theme_installed_notification_title">%s усталявана</string>
   <string name="theme_installed_notification_text">Тэма паспяхова ўсталявана.</string>
