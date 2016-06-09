@@ -341,7 +341,7 @@ public class ChooserDetailFragment extends Fragment
     public void onResume() {
         super.onResume();
         if (mService != null) {
-            mService.onClientResumed(this);
+            mService.registerThemeChangeListener(this);
         }
         refreshApplyButton();
     }
@@ -350,7 +350,7 @@ public class ChooserDetailFragment extends Fragment
     public void onPause() {
         super.onPause();
         if (mService != null) {
-            mService.onClientPaused(this);
+            mService.unregisterThemeChangeListener(this);
         }
     }
 
@@ -358,7 +358,7 @@ public class ChooserDetailFragment extends Fragment
     public void onDestroy() {
         super.onDestroy();
         if (mService != null) {
-            mService.onClientDestroyed(this);
+            mService.unregisterThemeChangeListener(this);
         }
     }
 
