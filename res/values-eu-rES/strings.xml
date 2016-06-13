@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">Gaiak</string>
+  <!-- Themable items -->
   <string name="lock_screen">Blokeo-pantailako horma-paperak</string>
   <string name="icons">Ikonoak</string>
   <string name="fonts">Letra-tipoak</string>
@@ -28,17 +29,19 @@
   <string name="style">Estiloa</string>
   <string name="status_bar">Egoera barra</string>
   <string name="nav_bar">Nabigazio-barra</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Gai multzoak</string>
   <string name="sounds">Soinuak</string>
   <string name="system_theme_name">Sistema</string>
   <string name="default_tag">(Lehenetsia)</string>
-  <string name="apply">Ezarri</string>
+  <string name="apply">Aplikatu</string>
   <string name="applying">Ezartzen\u2026</string>
   <string name="applied">Ezarrita</string>
   <string name="available">Eskuragarri</string>
   <string name="update">Eguneratu</string>
   <string name="no_preview_available">Aurrebista ez dago eskuragarri</string>
   <string name="menu_item_uninstall">Desinstalatu</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">Alarma</string>
   <string name="notification_label">Jakinarazpena</string>
   <string name="ringtone_label">Dei doinua</string>
@@ -47,8 +50,8 @@
   <string name="theme_installed_notification_title">%s instalatu da</string>
   <string name="theme_installed_notification_text">Gaia ondo instalatu da.</string>
   <string name="menu_item_get_more_themes">Lortu gehiago</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Gai gehiago lor ditzakezu hurrengo esteketan:</string>
-  <string name="get_more_entry_cm_themes_showcase">CyanogenMod gaien erakusleihoa</string>
   <string name="get_more_entry_play_store">Play Store</string>
   <string name="get_more_entry_cm_wiki">informazio gehiago CM Wikian</string>
   <string name="designed_for_cm11">CM11rako diseinatuta</string>

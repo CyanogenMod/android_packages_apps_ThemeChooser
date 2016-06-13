@@ -17,6 +17,7 @@
 -->
 <resources>
   <string name="app_name">තේමා</string>
+  <!-- Themable items -->
   <string name="lock_screen">අගුළු වෝල්පේපර</string>
   <string name="icons">අයිකන</string>
   <string name="fonts">ෆොන්ට</string>
@@ -26,11 +27,13 @@
   <string name="notifications">දැනුම්දීම්</string>
   <string name="alarms">ඇඟවීම්</string>
   <string name="style">විලාසය</string>
+  <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="default_tag">(පෙරනිමි)</string>
   <string name="apply">යොදන්න</string>
   <string name="applying">යොදමින්\u2026</string>
   <string name="update">අලුත් කරන්න</string>
   <string name="no_preview_available">පූර්වදර්ශනයක් නොමැත</string>
+  <!-- Audibles preview -->
   <string name="alarm_label">ඇඟවීම</string>
   <string name="notification_label">දැනුම්දීම</string>
   <string name="ringtone_label">රින්ග්ටෝනය</string>
@@ -39,5 +42,6 @@
   <string name="theme_installed_notification_title">%s ස්ථාපිතයි</string>
   <string name="theme_installed_notification_text">තේමාව සාර්ථක ලෙස ස්ථාපිතයි.</string>
   <string name="menu_item_get_more_themes">තව ලබාගන්න</string>
+  <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">මතු සඳහන් සබැඳි වෙතින් ඔබට තවත් තේමා ලබාගතහැකිය:</string>
 </resources>
