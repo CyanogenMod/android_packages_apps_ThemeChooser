@@ -52,6 +52,7 @@
   <string name="menu_item_get_more_themes">Saa rohkem</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Sa saad rohkem teemasid järgnevatelt linkidelt:</string>
+  <string name="get_more_app_not_available">Rakendus pole saadaval</string>
   <string name="get_more_entry_play_store">Play Pood</string>
   <string name="get_more_entry_cm_wiki">Rohkem teavet CM Wiki\'st</string>
   <string name="designed_for_cm11">Mõeldud CM11-le</string>

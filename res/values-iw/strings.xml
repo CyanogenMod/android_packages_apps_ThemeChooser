@@ -52,6 +52,7 @@
   <string name="menu_item_get_more_themes">קבל עוד</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">באפשרותך לקבל ערכות עיצוב נוספות מהקישורים הבאים:</string>
+  <string name="get_more_app_not_available">יישום לא זמין</string>
   <string name="get_more_entry_play_store">חנות Play</string>
   <string name="get_more_entry_cm_wiki">מידע נוסף ב-CM Wiki</string>
   <string name="designed_for_cm11">עוצב עבור CM11</string>

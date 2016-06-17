@@ -52,6 +52,7 @@
   <string name="menu_item_get_more_themes">ଅଧିକ ପ୍ରାପ୍ତ କରନ୍ତୁ</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">ନିମ୍ନଲିଖିତ ଲିଙ୍କ୍‍ରୁ ଆପଣ ଅଧିକ ବିଷୟଗୁଡିକ‍ ପାଇପାରିବେ:</string>
+  <string name="get_more_app_not_available">ଆପ୍ଲିକେସନ୍‍ ଉପଲବ୍ଧ ନାହିଁ</string>
   <string name="get_more_entry_play_store">ପ୍ଲେ ଷ୍ଟୋର୍‍</string>
   <string name="get_more_entry_cm_wiki">CM ୱିକିରେ ଅଧିକ ସୂଚନା</string>
   <string name="designed_for_cm11">CM11 ପାଇଁ ଡିଜାଇନ୍‍ ହୋଇଛି</string>

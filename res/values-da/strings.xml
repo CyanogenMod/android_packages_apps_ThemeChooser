@@ -52,6 +52,7 @@
   <string name="menu_item_get_more_themes">Hent mere</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Du kan få flere temaer fra følgende links:</string>
+  <string name="get_more_app_not_available">App ikke tilgængelig</string>
   <string name="get_more_entry_play_store">Play Butik</string>
   <string name="get_more_entry_cm_wiki">Mere info på CM Wikien</string>
   <string name="designed_for_cm11">Designet til CM11</string>

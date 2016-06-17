@@ -52,6 +52,7 @@
   <string name="menu_item_get_more_themes">Consiguir más</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Pues consiguir más temes nos siguientes enllaces:</string>
+  <string name="get_more_app_not_available">L\'aplicación nun ta disponible</string>
   <string name="get_more_entry_play_store">Play Store</string>
   <string name="get_more_entry_cm_wiki">Más información na wiki de CM</string>
   <string name="designed_for_cm11">Diseñáu pa CM11</string>

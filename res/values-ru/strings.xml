@@ -52,6 +52,7 @@
   <string name="menu_item_get_more_themes">Скачать ещё</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">Вы можете скачать темы по следующим ссылкам:</string>
+  <string name="get_more_app_not_available">Приложение недоступно</string>
   <string name="get_more_entry_play_store">Play Маркет</string>
   <string name="get_more_entry_cm_wiki">Дополнительные сведения в Wiki CM</string>
   <string name="designed_for_cm11">Оптимизировано для CM11</string>

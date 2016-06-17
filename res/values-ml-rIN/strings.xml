@@ -52,6 +52,7 @@
   <string name="menu_item_get_more_themes">കൂടുതൽ നേടുക</string>
   <!-- Shown when the user clicks 'Get More' button from the themes list screen -->
   <string name="get_more_description">ഇനിപ്പറയുന്ന ലിങ്കുകൾ നിന്ന് കൂടുതൽ തീമുകൾ നേടാനാകും:</string>
+  <string name="get_more_app_not_available">അപ്ലിക്കേഷൻ ലഭ്യമല്ല</string>
   <string name="get_more_entry_play_store">പ്ലേ സ്റ്റോർ</string>
   <string name="get_more_entry_cm_wiki">More info on the CM Wiki</string>
   <string name="designed_for_cm11">CM11 രൂപകൽപ്പന</string>
