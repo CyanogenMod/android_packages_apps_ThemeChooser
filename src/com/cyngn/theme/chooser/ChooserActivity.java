@@ -28,6 +28,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -111,6 +112,11 @@ public class ChooserActivity extends FragmentActivity
      * Request code for picking an external lockscreen wallpaper
      */
     public static final int REQUEST_PICK_LOCKSCREEN_IMAGE = 3;
+
+    /**
+     * Request code for enabling system alert window permission
+     */
+    private static final int REQUEST_SYSTEM_WINDOW_PERMISSION = 4;
 
     private static final long ANIMATE_CONTENT_IN_SCALE_DURATION = 500;
     private static final long ANIMATE_CONTENT_IN_ALPHA_DURATION = 750;
@@ -242,10 +248,11 @@ public class ChooserActivity extends FragmentActivity
                 new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PreferenceUtils.setShowPerAppThemeNewTag(ChooserActivity.this, false);
-                Intent intent = new Intent(ChooserActivity.this, PerAppThemingWindow.class);
-                startService(intent);
-                finish();
+                if (Settings.canDrawOverlays(ChooserActivity.this)) {
+                    launchAppThemer();
+                } else {
+                    requestSystemWindowPermission();
+                }
             }
         });
 
@@ -771,8 +778,10 @@ public class ChooserActivity extends FragmentActivity
                     showSaveApplyButton();
                 }
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
+        } else if (requestCode == REQUEST_SYSTEM_WINDOW_PERMISSION) {
+            if (Settings.canDrawOverlays(this)) {
+                launchAppThemer();
+            }
         }
     }
 
@@ -1165,5 +1174,18 @@ public class ChooserActivity extends FragmentActivity
                 }, ANIMATE_CARDS_IN_DURATION);
             }
         });
+    }
+
+    private void launchAppThemer() {
+        PreferenceUtils.setShowPerAppThemeNewTag(ChooserActivity.this, false);
+        Intent intent = new Intent(ChooserActivity.this, PerAppThemingWindow.class);
+        startService(intent);
+        finish();
+    }
+
+    private void requestSystemWindowPermission() {
+        Intent intent = new Intent (Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + getPackageName()));
+        startActivityForResult(intent, REQUEST_SYSTEM_WINDOW_PERMISSION);
     }
 }
