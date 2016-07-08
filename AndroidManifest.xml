@@ -53,7 +53,6 @@
         <activity android:name="com.cyngn.theme.chooser.ChooserActivity"
                   android:label="@string/app_name"
                   android:theme="@style/ThemeChooserTheme"
-                  android:configChanges="themeChange"
                   android:launchMode="singleTop"
                   android:screenOrientation="sensorPortrait">
             <intent-filter>
