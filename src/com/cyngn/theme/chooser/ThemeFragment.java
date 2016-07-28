@@ -2213,8 +2213,12 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                                 } catch (IllegalArgumentException e) {
                                     /* ignore since this means we already have a listener added */
                                 }
-                                tm.requestThemeChange(getThemeChangeRequestForComponents(fullMap),
-                                        true);
+                                ThemeChangeRequest request =
+                                        getThemeChangeRequestForComponents(fullMap);
+                                boolean value = request.getReqeustType().
+                                        equals(RequestType.USER_REQUEST_MIXNMATCH);
+
+                                tm.requestThemeChange(request, !value);
                             }
                             mApplyThemeOnPopulated = false;
                         } else {
