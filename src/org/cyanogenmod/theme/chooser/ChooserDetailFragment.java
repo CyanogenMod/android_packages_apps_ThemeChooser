@@ -227,7 +227,7 @@ public class ChooserDetailFragment extends Fragment
         for (Map.Entry<String, Integer> entry : sComponentToId.entrySet()) {
             CheckBox componentCheckbox = (CheckBox) v.findViewById(entry.getValue());
             mComponentToCheckbox.put(entry.getKey(), componentCheckbox);
-            componentCheckbox.setChecked(true);
+            componentCheckbox.setChecked(false);
             componentCheckbox.setOnCheckedChangeListener(mComponentCheckChangedListener);
             componentCheckbox.setButtonTintList(ColorStateList.valueOf(mFabBackgroundColor));
         }
