@@ -25,11 +25,10 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 
-import org.cyanogenmod.theme.chooser.ChooserActivity;
-import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.chooser2.ChooserActivity;
+import org.cyanogenmod.theme.chooser2.R;
 
 public class NotificationHelper {
     private static final int NOTIFICATION_ID = 0x434D5443;

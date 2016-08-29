@@ -17,7 +17,7 @@
  -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:cyngn="http://schemas.android.com/apk/res/org.cyanogenmod.theme.chooser"
+    xmlns:themes="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/component_selection_cell_height"
@@ -56,7 +56,7 @@
                     android:layout_marginTop="@dimen/animated_lock_screen_text_margin_top"
                     android:layout_marginBottom="@dimen/animated_lock_screen_text_margin_bottom"
                     style="@style/animated_lock_screen_badge_text_style"
-                    cyngn:autoFitText="true"
+                    themes:autoFitText="true"
                     android:text="@string/animated_lock_screen_badge_text"/>
         </LinearLayout>
     </FrameLayout>

@@ -23,7 +23,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
-import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.chooser2.R;
 import org.cyanogenmod.theme.util.Utils;
 
 public class PerAppThemeListView extends ListView {

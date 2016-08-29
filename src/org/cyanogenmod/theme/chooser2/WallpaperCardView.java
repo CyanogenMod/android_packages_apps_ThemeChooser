@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cyanogenmod.theme.chooser;
+package org.cyanogenmod.theme.chooser2;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
