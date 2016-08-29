@@ -112,4 +112,6 @@
     <string name="get_more_app_not_available">App not available</string>
     <string name="play_store_url" translatable="false">https://play.google.com/store/search?q=theme+engine&amp;c=apps</string>
     <string name="wiki_url" translatable="false">http://wiki.cyanogenmod.org/w/Themes</string>
+
+    <string name="new_feature_label">New</string>
 </resources>

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cyanogenmod.theme.chooser;
+package org.cyanogenmod.theme.chooser2;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -60,9 +60,11 @@ import android.util.MutableLong;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -86,7 +88,7 @@ import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ALARMS
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
-import static org.cyanogenmod.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
+import static org.cyanogenmod.theme.chooser2.ComponentSelector.DEFAULT_COMPONENT_ID;
 import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_INSTALLED_THEMES;
 import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_APPLIED;
 
@@ -143,7 +145,7 @@ public class ChooserActivity extends FragmentActivity
     private ThemesAdapter mAdapter;
     private boolean mExpanded = false;
     private ComponentSelector mSelector;
-    private View mSaveApplyLayout;
+    private Button mSaveApplyButton;
     private int mContainerYOffset = 0;
     private TypefaceHelperCache mTypefaceHelperCache;
     private boolean mIsAnimating;
@@ -190,6 +192,8 @@ public class ChooserActivity extends FragmentActivity
         int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, dm);
         mPager.setPageMargin(-margin / 2);
         mPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
+        mPager.setClipChildren(false);
+        mPager.setClipToPadding(false);
 
         mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageSelected(int position) {
@@ -209,36 +213,8 @@ public class ChooserActivity extends FragmentActivity
 
         mBottomActionsLayout = findViewById(R.id.bottom_actions_layout);
 
-        mSaveApplyLayout = findViewById(R.id.save_apply_layout);
-        mSaveApplyLayout.findViewById(R.id.save_apply_button).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mIsAnimating) return;
-                        hideSaveApplyButton();
-                        mContainer.setClickable(false);
-                        final ThemeFragment f = getCurrentFragment();
-                        if (mSelector.isEnabled()) {
-                            mSelector.hide();
-                            if (mContainerYOffset != 0) {
-                                slideContentBack(-mContainerYOffset);
-                                mContainerYOffset = 0;
-                            }
-                            if (f != null) f.fadeInCards();
-                            if (mShowLockScreenWallpaper) {
-                                mShowLockScreenWallpaper = false;
-                                mSelector.resetComponentType();
-                            }
-                        }
-
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                collapse(true);
-                            }
-                        }, ONCLICK_SAVE_APPLY_FINISH_ANIMATION_DELAY);
-                    }
-                });
+        mSaveApplyButton = (Button) findViewById(R.id.save_apply_button);
+        mSaveApplyButton.setOnClickListener(mOnSaveApplyClicked);
 
         mBottomActionsLayout.findViewById(R.id.shop_themes)
                             .setOnClickListener(mOnShopThemesClicked);
@@ -270,34 +246,28 @@ public class ChooserActivity extends FragmentActivity
     }
 
     public void showSaveApplyButton() {
-        if (mSaveApplyLayout != null && mSaveApplyLayout.getVisibility() != View.VISIBLE) {
+        if (mSaveApplyButton != null && mSaveApplyButton.getVisibility() != View.VISIBLE) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    int navBarHeight = 0;
-                    if (Utils.hasNavigationBar(ChooserActivity.this.getApplicationContext())) {
-                        navBarHeight = ChooserActivity.this.getResources()
-                                .getDimensionPixelSize(R.dimen.navigation_bar_height);
-                    }
-                    mSaveApplyLayout.setTranslationY(mSaveApplyLayout.getMeasuredHeight());
-                    mSaveApplyLayout.setVisibility(View.VISIBLE);
-                    mSaveApplyLayout.animate()
+                    mSaveApplyButton.setTranslationY(mSaveApplyButton.getMeasuredHeight());
+                    mSaveApplyButton.setVisibility(View.VISIBLE);
+                    mSaveApplyButton.animate()
                             .setDuration(ANIMATE_SAVE_APPLY_LAYOUT_DURATION)
                             .setInterpolator(
                                     new DecelerateInterpolator(
                                             ANIMATE_SAVE_APPLY_DECELERATE_INTERPOLATOR_FACTOR))
-                            .translationY(-mSelector.getMeasuredHeight()
-                                    + navBarHeight);
+                            .translationY(-mSelector.getMeasuredHeight());
                 }
             });
         }
     }
 
     public void hideSaveApplyButton() {
-        if (mSaveApplyLayout.getVisibility() != View.GONE) {
+        if (mSaveApplyButton.getVisibility() != View.GONE) {
             Animation anim = AnimationUtils.loadAnimation(this,
                     R.anim.component_selection_animate_out);
-            mSaveApplyLayout.startAnimation(anim);
+            mSaveApplyButton.startAnimation(anim);
             anim.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -305,7 +275,7 @@ public class ChooserActivity extends FragmentActivity
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    mSaveApplyLayout.setVisibility(View.GONE);
+                    mSaveApplyButton.setVisibility(View.GONE);
                 }
 
                 @Override
@@ -574,10 +544,6 @@ public class ChooserActivity extends FragmentActivity
         return mSelector;
     }
 
-    public void showComponentSelector(String component, View v) {
-        showComponentSelector(component, null, DEFAULT_COMPONENT_ID, v);
-    }
-
     public void showComponentSelector(String component, String selectedPkgName,
             long selectedCmpntId, View v) {
         if (component != null) {
@@ -595,13 +561,12 @@ public class ChooserActivity extends FragmentActivity
                 height = res.getDimensionPixelSize(
                         R.dimen.component_selection_cell_height_sounds);
             }
-            if (mSaveApplyLayout.getVisibility() == View.VISIBLE) {
-                if (mSaveApplyLayout.getTranslationY() + height != 0) {
-                    mSaveApplyLayout.animate()
+            if (mSaveApplyButton.getVisibility() == View.VISIBLE) {
+                if (mSaveApplyButton.getTranslationY() + height != 0) {
+                    mSaveApplyButton.animate()
                             .translationY(-height)
                             .setInterpolator(
-                                    new DecelerateInterpolator(
-                                            ANIMATE_SAVE_APPLY_DECELERATE_INTERPOLATOR_FACTOR))
+                                    new AccelerateDecelerateInterpolator())
                             .setDuration(ANIMATE_SAVE_APPLY_LAYOUT_DURATION);
                 }
             }
@@ -728,7 +693,7 @@ public class ChooserActivity extends FragmentActivity
                 return;
             }
 
-            if (mSaveApplyLayout.getVisibility() == View.VISIBLE) {
+            if (mSaveApplyButton.getVisibility() == View.VISIBLE) {
                 hideSaveApplyButton();
                 if (f != null) f.clearChanges();
             }
@@ -851,8 +816,8 @@ public class ChooserActivity extends FragmentActivity
         public void onSelectorClosing() {
             ThemeFragment f = getCurrentFragment();
             if (f != null && f.componentsChanged()
-                    && mSaveApplyLayout.getVisibility() == View.VISIBLE) {
-                mSaveApplyLayout.animate()
+                    && mSaveApplyButton.getVisibility() == View.VISIBLE) {
+                mSaveApplyButton.animate()
                         .translationY(0)
                         .setInterpolator(new DecelerateInterpolator())
                         .setDuration(ANIMATE_SAVE_APPLY_LAYOUT_DURATION);
@@ -911,6 +876,35 @@ public class ChooserActivity extends FragmentActivity
             } catch (ActivityNotFoundException e) {
                 lauchGetThemes();
             }
+        }
+    };
+
+    private View.OnClickListener mOnSaveApplyClicked = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mIsAnimating) return;
+            hideSaveApplyButton();
+            mContainer.setClickable(false);
+            final ThemeFragment f = getCurrentFragment();
+            if (mSelector.isEnabled()) {
+                mSelector.hide();
+                if (mContainerYOffset != 0) {
+                    slideContentBack(-mContainerYOffset);
+                    mContainerYOffset = 0;
+                }
+                if (f != null) f.fadeInCards();
+                if (mShowLockScreenWallpaper) {
+                    mShowLockScreenWallpaper = false;
+                    mSelector.resetComponentType();
+                }
+            }
+
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    collapse(true);
+                }
+            }, ONCLICK_SAVE_APPLY_FINISH_ANIMATION_DELAY);
         }
     };
 

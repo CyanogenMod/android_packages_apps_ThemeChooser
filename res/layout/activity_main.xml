@@ -29,7 +29,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_gravity="center_vertical">
-        <org.cyanogenmod.theme.chooser.PagerContainer
+        <org.cyanogenmod.theme.chooser2.PagerContainer
             android:id="@+id/pager_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,14 +38,22 @@
             <android.support.v4.view.ThemeViewPager
                 android:id="@+id/viewpager"
                 android:layout_width="@dimen/theme_fragment_width"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:overScrollMode="never"/>
-        </org.cyanogenmod.theme.chooser.PagerContainer>
+        </org.cyanogenmod.theme.chooser2.PagerContainer>
     </LinearLayout>
 
-    <include layout="@layout/component_selector"/>
-    <include layout="@layout/save_apply_button"/>
-    <include layout="@layout/bottom_actions"/>
+    <!-- wrap the below layouts for fitting to the system windows -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <include layout="@layout/component_selector"/>
+        <include layout="@layout/save_apply_button"/>
+        <include layout="@layout/bottom_actions"/>
+
+    </FrameLayout>
 
 </FrameLayout>
