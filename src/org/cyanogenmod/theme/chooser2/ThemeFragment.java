@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cyanogenmod.theme.chooser;
+package org.cyanogenmod.theme.chooser2;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -83,7 +83,7 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.cyanogenmod.theme.chooser.ComponentSelector.OnItemClickedListener;
+import org.cyanogenmod.theme.chooser2.ComponentSelector.OnItemClickedListener;
 import org.cyanogenmod.theme.util.AudioUtils;
 import org.cyanogenmod.theme.util.BootAnimationHelper;
 import org.cyanogenmod.theme.util.CursorLoaderHelper;
@@ -136,7 +136,7 @@ import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NAVIGA
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ICONS;
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_FONTS;
 
-import static org.cyanogenmod.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
+import static org.cyanogenmod.theme.chooser2.ComponentSelector.DEFAULT_COMPONENT_ID;
 
 import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_INVALID;
 import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_ALL;

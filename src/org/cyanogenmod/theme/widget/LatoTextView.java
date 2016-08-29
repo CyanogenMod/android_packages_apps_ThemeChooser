@@ -24,7 +24,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
-import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.chooser2.R;
 import org.cyanogenmod.theme.util.Utils;
 
 import java.io.File;
