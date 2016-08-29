@@ -20,7 +20,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:theme="@android:style/ThemeOverlay.Material.Light">
 
     <org.cyanogenmod.theme.perapptheming.PerAppThemeListView
         android:id="@+id/theme_list"
@@ -34,7 +35,8 @@
         android:elevation="10dp"
         android:layout_marginLeft="@dimen/theme_list_side_margin"
         android:layout_marginRight="@dimen/theme_list_side_margin"
-        android:background="@drawable/per_app_theme_list_background"/>
+        android:background="@drawable/per_app_theme_list_background"
+        android:listSelector="@drawable/per_app_theme_list_item_background"/>
 
     <TextView
         android:id="@+id/applying_theme_text"
