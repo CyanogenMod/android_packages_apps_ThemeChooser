@@ -34,7 +34,8 @@
             android:id="@+id/per_app_theming"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/bottom_action_item_background">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -45,13 +46,22 @@
                     android:layout_gravity="top|center_horizontal"
                     android:layout_margin="8dp"
                     android:src="@drawable/ic_appthemer"/>
-                <ImageView
+                <org.cyanogenmod.theme.widget.LatoTextView
                     android:id="@+id/new_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|left"
                     android:layout_marginLeft="6dp"
-                    android:src="@drawable/tag_new"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:gravity="center"
+                    android:text="@string/new_feature_label"
+                    android:textAllCaps="true"
+                    android:textSize="10dp"
+                    android:textColor="@color/tag_text_color"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"
+                    android:background="@drawable/bg_tag_new"
                     android:visibility="gone"/>
             </FrameLayout>
 
@@ -69,7 +79,8 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/bottom_action_item_background">
 
             <ImageView
                 android:layout_width="30dp"
@@ -89,7 +100,4 @@
 
     </LinearLayout>
 
-    <org.cyanogenmod.theme.widget.NavBarSpace
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_bar_height"/>
 </LinearLayout>

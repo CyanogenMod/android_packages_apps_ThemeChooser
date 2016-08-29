@@ -113,4 +113,8 @@
     <dimen name="animated_lock_screen_text_margin_right">3dp</dimen>
     <dimen name="animated_lock_screen_text_margin_bottom">3dp</dimen>
     <dimen name="animated_lock_screen_text_margin_left">3dp</dimen>
+
+    <!-- Save and apply customized changes FAB dimensions -->
+    <dimen name="save_apply_fab_width">72dp</dimen>
+    <dimen name="save_apply_fab_height">72dp</dimen>
 </resources>

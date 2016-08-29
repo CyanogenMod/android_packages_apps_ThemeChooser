@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cyanogenmod.theme.chooser;
+package org.cyanogenmod.theme.chooser2;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -28,8 +28,6 @@ import android.text.TextUtils;
 import org.cyanogenmod.theme.util.NotificationHelper;
 import org.cyanogenmod.theme.util.PreferenceUtils;
 import org.cyanogenmod.theme.util.Utils;
-
-import cyanogenmod.providers.ThemesContract;
 
 public class AppReceiver extends BroadcastReceiver {
 

@@ -24,7 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.chooser2.R;
 
 public class ThemeViewPager extends ViewPager {
     private static final String TAG = ThemeViewPager.class.getSimpleName();

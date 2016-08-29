@@ -29,10 +29,9 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
 import android.widget.FrameLayout;
 
-import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.chooser2.R;
 
 public class PerAppThemeListLayout extends FrameLayout {
     private PerAppThemingWindow mWindow;

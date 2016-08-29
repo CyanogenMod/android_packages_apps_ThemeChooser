@@ -51,7 +51,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.chooser2.R;
 import org.cyanogenmod.theme.util.Utils;
 
 import cyanogenmod.providers.ThemesContract.ThemesColumns;
@@ -633,7 +633,9 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
                             WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH |
                             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
                             WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED |
-                            WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
+                            WindowManager.LayoutParams.FLAG_SPLIT_TOUCH |
+                            WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS |
+                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
                     PixelFormat.TRANSLUCENT);
         }
         mListLayoutParams.gravity = Gravity.TOP |
@@ -663,9 +665,9 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
     }
 
     private void showScrim() {
+        mThemeListLayout.setEnabled(false);
         ValueAnimator animator = ValueAnimator.ofArgb(SCRIM_COLOR_TRANSPARENT,
                 SCRIM_COLOR_OPAQUE);
-        mThemeListLayout.setEnabled(false);
         animator.setDuration(ANIMATION_DURATION)
                 .addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
@@ -681,6 +683,7 @@ public class PerAppThemingWindow extends Service implements OnTouchListener,
     }
 
     private void hideScrim() {
+        mThemeListLayout.setEnabled(true);
         ValueAnimator animator = ValueAnimator.ofArgb(SCRIM_COLOR_OPAQUE, SCRIM_COLOR_TRANSPARENT);
         animator.setDuration(ANIMATION_DURATION)
                 .addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

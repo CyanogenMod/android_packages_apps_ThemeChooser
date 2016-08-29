@@ -34,14 +34,15 @@
         android:elevation="10dp"
         android:layout_marginLeft="@dimen/theme_list_side_margin"
         android:layout_marginRight="@dimen/theme_list_side_margin"
-        android:background="@drawable/per_app_theme_list_background"/>
+        android:background="@drawable/per_app_theme_list_background"
+        android:listSelector="@drawable/per_app_theme_list_item_background"/>
 
     <TextView
         android:id="@+id/applying_theme_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textColor="@color/per_app_theme_list_item_text_color"
+        android:textColor="@color/per_app_theme_applying_text_color"
         android:text="@string/per_app_theme_applying"
         android:textSize="16dp"
         android:alpha="0"/>
