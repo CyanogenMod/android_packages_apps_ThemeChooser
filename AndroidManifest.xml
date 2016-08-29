@@ -59,7 +59,7 @@
         android:protectionLevel="signatureOrSystem" />
 
     <uses-sdk
-        android:minSdkVersion="19"
+        android:minSdkVersion="21"
         android:targetSdkVersion="23" />
 
     <application
