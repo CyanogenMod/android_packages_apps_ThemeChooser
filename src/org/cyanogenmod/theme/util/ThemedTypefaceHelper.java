@@ -53,14 +53,14 @@ public class ThemedTypefaceHelper {
             return;
         } catch(Exception e) {
             Log.w(TAG, "Unable to parse and load themed fonts for " + pkgName +
-                    ". Falling back to system fonts", e );
+                    ". Falling back to system fonts");
         }
 
         try {
             loadSystemFonts();
             return;
         } catch(Exception e) {
-            Log.e(TAG, "Parsing system fonts failed. Falling back to Typeface loaded fonts", e);
+            Log.e(TAG, "Parsing system fonts failed. Falling back to Typeface loaded fonts");
         }
 
         // There is no reason for this to happen unless someone
