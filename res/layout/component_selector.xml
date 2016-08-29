@@ -16,7 +16,7 @@
      limitations under the License.
  -->
 
-<org.cyanogenmod.theme.chooser.ComponentSelector
+<org.cyanogenmod.theme.chooser2.ComponentSelector
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/component_selector"
     android:orientation="vertical"
@@ -42,7 +42,4 @@
 
     </org.cyanogenmod.theme.widget.AutoSnapHorizontalScrollView>
 
-    <org.cyanogenmod.theme.widget.NavBarSpace
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_bar_height"/>
-</org.cyanogenmod.theme.chooser.ComponentSelector>
+</org.cyanogenmod.theme.chooser2.ComponentSelector>

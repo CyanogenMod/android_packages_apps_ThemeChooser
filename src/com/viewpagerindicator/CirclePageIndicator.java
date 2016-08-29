@@ -34,7 +34,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import au.com.glassechidna.velocityviewpager.VelocityViewPager;
-import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.chooser2.R;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static android.widget.LinearLayout.HORIZONTAL;

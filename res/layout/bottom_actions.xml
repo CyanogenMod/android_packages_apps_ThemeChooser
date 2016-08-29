@@ -34,7 +34,8 @@
             android:id="@+id/per_app_theming"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/bottom_action_item_background">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -69,7 +70,8 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/bottom_action_item_background">
 
             <ImageView
                 android:layout_width="30dp"
@@ -89,7 +91,4 @@
 
     </LinearLayout>
 
-    <org.cyanogenmod.theme.widget.NavBarSpace
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_bar_height"/>
 </LinearLayout>
