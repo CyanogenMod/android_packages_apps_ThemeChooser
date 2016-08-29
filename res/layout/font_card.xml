@@ -16,7 +16,7 @@
      limitations under the License.
  -->
 
-<org.cyanogenmod.theme.chooser.ComponentCardView
+<org.cyanogenmod.theme.chooser2.ComponentCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/font_preview_container"
     android:layout_width="match_parent"
@@ -64,4 +64,4 @@
                 android:src="@drawable/ic_addcomponent"/>
         </LinearLayout>
     </FrameLayout>
-</org.cyanogenmod.theme.chooser.ComponentCardView>
+</org.cyanogenmod.theme.chooser2.ComponentCardView>

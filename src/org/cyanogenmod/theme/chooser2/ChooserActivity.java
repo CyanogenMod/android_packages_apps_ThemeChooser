@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cyanogenmod.theme.chooser;
+package org.cyanogenmod.theme.chooser2;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -86,7 +86,7 @@ import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_ALARMS
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_BOOT_ANIM;
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_NOTIFICATIONS;
 import static cyanogenmod.providers.ThemesContract.ThemesColumns.MODIFIES_RINGTONES;
-import static org.cyanogenmod.theme.chooser.ComponentSelector.DEFAULT_COMPONENT_ID;
+import static org.cyanogenmod.theme.chooser2.ComponentSelector.DEFAULT_COMPONENT_ID;
 import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_INSTALLED_THEMES;
 import static org.cyanogenmod.theme.util.CursorLoaderHelper.LOADER_ID_APPLIED;
 

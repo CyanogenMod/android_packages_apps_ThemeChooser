@@ -51,7 +51,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.cyanogenmod.theme.chooser.R;
+import org.cyanogenmod.theme.chooser2.R;
 import org.cyanogenmod.theme.util.Utils;
 
 import cyanogenmod.providers.ThemesContract.ThemesColumns;

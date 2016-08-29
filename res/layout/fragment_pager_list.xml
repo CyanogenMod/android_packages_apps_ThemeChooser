@@ -171,7 +171,7 @@
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/additional_cards_margin_top"
                 android:visibility="invisible">
-                <org.cyanogenmod.theme.chooser.WallpaperCardView
+                <org.cyanogenmod.theme.chooser2.WallpaperCardView
                     android:id="@+id/wallpaper_card"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/wallpaper_card_height"
@@ -179,7 +179,7 @@
                     />
                 <Space android:layout_width="match_parent"
                        android:layout_height="@dimen/expanded_card_margin_top" />
-                <org.cyanogenmod.theme.chooser.WallpaperCardView
+                <org.cyanogenmod.theme.chooser2.WallpaperCardView
                     android:id="@+id/lockscreen_card"
                     android:visibility="gone"
                     android:layout_width="match_parent"
