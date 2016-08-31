@@ -446,6 +446,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         mAuthor = (TextView) v.findViewById(R.id.author);
         mProgress = (ProgressBar) v.findViewById(R.id.apply_progress);
         mOverflow = (ImageView) v.findViewById(R.id.overflow);
+        mOverflow.setVisibility(View.VISIBLE);
         mOverflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -462,10 +463,32 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 if (CURRENTLY_APPLIED_THEME.equals(mPkgName) ||
                         mPkgName.equals(Utils.getDefaultThemePackageName(getActivity())) ||
                         mPkgName.equals(ThemeConfig.SYSTEM_DEFAULT)) {
-                    menu.findItem(R.id.menu_delete).setEnabled(false);
-                }
-                if (!mThemeTagLayout.isCustomizedTagEnabled()) {
+                    menu.findItem(R.id.menu_customize).setEnabled(true);
+                    menu.findItem(R.id.menu_delete).setVisible(false);
                     menu.findItem(R.id.menu_reset).setVisible(false);
+                    if(mThemeTagLayout.isCustomizedTagEnabled()) {
+                        menu.findItem(R.id.menu_reset).setEnabled(true);
+                    }
+                    else {
+                        menu.findItem(R.id.menu_reset).setEnabled(false);
+                    }
+                }
+                if(!mThemeTagLayout.isAppliedTagEnabled()) {
+                    menu.findItem(R.id.menu_customize).setEnabled(true);
+                    menu.findItem(R.id.menu_delete).setEnabled(true);
+                    menu.findItem(R.id.menu_reset).setEnabled(false);
+                }
+                if(mThemeTagLayout.isAppliedTagEnabled() &&
+                        !mThemeTagLayout.isDefaultTagEnabled() &&
+                        !(CURRENTLY_APPLIED_THEME.equals(ThemeConfig.SYSTEM_DEFAULT))) {
+                    menu.findItem(R.id.menu_customize).setEnabled(true);
+                    if(mThemeTagLayout.isCustomizedTagEnabled()) {
+                        menu.findItem(R.id.menu_reset).setEnabled(true);
+                    }
+                    else {
+                        menu.findItem(R.id.menu_reset).setEnabled(false);
+                    }
+
                 }
 
                 popupmenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -781,6 +804,13 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             case R.id.menu_delete:
                 showDeleteThemeOverlay();
                 break;
+            case R.id.menu_customize:
+                if (!isShowingConfirmCancelOverlay() && !isShowingCustomizeResetLayout()) {
+                    getChooserActivity().expand();
+                }
+                break;
+            case R.id.menu_reset:
+                showResetThemeOverlay();
         }
 
         return true;
