@@ -124,7 +124,6 @@ public class MyThemeFragment extends ThemeFragment {
         if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mBaseThemePkgName)) {
             mThemeTagLayout.setUpdatedTagEnabled(true);
         }
-        mDelete.setVisibility(View.GONE);
         setCustomized(isThemeCustomized());
         return v;
     }
@@ -327,7 +326,6 @@ public class MyThemeFragment extends ThemeFragment {
     };
 
     private void setCustomized(boolean customized) {
-        mReset.setVisibility(customized ? View.VISIBLE : View.GONE);
         mThemeTagLayout.setCustomizedTagEnabled(customized);
     }
 

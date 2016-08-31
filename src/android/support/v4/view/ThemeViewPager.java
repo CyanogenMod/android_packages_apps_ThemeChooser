@@ -66,10 +66,8 @@ public class ThemeViewPager extends ViewPager {
         if (!mExpanded && isEnabled()  && !mIsAnimating)  {
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    intercept = getChildCount() > 0 && !isTouching(R.id.customize, ev)
+                    intercept = getChildCount() > 0
                             && !isTouching(R.id.overflow, ev)
-                            && !isTouching(R.id.reset, ev)
-                            && !isTouching(R.id.delete, ev)
                             && !isTouching(R.id.confirm_cancel_overlay, ev)
                             && !isTouching(R.id.customize_reset_theme_layout, ev);
                     break;
