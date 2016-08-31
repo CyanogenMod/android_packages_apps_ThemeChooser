@@ -49,13 +49,6 @@
                     android:textColor="@color/theme_author_text_color"
                     android:textSize="14dp" />
         </LinearLayout>
-        <ImageView
-                android:id="@+id/customize"
-                android:layout_width="47dp"
-                android:layout_height="match_parent"
-                android:scaleType="center"
-                android:src="@drawable/ic_theme_customize"
-                android:background="@drawable/theme_card_action_item_background"/>
 
         <ImageView
                 android:id="@+id/overflow"
@@ -65,29 +58,8 @@
                 android:layout_marginEnd="8dp"
                 android:scaleType="center"
                 android:src="@drawable/ic_overflow_dark"
-                android:visibility="gone"
                 android:background="@drawable/theme_card_action_item_background"/>
 
-        <ImageView
-                android:id="@+id/delete"
-                android:layout_width="36dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="1dp"
-                android:layout_marginEnd="8dp"
-                android:scaleType="center"
-                android:src="@drawable/ic_theme_delete"
-                android:background="@drawable/theme_card_action_item_background"/>
-
-        <ImageView
-                android:id="@+id/reset"
-                android:layout_width="36dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="1dp"
-                android:layout_marginEnd="8dp"
-                android:scaleType="center"
-                android:src="@drawable/ic_theme_reset"
-                android:visibility="gone"
-                android:background="@drawable/theme_card_action_item_background"/>
     </LinearLayout>
     <ProgressBar
             android:id="@+id/apply_progress"
