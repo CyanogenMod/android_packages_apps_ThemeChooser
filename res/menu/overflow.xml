@@ -18,12 +18,12 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:id="@+id/group_popupmenu">
+        <item android:id="@+id/menu_customize"
+              android:title="@string/menu_customize"/>
+
         <item android:id="@+id/menu_delete"
               android:title="@string/menu_delete"/>
-        <!-- Will be added back in once UX is available for this function
-        <item android:id="@+id/menu_author"
-            android:title="@string/menu_author_info"/>
-        -->
+
         <item android:id="@+id/menu_reset"
             android:title="@string/menu_reset"/>
     </group>
