@@ -124,7 +124,6 @@ public class MyThemeFragment extends ThemeFragment {
         if (PreferenceUtils.hasThemeBeenUpdated(getActivity(), mBaseThemePkgName)) {
             mThemeTagLayout.setUpdatedTagEnabled(true);
         }
-        mDelete.setVisibility(View.GONE);
         setCustomized(isThemeCustomized());
         return v;
     }
@@ -162,16 +161,16 @@ public class MyThemeFragment extends ThemeFragment {
         }
     }
 
-    @Override
-    protected boolean onPopupMenuItemClick(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.menu_reset:
-                resetTheme();
-                return true;
-        }
-
-        return super.onPopupMenuItemClick(item);
-    }
+//    @Override
+//    protected boolean onPopupMenuItemClick(MenuItem item) {
+//        switch(item.getItemId()) {
+//            case R.id.menu_reset:
+//                resetTheme();
+//                return true;
+//        }
+//
+//        return super.onPopupMenuItemClick(item);
+//    }
 
     @Override
     public void collapse(boolean applyTheme) {
@@ -327,7 +326,6 @@ public class MyThemeFragment extends ThemeFragment {
     };
 
     private void setCustomized(boolean customized) {
-        mReset.setVisibility(customized ? View.VISIBLE : View.GONE);
         mThemeTagLayout.setCustomizedTagEnabled(customized);
     }
 
