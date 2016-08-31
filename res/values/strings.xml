@@ -53,7 +53,7 @@
     <string name="ringtone_label">Ringtone</string>
 
     <!-- Overflow menu -->
-    <string name="menu_author_info">Author</string>
+    <string name="menu_customize">Customize</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_reset">Reset theme</string>
 
