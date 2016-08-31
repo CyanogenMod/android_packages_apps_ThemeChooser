@@ -267,10 +267,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     protected ViewGroup mTitleLayout;
     protected TextView mTitle;
     protected TextView mAuthor;
-    protected ImageView mCustomize;
     protected ImageView mOverflow;
-    protected ImageView mDelete;
-    protected ImageView mReset;
     protected ProgressBar mProgress;
 
     // Additional Card Views
@@ -462,10 +459,30 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 if (CURRENTLY_APPLIED_THEME.equals(mPkgName) ||
                         mPkgName.equals(Utils.getDefaultThemePackageName(getActivity())) ||
                         mPkgName.equals(ThemeConfig.SYSTEM_DEFAULT)) {
-                    menu.findItem(R.id.menu_delete).setEnabled(false);
+                    menu.findItem(R.id.menu_delete).setVisible(false);
+                    if(mThemeTagLayout.isCustomizedTagEnabled()) {
+                        menu.findItem(R.id.menu_reset).setVisible(true);
+                        menu.findItem(R.id.menu_reset).setEnabled(true);
+                    }
+                    else {
+                        menu.findItem(R.id.menu_reset).setVisible(false);
+                        menu.findItem(R.id.menu_reset).setEnabled(false);
+                    }
                 }
-                if (!mThemeTagLayout.isCustomizedTagEnabled()) {
+                if(!mThemeTagLayout.isAppliedTagEnabled()) {
+                    menu.findItem(R.id.menu_delete).setEnabled(true);
                     menu.findItem(R.id.menu_reset).setVisible(false);
+                }
+                if(mThemeTagLayout.isAppliedTagEnabled()) {
+                    if(mThemeTagLayout.isCustomizedTagEnabled()) {
+                        menu.findItem(R.id.menu_reset).setVisible(true);
+                        menu.findItem(R.id.menu_reset).setEnabled(true);
+                    }
+                    else {
+                        menu.findItem(R.id.menu_reset).setVisible(true);
+                        menu.findItem(R.id.menu_reset).setEnabled(false);
+                    }
+
                 }
 
                 popupmenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -477,35 +494,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 popupmenu.show();
             }
         });
-        mCustomize = (ImageView) v.findViewById(R.id.customize);
-        mCustomize.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (!isShowingConfirmCancelOverlay() && !isShowingCustomizeResetLayout()) {
-                    getChooserActivity().expand();
-                }
-            }
-        });
-
-        mDelete = (ImageView) v.findViewById(R.id.delete);
-        mDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDeleteThemeOverlay();
-            }
-        });
-        if (Utils.getDefaultThemePackageName(getActivity()).equals(mPkgName) ||
-                ThemeConfig.SYSTEM_DEFAULT.equals(mPkgName)) {
-            mDelete.setVisibility(View.GONE);
-        }
-
-        mReset = (ImageView) v.findViewById(R.id.reset);
-        mReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showResetThemeOverlay();
-            }
-        });
-        mReset.setVisibility(View.GONE);
 
         if (!Utils.hasNavigationBar(getActivity())) {
             adjustScrollViewPaddingTop();
@@ -566,20 +554,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             if (isThemeProcessing()) {
                 tm.registerProcessingListener(this);
                 mProcessingThemeLayout.setVisibility(View.VISIBLE);
-                mCustomize.setVisibility(View.INVISIBLE);
-                mCustomize.setAlpha(0f);
-                if (mDelete.getVisibility() != View.GONE) {
-                    mDelete.setVisibility(View.INVISIBLE);
-                    mDelete.setAlpha(0f);
-                }
                 mProcessingResources = true;
             } else {
-                mCustomize.setVisibility(View.VISIBLE);
-                mCustomize.setAlpha(1f);
-                if (mDelete.getVisibility() != View.GONE) {
-                    mDelete.setVisibility(View.VISIBLE);
-                    mDelete.setAlpha(1f);
-                }
                 mProcessingResources = false;
             }
         }
@@ -770,16 +746,19 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     protected boolean onPopupMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
         switch(item.getItemId()) {
-            /* TODO: Add back in once there is UX available for this feature
-            case R.id.menu_author:
-                Toast.makeText(getActivity(),
-                        "Not supported",
-                        Toast.LENGTH_LONG).show();
-                break;
-            */
             case R.id.menu_delete:
                 showDeleteThemeOverlay();
+                break;
+            case R.id.menu_customize:
+                //showResetThemeOverlay();
+                if (!isShowingConfirmCancelOverlay() && !isShowingCustomizeResetLayout()) {
+                    getChooserActivity().expand();
+                }
+                break;
+            case R.id.menu_reset:
+                showResetThemeOverlay();
                 break;
         }
 
@@ -911,7 +890,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         if (applyTheme) {
             final boolean customized = isThemeCustomized();
             mThemeTagLayout.setCustomizedTagEnabled(customized);
-            mReset.setVisibility(customized ? View.VISIBLE : View.GONE);
         }
 
         //Move the theme preview so that it is near the center of page per spec
@@ -2510,7 +2488,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 .setInterpolator(new AccelerateInterpolator())
                 .start();
         mProgress.startAnimation(scaleAnim);
-        if (mThemeResetting) mReset.setVisibility(View.GONE);
     }
 
     private void animateContentIn() {
@@ -2540,18 +2517,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
         set.start();
-    }
-
-    private void disableActionButtons() {
-        mCustomize.setEnabled(false);
-        mDelete.setEnabled(false);
-        mReset.setEnabled(false);
-    }
-
-    private void enableActionButtons() {
-        mCustomize.setEnabled(true);
-        mDelete.setEnabled(true);
-        mReset.setEnabled(true);
     }
 
     public boolean isShowingConfirmCancelOverlay() {
@@ -2584,8 +2549,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             tv.setText(String.format(getString(R.string.per_app_theme_removal_warning),
                     mTitle.getText()));
         }
-
-        disableActionButtons();
         mClickableView.setSoundEffectsEnabled(false);
     }
 
@@ -2603,7 +2566,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
         anim.alpha(1f).start();
 
-        disableActionButtons();
         mClickableView.setSoundEffectsEnabled(false);
     }
 
@@ -2621,7 +2583,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
         anim.alpha(1f).start();
 
-        disableActionButtons();
         mClickableView.setSoundEffectsEnabled(false);
     }
 
@@ -2660,7 +2621,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
 
-        enableActionButtons();
         mClickableView.setSoundEffectsEnabled(true);
     }
 
@@ -2683,7 +2643,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         anim.setDuration(ANIMATE_APPLY_LAYOUT_DURATION);
         anim.alpha(1f).start();
 
-        disableActionButtons();
         mClickableView.setSoundEffectsEnabled(false);
     }
 
@@ -2724,7 +2683,6 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
 
-        enableActionButtons();
         mClickableView.setSoundEffectsEnabled(true);
     }
 
@@ -2745,16 +2703,7 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
                 mProcessingThemeLayout.setVisibility(View.GONE);
             }
         }).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
-        mCustomize.setVisibility(View.VISIBLE);
-        mCustomize.setAlpha(0f);
-        mCustomize.animate().alpha(1f).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
-        if (mDelete.getVisibility() != View.GONE) {
-            mDelete.setVisibility(View.VISIBLE);
-            mDelete.setAlpha(0f);
-            mDelete.animate().alpha(1f).setDuration(ANIMATE_APPLY_LAYOUT_DURATION).start();
-        }
 
-        enableActionButtons();
         mClickableView.setSoundEffectsEnabled(true);
     }
 

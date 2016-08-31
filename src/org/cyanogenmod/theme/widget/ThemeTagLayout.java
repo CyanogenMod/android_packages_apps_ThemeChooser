@@ -68,6 +68,10 @@ public class ThemeTagLayout extends LinearLayout {
         }
     }
 
+    public boolean isAppliedTagEnabled() {
+        return findViewById(R.id.tag_applied) != null;
+    }
+
     public void setCustomizedTagEnabled(boolean enabled) {
         if (enabled) {
             if (findViewById(R.id.tag_customized) != null) return;
