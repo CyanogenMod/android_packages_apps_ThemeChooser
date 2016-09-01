@@ -26,7 +26,7 @@
         android:id="@+id/text_preview"
         android:layout_width="@dimen/component_selection_content_width"
         android:layout_height="@dimen/component_selection_content_height"
-        android:textColor="@android:color/white"
+        android:textColor="@color/font_preview_text_color"
         android:text="@string/font_component_item_text"
         android:layout_marginTop="@dimen/component_margin_top"
         android:layout_gravity="center_horizontal"/>

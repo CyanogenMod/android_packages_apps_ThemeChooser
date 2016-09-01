@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/status_bar_height"
             android:paddingEnd="6dp"
-            android:background="#000">
+            android:background="@color/status_bar_background_color">
 
             <!-- dummy view to push everything to the right. -->
             <View

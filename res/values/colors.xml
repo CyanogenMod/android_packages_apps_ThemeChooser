@@ -82,4 +82,13 @@
 
     <color name="edge_effect_color">#ffffff</color>
 
+
+    <color name="live_lock_screen_badge_background_color">@android:color/white</color>
+    <color name="loading_view_background_color">@android:color/white</color>
+    <color name="font_preview_text_color">@android:color/white</color>
+    <color name="per_app_theming_title_text_color">#fff</color>
+    <color name="shop_themes_text_color">#fff</color>
+    <color name="navigation_bar_background_color">#000</color>
+    <color name="status_bar_background_color">#000</color>
+    <color name="component_selection_background_color">#000000</color>
 </resources>

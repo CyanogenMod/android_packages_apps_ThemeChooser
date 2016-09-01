@@ -43,7 +43,7 @@
                 android:orientation="vertical"
                 android:layout_width="@dimen/animated_lock_screen_badge_width"
                 android:layout_height="@dimen/animated_lock_screen_badge_height"
-                android:background="@android:color/white"
+                android:background="@color/live_lock_screen_badge_background_color"
                 android:layout_gravity="center_horizontal|bottom"
                 android:visibility="gone">
             <org.cyanogenmod.theme.widget.LatoTextView

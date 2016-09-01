@@ -44,7 +44,7 @@
             android:layout_height="@dimen/navigation_bar_height"
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
-            android:background="#000">
+            android:background="@color/navigation_bar_background_color">
 
             <!-- Dummy view for padding -->
             <View

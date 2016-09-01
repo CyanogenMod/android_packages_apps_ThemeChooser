@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:textSize="12dp"
-                android:textColor="#fff"
+                android:textColor="@color/per_app_theming_title_text_color"
                 android:text="@string/per_app_theming_title"/>
         </LinearLayout>
 
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:textSize="12dp"
-                android:textColor="#fff"
+                android:textColor="@color/shop_themes_text_color"
                 android:text="@string/shop_themes"/>
         </LinearLayout>
 

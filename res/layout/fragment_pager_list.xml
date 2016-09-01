@@ -72,7 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/img_loading_placeholder"
-                    android:background="@android:color/white"/>
+                    android:background="@color/loading_view_background_color"/>
 
             </FrameLayout>
 
