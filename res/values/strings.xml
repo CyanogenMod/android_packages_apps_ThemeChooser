@@ -29,7 +29,7 @@
     <string name="themes_installed_notification_title">%d themes installed</string>
     <string name="themes_installed_notification_text_one">%1$s and %2$d other installed.</string>
     <string name="themes_installed_notification_text_other">%1$s and %2$d others installed.</string>
-    <plurals name="themes_installed_notification_text">
+    <plurals name="themes_installed_notification_text" translatable="false">
         <item quantity="one">@string/themes_installed_notification_text_one</item>
         <item quantity="other">@string/themes_installed_notification_text_other</item>
     </plurals>
