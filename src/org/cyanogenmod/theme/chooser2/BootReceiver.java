@@ -25,8 +25,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 public class BootReceiver extends BroadcastReceiver {
-    private static final String CHOOSER_PKG_NAME = "org.cyanogenmod.theme.chooser";
-    private static final String CHOOSER_ACTIVITY = "org.cyanogenmod.theme.chooser.ChooserLauncher";
+    private static final String CHOOSER_PKG_NAME = "org.cyanogenmod.theme.chooser2";
+    private static final String CHOOSER_ACTIVITY = CHOOSER_PKG_NAME + ".ChooserLauncher";
 
     @Override
     public void onReceive(Context context, Intent intent) {
