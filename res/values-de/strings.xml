@@ -62,7 +62,7 @@
   <string name="wallpaper_external_title">Bild auswählen</string>
   <string name="wallpaper_none_title">Kein</string>
   <string name="mod_lock_title">MOD-Lock</string>
-  <string name="processing_theme">Verarbeitung\u2026</string>
+  <string name="processing_theme">Wird verarbeitet\u2026</string>
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">Hinweis: %s wurde für eine ältere CM-Version entwickelt. Es können Kompatibilitätsprobleme mit diesem Design auftreten.</string>
   <!-- Per app theming -->

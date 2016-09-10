@@ -18,13 +18,13 @@
  -->
 <resources>
   <string name="app_name">Темы</string>
-  <string name="font_preview_letters">АаБбВвГг</string>
+  <string name="font_preview_letters">АаБбCcDd</string>
   <string name="theme_installed_notification_title">Добавлена тема «%s»</string>
   <string name="theme_installed_notification_text">Тема установлена.</string>
   <!-- Note: These are for "themes", meaning multiple themes -->
   <string name="themes_installed_notification_title">Установлено %d тем</string>
   <string name="themes_installed_notification_text_one">%1$s и ещё %2$d тема установлены.</string>
-  <string name="themes_installed_notification_text_other">Тема %1$s и ещё %2$d установлены.</string>
+  <string name="themes_installed_notification_text_other">%1$s и %2$d других тем установлено.</string>
   <string name="font_component_item_text">Аа</string>
   <!-- Labels for each theme component card -->
   <string name="icon_label">Значки</string>
@@ -40,24 +40,25 @@
   <string name="notification_label">Уведомление</string>
   <string name="ringtone_label">Рингтон</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Изменить</string>
   <string name="menu_delete">Удалить</string>
-  <string name="menu_reset">Сбросить тему</string>
+  <string name="menu_reset">Восстановить</string>
   <!-- Shop themes -->
-  <string name="shop_themes">Магазин тем</string>
+  <string name="shop_themes">Найти темы</string>
   <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Применить</string>
   <string name="delete_theme_overlay_title">Удалить</string>
   <string name="reset_theme_overlay_title">Сброс</string>
   <!-- TAG text -->
-  <string name="default_tag_text">Стандартный</string>
-  <string name="customized_tag_text">Настроено</string>
+  <string name="default_tag_text">Стандартн.</string>
+  <string name="customized_tag_text">Изменено</string>
   <string name="updated_tag_text">Обновлено</string>
   <string name="add_component_text">Добавить</string>
   <string name="wallpaper_none">Отключено</string>
   <string name="audible_title_none">Отключено</string>
   <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">Сбросить</string>
-  <string name="customize_theme">Настройка</string>
+  <string name="customize_theme">Изменить</string>
   <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Выбрать изображение</string>
   <string name="wallpaper_none_title">Нет</string>
@@ -66,7 +67,7 @@
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">Примечание: тема %s была создана для старых версий CM. У вас могут появиться проблемы совместимости c данной темой.</string>
   <!-- Per app theming -->
-  <string name="per_app_theming_title">Темы приложений</string>
+  <string name="per_app_theming_title">Темы прилож.</string>
   <string name="per_app_theme_removal_warning">Примечание: установка новой темы удалит все индивидуальные настройки тем для приложений.</string>
   <string name="per_app_theme_applying">Ваша тема применяется</string>
   <string name="per_app_theme_app_not_overlaid_warning">Тема не поддерживает данное приложение, некоторые элементы могут остаться прежними.</string>
@@ -76,4 +77,5 @@
   <string name="enable_live_lock_screen_dialog_message">Для анимированного экрана блокировки нужно включить функцию живого экрана блокировки. Это можно сделать позже в Настройках, открыв раздел «Параметры экрана блокировки».</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">Включить</string>
   <string name="get_more_app_not_available">Приложение недоступно</string>
+  <string name="new_feature_label">Новый</string>
 </resources>

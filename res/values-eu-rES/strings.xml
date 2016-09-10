@@ -40,6 +40,7 @@
   <string name="notification_label">Jakinarazpena</string>
   <string name="ringtone_label">Dei doinua</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Pertsonalizatu</string>
   <string name="menu_delete">Ezabatu</string>
   <string name="menu_reset">Leheneratu gaia</string>
   <!-- Shop themes -->
