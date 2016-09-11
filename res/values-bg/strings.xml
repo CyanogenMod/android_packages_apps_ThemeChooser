@@ -40,10 +40,11 @@
   <string name="notification_label">Известия</string>
   <string name="ringtone_label">Мелодия</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Персонализиране</string>
   <string name="menu_delete">Изтрий</string>
   <string name="menu_reset">Възстанови темата</string>
   <!-- Shop themes -->
-  <string name="shop_themes">Магазин за теми</string>
+  <string name="shop_themes">Още теми</string>
   <!-- Overlay titles -->
   <string name="delete_theme_overlay_title">Изтрий</string>
   <string name="reset_theme_overlay_title">Нулиране</string>

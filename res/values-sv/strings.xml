@@ -18,6 +18,7 @@
  -->
 <resources>
   <string name="app_name">Temaväljaren</string>
+  <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s installerad</string>
   <string name="theme_installed_notification_text">Temat installerades.</string>
   <!-- Note: These are for "themes", meaning multiple themes -->
