@@ -17,27 +17,52 @@
      limitations under the License.
  -->
 <resources>
+  <string name="app_name">Temavælger</string>
+  <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s installeret</string>
   <string name="theme_installed_notification_text">Tema installeret.</string>
   <!-- Note: These are for "themes", meaning multiple themes -->
+  <string name="themes_installed_notification_title">%d temaer installeret</string>
+  <string name="themes_installed_notification_text_one">%1$s og %2$d andre installeret.</string>
   <string name="themes_installed_notification_text_other">%1$s og %2$d andre installeret.</string>
+  <string name="font_component_item_text">Aa</string>
   <!-- Labels for each theme component card -->
   <string name="icon_label">Ikoner</string>
   <string name="font_label">Fonte</string>
+  <string name="statusbar_label">Status</string>
+  <string name="navbar_label">Navigation</string>
+  <string name="wallpaper_label">Baggrund</string>
   <string name="lockscreen_label">Baggrund til skærmlås</string>
   <string name="live_lock_screen_label">Levende skærmlås</string>
   <string name="style_label">Kontrol</string>
+  <string name="boot_animation_label">Opstartsanimation</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Meddelelse</string>
   <string name="ringtone_label">Ringetone</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Tilpas</string>
+  <string name="menu_delete">Slet</string>
+  <string name="menu_reset">Nulstil tema</string>
   <!-- Shop themes -->
+  <string name="shop_themes">Køb temaer</string>
   <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Anvend</string>
+  <string name="delete_theme_overlay_title">Slet</string>
+  <string name="reset_theme_overlay_title">Nulstil</string>
   <!-- TAG text -->
+  <string name="default_tag_text">Standard</string>
+  <string name="customized_tag_text">Tilpasset</string>
+  <string name="updated_tag_text">Opdateret</string>
+  <string name="add_component_text">Tilføj</string>
+  <string name="wallpaper_none">Ingen</string>
+  <string name="audible_title_none">Ingen</string>
   <!-- Labels for the customize/reset theme layout -->
+  <string name="reset_theme">Nulstil</string>
+  <string name="customize_theme">Tilpas</string>
   <!-- Extra wallpaper components for selector -->
+  <string name="wallpaper_external_title">Vælg billede</string>
   <string name="wallpaper_none_title">Ingen</string>
+  <string name="mod_lock_title">MOD lås</string>
   <string name="processing_theme">Behandler\u2026</string>
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">BEMÆRK: %s var designet til en ældre version af CM. Du kan opleve kompatibilitetsproblemer med dette tema.</string>
@@ -52,4 +77,5 @@
   <string name="enable_live_lock_screen_dialog_message">Animerede skærmlåse kræver funktionen Levende skærmlås. Du kan ændre dette senere ved at åbne indstillinger og besøge siden Levende skærmlås under skærmlås-indstillinger.</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">Aktivér</string>
   <string name="get_more_app_not_available">App ikke tilgængelig</string>
+  <string name="new_feature_label">Ny</string>
 </resources>

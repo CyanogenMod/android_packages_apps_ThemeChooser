@@ -40,6 +40,7 @@
   <string name="notification_label">Varsling</string>
   <string name="ringtone_label">Ringetone</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Tilpass</string>
   <string name="menu_delete">Slett</string>
   <string name="menu_reset">Tilbakestille tema</string>
   <!-- Shop themes -->

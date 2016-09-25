@@ -23,7 +23,6 @@
   <!-- Labels for each theme component card -->
   <string name="icon_label">Piktogramoj</string>
   <string name="font_label">Tiparoj</string>
-  <string name="alarm_label">Alarmo</string>
   <string name="notification_label">Atentigo</string>
   <string name="ringtone_label">Sonoro</string>
   <!-- Overflow menu -->

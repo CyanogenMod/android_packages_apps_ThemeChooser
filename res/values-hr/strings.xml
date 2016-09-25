@@ -40,6 +40,7 @@
   <string name="notification_label">Obavijest</string>
   <string name="ringtone_label">Zvuk</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Prilagodba</string>
   <string name="menu_delete">Obriši</string>
   <string name="menu_reset">Ponovno postavljanje teme</string>
   <!-- Shop themes -->

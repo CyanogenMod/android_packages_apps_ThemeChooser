@@ -17,7 +17,7 @@
      limitations under the License.
  -->
 <resources>
-  <string name="app_name">Seletor de temas</string>
+  <string name="app_name">Seletor de Temas</string>
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s instalado</string>
   <string name="theme_installed_notification_text">Tema instalado com êxito.</string>
@@ -40,6 +40,7 @@
   <string name="notification_label">Notificação</string>
   <string name="ringtone_label">Toque</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Personalizar</string>
   <string name="menu_delete">Eliminar</string>
   <string name="menu_reset">Restaurar o tema</string>
   <!-- Shop themes -->
@@ -53,23 +54,23 @@
   <string name="customized_tag_text">Personalizado</string>
   <string name="updated_tag_text">Atualizado</string>
   <string name="add_component_text">Adicionar</string>
-  <string name="wallpaper_none">Nenhum</string>
+  <string name="wallpaper_none">Nenhuma</string>
   <string name="audible_title_none">Nenhum</string>
   <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">Restaurar</string>
   <string name="customize_theme">Personalizar</string>
   <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Escolher imagem</string>
-  <string name="wallpaper_none_title">Nenhum</string>
+  <string name="wallpaper_none_title">Nenhuma</string>
   <string name="mod_lock_title">Bloqueio MOD</string>
   <string name="processing_theme">A processar\u2026</string>
   <!-- Legacy themes -->
-  <string name="legacy_theme_warning">NOTA: %s foi concebido para uma versão antiga da rom CM. Podem ocorrer problemas de compatibilidade com este tema.</string>
+  <string name="legacy_theme_warning">NOTA: %s foi concebido para uma versão antiga da CM. Podem ocorrer problemas de compatibilidade com este tema.</string>
   <!-- Per app theming -->
   <string name="per_app_theming_title">Personalizar aplicações</string>
-  <string name="per_app_theme_removal_warning">Nota: Aplicar um novo tema irá remover qualquer personalização de tema das aplicações.</string>
+  <string name="per_app_theme_removal_warning">Nota: Aplicar um novo tema irá remover qualquer personalização de temas das aplicações.</string>
   <string name="per_app_theme_applying">O tema está a ser aplicado</string>
-  <string name="per_app_theme_app_not_overlaid_warning">O tema não suporta esta aplicação, alguns elementos poderão não alterar.</string>
+  <string name="per_app_theme_app_not_overlaid_warning">O tema não suporta esta aplicação. Alguns elementos poderão não ser alterados.</string>
   <string name="read_external_permission_denied_message">O Seletor de Temas não consegue aceder aos seus dados e não consegue escolher uma imagem, de momento.</string>
   <string name="animated_lock_screen_badge_text">Animação</string>
   <string name="enable_live_lock_screen_dialog_title">Ativar o ecrã de bloqueio animado</string>

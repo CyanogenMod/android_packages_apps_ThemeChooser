@@ -40,6 +40,7 @@
   <string name="notification_label">通知</string>
   <string name="ringtone_label">铃声</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">自定义</string>
   <string name="menu_delete">删除</string>
   <string name="menu_reset">重置主题</string>
   <!-- Shop themes -->
@@ -76,4 +77,5 @@
   <string name="enable_live_lock_screen_dialog_message">动画锁屏需要活动锁屏功能。您可以在稍后打开设置，锁屏选项下的活动锁屏页面并启用。</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">启用</string>
   <string name="get_more_app_not_available">应用不可用</string>
+  <string name="new_feature_label">新</string>
 </resources>

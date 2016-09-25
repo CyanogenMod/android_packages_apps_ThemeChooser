@@ -40,6 +40,7 @@
   <string name="notification_label">Melding</string>
   <string name="ringtone_label">Beltoon</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Aanpassen</string>
   <string name="menu_delete">Verwijderen</string>
   <string name="menu_reset">Thema opnieuw instellen</string>
   <!-- Shop themes -->
@@ -72,6 +73,7 @@
   <string name="read_external_permission_denied_message">Themakiezer kan geen toegang tot media krijgen en is nu niet in staat een afbeelding te kiezen.</string>
   <string name="animated_lock_screen_badge_text">Geanimeerd</string>
   <string name="enable_live_lock_screen_dialog_title">Geanimeerd vergrendelingsscherm inschakelen</string>
+  <string name="enable_live_lock_screen_dialog_message">Geanimeerde vergrendelingsschermen vereisen de functie \"Geanimeerd vergrendelingsscherm\". U kunt dit wijzigen door in de instellingen van vergrendelingsscherm naar de geanimeerd vergrendelingsscherm-pagina te gaan.</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">Inschakelen</string>
   <string name="get_more_app_not_available">App niet beschikbaar</string>
   <string name="new_feature_label">Nieuw</string>

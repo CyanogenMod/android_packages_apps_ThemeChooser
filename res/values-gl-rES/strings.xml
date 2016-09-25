@@ -18,35 +18,64 @@
  -->
 <resources>
   <string name="app_name">Selector de temas</string>
+  <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s instalado</string>
   <string name="theme_installed_notification_text">Tema instalado correctamente.</string>
   <!-- Note: These are for "themes", meaning multiple themes -->
+  <string name="themes_installed_notification_title">%d temas instalados</string>
   <string name="themes_installed_notification_text_one">%1$s e %2$d máis instalados.</string>
   <string name="themes_installed_notification_text_other">%1$s e %2$d máis instalados.</string>
+  <string name="font_component_item_text">Aa</string>
   <!-- Labels for each theme component card -->
   <string name="icon_label">Iconas</string>
   <string name="font_label">Tipos de letra</string>
+  <string name="statusbar_label">Estado</string>
+  <string name="navbar_label">Navegación</string>
+  <string name="wallpaper_label">Fondo de pantalla</string>
+  <string name="lockscreen_label">Fondos da pantalla de bloqueo</string>
+  <string name="live_lock_screen_label">Pantalla de bloqueo animada</string>
+  <string name="style_label">Controis</string>
   <string name="boot_animation_label">Animacións do arranque</string>
   <string name="alarm_label">Alarma</string>
   <string name="notification_label">Notificación</string>
   <string name="ringtone_label">Ton de chamada</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Personalizar</string>
+  <string name="menu_delete">Eliminar</string>
+  <string name="menu_reset">Restabelecer o tema</string>
   <!-- Shop themes -->
+  <string name="shop_themes">Mercar temas</string>
   <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Aplicar</string>
+  <string name="delete_theme_overlay_title">Eliminar</string>
   <string name="reset_theme_overlay_title">Resetear</string>
   <!-- TAG text -->
   <string name="default_tag_text">Predeterminado</string>
+  <string name="customized_tag_text">Personalizado</string>
+  <string name="updated_tag_text">Actualizado</string>
+  <string name="add_component_text">Engadir</string>
   <string name="wallpaper_none">Ningún</string>
   <string name="audible_title_none">Ningún</string>
   <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">Resetear</string>
+  <string name="customize_theme">Personalizar</string>
   <!-- Extra wallpaper components for selector -->
+  <string name="wallpaper_external_title">Escoller imaxe</string>
   <string name="wallpaper_none_title">Ningún</string>
+  <string name="mod_lock_title">Bloqueo MOD</string>
   <string name="processing_theme">Procesando\u2026</string>
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">NOTA: %s foi deseñado para unha versión máis antiga de CM. Podería ter problemas de compatibilidade con este tema.</string>
   <!-- Per app theming -->
+  <string name="per_app_theming_title">Instalador de temas para as aplicacións</string>
   <string name="per_app_theme_removal_warning">NOTA: Ao aplicar un novo tema, retiraranse todas as personalizacións de tema de calquera aplicación.</string>
+  <string name="per_app_theme_applying">Estase a aplicar o seu tema</string>
+  <string name="per_app_theme_app_not_overlaid_warning">O tema non é compatíbel con esta aplicación, polo que algúns elementos pode que non cambien.</string>
+  <string name="read_external_permission_denied_message">O selector de temas non pode acceder aos medios e non pode seleccionar unha imaxe neste momento.</string>
+  <string name="animated_lock_screen_badge_text">Anim</string>
+  <string name="enable_live_lock_screen_dialog_title">Activar a pantalla de bloqueo animada</string>
+  <string name="enable_live_lock_screen_dialog_message">As pantallas de bloqueo animadas precisan da función de pantalla de bloqueo directo. Podes cambiar isto máis tarde en Axustes e visitando a páxina de opcións de pantalla de bloqueo.</string>
+  <string name="enable_live_lock_screen_dialog_positive_btn_text">Activar</string>
   <string name="get_more_app_not_available">Aplicación non dispoñíbel</string>
+  <string name="new_feature_label">Nova</string>
 </resources>

@@ -52,19 +52,25 @@
   <string name="default_tag_text">Domyślny</string>
   <string name="customized_tag_text">Zmodyfikowany</string>
   <string name="updated_tag_text">Zaktualizowany</string>
+  <string name="add_component_text">Dodaj</string>
   <string name="wallpaper_none">Brak</string>
   <string name="audible_title_none">Brak</string>
   <!-- Labels for the customize/reset theme layout -->
   <string name="reset_theme">Przywróć domyślne</string>
   <string name="customize_theme">Dostosuj</string>
   <!-- Extra wallpaper components for selector -->
+  <string name="wallpaper_external_title">Wybierz obraz</string>
+  <string name="wallpaper_none_title">Brak</string>
   <string name="processing_theme">Przetwarzanie\u2026</string>
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">UWAGA: %s został zaprojektowany dla starszej wersji CM. Mogą wystąpić problemy z kompatybilnością tego motywu.</string>
   <!-- Per app theming -->
+  <string name="per_app_theming_title">Zmiana wyglądu aplikacji</string>
   <string name="per_app_theme_removal_warning">UWAGA: Zastosowanie nowego motywu usunie wszelkie modyfikacje wyglądu aplikacji.</string>
+  <string name="per_app_theme_app_not_overlaid_warning">Motyw nie obsługuje tej aplikacji, niektóre elementy mogą się nie zmienić.</string>
   <string name="read_external_permission_denied_message">Kompozytor motywów nie ma dostępu do mediów i nie jest w stanie pobrać obrazu w tej chwili.</string>
   <string name="animated_lock_screen_badge_text">Animowany</string>
+  <string name="enable_live_lock_screen_dialog_title">Włącz animowany ekran blokady</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">Włącz</string>
   <string name="get_more_app_not_available">Aplikacja niedostępna</string>
 </resources>

@@ -40,6 +40,7 @@
   <string name="notification_label">Benachrichtigung</string>
   <string name="ringtone_label">Klingelton</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Anpassen</string>
   <string name="menu_delete">Löschen</string>
   <string name="menu_reset">Design zurücksetzen</string>
   <!-- Shop themes -->
@@ -73,6 +74,7 @@
   <string name="read_external_permission_denied_message">Die Designauswahl kann nicht auf Medien zugreifen und daher zurzeit kein Bild auswählen.</string>
   <string name="animated_lock_screen_badge_text">Animation</string>
   <string name="enable_live_lock_screen_dialog_title">Animierte Bildschirmsperre aktivieren</string>
+  <string name="enable_live_lock_screen_dialog_message">Für animierte Bildschirmsperren wird die Funktion \"Animierter Sperrbildschirm\" benötigt. Sie können dies später ändern, indem Sie die Einstellungen öffnen und unter \"Bildschirmsperre\" \"Animierter Sperrbildschirm\" aufrufen.</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">Aktivieren</string>
   <string name="get_more_app_not_available">App nicht verfügbar</string>
   <string name="new_feature_label">Neu</string>

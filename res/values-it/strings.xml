@@ -40,6 +40,7 @@
   <string name="notification_label">Notifica</string>
   <string name="ringtone_label">Suoneria</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Personalizza</string>
   <string name="menu_delete">Elimina</string>
   <string name="menu_reset">Reimposta tema</string>
   <!-- Shop themes -->

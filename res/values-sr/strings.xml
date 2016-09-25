@@ -75,4 +75,5 @@
   <string name="enable_live_lock_screen_dialog_message">Анимирани закључани екран треба функцију активног закључаног екрана. Можеш то променити касније отварањем стране подешавања активног закључаног екрана у подешавањима закључаног екрана.</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">Омогући</string>
   <string name="get_more_app_not_available">Апликација није доступна</string>
+  <string name="new_feature_label">Ново</string>
 </resources>

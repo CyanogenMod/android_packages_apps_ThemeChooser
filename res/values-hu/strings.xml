@@ -40,6 +40,7 @@
   <string name="notification_label">Értesítés</string>
   <string name="ringtone_label">Csengőhang</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Testreszabás</string>
   <string name="menu_delete">Törlés</string>
   <string name="menu_reset">Téma visszaállítása</string>
   <!-- Shop themes -->

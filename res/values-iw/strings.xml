@@ -40,6 +40,7 @@
   <string name="notification_label">התראות</string>
   <string name="ringtone_label">רינגטון</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">התאמה אישית</string>
   <string name="menu_delete">מחק</string>
   <string name="menu_reset">איפוס ערכת עיצוב</string>
   <!-- Shop themes -->
@@ -61,6 +62,7 @@
   <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">בחר תמונה</string>
   <string name="wallpaper_none_title">ללא</string>
+  <string name="mod_lock_title">נעילת MOD</string>
   <string name="processing_theme">מעבד\u2026</string>
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">הערה: %s עוצב עבור גרסה ישנה יותר של CM. ייתכנו בעיות תאימות עם ערכת עיצוב זאת.</string>
@@ -75,4 +77,5 @@
   <string name="enable_live_lock_screen_dialog_message">מסכי נעילה מונפשים דורשים את תכונת \"מסך נעילה חי\". ניתן לשנות זאת מאוחר יותר ע\"י פתיחת ההגדרות וביקור בעמוד \"מסך נעילה חי\" תחת אפשרויות מסך נעילה.</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">הפעל</string>
   <string name="get_more_app_not_available">יישום לא זמין</string>
+  <string name="new_feature_label">חדש</string>
 </resources>

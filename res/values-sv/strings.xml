@@ -22,26 +22,47 @@
   <string name="theme_installed_notification_title">%s installerad</string>
   <string name="theme_installed_notification_text">Temat installerades.</string>
   <!-- Note: These are for "themes", meaning multiple themes -->
+  <string name="themes_installed_notification_text_other">%1$s och %2$d andra installerade.</string>
+  <string name="font_component_item_text">Aa</string>
   <!-- Labels for each theme component card -->
   <string name="icon_label">Ikoner</string>
   <string name="font_label">Typsnitt</string>
+  <string name="statusbar_label">Status</string>
+  <string name="navbar_label">Navigering</string>
   <string name="wallpaper_label">Bakgrundsbild</string>
+  <string name="style_label">Kontroller</string>
+  <string name="boot_animation_label">Uppstartsanimation</string>
   <string name="alarm_label">Alarm</string>
   <string name="notification_label">Avisering</string>
   <string name="ringtone_label">Ringsignal</string>
   <!-- Overflow menu -->
+  <string name="menu_delete">Ta bort</string>
+  <string name="menu_reset">Återställ tema</string>
   <!-- Shop themes -->
   <string name="shop_themes">Köpa teman</string>
   <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Verkställ</string>
+  <string name="delete_theme_overlay_title">Ta bort</string>
+  <string name="reset_theme_overlay_title">Återställ</string>
   <!-- TAG text -->
+  <string name="default_tag_text">Standard</string>
+  <string name="customized_tag_text">Anpassad</string>
+  <string name="updated_tag_text">Uppdaterad</string>
+  <string name="add_component_text">Lägg till</string>
+  <string name="wallpaper_none">Ingen</string>
+  <string name="audible_title_none">Ingen</string>
   <!-- Labels for the customize/reset theme layout -->
+  <string name="reset_theme">Återställ</string>
+  <string name="customize_theme">Anpassa</string>
   <!-- Extra wallpaper components for selector -->
+  <string name="wallpaper_external_title">Välj bild</string>
+  <string name="wallpaper_none_title">Ingen</string>
   <string name="processing_theme">Behandlar\u2026</string>
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">OBS: %s skapades för en äldre version av CM. Du kan råka ut för kompabilitetsproblem med detta tema.</string>
   <!-- Per app theming -->
   <string name="per_app_theme_removal_warning">OBS: När du använder ett nytt tema tar det bort alla anpassningar till appteman.</string>
   <string name="read_external_permission_denied_message">Temaväljaren har inte tillgång till media och kan inte välja en bild just nu.</string>
+  <string name="enable_live_lock_screen_dialog_positive_btn_text">Aktivera</string>
   <string name="get_more_app_not_available">Appen är inte tillgänglig</string>
 </resources>
