@@ -336,6 +336,8 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
 
     protected boolean mShowLockScreenSelectorAfterContentLoaded;
 
+    private boolean mListenerRegistered;
+
     protected enum CustomizeResetAction {
         Customize,
         Reset,
@@ -552,7 +554,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         ThemeManager tm = getThemeManager();
         if (tm != null) {
             if (isThemeProcessing()) {
-                tm.registerProcessingListener(this);
+                if (!mListenerRegistered) {
+                    tm.registerProcessingListener(this);
+                    mListenerRegistered = true;
+                }
                 mProcessingThemeLayout.setVisibility(View.VISIBLE);
                 mProcessingResources = true;
             } else {
@@ -568,7 +573,10 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
         ThemeManager tm = getThemeManager();
         if (tm != null) {
             tm.removeClient(this);
-            tm.unregisterProcessingListener(this);
+            if (mListenerRegistered) {
+                tm.unregisterProcessingListener(this);
+                mListenerRegistered = false;
+            }
         }
     }
 
@@ -668,8 +676,9 @@ public class ThemeFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onFinishedProcessing(String pkgName) {
         if (pkgName.equals(mPkgName) || pkgName.equals(mBaseThemePkgName)) {
             ThemeManager tm = getThemeManager();
-            if (tm != null) {
+            if (tm != null && mListenerRegistered) {
                 tm.unregisterProcessingListener(this);
+                mListenerRegistered = false;
             }
         }
     }
