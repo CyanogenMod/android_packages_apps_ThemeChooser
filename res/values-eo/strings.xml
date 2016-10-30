@@ -17,21 +17,18 @@
      limitations under the License.
  -->
 <resources>
-  <string name="theme_installed_notification_title">%s instalita</string>
-  <string name="theme_installed_notification_text">Etoso sukcese instalita.</string>
   <!-- Note: These are for "themes", meaning multiple themes -->
   <!-- Labels for each theme component card -->
-  <string name="icon_label">Piktogramoj</string>
-  <string name="font_label">Tiparoj</string>
-  <string name="notification_label">Atentigo</string>
-  <string name="ringtone_label">Sonoro</string>
   <!-- Overflow menu -->
+  <string name="menu_delete">Forigi</string>
   <!-- Shop themes -->
   <!-- Overlay titles -->
-  <string name="apply_theme_overlay_title">Apliki</string>
+  <string name="delete_theme_overlay_title">Forigi</string>
   <!-- TAG text -->
+  <string name="add_component_text">Aldoni</string>
   <!-- Labels for the customize/reset theme layout -->
   <!-- Extra wallpaper components for selector -->
   <!-- Legacy themes -->
   <!-- Per app theming -->
+  <string name="new_feature_label">Nova</string>
 </resources>

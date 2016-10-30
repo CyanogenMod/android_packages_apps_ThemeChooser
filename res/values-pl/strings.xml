@@ -71,6 +71,7 @@
   <string name="read_external_permission_denied_message">Kompozytor motywów nie ma dostępu do mediów i nie jest w stanie pobrać obrazu w tej chwili.</string>
   <string name="animated_lock_screen_badge_text">Animowany</string>
   <string name="enable_live_lock_screen_dialog_title">Włącz animowany ekran blokady</string>
+  <string name="enable_live_lock_screen_dialog_message">Animowany ekran blokady wymaga funkcjonalności animowanego ekranu blokady. Możesz to zmienić później w Ustawieniach i odwiedzając stronę animowanej blokady ekranu w ustawianiach ekranu blokady.</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">Włącz</string>
   <string name="get_more_app_not_available">Aplikacja niedostępna</string>
 </resources>

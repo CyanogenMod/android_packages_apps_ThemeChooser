@@ -62,6 +62,7 @@
   <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Afbeelding kiezen</string>
   <string name="wallpaper_none_title">Geen</string>
+  <string name="mod_lock_title">MOD Vergrendeling</string>
   <string name="processing_theme">Verwerken\u2026</string>
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">Let op: %s is ontworpen voor een oudere versie van CM. Er kunnen compatibiliteitsproblemen optreden bij het gebruik van dit thema.</string>

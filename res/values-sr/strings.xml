@@ -40,6 +40,7 @@
   <string name="notification_label">Обавештење</string>
   <string name="ringtone_label">Тон звона</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Прилагоди</string>
   <string name="menu_delete">Избриши</string>
   <string name="menu_reset">Ресетовање теме</string>
   <!-- Shop themes -->
@@ -61,6 +62,7 @@
   <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Изабери слику</string>
   <string name="wallpaper_none_title">Ниједан</string>
+  <string name="mod_lock_title">MOD Lock</string>
   <string name="processing_theme">Обрада\u2026</string>
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">НАПОМЕНА:%s је дизајниран за старије верзије CM. Можеш искусити проблеме компатибилности са овом темом.</string>

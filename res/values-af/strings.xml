@@ -40,6 +40,7 @@
   <string name="notification_label">Kennisgewing</string>
   <string name="ringtone_label">Luitoon</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Pasmaak</string>
   <string name="menu_delete">Verwyder</string>
   <string name="menu_reset">Herstel tema</string>
   <!-- Shop themes -->
@@ -61,6 +62,7 @@
   <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Kies prent</string>
   <string name="wallpaper_none_title">Geen</string>
+  <string name="mod_lock_title">MOD Lock</string>
   <string name="processing_theme">Vverwerking\u2026</string>
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">KENNISGEWING: %s is ontwerp vir \'n ouer weergawe van CM. Jy mag versoenbaarheid probleme met hierdie tema ervaar.</string>
@@ -75,4 +77,5 @@
   <string name="enable_live_lock_screen_dialog_message">Geanimeerde slot skerms vereis dat Lewendige skerm slot funksie aktief is. Jy kan dit later aktiveer met die opening van instellings, slot skerm opsies en dan op die bladsy die lewendige slot skerm opsie aktiveer.</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">Aktiveer</string>
   <string name="get_more_app_not_available">Toep nie beskikbaar nie</string>
+  <string name="new_feature_label">Nuut</string>
 </resources>

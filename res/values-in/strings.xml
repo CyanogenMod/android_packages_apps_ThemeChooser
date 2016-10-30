@@ -17,7 +17,7 @@
      limitations under the License.
  -->
 <resources>
-  <string name="app_name">Pemilih Tema</string>
+  <string name="app_name">Tema</string>
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s terinstal</string>
   <string name="theme_installed_notification_text">Tema berhasil diinstal.</string>
@@ -28,7 +28,7 @@
   <string name="font_component_item_text">Aa</string>
   <!-- Labels for each theme component card -->
   <string name="icon_label">Ikon</string>
-  <string name="font_label">Fon</string>
+  <string name="font_label">Font</string>
   <string name="statusbar_label">Status</string>
   <string name="navbar_label">Navigasi</string>
   <string name="wallpaper_label">Gambar latar</string>
@@ -43,14 +43,14 @@
   <string name="menu_delete">Hapus</string>
   <string name="menu_reset">Atur ulang tema</string>
   <!-- Shop themes -->
-  <string name="shop_themes">Belanja tema</string>
+  <string name="shop_themes">Unduh tema</string>
   <!-- Overlay titles -->
   <string name="apply_theme_overlay_title">Terapkan</string>
   <string name="delete_theme_overlay_title">Hapus</string>
   <string name="reset_theme_overlay_title">Atur ulang</string>
   <!-- TAG text -->
-  <string name="default_tag_text">Baku</string>
-  <string name="customized_tag_text">Diubahsuaikan</string>
+  <string name="default_tag_text">Standar</string>
+  <string name="customized_tag_text">Disesuaikan</string>
   <string name="updated_tag_text">Diperbarui</string>
   <string name="add_component_text">Tambah</string>
   <string name="wallpaper_none">Tidak ada</string>
@@ -65,7 +65,7 @@
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">CATATAN: %s dirancang untuk versi CM yang lebih lama. Anda mungkin mengalami masalah kompatibilitas dengan tema ini.</string>
   <!-- Per app theming -->
-  <string name="per_app_theming_title">Penema Aplikasi</string>
+  <string name="per_app_theming_title">Tema Asisten</string>
   <string name="per_app_theme_removal_warning">CATATAN: Menerapkan tema baru akan menghilangkan ubahsuaian tema aplikasi apa pun.</string>
   <string name="per_app_theme_applying">Tema sedang diterapkan</string>
   <string name="per_app_theme_app_not_overlaid_warning">Tema tidak mendukung aplikasi ini; beberapa elemen bisa tidak berubah.</string>
