@@ -20,7 +20,7 @@
   <!-- Themable items -->
   <string name="lock_screen">Kunci gambar latar</string>
   <string name="icons">Ikon</string>
-  <string name="fonts">Fon</string>
+  <string name="fonts">Font</string>
   <string name="wallpapers">Gambar latar</string>
   <string name="boot_anims">Animasi but</string>
   <string name="ringtones">Nada dering</string>
@@ -33,7 +33,7 @@
   <string name="theme_packs">Paket tema</string>
   <string name="sounds">Suara</string>
   <string name="system_theme_name">Sistem</string>
-  <string name="default_tag">(Baku)</string>
+  <string name="default_tag">(Standar)</string>
   <string name="apply">Terapkan</string>
   <string name="applying">Menerapkan\u2026</string>
   <string name="applied">Diterapkan</string>
