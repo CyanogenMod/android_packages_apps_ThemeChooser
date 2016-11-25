@@ -9,6 +9,7 @@
     <uses-permission android:name="cyanogenmod.permission.ACCESS_THEME_MANAGER" />
     <uses-permission android:name="cyanogenmod.permission.READ_THEMES" />
     <uses-permission android:name="cyanogenmod.permission.WRITE_THEMES" />
+    <uses-permission android:name="cyanogenmod.permission.MANAGE_REMOTE_PREFERENCES" />
 
     <!-- The following permissions are used to hijack Google Play notifications
          when a theme is installed -->
@@ -43,6 +44,22 @@
                 <action android:name="android.intent.action.SET_WALLPAPER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <intent-filter android:priority="7">
+                <action android:name="com.android.settings.action.EXTRA_SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="com.android.settings.category"
+                android:value="com.android.settings.category.device" />
+            <meta-data
+                android:name="com.android.settings.icon"
+                android:resource="@drawable/ic_settings_themes" />
+            <meta-data
+                android:name="org.cyanogenmod.settings.summary.receiver"
+                android:value="org.cyanogenmod.theme.chooser.PrefUpdater" />
+            <meta-data
+                android:name="org.cyanogenmod.settings.summary.key"
+                android:value="theme_settings" />
         </activity>
 
         <receiver android:name="org.cyanogenmod.theme.chooser.AppReceiver" >
@@ -50,6 +67,14 @@
                 <action android:name="cyanogenmod.intent.action.THEME_INSTALLED" />
                 <action android:name="cyanogenmod.intent.action.THEME_REMOVED" />
                 <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".PrefUpdater" android:enabled="true">
+            <intent-filter>
+                <action android:name="cyanogenmod.intent.action.UPDATE_PREFERENCE" />
+                <action android:name="org.cyanogenmod.intent.action.THEME_CHANGED" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 
