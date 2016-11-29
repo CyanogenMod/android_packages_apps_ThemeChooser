@@ -46,6 +46,7 @@
   <!-- Shop themes -->
   <string name="shop_themes">Още теми</string>
   <!-- Overlay titles -->
+  <string name="apply_theme_overlay_title">Приложи</string>
   <string name="delete_theme_overlay_title">Изтрий</string>
   <string name="reset_theme_overlay_title">Нулиране</string>
   <!-- TAG text -->

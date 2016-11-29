@@ -22,6 +22,7 @@
   <string name="theme_installed_notification_title">%s installerad</string>
   <string name="theme_installed_notification_text">Temat installerades.</string>
   <!-- Note: These are for "themes", meaning multiple themes -->
+  <string name="themes_installed_notification_title">%d teman installerade</string>
   <string name="themes_installed_notification_text_other">%1$s och %2$d andra installerade.</string>
   <string name="font_component_item_text">Aa</string>
   <!-- Labels for each theme component card -->
@@ -30,6 +31,7 @@
   <string name="statusbar_label">Status</string>
   <string name="navbar_label">Navigering</string>
   <string name="wallpaper_label">Bakgrundsbild</string>
+  <string name="live_lock_screen_label">Levande låsskärm</string>
   <string name="style_label">Kontroller</string>
   <string name="boot_animation_label">Uppstartsanimation</string>
   <string name="alarm_label">Alarm</string>

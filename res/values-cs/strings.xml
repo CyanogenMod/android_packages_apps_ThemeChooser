@@ -40,6 +40,7 @@
   <string name="notification_label">Upozornění</string>
   <string name="ringtone_label">Vyzváněcí tón</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Přizpůsobit</string>
   <string name="menu_delete">Smazat</string>
   <string name="menu_reset">Obnovit motiv</string>
   <!-- Shop themes -->
@@ -76,4 +77,5 @@
   <string name="enable_live_lock_screen_dialog_message">Animované zámky obrazovky vyžadují funkci živého zámku obrazovky. Povolení této funkce je možné v Nastavení v možnostech pro Zámek obrazovky.</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">Povolit</string>
   <string name="get_more_app_not_available">Aplikace není k dispozici</string>
+  <string name="new_feature_label">Nový</string>
 </resources>

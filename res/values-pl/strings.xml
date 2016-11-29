@@ -40,6 +40,7 @@
   <string name="notification_label">Powiadomienie</string>
   <string name="ringtone_label">Dzwonek</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Dostosuj</string>
   <string name="menu_delete">Usuń</string>
   <string name="menu_reset">Zresetuj motyw</string>
   <!-- Shop themes -->
@@ -67,10 +68,13 @@
   <!-- Per app theming -->
   <string name="per_app_theming_title">Zmiana wyglądu aplikacji</string>
   <string name="per_app_theme_removal_warning">UWAGA: Zastosowanie nowego motywu usunie wszelkie modyfikacje wyglądu aplikacji.</string>
+  <string name="per_app_theme_applying">Twój motyw zostanie zastosowany</string>
   <string name="per_app_theme_app_not_overlaid_warning">Motyw nie obsługuje tej aplikacji, niektóre elementy mogą się nie zmienić.</string>
   <string name="read_external_permission_denied_message">Kompozytor motywów nie ma dostępu do mediów i nie jest w stanie pobrać obrazu w tej chwili.</string>
   <string name="animated_lock_screen_badge_text">Animowany</string>
   <string name="enable_live_lock_screen_dialog_title">Włącz animowany ekran blokady</string>
+  <string name="enable_live_lock_screen_dialog_message">Animowany ekran blokady wymaga funkcjonalności animowanego ekranu blokady. Możesz to zmienić później w Ustawieniach i odwiedzając stronę animowanej blokady ekranu w ustawianiach ekranu blokady.</string>
   <string name="enable_live_lock_screen_dialog_positive_btn_text">Włącz</string>
   <string name="get_more_app_not_available">Aplikacja niedostępna</string>
+  <string name="new_feature_label">Nowy</string>
 </resources>
