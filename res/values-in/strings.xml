@@ -17,7 +17,7 @@
      limitations under the License.
  -->
 <resources>
-  <string name="app_name">Tema</string>
+  <string name="app_name">Pemilih Tema</string>
   <string name="font_preview_letters">AaBbCcDd</string>
   <string name="theme_installed_notification_title">%s terinstal</string>
   <string name="theme_installed_notification_text">Tema berhasil diinstal.</string>
