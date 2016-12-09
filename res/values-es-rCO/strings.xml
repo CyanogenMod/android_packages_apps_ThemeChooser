@@ -16,9 +16,7 @@
      limitations under the License.
 -->
 <resources>
-  <string name="app_name">Etosoj</string>
   <!-- Themable items -->
   <!-- Drawer items (some items in drawer are part of themeable items) -->
-  <string name="menu_item_uninstall">Malinstali</string>
   <!-- Audibles preview -->
 </resources>

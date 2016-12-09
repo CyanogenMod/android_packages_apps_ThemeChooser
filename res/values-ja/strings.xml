@@ -46,7 +46,7 @@
   <string name="notification_label">通知</string>
   <string name="ringtone_label">着信音</string>
   <string name="unknown_author">作者不明</string>
-  <string name="font_preview_letters">あア漢字AaBbCc123</string>
+  <string name="font_preview_letters">あア漢Aa123</string>
   <string name="theme_installed_notification_title">%sがインストールされました</string>
   <string name="theme_installed_notification_text">テーマのインストールが完了しました。</string>
   <string name="get_more_app_not_available">アプリが利用できません</string>

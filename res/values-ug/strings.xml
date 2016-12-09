@@ -45,6 +45,7 @@
   <string name="alarm_label">قوڭغۇراق</string>
   <string name="notification_label">ئۇقتۇرۇش</string>
   <string name="ringtone_label">زىل ئاۋازى</string>
+  <string name="unknown_author">ياسىغۇچى نامەلۇم</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">%s ئورنىتىلدى</string>
   <string name="theme_installed_notification_text">ئۆرنەك مۇۋەپپەقىيەتلىك ئورنىتىلدى.</string>
