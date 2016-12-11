@@ -24,11 +24,11 @@
   <string name="wallpapers">Шпалеры</string>
   <string name="boot_anims">Анімацыя загрузкі</string>
   <string name="ringtones">Рынгтоны</string>
-  <string name="notifications">Апавяшчэнні</string>
+  <string name="notifications">Паведамленьні</string>
   <string name="alarms">Будзільнікі</string>
   <string name="style">Стыль</string>
   <string name="status_bar">Радок стану</string>
-  <string name="nav_bar">Радок навігацыі</string>
+  <string name="nav_bar">Навігацыйны радок</string>
   <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">Наборы тэм</string>
   <string name="sounds">Гукі</string>
@@ -43,7 +43,7 @@
   <string name="menu_item_uninstall">Выдаліць</string>
   <!-- Audibles preview -->
   <string name="alarm_label">Будзільнік</string>
-  <string name="notification_label">Апавяшчэнне</string>
+  <string name="notification_label">Паведамленьне</string>
   <string name="ringtone_label">Рынгтон</string>
   <string name="unknown_author">Невядомы аўтар</string>
   <string name="font_preview_letters">АаБбCcDd123</string>
