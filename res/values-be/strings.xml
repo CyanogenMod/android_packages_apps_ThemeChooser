@@ -30,14 +30,14 @@
   <string name="icon_label">Значкі</string>
   <string name="font_label">Шрыфты</string>
   <string name="statusbar_label">Радок стану</string>
-  <string name="navbar_label">Панэль навігацыі</string>
+  <string name="navbar_label">Радок навігацыі</string>
   <string name="wallpaper_label">Шпалеры</string>
   <string name="lockscreen_label">Шпалеры экрана блакавання</string>
   <string name="live_lock_screen_label">Жывы экран блакавання</string>
   <string name="style_label">Сродкі кіравання</string>
   <string name="boot_animation_label">Анімацыя загрузкі</string>
   <string name="alarm_label">Будзільнік</string>
-  <string name="notification_label">Апавяшчэнне</string>
+  <string name="notification_label">Паведамленьне</string>
   <string name="ringtone_label">Рынгтон</string>
   <!-- Overflow menu -->
   <string name="menu_delete">Выдалiць</string>
