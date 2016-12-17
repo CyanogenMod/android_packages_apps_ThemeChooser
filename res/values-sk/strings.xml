@@ -45,6 +45,7 @@
   <string name="alarm_label">Budík</string>
   <string name="notification_label">Oznámenie</string>
   <string name="ringtone_label">Zvonenie</string>
+  <string name="unknown_author">Neznámy autor</string>
   <string name="font_preview_letters">AaBbCcDd123</string>
   <string name="theme_installed_notification_title">Nainštalovaná téma %s</string>
   <string name="theme_installed_notification_text">Téma bola úspešne nainštalovaná.</string>
