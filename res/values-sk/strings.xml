@@ -33,12 +33,14 @@
   <string name="navbar_label">Navigácia</string>
   <string name="wallpaper_label">Tapeta</string>
   <string name="lockscreen_label">Tapeta obrazovky uzamknutia</string>
+  <string name="live_lock_screen_label">Živá obrazovka uzamknutia</string>
   <string name="style_label">Ovládacie prvky</string>
   <string name="boot_animation_label">Animácia spúšťania</string>
   <string name="alarm_label">Budík</string>
   <string name="notification_label">Oznámenie</string>
   <string name="ringtone_label">Zvonenie</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">Prispôsobiť</string>
   <string name="menu_delete">Vymazať</string>
   <string name="menu_reset">Obnoviť tému</string>
   <!-- Shop themes -->
@@ -60,6 +62,7 @@
   <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">Vybrať obrázok</string>
   <string name="wallpaper_none_title">Žiadna</string>
+  <string name="mod_lock_title">Zámok MOD</string>
   <string name="processing_theme">Spracovávanie\u2026</string>
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">Poznámka: Téma %s bola navrhnutá pre staršiu verziu CM. Môžu sa vyskytnúť problémy s kompatibilitou s touto témou.</string>
@@ -68,5 +71,11 @@
   <string name="per_app_theme_removal_warning">Poznámka: Použitie novej témy odstráni všetky prispôbenia témy aplikácie.</string>
   <string name="per_app_theme_applying">Vaša téma sa aplikuje</string>
   <string name="per_app_theme_app_not_overlaid_warning">Téma nepodporuje túto aplikáciu, niektoré prvky sa nemusia zmeniť.</string>
+  <string name="read_external_permission_denied_message">Výber témy momentálne nemá prístup k vašim médiám a nevie vybrať obrázok.</string>
+  <string name="animated_lock_screen_badge_text">Animácia</string>
+  <string name="enable_live_lock_screen_dialog_title">Povoliť živú zamykaciu obrazovku</string>
+  <string name="enable_live_lock_screen_dialog_message">Animovaný zámok obrazovky vyžaduje funkciu Živý zámok obrazovky. Toto môžete zmeniť neskôr otvorením nastavenia a stránke Živý zámok obrazovky podľa možnosti zámku obrazovky.</string>
+  <string name="enable_live_lock_screen_dialog_positive_btn_text">Povoliť</string>
   <string name="get_more_app_not_available">Aplikácia nie je k dispozícii</string>
+  <string name="new_feature_label">Nové</string>
 </resources>
