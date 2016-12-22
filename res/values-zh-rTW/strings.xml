@@ -32,13 +32,15 @@
   <string name="statusbar_label">狀態</string>
   <string name="navbar_label">導航</string>
   <string name="wallpaper_label">桌布</string>
-  <string name="lockscreen_label">鎖定畫面桌布</string>
+  <string name="lockscreen_label">鎖定螢幕桌布</string>
+  <string name="live_lock_screen_label">活動鎖定螢幕</string>
   <string name="style_label">控制</string>
   <string name="boot_animation_label">開機動畫</string>
   <string name="alarm_label">鬧鐘</string>
   <string name="notification_label">通知</string>
   <string name="ringtone_label">鈴聲</string>
   <!-- Overflow menu -->
+  <string name="menu_customize">自訂</string>
   <string name="menu_delete">刪除</string>
   <string name="menu_reset">重設主題</string>
   <!-- Shop themes -->
@@ -60,6 +62,7 @@
   <!-- Extra wallpaper components for selector -->
   <string name="wallpaper_external_title">選擇圖片</string>
   <string name="wallpaper_none_title">無</string>
+  <string name="mod_lock_title">模組鎖</string>
   <string name="processing_theme">正在處理\u2026</string>
   <!-- Legacy themes -->
   <string name="legacy_theme_warning">注意：%s是設計給較舊版本的CM使用，使用這個主題可能會遇到相容性問題。</string>
@@ -67,5 +70,12 @@
   <string name="per_app_theming_title">應用程式主題設定員</string>
   <string name="per_app_theme_removal_warning">注意：套用新主題將移除所有應用程式主題自訂設定。</string>
   <string name="per_app_theme_applying">正在套用您的主題</string>
-  <string name="per_app_theme_app_not_overlaid_warning">主題不支援此應用程式，某些元素可能無法變更。</string>
+  <string name="per_app_theme_app_not_overlaid_warning">主題不支援此應用程式，某些元素可能無法更改。</string>
+  <string name="read_external_permission_denied_message">主題選擇器無法存取媒體並且無法在此時選取圖片。</string>
+  <string name="animated_lock_screen_badge_text">動畫</string>
+  <string name="enable_live_lock_screen_dialog_title">啟用活動鎖定螢幕</string>
+  <string name="enable_live_lock_screen_dialog_message">動畫鎖定螢幕需使用活動鎖定螢幕功能，您可以稍後透過開啟設定，活動鎖定螢幕頁面下的鎖定螢幕選項來更改此設定。</string>
+  <string name="enable_live_lock_screen_dialog_positive_btn_text">啟用</string>
+  <string name="get_more_app_not_available">應用程式無法使用</string>
+  <string name="new_feature_label">新</string>
 </resources>
