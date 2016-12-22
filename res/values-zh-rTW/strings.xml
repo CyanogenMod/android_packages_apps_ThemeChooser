@@ -18,7 +18,7 @@
 <resources>
   <string name="app_name">主題</string>
   <!-- Themable items -->
-  <string name="lock_screen">鎖定畫面桌布</string>
+  <string name="lock_screen">鎖定桌布</string>
   <string name="icons">圖示</string>
   <string name="fonts">字體</string>
   <string name="wallpapers">桌布</string>
@@ -26,9 +26,9 @@
   <string name="ringtones">鈴聲</string>
   <string name="notifications">通知</string>
   <string name="alarms">鬧鐘</string>
-  <string name="style">風格</string>
+  <string name="style">樣式</string>
   <string name="status_bar">狀態列</string>
-  <string name="nav_bar">導覽列</string>
+  <string name="nav_bar">導航列</string>
   <!-- Drawer items (some items in drawer are part of themeable items) -->
   <string name="theme_packs">主題包</string>
   <string name="sounds">音效</string>
@@ -45,8 +45,10 @@
   <string name="alarm_label">鬧鐘</string>
   <string name="notification_label">通知</string>
   <string name="ringtone_label">鈴聲</string>
+  <string name="unknown_author">未知作者</string>
   <string name="font_preview_letters">AaBbCcDd123中文字</string>
   <string name="theme_installed_notification_title">%s 已安裝</string>
   <string name="theme_installed_notification_text">已成功主題安裝。</string>
+  <string name="get_more_app_not_available">應用程式無法使用</string>
   <string name="designed_for_cm11">專為 CM11 設計</string>
 </resources>
