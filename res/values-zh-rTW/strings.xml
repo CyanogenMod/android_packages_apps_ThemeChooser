@@ -53,7 +53,7 @@
   <string name="default_tag_text">預設</string>
   <string name="customized_tag_text">已自定義化</string>
   <string name="updated_tag_text">已更新</string>
-  <string name="add_component_text">添加</string>
+  <string name="add_component_text">新增</string>
   <string name="wallpaper_none">無</string>
   <string name="audible_title_none">無</string>
   <!-- Labels for the customize/reset theme layout -->
