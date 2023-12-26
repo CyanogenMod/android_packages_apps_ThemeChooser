@@ -1,0 +1,64 @@
+<
+
+.error {
+  color: red;
+  display: none;
+}
+</style>
+</HEAD>
+<BODY>
+<form id="login-form">
+  <label for="username"> .عمار عبد السلام اسم المستخدم:</label>
+  <input type="text" id="username" name="username" required>
+  <span id="username-error" class="error">الرجاء إدخال اسم مستخدم صالح</span>
+  <label for="password">كلمة المرور:</label>
+  <input type="password" id="password" name="password" required>
+  <span id="password-error" class="error">الرجاء إدخال كلمة مرور صالحة</span>
+  <input type="submit" id="submit" value="تسجيل الدخول">
+  <p id="success-message">تم تسجيل الدخول بنجاح!</p>
+</form>
+<script>
+// الحصول على العناصر من النموذج
+var form = document.getElementById("login-form");
+var username = document.getElementById("username");
+var password = document.getElementById("password");
+var submit = document.getElementById("submit");
+var success = document.getElementById("success-message");
+var usernameError = document.getElementById("username-error");
+var passwordError = document.getElementById("password-error");
+
+// إضافة مستمع لحدث الإرسال
+form.addEventListener("submit", function(event) {
+  // منع الإرسال الافتراضي
+  event.preventDefault();
+  // تحقق من صحة البيانات المدخلة
+  var valid = true;
+  // تحقق من اسم المستخدم
+  if (username.value == "") {
+    // إظهار رسالة خطأ
+    usernameError.style.display = "block";
+    valid = false;
+  } else {
+    // إخفاء رسالة خطأ
+    usernameError.style.display = "none";
+  }
+  // تحقق من كلمة المرور
+  if (password.value == "") {
+    // إظهار رسالة خطأ
+    passwordError.style.display = "block";
+    valid = false;
+  } else {
+    // إخفاء رسالة خطأ
+    passwordError.style.display = "none";
+  }
+  // إذا كانت البيانات صالحة
+  if (valid) {
+    // إظهار رسالة تأكيد
+    success.style.display = "block";
+    // إخفاء النموذج
+    form.style.display = "none";
+  }
+});
+</script>
+</BODY>
+</HTML>
